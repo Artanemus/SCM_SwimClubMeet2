@@ -1,35 +1,16 @@
-object Main2: TMain2
+object SwimClubSwitch: TSwimClubSwitch
   Left = 0
   Top = 0
-  Caption = 'SwimClubMeet V2 (Build #)'
-  ClientHeight = 799
-  ClientWidth = 1109
+  BorderStyle = bsDialog
+  Caption = 'Switch to another SwimClub...'
+  ClientHeight = 517
+  ClientWidth = 433
   Color = clBtnFace
-  CustomTitleBar.Control = pnlTitleBar
-  CustomTitleBar.Enabled = True
-  CustomTitleBar.Height = 36
-  CustomTitleBar.SystemHeight = False
-  CustomTitleBar.ShowCaption = False
-  CustomTitleBar.ShowIcon = False
-  CustomTitleBar.BackgroundColor = 4552068
-  CustomTitleBar.ForegroundColor = clWhite
-  CustomTitleBar.InactiveBackgroundColor = clWhite
-  CustomTitleBar.InactiveForegroundColor = 10066329
-  CustomTitleBar.ButtonForegroundColor = clWhite
-  CustomTitleBar.ButtonBackgroundColor = 4552068
-  CustomTitleBar.ButtonHoverForegroundColor = 65793
-  CustomTitleBar.ButtonHoverBackgroundColor = 5541793
-  CustomTitleBar.ButtonPressedForegroundColor = 65793
-  CustomTitleBar.ButtonPressedBackgroundColor = 8170169
-  CustomTitleBar.ButtonInactiveForegroundColor = 10066329
-  CustomTitleBar.ButtonInactiveBackgroundColor = clWhite
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -16
   Font.Name = 'Segoe UI'
   Font.Style = []
-  GlassFrame.Enabled = True
-  GlassFrame.Top = 36
   Icon.Data = {
     0000010005003030000001002000A8250000560000002020000001002000A810
     0000FE250000101000000100200068040000A636000018180000010020008809
@@ -2693,1669 +2674,396 @@ object Main2: TMain2
     0000000000000000000000000000000000000000000000000000000000000000
     0000000000000000000000000000000000000000000000000000000000000000
     000000000000000000000000000000000000000000000000000000000000}
-  Position = poScreenCenter
-  StyleElements = [seFont, seClient]
-  OnCreate = FormCreate
-  OnShow = FormShow
+  KeyPreview = True
+  Position = poOwnerFormCenter
+  OnKeyDown = FormKeyDown
   TextHeight = 21
-  object pnlTitleBar: TTitleBarPanel
-    Left = 0
-    Top = 0
-    Width = 1109
-    Height = 35
-    Margins.Top = 24
-    OnPaint = pnlTitleBarPaint
-    CustomButtons = <
-      item
-        ButtonType = sbCustom
-        Enabled = True
-        Hint = 'Refresh data.'
-        Width = 36
-        Visible = True
-        OnPaint = pnlTitleBarCustomButtons0Paint
-        OnClick = pnlTitleBarCustomButtons0Click
-      end
-      item
-        ButtonType = sbCustom
-        Enabled = True
-        Hint = 'Manage Members'
-        Width = 36
-        Visible = True
-        OnPaint = pnlTitleBarCustomButtons1Paint
-        OnClick = pnlTitleBarCustomButtons1Click
-      end>
-    ExplicitTop = -6
-    DesignSize = (
-      1109
-      35)
-    object DBTextClubName: TDBText
-      Left = 6
-      Top = 0
-      Width = 159
-      Height = 20
-      AutoSize = True
-      DataField = 'Caption'
-      DataSource = CORE.dsSwimClub
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -15
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-    end
-    object DBTextNickName: TDBText
-      Left = 6
-      Top = 18
-      Width = 102
-      Height = 15
-      AutoSize = True
-      DataField = 'NickName'
-      DataSource = CORE.dsSwimClub
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-    end
-  end
-  object actnMainMenuBar: TActionMainMenuBar
-    Left = 0
-    Top = 35
-    Width = 1109
-    Height = 42
-    UseSystemFont = False
-    ActionManager = actnManager
-    Caption = 'actnMainMenuBar'
-    Color = clMenuBar
-    ColorMap.DisabledFontColor = 7171437
-    ColorMap.HighlightColor = clWhite
-    ColorMap.BtnSelectedFont = clBlack
-    ColorMap.UnusedColor = clWhite
+  object gSwitchSwimClub: TDBAdvGrid
+    AlignWithMargins = True
+    Left = 3
+    Top = 3
+    Width = 427
+    Height = 470
+    Cursor = crDefault
+    Align = alClient
+    Color = clWhite
+    ColCount = 3
+    DefaultRowHeight = 50
+    DrawingStyle = gdsClassic
+    FixedColor = clWhite
+    RowCount = 2
+    FixedRows = 1
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
     Font.Height = -16
     Font.Name = 'Segoe UI'
     Font.Style = []
-    Spacing = 6
-  end
-  object StatusBar: TStatusBar
-    AlignWithMargins = True
-    Left = 3
-    Top = 757
-    Width = 1103
-    Height = 39
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBtnText
-    Font.Height = -16
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    Panels = <
+    Options = [goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
+    ParentFont = False
+    ScrollBars = ssBoth
+    TabOrder = 0
+    GridLineColor = 15987699
+    GridFixedLineColor = 15987699
+    HoverRowCells = [hcNormal, hcSelected]
+    ActiveCellFont.Charset = DEFAULT_CHARSET
+    ActiveCellFont.Color = 4474440
+    ActiveCellFont.Height = -12
+    ActiveCellFont.Name = 'Tahoma'
+    ActiveCellFont.Style = [fsBold]
+    ActiveCellColor = 11565130
+    ActiveCellColorTo = 11565130
+    BorderColor = 11250603
+    ControlLook.FixedGradientFrom = clWhite
+    ControlLook.FixedGradientTo = clWhite
+    ControlLook.FixedGradientMirrorFrom = clWhite
+    ControlLook.FixedGradientMirrorTo = clWhite
+    ControlLook.FixedGradientHoverFrom = clGray
+    ControlLook.FixedGradientHoverTo = clWhite
+    ControlLook.FixedGradientHoverMirrorFrom = clWhite
+    ControlLook.FixedGradientHoverMirrorTo = clWhite
+    ControlLook.FixedGradientHoverBorder = 11645361
+    ControlLook.FixedGradientDownFrom = clWhite
+    ControlLook.FixedGradientDownTo = clWhite
+    ControlLook.FixedGradientDownMirrorFrom = clWhite
+    ControlLook.FixedGradientDownMirrorTo = clWhite
+    ControlLook.FixedGradientDownBorder = 11250603
+    ControlLook.DropDownHeader.Font.Charset = DEFAULT_CHARSET
+    ControlLook.DropDownHeader.Font.Color = clWindowText
+    ControlLook.DropDownHeader.Font.Height = -12
+    ControlLook.DropDownHeader.Font.Name = 'Tahoma'
+    ControlLook.DropDownHeader.Font.Style = []
+    ControlLook.DropDownHeader.Visible = True
+    ControlLook.DropDownHeader.Buttons = <>
+    ControlLook.DropDownFooter.Font.Charset = DEFAULT_CHARSET
+    ControlLook.DropDownFooter.Font.Color = clWindowText
+    ControlLook.DropDownFooter.Font.Height = -12
+    ControlLook.DropDownFooter.Font.Name = 'Segoe UI'
+    ControlLook.DropDownFooter.Font.Style = []
+    ControlLook.DropDownFooter.Visible = True
+    ControlLook.DropDownFooter.Buttons = <>
+    Filter = <>
+    FilterDropDown.Font.Charset = DEFAULT_CHARSET
+    FilterDropDown.Font.Color = clWindowText
+    FilterDropDown.Font.Height = -12
+    FilterDropDown.Font.Name = 'Segoe UI'
+    FilterDropDown.Font.Style = []
+    FilterDropDown.TextChecked = 'Checked'
+    FilterDropDown.TextUnChecked = 'Unchecked'
+    FilterDropDownClear = '(All)'
+    FilterEdit.TypeNames.Strings = (
+      'Starts with'
+      'Ends with'
+      'Contains'
+      'Not contains'
+      'Equal'
+      'Not equal'
+      'Larger than'
+      'Smaller than'
+      'Clear')
+    FixedColWidth = 20
+    FixedRowHeight = 0
+    FixedFont.Charset = DEFAULT_CHARSET
+    FixedFont.Color = clBlack
+    FixedFont.Height = -16
+    FixedFont.Name = 'Tahoma'
+    FixedFont.Style = [fsBold]
+    FloatFormat = '%.2f'
+    HoverButtons.Buttons = <>
+    HoverButtons.Position = hbLeftFromColumnLeft
+    HTMLSettings.ImageFolder = 'images'
+    HTMLSettings.ImageBaseName = 'img'
+    Look = glCustom
+    PrintSettings.DateFormat = 'dd/mm/yyyy'
+    PrintSettings.Font.Charset = DEFAULT_CHARSET
+    PrintSettings.Font.Color = clWindowText
+    PrintSettings.Font.Height = -12
+    PrintSettings.Font.Name = 'Segoe UI'
+    PrintSettings.Font.Style = []
+    PrintSettings.FixedFont.Charset = DEFAULT_CHARSET
+    PrintSettings.FixedFont.Color = clWindowText
+    PrintSettings.FixedFont.Height = -12
+    PrintSettings.FixedFont.Name = 'Segoe UI'
+    PrintSettings.FixedFont.Style = []
+    PrintSettings.HeaderFont.Charset = DEFAULT_CHARSET
+    PrintSettings.HeaderFont.Color = clWindowText
+    PrintSettings.HeaderFont.Height = -12
+    PrintSettings.HeaderFont.Name = 'Segoe UI'
+    PrintSettings.HeaderFont.Style = []
+    PrintSettings.FooterFont.Charset = DEFAULT_CHARSET
+    PrintSettings.FooterFont.Color = clWindowText
+    PrintSettings.FooterFont.Height = -12
+    PrintSettings.FooterFont.Name = 'Segoe UI'
+    PrintSettings.FooterFont.Style = []
+    PrintSettings.PageNumSep = '/'
+    SearchFooter.ColorTo = clWhite
+    SearchFooter.FindNextCaption = 'Find &next'
+    SearchFooter.FindPrevCaption = 'Find &previous'
+    SearchFooter.Font.Charset = DEFAULT_CHARSET
+    SearchFooter.Font.Color = clWindowText
+    SearchFooter.Font.Height = -12
+    SearchFooter.Font.Name = 'Segoe UI'
+    SearchFooter.Font.Style = []
+    SearchFooter.HighLightCaption = 'Highlight'
+    SearchFooter.HintClose = 'Close'
+    SearchFooter.HintFindNext = 'Find next occurrence'
+    SearchFooter.HintFindPrev = 'Find previous occurrence'
+    SearchFooter.HintHighlight = 'Highlight occurrences'
+    SearchFooter.MatchCaseCaption = 'Match case'
+    SearchFooter.ResultFormat = '(%d of %d)'
+    SelectionColor = 13744549
+    SortSettings.DefaultFormat = ssAutomatic
+    SortSettings.HeaderColor = clWhite
+    SortSettings.HeaderColorTo = clWhite
+    SortSettings.HeaderMirrorColor = clWhite
+    SortSettings.HeaderMirrorColorTo = clWhite
+    Version = '2.5.1.3'
+    AutoCreateColumns = True
+    AutoRemoveColumns = True
+    Columns = <
       item
-        Text = ' NOT CONNECTED'
-        Width = 148
+        Borders = []
+        BorderPen.Color = clSilver
+        ButtonHeight = 18
+        CheckFalse = 'N'
+        CheckTrue = 'Y'
+        Color = clWindow
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        HeaderFont.Charset = DEFAULT_CHARSET
+        HeaderFont.Color = 3881787
+        HeaderFont.Height = -16
+        HeaderFont.Name = 'Segoe UI'
+        HeaderFont.Style = []
+        PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+        PrintFont.Charset = DEFAULT_CHARSET
+        PrintFont.Color = clWindowText
+        PrintFont.Height = -12
+        PrintFont.Name = 'Segoe UI'
+        PrintFont.Style = []
+        Width = 20
       end
       item
-        Text = ' NOM: 000'
-        Width = 90
+        Borders = []
+        BorderPen.Color = clSilver
+        ButtonHeight = 18
+        CheckFalse = 'N'
+        CheckTrue = 'Y'
+        Color = clWindow
+        DataPictureField = True
+        FieldName = 'LogoImg'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        HeaderFont.Charset = DEFAULT_CHARSET
+        HeaderFont.Color = 3881787
+        HeaderFont.Height = -16
+        HeaderFont.Name = 'Segoe UI'
+        HeaderFont.Style = []
+        PictureField = True
+        PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+        PrintFont.Charset = DEFAULT_CHARSET
+        PrintFont.Color = clWindowText
+        PrintFont.Height = -12
+        PrintFont.Name = 'Segoe UI'
+        PrintFont.Style = []
       end
       item
-        Text = ' ENT: 000'
-        Width = 90
-      end
-      item
-        Text = 'Status Messages'
-        Width = 200
+        Borders = []
+        BorderPen.Color = clSilver
+        ButtonHeight = 18
+        CheckFalse = 'N'
+        CheckTrue = 'Y'
+        Color = clWindow
+        FieldName = 'Caption'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        HeaderFont.Charset = DEFAULT_CHARSET
+        HeaderFont.Color = clWindowText
+        HeaderFont.Height = -16
+        HeaderFont.Name = 'Segoe UI'
+        HeaderFont.Style = []
+        HTMLTemplate = '<#CAPTION><BR><#NICKNAME>'
+        PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+        PrintFont.Charset = DEFAULT_CHARSET
+        PrintFont.Color = clWindowText
+        PrintFont.Height = -12
+        PrintFont.Name = 'Segoe UI'
+        PrintFont.Style = []
+        Width = 350
       end>
-    SimpleText = 'Information and stats will appear here...'
-    UseSystemFont = False
+    DataSource = CORE.dsSwimClub
+    InvalidPicture.Data = {
+      055449636F6E0000010001002020200000000000A81000001600000028000000
+      2000000040000000010020000000000000100000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000006A6A6B256A6A6B606A6A6B946A6A6BC06A6A6BE1
+      6A6A6BF86A6A6BF86A6A6BE16A6A6BC06A6A6B946A6A6B606A6A6B2500000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000006A6A6B407575769E787879F19F9F9FF6C0C0C0FDDADADAFFEDEDEEFF
+      FBFBFBFFFBFBFBFFEDEDEEFFDADADAFFC0C0C0FD9F9F9FF6787879F17575769E
+      6A6A6B4000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000006A6A6B22
+      7C7C7C98888889F0BDBDBDFCE9E9EBFED9D9E9FEB5B5DDFE8B8BCDFE595AB7FF
+      3739A8FF2B2CA4FF4A49B1FF7171C1FFA1A2D7FFD3D3E8FFEAEAEBFEBEBEBFFC
+      888889F07C7C7C986A6A6B220000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000006A6A6B43838383D8
+      B7B7B8FAECECEFFEC0C0DFFF7977C4FF2221A0FF12129BFF1010A4FF0C0CA8FF
+      0A0AACFF0A0AB4FF0A0AB9FF0D0DBEFF0F0FB1FF1111A6FF5656B8FFAEADDCFF
+      ECECEFFEB7B7B8FA838383D86A6A6B4300000000000000000000000000000000
+      00000000000000000000000000000000000000006A6A6B4E878788EAD3D3D3FE
+      CACAE8FF4443B0FF171799FF11119CFF0C0C98FF0B0B9BFF0B0BA0FF0A0AA6FF
+      0909ACFF0909B2FF0808BAFF0707BFFF0B09C8FF0D0DCEFF1111CCFF1010AFFF
+      4A49B2FFCFCFEBFFD3D3D3FE878788EA6A6A6B4E000000000000000000000000
+      000000000000000000000000000000006A6A6B43878788EAE1E1E1FFA8A8DAFF
+      2323A0FF15159CFF0D0D92FF0C0C95FF0C0C99FF0B0B9EFF0B0BA0FF0A0AA6FF
+      0909ACFF0909B2FF0808B8FF0808BCFF0808C3FF0C0CC9FF0C0CD0FF0D0DD6FF
+      1313CFFF2222A9FFAFAFDEFFE1E1E1FF878788EA6A6A6B430000000000000000
+      0000000000000000000000006A6A6B22838383D8D3D3D3FEA8A8D9FF2020A4FF
+      13139BFF0C0C92FF0C0C95FF0C0C97FF0C0C99FF0B0B9EFF0B0BA0FF0A0AA4FF
+      0A0AA9FF0909B0FF0808B4FF0808BBFF0707C0FF0A0AC6FF0909CCFF0C0CD3FF
+      0D0DD8FF1313D3FF1A1AA8FFAEADDEFFD4D4D4FE838383D86A6A6B2200000000
+      0000000000000000000000007C7C7C98B7B7B8FACACAE8FF2524A3FF13139FFF
+      0C0C97FF0C0C95FF0C0C95FF0C0C91FF0C0C95FF0B0B9EFF0B0BA0FF0A0AA4FF
+      0A0AA8FF0909ADFF0909B2FF0808B8FF0808BCFF0707C0FF0808BCFF0707C5FF
+      0C0CD3FF0D0DD7FF1212D1FF2020A7FFCDCDEBFFB8B8B9FA7C7C7C9800000000
+      00000000000000006A6A6B40888889F0ECECEFFE4545B1FF1616A4FF0B0B9BFF
+      0C0C99FF0C0C96FF3333A2FFB9B9D0FF393A9BFF0C0C95FF0B0BA1FF0A0AA4FF
+      0A0AA7FF0A0AABFF0909B0FF0808B4FF0808B7FF2F2FC2FFAEAEE2FF4B4BBFFF
+      0707BEFF0B0BD1FF0C0CD3FF1413CCFF4848B1FFECECEFFE888889F06A6A6B40
+      00000000000000007575769EBFBFBFFD9B9BD5FF1C1CA6FF0C0CA1FF0B0B9FFF
+      0B0B9AFF3535A7FFB5B5BEFFE6E6DFFFEDEDEFFF3C3C9CFF0C0C97FF0A0AA4FF
+      0A0AA6FF0A0AA9FF0909ADFF0909B0FF2626B5FFCECEDEFFFFFFFBFFEEEEF1FF
+      4848BAFF0808BCFF0A0ACDFF0B0BCEFF1111ABFFBEC0E0FFBFC0BFFD7575769E
+      000000006A6A6B25787879F1E3E3E5FE4646B2FF1414A8FF0A0AA4FF0B0BA0FF
+      2121A9FFBDBDCAFFD0D0C8FFC5C5C5FFE3E3E1FFEDEDEFFF3E3E9EFF0C0C98FF
+      0A0AA6FF0A0AA8FF0A0AA9FF2B2BB0FFC0C0CDFFEAEAE2FFEBEBEBFFFEFEF8FF
+      EDEDEEFF2828BDFF0707C4FF0809C7FF0F0FC4FF8788CBFFEBEBECFE79797AF1
+      6A6A6B256A6A6B609D9E9DF6D6D7E4FF3A3AB3FF1212ADFF0A0AA8FF0A0AA4FF
+      1313AAFFABABCFFFD6D6CBFFCACACAFFC6C6C6FFE4E4E0FFEEEEEFFF3F3FA0FF
+      0C0C99FF0A0AA6FF2828ABFFB2B2BFFFD8D8CEFFD6D6D8FFE0E0E0FFF6F5EDFF
+      D1D1EDFF1E1CC0FF0707BEFF0707BFFF0707C0FF2120AAFFD3D5E9FE9FA0A0F6
+      6A6A6B606A6A6B94BDBDBDFBBABBDCFF3A39B7FF2F2FB8FF0909ADFF0A0AA9FF
+      0A0AA6FF1515ACFFADADCFFFD6D6CBFFCBCBCAFFC6C6C6FFE4E4E1FFEEEEEFFF
+      3838A1FF2222A2FFACABB8FFC8C8C0FFC7C7C8FFCDCDCDFFE1E1D9FFC8CAE1FF
+      2424BCFF0808B4FF0808B9FF0808BAFF0808BBFF0F0EABFFA1A2D5FEC0C0C0FC
+      6A6A6B946A6A6BC0D9D8D7FE9999D1FF3838BBFF3636BCFF2C2CB7FF0909ADFF
+      0A0AA9FF0A0AA4FF1C1CAFFFB1B1CFFFD6D6CBFFCCCCCBFFC7C7C7FFE4E4E1FF
+      ECECEEFFACACB7FFC2C2BCFFBEBEBFFFC0C0C0FFCFCFC6FFC1C1D5FF2727B8FF
+      0909ACFF0909B2FF0909B2FF0909B4FF0808B4FF0E0EB5FF6E6EBFFFD9D9D9FE
+      6A6A6BC06A6A6BE1EBEAEBFF7D7CC7FF3838BFFF3434BEFF3536BEFF2A2AB8FF
+      0909B0FF0909ACFF0A0AA8FF1C1CB1FFB2B2D0FFD7D7CCFFCBCBCBFFC7C7C8FF
+      C8C8C3FFC6C6C3FFBFBFC1FFBDBDBDFFC5C5BCFFB8B8CEFF2929B5FF0A0AA8FF
+      0909ACFF0909ADFF0909AFFF0909AFFF0909AFFF0C0CB0FF4747AFFFECECEDFF
+      6A6A6BE16A6A6BF8F9F9F9FF6666C1FF3838C4FF3535C2FF3434C0FF3535BEFF
+      3030BCFF1313B4FF0909ADFF0A0AA8FF1E1EB3FFAAAAD0FFD3D3CDFFCCCCCCFF
+      C8C8C8FFC3C3C3FFC2C2C1FFC4C4BFFFB2B2CBFF2B2BB4FF0A0AA4FF0A0AA8FF
+      0A0AA8FF0A0AA9FF0A0AA9FF0A0AA9FF0A0AA9FF0B0BA9FF3131A6FFFAFAFAFF
+      6A6A6BF86A6A6BF8FBFBFBFF5959BEFF3B3BCAFF3A3AC8FF3737C4FF3535C2FF
+      3636C0FF3636BEFF2323B8FF0909B1FF0A0AA7FF4949BEFFD6D6D4FFD3D3D1FF
+      CDCDCDFFC8C8C8FFC4C4C3FFEDEDEDFF5F5FB3FF0C0C98FF0A0AA7FF0A0AA6FF
+      0A0AA6FF0A0AA6FF0A0AA4FF0A0AA6FF0A0AA4FF0B0BA4FF2D2DA6FFFBFBFBFF
+      6A6A6BF86A6A6BE1EDEDEEFF7F80CBFF4041CCFF3C3CCAFF3A3AC8FF383AC8FF
+      3838C4FF3636C2FF3939C0FF2123B7FF4A4AC2FFCBCBDEFFE0E0DCFFD6D6D6FF
+      D2D2D3FFCDCDCEFFC9C9C9FFE2E2E1FFF1F1F2FF4242A3FF0C0C99FF0A0AA4FF
+      0A0AA4FF0A0AA4FF0B0BA3FF0B0BA3FF0B0BA1FF0E0EA1FF4443B0FFEDEDEEFF
+      6A6A6BE16A6A6BC0DADADAFF9C9BD5FE4949CDFF3E3DD0FF3C3DCEFF3C3CCAFF
+      3A3AC8FF3B39C7FF2828BDFF5C5CCCFFE5E5EDFFF4F4EDFFE5E5E6FFDEDEDEFF
+      DCDCD9FFD9D9D3FFCDCDCDFFC8C8C8FFE5E5E1FFF1F1F3FF3F3FA0FF0C0C99FF
+      0A0AA4FF0B0BA1FF0B0BA0FF0B0BA0FF0B0B9FFF1313A2FF6B6BC0FFDADADAFF
+      6A6A6BC06A6A6B94C0C0C0FDBDBAE1FE5655CFFF4141D4FF3F3FD2FF3F3FCEFF
+      3D3DCCFF2C2AC3FF5E5ED3FFEBEBF6FFFFFFFAFFF1F1F1FFEDEDEEFFF0F0E9FF
+      D2D2E6FFBDBDD6FFDADAD3FFCFCFCFFFC9C9CAFFE5E5E2FFF1F1F3FF3A3AA0FF
+      0C0C98FF0B0BA3FF0B0B9FFF0B0B9EFF0B0B9EFF1C1CA4FF9C9CD3FFC1C1C1FD
+      6A6A6B946A6A6B609F9F9FF6DAD9EAFF6B6BCFFF4444D7FF4143D6FF4242D3FF
+      3434CDFF6464DBFFEFEFFFFFFFFFFFFFFCFCFCFFF6F6F6FFFCFCF4FFE2E1F0FF
+      5050CCFF4040C1FFC3C3DBFFE1E1D8FFD4D4D5FFCFCFCFFFE8E8E5FFF2F2F4FF
+      4040A2FF0C0C99FF0F0FA2FF0F0FA0FF0F0F9DFF302FA9FFD1D1E8FEA0A0A0F6
+      6A6A6B606A6A6B25787879F1E9E9EBFEA7A7DAFF6060DBFF4547DBFF3C3CD6FF
+      5857DEFFF2F2FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE8E8F8FF5B5BD4FF
+      2828BDFF2A2BBDFF4949C5FFC3C3DBFFE4E4DAFFD5D5D5FFCECED0FFE8E8E5FF
+      F4F4F4FF4949AFFF2121A6FF2A2AA6FF2C2BA9FF5557B8FFEAEAECFE787879F1
+      6A6A6B25000000007575769EBEBEBEFDC9CAE6FF7A79DBFF4C4CDFFF4141DBFF
+      5757E0FFEAEAFFFFFFFFFFFFFFFFFFFFFFFFFFFFE8E7FFFF5B5BD7FF2E2EC6FF
+      3E3EC9FF3A3AC5FF2C2EC1FF4A49C8FFC2C2DDFFE3E3DAFFD5D5D4FFDADAD3FF
+      CACBD9FF4747BBFF2525ADFF2C2BACFF3332AEFFA5A4D8FFBFBFBFFD7575769E
+      00000000000000006A6A6B40888889F0ECECEFFE9696D6FF7B7BE3FF4D4BE0FF
+      4141DBFF5F5FE6FFE7E7FFFFFFFFFFFFE9E9FFFF5A5ADCFF3333CAFF4242CFFF
+      4040CBFF3D3DC9FF3D3EC8FF3030C2FF4848C9FFC0C0DDFFECEEDEFFD0D0E0FF
+      5554C7FF2828B3FF3232B4FF3434B1FF5453B7FFECECEFFE888889F06A6A6B40
+      0000000000000000000000007C7C7C98B7B7B8FAD0D0ECFF8F8FDBFF6868E3FF
+      4E4EE2FF3E40DBFF6565E9FFB2B2F7FF6565E4FF393BD2FF4646D7FF4343D4FF
+      4343D1FF4242CFFF4040CBFF3F3FCAFF3333C4FF4E4ECBFF9E9EE2FF5C5BCFFF
+      292ABAFF3636BCFF3938B8FF3F3EB1FFCBCBE9FFB7B7B8FA7C7C7C9800000000
+      0000000000000000000000006A6A6B22838383D8D3D3D3FEB5B5E2FF9E9EE4FF
+      6766E2FF4E50E6FF4646E0FF3D3DDAFF4444DCFF4B4BDCFF4848DBFF4847D9FF
+      4646D5FF4443D3FF4343D1FF4242CFFF4143CDFF3A3AC8FF312FC5FF3535C3FF
+      3C3CC3FF3D3DBEFF403FB5FFACACDCFFD3D3D3FE838383D86A6A6B2200000000
+      000000000000000000000000000000006A6A6B43878788EAE1E1E1FFB5B5E2FF
+      A7A6E4FF7877E5FF5151E5FF4F4FE4FF4E4EE2FF4D4DE0FF4C4CDEFF4B4BDCFF
+      4949DBFF4848D7FF4747D5FF4545D3FF4545D1FF4343CFFF4242CCFF3F3FCBFF
+      4343C2FF4645B6FFADADDCFFE1E1E1FF878788EA6A6A6B430000000000000000
+      00000000000000000000000000000000000000006A6A6B4E878788EAD3D3D3FE
+      D0D0ECFFAAA9DFFFA2A2ECFF6565E3FF5151E6FF4F4FE4FF4F4DE4FF4D4DE0FF
+      4D4DDFFF4D4DDCFF4C49DBFF4A4AD8FF4749D6FF4747D4FF4949CBFF4B4BC3FF
+      8E8ED0FFCDCCE8FFD3D3D3FE878788EA6A6A6B4E000000000000000000000000
+      0000000000000000000000000000000000000000000000006A6A6B43838383D8
+      B7B7B8FAECECEFFEC3C2E5FFADAEE1FF9E9DE8FF6F6FE0FF5C5CE1FF5452E2FF
+      5051E1FF4F4FDFFF4F4FDBFF5150D6FF5151CFFF5F5FC8FFA1A1D3FEC7C8E0FE
+      E4E4E7FEB7B7B8FA838383D86A6A6B4300000000000000000000000000000000
+      000000000000000000000000000000000000000000000000000000006A6A6B22
+      7C7C7C98888889F0BFBFBFFDEBEBECFED8D9EBFEBDBDE4FEA8A7DCFF9695D7FF
+      8886D4FF7F7DCEFF8C8BD2FFA1A2D9FFC0BEE1FED9D9EAFEEAEAECFEBFBFBFFD
+      888889F07C7C7C986A6A6B220000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000006A6A6B407575769E787879F19F9F9FF6C0C0C0FDDADADAFFEDEDEEFF
+      FBFBFBFFFBFBFBFFEDEDEEFFDADADAFFC0C0C0FD9F9F9FF6787879F17575769E
+      6A6A6B4000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000006A6A6B256A6A6B606A6A6B946A6A6BC06A6A6BE1
+      6A6A6BF86A6A6BF86A6A6BE16A6A6BC06A6A6B946A6A6B606A6A6B2500000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000FFC003FFFF0000FFFC00003FF800001FF000000FE0000007C0000003
+      C000000380000001800000010000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000080000001
+      80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
+      FFC003FF}
+    ShowPictureFields = True
+    ShowUnicode = False
+    ColWidths = (
+      20
+      50
+      350)
+    RowHeights = (
+      0
+      50)
   end
-  object PageControl: TPageControl
+  object pnlFooter: TPanel
     Left = 0
-    Top = 118
-    Width = 1109
-    Height = 636
-    ActivePage = tabSession
-    Align = alClient
-    TabOrder = 3
-    object tabSession: TTabSheet
-      Caption = 'Session'
-    end
-    object tabNominate: TTabSheet
-      Caption = 'Nominate'
-      ImageIndex = 1
-    end
-    object tabHeats: TTabSheet
-      Caption = 'Heats'
-      ImageIndex = 2
-    end
-  end
-  object pnlDebug: TPanel
-    Left = 0
-    Top = 77
-    Width = 1109
+    Top = 476
+    Width = 433
     Height = 41
-    Align = alTop
+    Align = alBottom
+    BevelEdges = [beTop]
+    BevelKind = bkFlat
     BevelOuter = bvNone
-    Caption = 'DEBUG PANEL'
-    TabOrder = 4
-    object lblDebugRW: TLabel
-      Left = 96
-      Top = 6
-      Width = 82
-      Height = 21
-      Caption = 'SwimClub ?'
-    end
-    object btnDebugFocus: TButton
-      Left = 6
+    TabOrder = 1
+    object btnOk: TButton
+      Left = 179
       Top = 6
       Width = 75
-      Height = 25
-      Caption = 'Focus'
+      Height = 33
+      Caption = 'Close'
       TabOrder = 0
-      OnClick = btnDebugFocusClick
-    end
-  end
-  object actnManager: TActionManager
-    ActionBars = <
-      item
-        Items = <
-          item
-            Items = <
-              item
-                Action = Session_ToggleVisible
-                Caption = '&Toggle visibility.'
-                ImageIndex = 23
-                ImageName = 'VisibilityOn'
-              end
-              item
-                Action = Session_ToggleLock
-                Caption = '&Lock/Unlock'
-                ImageIndex = 21
-                ImageName = 'Lock'
-                ShortCut = 16460
-              end
-              item
-                Action = Session_New
-                Caption = '&New Session...'
-                ImageIndex = 20
-                ImageName = 'New'
-                ShortCut = 16429
-              end
-              item
-                Action = Session_Edit
-                Caption = '&Edit Session ...'
-                ImageIndex = 45
-                ImageName = 'Edit'
-              end
-              item
-                Action = Session_Delete
-                Caption = '&Delete Session...'
-                ImageIndex = 19
-                ImageName = 'Delete'
-                ShortCut = 16430
-              end
-              item
-                Action = Session_Report
-                Caption = '&Session Report*'
-                ImageIndex = 17
-                ImageName = 'Report'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = Session_Export
-                Caption = 'E&xport Session...'
-                ImageIndex = 46
-                ImageName = 'Export'
-              end
-              item
-                Action = Session_Import
-                Caption = '&Import Session...'
-                ImageIndex = 39
-                ImageName = 'import'
-              end
-              item
-                Action = Session_Clone
-                Caption = '&Clone Session...'
-                ImageIndex = 44
-                ImageName = 'clone'
-              end
-              item
-                Action = Session_Sort
-                Caption = 'S&ort'
-                ImageIndex = 8
-                ImageName = 'Sync'
-              end>
-            Caption = '&Session'
-          end
-          item
-            Items = <
-              item
-                Action = File_ExportCarnival
-                Caption = 'E&xport CarnivalMeet...'
-                ImageIndex = 46
-                ImageName = 'Export'
-              end
-              item
-                Action = File_ImportCarnival
-                Caption = '&Import CarnivalMeet...'
-                ImageIndex = 39
-                ImageName = 'import'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = SwimClub_Switch
-                Caption = '&Switch Clubs ...'
-                ImageIndex = 11
-                ImageName = 'Switch'
-              end
-              item
-                Action = SwimClub_Manage
-                Caption = '&Manage Swim Clubs ...'
-                ImageIndex = 50
-                ImageName = 'folder_managed'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = File_Exit
-                Caption = '&Exit'
-                ImageIndex = 38
-                ImageName = 'Exit'
-              end>
-            Caption = '&File'
-          end
-          item
-            Items = <
-              item
-                Action = Event_ToggleGridView
-                Caption = '&Toggle grid view.'
-                ImageIndex = 16
-                ImageName = 'GridOn'
-              end
-              item
-                Action = Event_MoveUp
-                Caption = '&Move Up'
-                ImageIndex = 12
-                ImageName = 'Up'
-                ShortCut = 16422
-              end
-              item
-                Action = Event_MoveDown
-                Caption = 'M&ove Down'
-                ImageIndex = 13
-                ImageName = 'Down'
-                ShortCut = 16424
-              end
-              item
-                Action = Event_NewRecord
-                Caption = '&New Event'
-                ImageIndex = 20
-                ImageName = 'New'
-                ShortCut = 16429
-              end
-              item
-                Action = Event_Delete
-                Caption = '&Delete Event'
-                ImageIndex = 19
-                ImageName = 'Delete'
-                ShortCut = 16430
-              end
-              item
-                Action = Event_Report
-                Caption = '&Event Report*'
-                ImageIndex = 17
-                ImageName = 'Report'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = Event_BuildFinals
-                Caption = '&Build event finals ...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Event_BuildSemiFinals
-                Caption = 'B&uild event semi-finals ...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Event_BuildQuarterFinals
-                Caption = 'Bu&ild event quarter-finals ...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = Event_AutoSchedule
-                Caption = '&Auto Schedule...'
-                ImageIndex = 47
-                ImageName = 'TimeAuto'
-              end
-              item
-                Action = Event_Renumber
-                Caption = '&Renumber Lanes...'
-                ImageIndex = 7
-                ImageName = 'Cycle'
-              end>
-            Caption = '&Events'
-          end
-          item
-            Items = <
-              item
-                Action = Nominate_SortMembers
-                Caption = '&Sort on Name'
-                ImageIndex = 11
-                ImageName = 'Switch'
-              end
-              item
-                Action = Nominate_Report
-                Caption = '&Nominate Report*'
-                ImageIndex = 17
-                ImageName = 'Report'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = Nominate_MemberDetails
-                Caption = '&Member'#39's Details...'
-                ImageIndex = 1
-                ImageName = 'Members'
-              end
-              item
-                Visible = False
-                Action = Nominate_ClearEventNominations
-                Caption = '&Clear event nominations... '
-                ImageIndex = 19
-                ImageName = 'Delete'
-              end
-              item
-                Visible = False
-                Action = Nominate_ClearSessionNominations
-                Caption = 'C&lear session nominations...'
-                ImageIndex = 19
-                ImageName = 'Delete'
-              end>
-            Caption = '&Nominate'
-          end
-          item
-            Items = <
-              item
-                Action = Heat_MoveUp
-                Caption = '&Move Up'
-                ImageIndex = 12
-                ImageName = 'Up'
-                ShortCut = 16422
-              end
-              item
-                Action = Heat_MoveDown
-                Caption = 'M&ove Down'
-                ImageIndex = 13
-                ImageName = 'Down'
-                ShortCut = 16424
-              end
-              item
-                Action = Heat_ToggleStatus
-                Caption = '&Toggle Heat Status'
-                ImageIndex = 36
-                ImageName = 'HeatStatusToggle'
-                ShortCut = 16468
-              end
-              item
-                Action = Heat_NewRecord
-                Caption = '&New Heat...'
-                ImageIndex = 20
-                ImageName = 'New'
-                ShortCut = 16429
-              end
-              item
-                Action = Heat_Delete
-                Caption = '&Delete Heat...'
-                ImageIndex = 19
-                ImageName = 'Delete'
-                ShortCut = 16430
-              end
-              item
-                Action = Heat_AutoBuild
-                Caption = '&AutoBuild Heats...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Heat_MarshallReport
-                Caption = 'Ma&rshall sheet*'
-                ImageIndex = 4
-                ImageName = 'Marshall'
-              end
-              item
-                Action = Heat_TimeKeeperReport
-                Caption = 'T&ime Keeper sheet*'
-                ImageIndex = 5
-                ImageName = 'TimeKeeper'
-              end
-              item
-                Action = Heat_PrintSet
-                Caption = '&Print Set'
-                ImageIndex = 3
-                ImageName = 'BatchPrint'
-              end
-              item
-                Action = Heat_Report
-                Caption = '&Heat Report*'
-                ImageIndex = 17
-                ImageName = 'Report'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = Heat_BatchBuildHeats
-                Caption = '&Build ALL Heats...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Heat_BatchMarshallReport
-                Caption = 'Print A&LL Marshall Reports...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Heat_BatchTimeKeeperReport
-                Caption = 'Print ALL Tim&ekeeper Reports...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Visible = False
-                Action = Heat_Renumber
-                ImageIndex = 7
-                ImageName = 'Cycle'
-              end>
-            Caption = '&Heats'
-          end
-          item
-            Items = <
-              item
-                Action = Lane_MoveUp
-                Caption = '&Move Up'
-                ImageIndex = 12
-                ImageName = 'Up'
-                ShortCut = 16422
-              end
-              item
-                Action = Lane_MoveDown
-                Caption = 'M&ove Down'
-                ImageIndex = 13
-                ImageName = 'Down'
-                ShortCut = 16424
-              end
-              item
-                Action = Lane_SwapLanes
-                Caption = '&Swap Lanes...'
-                ImageIndex = 10
-                ImageName = 'Shuffle'
-              end
-              item
-                Action = Lane_EmptyLane
-                Caption = '&Empty Lane'
-                ImageIndex = 19
-                ImageName = 'Delete'
-                ShortCut = 16472
-              end
-              item
-                Action = Lane_Strike
-                Caption = 'S&trike Entrant'
-                ImageIndex = 18
-                ImageName = 'DeleteForever'
-                ShortCut = 16430
-              end
-              item
-                Action = Lane_Renumber
-                Caption = '&Renumber Lanes'
-                ImageIndex = 37
-                ImageName = 'Sort'
-              end
-              item
-                Action = Nominate_GotoMemberDetails
-                Caption = 'Mem&ber'#39's Details...'
-                ImageIndex = 1
-                ImageName = 'Members'
-              end>
-            Caption = 'En&trants'
-          end
-          item
-            Items = <
-              item
-                Action = Tools_QualifyTimes
-                Caption = '&Qualify Times...'
-              end
-              item
-                Action = Tools_Swimmercategory
-                Caption = 'S&wimmer Categories...'
-              end
-              item
-                Action = Tools_House
-                Caption = '&House...'
-              end
-              item
-                Action = Tools_Score
-                Caption = '&Score, Place, Points...'
-              end
-              item
-                Action = Tools_Divisions
-                Caption = '&Divisions...'
-              end
-              item
-                Action = Tools_LeaderBoard
-                Caption = '&LeaderBoard...'
-              end
-              item
-                Action = Tools_DisqualifyCodes
-                Caption = 'D&isqualification Codes...'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = Tools_Preferences
-                Caption = '&Preferences...'
-              end>
-            Caption = 'T&ools'
-          end
-          item
-            Items = <
-              item
-                Action = Help_About
-                Caption = '&About...'
-                ImageIndex = 43
-                ImageName = 'info'
-              end
-              item
-                Action = Help_LocalHelp
-                Caption = '&Help...'
-                ImageIndex = 42
-                ImageName = 'Help'
-              end
-              item
-                Action = Help_OnlineHelp
-                Caption = '&Online Help...'
-                ImageIndex = 42
-                ImageName = 'Help'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = Help_Website
-                Caption = '&SCM Homepage...'
-                ImageIndex = 41
-                ImageName = 'home'
-              end>
-            Caption = 'He&lp'
-          end>
-      end
-      item
-        Items = <
-          item
-            Items = <
-              item
-                Action = File_Connection
-                Caption = '&Manage Connection...'
-                ImageIndex = 29
-                ImageName = 'Connection'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = File_ExportCarnival
-                Caption = 'E&xport CarnivalMeet...'
-                ImageIndex = 46
-                ImageName = 'Export'
-              end
-              item
-                Action = File_ImportCarnival
-                Caption = '&Import CarnivalMeet...'
-                ImageIndex = 39
-                ImageName = 'import'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = File_Exit
-                Caption = 'Exi&t'
-                ImageIndex = 38
-                ImageName = 'Exit'
-              end>
-            Caption = '&File'
-            ImageIndex = 51
-            ImageName = 'hamburger'
-          end
-          item
-            Items = <
-              item
-                Action = SwimClub_Switch
-                Caption = '&Switch Clubs ...'
-                ImageIndex = 11
-                ImageName = 'Switch'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = SwimClub_Manage
-                Caption = '&Manage Swim Clubs ...'
-                ImageIndex = 50
-                ImageName = 'folder_managed'
-              end>
-            Caption = '&SwimClub'
-          end
-          item
-            Items = <
-              item
-                Action = Session_ToggleVisible
-                Caption = '&Toggle visibility.'
-                ImageIndex = 23
-                ImageName = 'VisibilityOn'
-              end
-              item
-                Action = Session_ToggleLock
-                Caption = '&Lock/Unlock'
-                ImageIndex = 21
-                ImageName = 'Lock'
-                ShortCut = 16460
-              end
-              item
-                Action = Session_New
-                Caption = '&New Session...'
-                ImageIndex = 20
-                ImageName = 'New'
-                ShortCut = 16429
-              end
-              item
-                Action = Session_Edit
-                Caption = '&Edit Session ...'
-                ImageIndex = 45
-                ImageName = 'Edit'
-              end
-              item
-                Action = Session_Delete
-                Caption = '&Delete Session...'
-                ImageIndex = 19
-                ImageName = 'Delete'
-                ShortCut = 16430
-              end
-              item
-                Action = Session_Report
-                Caption = '&Session Report*'
-                ImageIndex = 17
-                ImageName = 'Report'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = Session_Export
-                Caption = 'E&xport Session...'
-                ImageIndex = 46
-                ImageName = 'Export'
-              end
-              item
-                Action = Session_Import
-                Caption = '&Import Session...'
-                ImageIndex = 39
-                ImageName = 'import'
-              end
-              item
-                Action = Session_Clone
-                Caption = '&Clone Session...'
-                ImageIndex = 44
-                ImageName = 'clone'
-              end
-              item
-                Action = Session_Sort
-                Caption = 'S&ort'
-                ImageIndex = 8
-                ImageName = 'Sync'
-              end>
-            Caption = 'S&ession'
-          end
-          item
-            Items = <
-              item
-                Action = Event_ToggleGridView
-                Caption = '&Toggle grid view.'
-                ImageIndex = 16
-                ImageName = 'GridOn'
-              end
-              item
-                Action = Event_MoveUp
-                Caption = '&Move Up'
-                ImageIndex = 12
-                ImageName = 'Up'
-                ShortCut = 16422
-              end
-              item
-                Action = Event_MoveDown
-                Caption = 'M&ove Down'
-                ImageIndex = 13
-                ImageName = 'Down'
-                ShortCut = 16424
-              end
-              item
-                Action = Event_NewRecord
-                Caption = '&New Event'
-                ImageIndex = 20
-                ImageName = 'New'
-                ShortCut = 16429
-              end
-              item
-                Action = Event_Delete
-                Caption = '&Delete Event'
-                ImageIndex = 19
-                ImageName = 'Delete'
-                ShortCut = 16430
-              end
-              item
-                Action = Event_Report
-                Caption = '&Event Report*'
-                ImageIndex = 17
-                ImageName = 'Report'
-              end
-              item
-                Action = Event_BuildFinals
-                Caption = '&Build event finals ...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Event_BuildSemiFinals
-                Caption = 'B&uild event semi-finals ...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Event_BuildQuarterFinals
-                Caption = 'Bu&ild event quarter-finals ...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Event_Renumber
-                Caption = '&Renumber Lanes...'
-                ImageIndex = 7
-                ImageName = 'Cycle'
-              end
-              item
-                Action = Event_AutoSchedule
-                Caption = '&Auto Schedule...'
-                ImageIndex = 47
-                ImageName = 'TimeAuto'
-              end>
-            Caption = 'E&vents'
-          end
-          item
-            Items = <
-              item
-                Action = Nominate_SortMembers
-                Caption = '&Sort on Name'
-                ImageIndex = 11
-                ImageName = 'Switch'
-              end
-              item
-                Action = Nominate_Report
-                Caption = '&Nominate Report*'
-                ImageIndex = 17
-                ImageName = 'Report'
-              end
-              item
-                Action = Nominate_GotoMemberDetails
-                Caption = '&Member'#39's Details...'
-                ImageIndex = 1
-                ImageName = 'Members'
-              end
-              item
-                Action = Nominate_MemberDetails
-                Caption = 'M&ember'#39's Details...'
-                ImageIndex = 1
-                ImageName = 'Members'
-              end
-              item
-                Visible = False
-                Action = Nominate_ClearEventNominations
-                ImageIndex = 19
-                ImageName = 'Delete'
-              end
-              item
-                Visible = False
-                Action = Nominate_ClearSessionNominations
-                ImageIndex = 19
-                ImageName = 'Delete'
-              end>
-            Caption = '&Nominate'
-          end
-          item
-            Items = <
-              item
-                Action = Heat_MoveUp
-                Caption = '&Move Up'
-                ImageIndex = 12
-                ImageName = 'Up'
-                ShortCut = 16422
-              end
-              item
-                Action = Heat_MoveDown
-                Caption = 'M&ove Down'
-                ImageIndex = 13
-                ImageName = 'Down'
-                ShortCut = 16424
-              end
-              item
-                Action = Heat_ToggleStatus
-                Caption = '&Toggle Heat Status'
-                ImageIndex = 36
-                ImageName = 'HeatStatusToggle'
-                ShortCut = 16468
-              end
-              item
-                Action = Heat_NewRecord
-                Caption = '&New Heat...'
-                ImageIndex = 20
-                ImageName = 'New'
-                ShortCut = 16429
-              end
-              item
-                Action = Heat_Delete
-                Caption = '&Delete Heat...'
-                ImageIndex = 19
-                ImageName = 'Delete'
-                ShortCut = 16430
-              end
-              item
-                Action = Heat_AutoBuild
-                Caption = '&AutoBuild Heats...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Heat_MarshallReport
-                Caption = 'Ma&rshall sheet*'
-                ImageIndex = 4
-                ImageName = 'Marshall'
-              end
-              item
-                Action = Heat_TimeKeeperReport
-                Caption = 'T&ime Keeper sheet*'
-                ImageIndex = 5
-                ImageName = 'TimeKeeper'
-              end
-              item
-                Action = Heat_PrintSet
-                Caption = '&Print Set'
-                ImageIndex = 3
-                ImageName = 'BatchPrint'
-              end
-              item
-                Action = Heat_Report
-                Caption = '&Heat Report*'
-                ImageIndex = 17
-                ImageName = 'Report'
-              end
-              item
-                Action = Heat_BatchBuildHeats
-                Caption = '&Build ALL Heats...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Heat_BatchMarshallReport
-                Caption = 'Print A&LL Marshall Reports...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Heat_BatchTimeKeeperReport
-                Caption = 'Print ALL Tim&ekeeper Reports...'
-                ImageIndex = 6
-                ImageName = 'AutoBuild'
-              end
-              item
-                Visible = False
-                Action = Heat_Renumber
-                ImageIndex = 7
-                ImageName = 'Cycle'
-              end>
-            Caption = '&Heats'
-          end
-          item
-            Items = <
-              item
-                Action = Lane_MoveUp
-                Caption = '&Move Up'
-                ImageIndex = 12
-                ImageName = 'Up'
-                ShortCut = 16422
-              end
-              item
-                Action = Lane_MoveDown
-                Caption = 'M&ove Down'
-                ImageIndex = 13
-                ImageName = 'Down'
-                ShortCut = 16424
-              end
-              item
-                Action = Lane_SwapLanes
-                Caption = '&Swap Lanes...'
-                ImageIndex = 10
-                ImageName = 'Shuffle'
-              end
-              item
-                Action = Lane_EmptyLane
-                Caption = '&Empty Lane'
-                ImageIndex = 19
-                ImageName = 'Delete'
-                ShortCut = 16472
-              end
-              item
-                Action = Lane_Strike
-                Caption = 'S&trike Entrant'
-                ImageIndex = 18
-                ImageName = 'DeleteForever'
-                ShortCut = 16430
-              end
-              item
-                Action = Lane_Renumber
-                Caption = '&Renumber Lanes'
-                ImageIndex = 37
-                ImageName = 'Sort'
-              end>
-            Caption = '&Lanes'
-          end
-          item
-            Items = <
-              item
-                Action = actnClearSlot
-                Caption = '&Empty Slot'
-                ImageIndex = 19
-                ImageName = 'Delete'
-              end
-              item
-                Action = actnStrikeSlot
-                Caption = '&Strike Slot'
-                ImageIndex = 18
-                ImageName = 'DeleteForever'
-              end
-              item
-                Action = actnAddSlot
-                Caption = '&Add Slot'
-                ImageIndex = 48
-                ImageName = 'add'
-              end
-              item
-                Action = actnRemoveSlot
-                Caption = '&Remove Slot'
-                ImageIndex = 49
-                ImageName = 'remove'
-              end
-              item
-                Action = actnMoveUpSlot
-                Caption = '&Move Up'
-                ImageIndex = 12
-                ImageName = 'Up'
-              end
-              item
-                Action = actnMoveDownSlot
-                Caption = 'M&ove Down'
-                ImageIndex = 13
-                ImageName = 'Down'
-              end>
-            Caption = '&Teams'
-          end
-          item
-            Items = <
-              item
-                Action = Members_Manage
-                Caption = '&Manage Members...'
-                ImageIndex = 1
-                ImageName = 'Members'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = Members_Export
-                Caption = '&Export Members...'
-                ImageIndex = 46
-                ImageName = 'Export'
-              end
-              item
-                Action = Members_Import
-                Caption = '&Import Members...'
-                ImageIndex = 39
-                ImageName = 'import'
-              end>
-            Caption = '&Members'
-            ImageIndex = 1
-            ImageName = 'Members'
-          end
-          item
-            Items = <
-              item
-                Action = Tools_Preferences
-                Caption = '&Preferences...'
-                ImageIndex = 40
-                ImageName = 'settings'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = Tools_QualifyTimes
-                Caption = '&Qualify Times...'
-              end
-              item
-                Action = Tools_Swimmercategory
-                Caption = '&Swimmer Categories...'
-              end
-              item
-                Action = Tools_House
-                Caption = '&House...'
-              end
-              item
-                Action = Tools_Score
-                Caption = 'S&core, Place, Points...'
-              end
-              item
-                Action = Tools_Divisions
-                Caption = '&Divisions...'
-              end
-              item
-                Action = Tools_LeaderBoard
-                Caption = '&LeaderBoard...'
-              end
-              item
-                Action = Tools_DisqualifyCodes
-                Caption = 'D&isqualification Codes...'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = Tools_FireDAC
-                Caption = '&FireDAC Connection Manager...'
-                ImageIndex = 29
-                ImageName = 'Connection'
-              end>
-            Caption = 'T&ools'
-            ImageIndex = 40
-            ImageName = 'settings'
-          end
-          item
-            Items = <
-              item
-                Action = Help_About
-                Caption = '&About...'
-                ImageIndex = 43
-                ImageName = 'info'
-              end
-              item
-                Action = Help_LocalHelp
-                Caption = '&Help...'
-                ImageIndex = 42
-                ImageName = 'Help'
-              end
-              item
-                Action = Help_OnlineHelp
-                Caption = '&Online Help...'
-                ImageIndex = 42
-                ImageName = 'Help'
-              end
-              item
-                Action = Help_Website
-                Caption = '&SCM Homepage...'
-                ImageIndex = 41
-                ImageName = 'home'
-              end>
-            Caption = 'Hel&p'
-            ImageIndex = 42
-            ImageName = 'Help'
-          end>
-        ActionBar = actnMainMenuBar
-      end>
-    Images = IMG.imglstPNGMenuBar
-    Left = 560
-    Top = 192
-    StyleName = 'Platform Default'
-    object Help_About: TAction
-      Category = 'Help'
-      Caption = 'About...'
-      ImageIndex = 43
-      ImageName = 'info'
-    end
-    object File_Connection: TAction
-      Category = 'File'
-      Caption = 'Manage Connection...'
-      ImageIndex = 29
-      ImageName = 'Connection'
-      OnExecute = File_ConnectionExecute
-      OnUpdate = File_ConnectionUpdate
-    end
-    object File_ExportCarnival: TAction
-      Category = 'File'
-      Caption = 'Export CarnivalMeet...'
-      Enabled = False
-      ImageIndex = 46
-      ImageName = 'Export'
-    end
-    object File_ImportCarnival: TAction
-      Category = 'File'
-      Caption = 'Import CarnivalMeet...'
-      Enabled = False
-      ImageIndex = 39
-      ImageName = 'import'
-    end
-    object File_Exit: TAction
-      Category = 'File'
-      Caption = 'Exit'
-      ImageIndex = 38
-      ImageName = 'Exit'
-    end
-    object Session_ToggleVisible: TAction
-      Category = 'Session'
-      Caption = 'Toggle visibility.'
-      GroupIndex = 1
-      Hint = 'Show, hide the visibility of locked sessions.'
-      ImageIndex = 23
-      ImageName = 'VisibilityOn'
-    end
-    object Session_ToggleLock: TAction
-      Category = 'Session'
-      Caption = 'Lock/Unlock'
-      Hint = 'Toggle the session status.'
-      ImageIndex = 21
-      ImageName = 'Lock'
-      ShortCut = 16460
-    end
-    object Session_New: TAction
-      Category = 'Session'
-      Caption = 'New Session...'
-      Hint = 'Create a new session.'
-      ImageIndex = 20
-      ImageName = 'New'
-      ShortCut = 16429
-    end
-    object Session_Edit: TAction
-      Category = 'Session'
-      Caption = 'Edit Session ...'
-      ImageIndex = 45
-      ImageName = 'Edit'
-    end
-    object Session_Delete: TAction
-      Category = 'Session'
-      Caption = 'Delete Session...'
-      Hint = 'Delete the current selected session.'
-      ImageIndex = 19
-      ImageName = 'Delete'
-      ShortCut = 16430
-    end
-    object Session_Report: TAction
-      Category = 'Session'
-      Caption = 'Session Report*'
-      Hint = 'Display the session report.'
-      ImageIndex = 17
-      ImageName = 'Report'
-    end
-    object Session_Export: TAction
-      Category = 'Session'
-      Caption = 'Export Session...'
-      Enabled = False
-      ImageIndex = 46
-      ImageName = 'Export'
-    end
-    object Nominate_SortMembers: TAction
-      Category = 'Nominate'
-      Caption = 'Sort on Name'
-      Hint = 'Sort on member'#39's name.'
-      ImageIndex = 11
-      ImageName = 'Switch'
-    end
-    object Nominate_Report: TAction
-      Category = 'Nominate'
-      Caption = 'Nominate Report*'
-      Hint = 'Display a nominee'#39's report.'
-      ImageIndex = 17
-      ImageName = 'Report'
-    end
-    object Event_ToggleGridView: TAction
-      Category = 'Events'
-      Caption = 'Toggle grid view.'
-      Hint = 'Toggle grid. Expand or collapse it'#39's view.'
-      ImageIndex = 16
-      ImageName = 'GridOn'
-    end
-    object Event_MoveUp: TAction
-      Category = 'Events'
-      Caption = 'Move Up'
-      Hint = 'Move the event up.'
-      ImageIndex = 12
-      ImageName = 'Up'
-      ShortCut = 16422
-    end
-    object Event_MoveDown: TAction
-      Category = 'Events'
-      Caption = 'Move Down'
-      Hint = 'Move the event down.'
-      ImageIndex = 13
-      ImageName = 'Down'
-      ShortCut = 16424
-    end
-    object Tools_Preferences: TAction
-      Category = 'Tools'
-      Caption = 'Preferences...'
-    end
-    object Tools_QualifyTimes: TAction
-      Category = 'Tools'
-      Caption = 'Qualify Times...'
-    end
-    object Event_NewRecord: TAction
-      Category = 'Events'
-      Caption = 'New Event'
-      Hint = 'Create a new event.'
-      ImageIndex = 20
-      ImageName = 'New'
-      ShortCut = 16429
-    end
-    object Event_Delete: TAction
-      Category = 'Events'
-      Caption = 'Delete Event'
-      Hint = 'Delete the selected event.'
-      ImageIndex = 19
-      ImageName = 'Delete'
-      ShortCut = 16430
-    end
-    object Event_Report: TAction
-      Category = 'Events'
-      Caption = 'Event Report*'
-      Hint = 'Display the event report.'
-      ImageIndex = 17
-      ImageName = 'Report'
-    end
-    object Lane_MoveUp: TAction
-      Category = 'Lanes'
-      Caption = 'Move Up'
-      Hint = 'Move the entrant up a lane.'
-      ImageIndex = 12
-      ImageName = 'Up'
-      ShortCut = 16422
-    end
-    object Lane_MoveDown: TAction
-      Category = 'Lanes'
-      Caption = 'Move Down'
-      Hint = 'Move the entrant down a lane.'
-      ImageIndex = 13
-      ImageName = 'Down'
-      ShortCut = 16424
-    end
-    object Lane_SwapLanes: TAction
-      Category = 'Lanes'
-      Caption = 'Swap Lanes...'
-      Hint = 'Opens the swap lanes dialogue.'
-      ImageIndex = 10
-      ImageName = 'Shuffle'
-    end
-    object Lane_EmptyLane: TAction
-      Category = 'Lanes'
-      Caption = 'Empty Lane'
-      Hint = 'Empty the lane. Members remain nominated.'
-      ImageIndex = 19
-      ImageName = 'Delete'
-      ShortCut = 16472
-    end
-    object Lane_Strike: TAction
-      Category = 'Lanes'
-      Caption = 'Strike Entrant'
-      Hint = 'Remove nomination and empty the lane.'
-      ImageIndex = 18
-      ImageName = 'DeleteForever'
-      ShortCut = 16430
-    end
-    object Nominate_GotoMemberDetails: TAction
-      Category = 'Nominate'
-      Caption = 'Member'#39's Details...'
-      Hint = 'Show the selected member'#39's details.'
-      ImageIndex = 1
-      ImageName = 'Members'
-    end
-    object Lane_Renumber: TAction
-      Category = 'Lanes'
-      Caption = 'Renumber Lanes'
-      Hint = 'Sort lane placements. '
-      ImageIndex = 37
-      ImageName = 'Sort'
-    end
-    object Heat_MoveUp: TAction
-      Category = 'Heats'
-      Caption = 'Move Up'
-      Hint = 'Move the heat up the stack.'
-      ImageIndex = 12
-      ImageName = 'Up'
-      ShortCut = 16422
-    end
-    object Heat_MoveDown: TAction
-      Category = 'Heats'
-      Caption = 'Move Down'
-      Hint = 'Move the heat down the stack.'
-      ImageIndex = 13
-      ImageName = 'Down'
-      ShortCut = 16424
-    end
-    object Heat_ToggleStatus: TAction
-      Category = 'Heats'
-      Caption = 'Toggle Heat Status'
-      Hint = 'Toggle the heat status'
-      ImageIndex = 36
-      ImageName = 'HeatStatusToggle'
-      ShortCut = 16468
-    end
-    object Heat_NewRecord: TAction
-      Category = 'Heats'
-      Caption = 'New Heat...'
-      Hint = 'Create a new heat'
-      ImageIndex = 20
-      ImageName = 'New'
-      ShortCut = 16429
-    end
-    object SCM_Refresh: TAction
-      Category = 'SCM'
-      Caption = 'Refresh'
-      Hint = 'Refresh'
-      ImageIndex = 2
-      ImageName = 'Refresh'
-    end
-    object Heat_Delete: TAction
-      Category = 'Heats'
-      Caption = 'Delete Heat...'
-      Hint = 'Delete the selected heat.'
-      ImageIndex = 19
-      ImageName = 'Delete'
-      ShortCut = 16430
-    end
-    object Heat_AutoBuild: TAction
-      Category = 'Heats'
-      Caption = 'AutoBuild Heats...'
-      Hint = 'Auto-build heats.'
-      ImageIndex = 6
-      ImageName = 'AutoBuild'
-    end
-    object Heat_MarshallReport: TAction
-      Category = 'Heats'
-      Caption = 'Marshall sheet*'
-      Hint = 'Display a marshall'#39's sheet for all heats.'
-      ImageIndex = 4
-      ImageName = 'Marshall'
-    end
-    object Heat_TimeKeeperReport: TAction
-      Category = 'Heats'
-      Caption = 'Time Keeper sheet*'
-      Hint = 'Display a timekeeper'#39's sheet for the selected heat.'
-      ImageIndex = 5
-      ImageName = 'TimeKeeper'
-    end
-    object Tools_Swimmercategory: TAction
-      Category = 'Tools'
-      Caption = 'Swimmer Categories...'
-    end
-    object Heat_PrintSet: TAction
-      Category = 'Heats'
-      Caption = 'Print Set'
-      Hint = 'Print all sheets (marshall and timekeepers).'
-      ImageIndex = 3
-      ImageName = 'BatchPrint'
-    end
-    object Heat_Report: TAction
-      Category = 'Heats'
-      Caption = 'Heat Report*'
-      Hint = 'Display a heat report.'
-      ImageIndex = 17
-      ImageName = 'Report'
-    end
-    object Tools_House: TAction
-      Category = 'Tools'
-      Caption = 'House...'
-    end
-    object Nominate_MemberDetails: TAction
-      Category = 'Nominate'
-      Caption = 'Member'#39's Details...'
-      Hint = 'Show the selected member'#39's details.'
-      ImageIndex = 1
-      ImageName = 'Members'
-    end
-    object Nominate_ClearEventNominations: TAction
-      Category = 'Nominate'
-      Caption = 'Clear event nominations... '
-      Enabled = False
-      ImageIndex = 19
-      ImageName = 'Delete'
-      Visible = False
-    end
-    object Nominate_ClearSessionNominations: TAction
-      Category = 'Nominate'
-      Caption = 'Clear session nominations...'
-      Enabled = False
-      ImageIndex = 19
-      ImageName = 'Delete'
-      Visible = False
-    end
-    object Event_BuildFinals: TAction
-      Category = 'Events'
-      Caption = 'Build event finals ...'
-      ImageIndex = 6
-      ImageName = 'AutoBuild'
-    end
-    object Event_BuildSemiFinals: TAction
-      Category = 'Events'
-      Caption = 'Build event semi-finals ...'
-      ImageIndex = 6
-      ImageName = 'AutoBuild'
-    end
-    object Event_BuildQuarterFinals: TAction
-      Category = 'Events'
-      Caption = 'Build event quarter-finals ...'
-      ImageIndex = 6
-      ImageName = 'AutoBuild'
-    end
-    object Event_Renumber: TAction
-      Category = 'Events'
-      Caption = 'Renumber Lanes...'
-      Enabled = False
-      ImageIndex = 7
-      ImageName = 'Cycle'
-    end
-    object Heat_BatchBuildHeats: TAction
-      Category = 'Heats'
-      Caption = 'Build ALL Heats...'
-      ImageIndex = 6
-      ImageName = 'AutoBuild'
-    end
-    object Heat_BatchMarshallReport: TAction
-      Category = 'Heats'
-      Caption = 'Print ALL Marshall Reports...'
-      ImageIndex = 6
-      ImageName = 'AutoBuild'
-    end
-    object Heat_BatchTimeKeeperReport: TAction
-      Category = 'Heats'
-      Caption = 'Print ALL Timekeeper Reports...'
-      ImageIndex = 6
-      ImageName = 'AutoBuild'
-    end
-    object Heat_Renumber: TAction
-      Category = 'Heats'
-      Caption = 'Renumber'
-      ImageIndex = 7
-      ImageName = 'Cycle'
-      Visible = False
-    end
-    object Session_Import: TAction
-      Category = 'Session'
-      Caption = 'Import Session...'
-      Enabled = False
-      ImageIndex = 39
-      ImageName = 'import'
-    end
-    object Session_Clone: TAction
-      Category = 'Session'
-      Caption = 'Clone Session...'
-      ImageIndex = 44
-      ImageName = 'clone'
-    end
-    object Session_Sort: TAction
-      Category = 'Session'
-      Caption = 'Sort'
-      ImageIndex = 8
-      ImageName = 'Sync'
-    end
-    object Tools_Score: TAction
-      Category = 'Tools'
-      Caption = 'Score, Place, Points...'
-    end
-    object Tools_Divisions: TAction
-      Category = 'Tools'
-      Caption = 'Divisions...'
-    end
-    object Tools_LeaderBoard: TAction
-      Category = 'Tools'
-      Caption = 'LeaderBoard...'
-    end
-    object SCM_ManageMembers: TAction
-      Category = 'SCM'
-      Caption = 'Manage Members...'
-      Hint = 'Create, edit, delete, stats, reports for your club members.'
-      ImageIndex = 1
-      ImageName = 'Members'
-    end
-    object Help_LocalHelp: TAction
-      Category = 'Help'
-      Caption = 'Help...'
-      ImageIndex = 42
-      ImageName = 'Help'
-    end
-    object Help_OnlineHelp: TAction
-      Category = 'Help'
-      Caption = 'Online Help...'
-      ImageIndex = 42
-      ImageName = 'Help'
-    end
-    object Help_Website: TAction
-      Category = 'Help'
-      Caption = 'SCM Homepage...'
-      ImageIndex = 41
-      ImageName = 'home'
-    end
-    object Tools_DisqualifyCodes: TAction
-      Category = 'Tools'
-      Caption = 'Disqualification Codes...'
-    end
-    object Event_AutoSchedule: TAction
-      Category = 'Events'
-      Caption = 'Auto Schedule...'
-      Hint = 'Auto schedule events. '
-      ImageIndex = 47
-      ImageName = 'TimeAuto'
-    end
-    object SCM_StatusBar: TAction
-      Category = 'SCM'
-      Caption = 'SCM_StatusBar'
-    end
-    object actnClearSlot: TAction
-      Category = 'Teams'
-      Caption = 'Empty Slot'
-      Hint = 'Clear team entrant from slot.'
-      ImageIndex = 19
-      ImageName = 'Delete'
-    end
-    object actnStrikeSlot: TAction
-      Category = 'Teams'
-      Caption = 'Strike Slot'
-      ImageIndex = 18
-      ImageName = 'DeleteForever'
-    end
-    object actnAddSlot: TAction
-      Category = 'Teams'
-      Caption = 'Add Slot'
-      ImageIndex = 48
-      ImageName = 'add'
-    end
-    object actnRemoveSlot: TAction
-      Category = 'Teams'
-      Caption = 'Remove Slot'
-      ImageIndex = 49
-      ImageName = 'remove'
-    end
-    object actnMoveUpSlot: TAction
-      Category = 'Teams'
-      Caption = 'Move Up'
-      ImageIndex = 12
-      ImageName = 'Up'
-    end
-    object actnMoveDownSlot: TAction
-      Category = 'Teams'
-      Caption = 'Move Down'
-      ImageIndex = 13
-      ImageName = 'Down'
-    end
-    object SwimClub_Switch: TAction
-      Category = 'SwimClub'
-      Caption = 'Switch Clubs ...'
-      ImageIndex = 11
-      ImageName = 'Switch'
-      OnExecute = SwimClub_SwitchExecute
-      OnUpdate = GenericActionUpdate
-    end
-    object SwimClub_Manage: TAction
-      Category = 'SwimClub'
-      Caption = 'Manage Swim Clubs ...'
-      ImageIndex = 50
-      ImageName = 'folder_managed'
-      OnExecute = SwimClub_ManageExecute
-      OnUpdate = GenericActionUpdate
-    end
-    object Tools_FireDAC: TAction
-      Category = 'Tools'
-      Caption = 'FireDAC Connection Manager...'
-      ImageIndex = 29
-      ImageName = 'Connection'
-    end
-    object Members_Manage: TAction
-      Category = 'Members'
-      Caption = 'Manage Members...'
-      ImageIndex = 1
-      ImageName = 'Members'
-    end
-    object Members_Export: TAction
-      Category = 'Members'
-      Caption = 'Export Members...'
-      ImageIndex = 46
-      ImageName = 'Export'
-    end
-    object Members_Import: TAction
-      Category = 'Members'
-      Caption = 'Import Members...'
-      ImageIndex = 39
-      ImageName = 'import'
+      OnClick = btnOkClick
     end
   end
 end

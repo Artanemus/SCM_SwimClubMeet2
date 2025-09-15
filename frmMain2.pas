@@ -9,13 +9,15 @@ uses
 
   Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.DBCtrls,
-  Vcl.TitleBarCtrls,
+  Vcl.TitleBarCtrls,  Vcl.ExtCtrls, Vcl.ComCtrls,
   Vcl.ActnList,
   Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan, Vcl.ToolWin, Vcl.ActnCtrls,
   Vcl.ActnMenus, Vcl.BaseImageCollection,
   Vcl.ImageCollection,  Vcl.ImgList, Vcl.VirtualImageList,
 
-  dmSCM2, dmIMG, dmCore
+  FireDAC.Stan.Option,
+
+  dmSCM2, dmIMG, dmCore,  uSettings, uSwimClub
 
   ;
 
@@ -24,12 +26,8 @@ type
     pnlTitleBar: TTitleBarPanel;
     DBTextClubName: TDBText;
     DBTextNickName: TDBText;
-    actnMenuBar: TActionMainMenuBar;
-    CollectionMenuBar: TImageCollection;
-    ImageListMenuBar: TVirtualImageList;
     actnManager: TActionManager;
     Help_About: TAction;
-    File_ExportSession: TAction;
     File_ExportCarnival: TAction;
     File_ImportCarnival: TAction;
     File_Exit: TAction;
@@ -49,13 +47,13 @@ type
     Event_NewRecord: TAction;
     Event_Delete: TAction;
     Event_Report: TAction;
-    Grid_MoveUp: TAction;
-    Grid_MoveDown: TAction;
-    Grid_SwapLanes: TAction;
-    Grid_EmptyLane: TAction;
-    Grid_Strike: TAction;
+    Lane_MoveUp: TAction;
+    Lane_MoveDown: TAction;
+    Lane_SwapLanes: TAction;
+    Lane_EmptyLane: TAction;
+    Lane_Strike: TAction;
     Nominate_GotoMemberDetails: TAction;
-    Grid_Renumber: TAction;
+    Lane_Renumber: TAction;
     Heat_MoveUp: TAction;
     Heat_MoveDown: TAction;
     Heat_ToggleStatus: TAction;
@@ -87,7 +85,6 @@ type
     Tools_Divisions: TAction;
     Tools_LeaderBoard: TAction;
     Tools_Preferences: TAction;
-    Tools_ConnectionManager: TAction;
     SCM_ManageMembers: TAction;
     Help_LocalHelp: TAction;
     Help_OnlineHelp: TAction;
@@ -103,7 +100,33 @@ type
     actnMoveDownSlot: TAction;
     SwimClub_Switch: TAction;
     SwimClub_Manage: TAction;
+    actnMainMenuBar: TActionMainMenuBar;
+    File_Connection: TAction;
+    Tools_FireDAC: TAction;
+    Members_Export: TAction;
+    Members_Import: TAction;
+    Members_Manage: TAction;
+    StatusBar: TStatusBar;
+    PageControl: TPageControl;
+    pnlDebug: TPanel;
+    btnDebugFocus: TButton;
+    lblDebugRW: TLabel;
+    tabSession: TTabSheet;
+    tabNominate: TTabSheet;
+    tabHeats: TTabSheet;
+    procedure btnDebugFocusClick(Sender: TObject);
+    procedure File_ConnectionExecute(Sender: TObject);
+    procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure pnlTitleBarCustomButtons0Click(Sender: TObject);
+    procedure pnlTitleBarCustomButtons0Paint(Sender: TObject);
+    procedure pnlTitleBarCustomButtons1Click(Sender: TObject);
+    procedure pnlTitleBarCustomButtons1Paint(Sender: TObject);
+    procedure pnlTitleBarPaint(Sender: TObject; Canvas: TCanvas; var ARect: TRect);
+    procedure GenericActionUpdate(Sender: TObject);
+    procedure SwimClub_ManageExecute(Sender: TObject);
+    procedure SwimClub_SwitchExecute(Sender: TObject);
   private
     { Private declarations }
   public
@@ -117,27 +140,100 @@ implementation
 
 {$R *.dfm}
 
+uses
+  dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin;
+
+
+
+procedure TMain2.btnDebugFocusClick(Sender: TObject);
+begin
+  // DEBUG - clicking the button displays RW state for SwimClub table.
+  if CORE.IsActive then
+  begin
+    if CORE.qrySwimClub.UpdateOptions.ReadOnly then
+      lblDebugRW.Caption := 'SwimClub R'
+    else
+      lblDebugRW.Caption := 'SwimClub RW'
+  end
+  else
+    lblDebugRW.Caption := 'SwimClub ?';
+end;
+
+procedure TMain2.File_ConnectionExecute(Sender: TObject);
+var
+  dlg: TLogin;
+  cState: boolean;
+begin
+  // NOTE: strange title bar colouration.
+
+  // store connection state..
+  cState := SCM2.scmConnection.Connected;
+  // store the current swim club's Primary Key.
+  if CORE.IsActive and Assigned(Settings) then
+    Settings.LastSwimClubPK := uSwimClub.PK;
+
+  dlg := TLogin.Create(Self); // dlg to connect to the SCM DB.
+  {TODO -oBSA -cUI : take grids offline with beginupdate }
+  (*
+    gSession.BeginUpdate;
+    gEvent.BeginUpdate;
+    gMember.BeginUpdate;
+    gHeat.BeginUpdate;
+    gLane.BeginUpdate;
+  *)
+  dlg.ShowModal;
+  dlg.Free;
+
+  // is the state is different and a connection was made?
+  if (cState <> SCM2.scmConnection.Connected) and SCM2.scmConnection.Connected
+    then
+  begin
+    if Assigned(Settings) and (Settings.LastSwimClubPK <> 0) then
+      {TODO -oBSA -cERROR : Can a locate be performed on an empty table?}
+      uSwimClub.Locate(Settings.LastSwimClubPK); // goto the last viewed swim club.
+  end;
+
+  // UI changes needed to track connection state.
+  if SCM2.scmConnection.Connected then
+  begin
+    // Update the TitlePanel dbtext captions and enable custom buttons.
+    pnlTitleBar.CustomButtons[0].Enabled := true;
+    pnlTitleBar.CustomButtons[1].Enabled := true;
+    StatusBar.Panels[0].Text := ' CONNECTED';
+  end
+  else
+  begin
+    pnlTitleBar.CustomButtons[0].Enabled := false;
+    pnlTitleBar.CustomButtons[1].Enabled := false;
+    StatusBar.Panels[0].Text := ' NOT CONNECTED';
+  end;
+
+  {TODO -oBSA -cUI : take grids online with endupdate }
+  (*
+    gSession.EndUpdate;
+    gEvent.EndUpdate;
+    gMember.EndUpdate;
+    gHeat.EndUpdate;
+    gLane.EndUpdate;
+  *)
+end;
+
+procedure TMain2.File_ConnectionUpdate(Sender: TObject);
+begin
+  // a connection can be made any time during the app life
+  // but the SCM2 and CORE datamodules MUST be assigned.
+  If Assigned(SCM2) and Assigned(CORE) then TAction(Sender).Enabled := true
+  else TAction(Sender).Enabled := false;
+end;
+
 procedure TMain2.FormCreate(Sender: TObject);
 begin
-  {
-    Sort out the menubar font height - so tiny!
-
-    The font of the MenuItemTextNormal element (or any other) in the style
-    designer has no effect, this is because the Vcl Style Engine simply
-    ignores the font-size and font-name, and just uses the font color defined in
-    the vcl style file.
-
-    S O L U T I O N :
-
-    Define and register a new TActionBarStyleEx descendent and override
-    the DrawText methods of the TCustomMenuItem and TCustomMenuButton
-    classes, using the values of the Screen.MenuFont to draw the menu
-  }
-
+  // Setting font size at design time is ignored.
   Screen.MenuFont.Name := 'Segoe UI Semibold';
   Screen.MenuFont.Size := 12;
 
-  // Auto-Created forms
+  // Database modules IMG, SCM and CORE have been set to AutoCreate
+  // prior to form creation. Kills the app if missing!
   if not Assigned(IMG) then
   begin
     MessageDlg('Error creating IMG data module!', mtError,  [mbOK], 0);
@@ -154,7 +250,116 @@ begin
     Application.Terminate();
   end;
 
+  { A Class that uses JSON to read and write application configuration }
+  Settings := TAppSetting.Create;
+  if Assigned(Settings) then
+  begin
+    // C:Users\<username>\AppData\Roaming\Artanemus\SCM2\SwimClubMeet\scmPref.json
+    // contains mostly preferences assigned in dlgPrefences.
+    if not FileExists(Settings.GetDefaultSettingsFilename()) then
+    begin
+      ForceDirectories(Settings.GetSettingsFolder());
+      Settings.SaveToFile();
+    end;
+    Settings.LoadFromFile();
+  end;
+
+
+  // Checks for default state of data and controls.
+  SCM2.scmConnection.Connected := false;
+  pnlTitleBar.CustomButtons[0].Enabled := false; // title bar Members btn.
+  pnlTitleBar.CustomButtons[1].Enabled := false; // title bar Refresh btn.
+  Caption := 'SwimClubMeet2'; // with no connection... a basic caption.
+
+  StatusBar.Panels[0].Text := ' OFFLINE'; // connection state
+  StatusBar.Panels[1].Text := ''; // nominee count
+  StatusBar.Panels[2].Text := ''; // entrant count
+  StatusBar.Panels[2].Text := ''; // status messages
 
 end;
+
+procedure TMain2.FormShow(Sender: TObject);
+begin
+  if btnDebugFocus.CanFocus then
+    btnDebugFocus.SetFocus;
+end;
+
+procedure TMain2.GenericActionUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and CORE.IsActive then
+    DoEnable := true;
+  TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TMain2.pnlTitleBarCustomButtons0Click(Sender: TObject);
+begin
+  MessageBox(Handle, PChar('Open the Member Management Tool.'),
+    PChar('CustomBar OnClick'), MB_ICONINFORMATION or MB_OK);
+end;
+
+procedure TMain2.pnlTitleBarCustomButtons0Paint(Sender: TObject);
+begin
+  if TSystemTitlebarButton(Sender).Enabled then
+    IMG.imglstTitleBar.Draw(TSystemTitlebarButton(Sender).Canvas, 0, 2, 0)
+  else
+    IMG.imglstTitleBar.Draw(TSystemTitlebarButton(Sender).Canvas, 0, 2, 1);
+end;
+
+procedure TMain2.pnlTitleBarCustomButtons1Click(Sender: TObject);
+begin
+  MessageBox(Handle, PChar('Refresh the database tables.'),
+    PChar('CustomBar OnClick'), MB_ICONINFORMATION or MB_OK);
+end;
+
+procedure TMain2.pnlTitleBarCustomButtons1Paint(Sender: TObject);
+begin
+  if TSystemTitlebarButton(Sender).Enabled then
+    IMG.imglstTitleBar.Draw(TSystemTitlebarButton(Sender).Canvas, 0, 2, 2)
+  else
+    IMG.imglstTitleBar.Draw(TSystemTitlebarButton(Sender).Canvas, 0, 2, 3);
+end;
+
+procedure TMain2.pnlTitleBarPaint(Sender: TObject; Canvas: TCanvas; var ARect:
+  TRect);
+begin
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and CORE.qrySwimClub.Active
+    then
+  begin
+    CustomTitleBar.ShowCaption := false;
+    CustomTitleBar.ShowIcon := false;
+    DBTextClubName.Visible := true;
+    DBTextNickName.Visible := true;
+  end
+  else
+  begin
+    DBTextClubName.Visible := false;
+    DBTextNickName.Visible := false;
+    CustomTitleBar.ShowCaption := true;
+    CustomTitleBar.ShowIcon := true;
+  end;
+  inherited;
+end;
+
+procedure TMain2.SwimClub_ManageExecute(Sender: TObject);
+var
+  dlg: TSwimClubManage;
+begin
+  dlg :=  TSwimClubManage.Create(Self);
+  dlg.ShowModal;
+  dlg.Free;
+end;
+
+procedure TMain2.SwimClub_SwitchExecute(Sender: TObject);
+var
+  dlg: TSwimClubSwitch;
+begin
+  dlg :=  TSwimClubSwitch.Create(Self);
+  dlg.ShowModal;
+  dlg.Free;
+end;
+
 
 end.

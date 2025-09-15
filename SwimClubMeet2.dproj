@@ -74,6 +74,7 @@
         <DCC_UnitSearchPath>$(TMS);$(TMS)\xlsAdapter;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_Locale>3081</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
+        <Custom_Styles>&quot;Windows10 SlateGray|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10SlateGray.vsf&quot;</Custom_Styles>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
         <DCC_UsePackage>vclwinx;DataSnapServer;fmx;vclie;DbxCommonDriver;bindengine;VCLRESTComponents;FireDACCommonODBC;DBXMSSQLDriver;IndyIPCommon;emsclient;appanalytics;IndyProtocols;vclx;Skia.Package.RTL;dbxcds;vcledge;fsADO;FmxTeeUI;DBXFirebirdDriver;FireDACSqliteDriver;DbxClientDriver;soapmidas;TeeUI;dbexpress;inet;TMSXls;vcltouch;FireDACDBXDriver;fmxdae;CustomIPTransport;FireDACMSSQLDriver;IndySystem;fsIBX;ibxbindings;frxTee;vclFireDAC;FireDACCommon;DataSnapServerMidas;FireDACODBCDriver;emsserverresource;fsFD;DelphiAIDeveloper;bindcompdbx;rtl;FireDACMySQLDriver;DBXSqliteDriver;frxDBX;DBXSybaseASEDriver;frx;vclimg;DataSnapFireDAC;inetdbxpress;FireDAC;xmlrtl;ibxpress;dsnap;FireDACDb2Driver;DBXOracleDriver;DBXInformixDriver;vclib;fmxobj;bindcompvclsmp;DataSnapNativeClient;DatasnapConnectorsFreePascal;SVGIconImageList;frxIntIO;SVGIconImageListRestClient;FireDACCommonDriver;IndyIPClient;frxFD;bindcompvclwinx;TMSWiz;bindcompfmx;frxADO;inetdb;ibmonitor;FireDACASADriver;Tee;SVGIconImageListFMX;frxIBX;vclactnband;fmxFireDAC;FireDACInfxDriver;DBXMySQLDriver;VclSmp;DataSnapCommon;fmxase;frxcs;frxIntIOIndy;DBXOdbcDriver;dbrtl;FireDACOracleDriver;Skia.Package.FMX;fsTee;TeeDB;FireDACMSAccDriver;AbbreviaVCLD;DataSnapIndy10ServerTransport;DataSnapConnectors;vcldsnap;DBXInterBaseDriver;fsDB;FireDACMongoDBDriver;FireDACTDataDriver;frxOpenFiltersTemp;Skia.Package.VCL;vcldb;IconFontsImageList;TMSEx;bindcomp;inetstn;IndyCore;RESTBackendComponents;FireDACADSDriver;RESTComponents;IndyIPServer;vcl;dsnapxml;adortl;dsnapcon;DataSnapClient;DataSnapProviderClient;TaurusTLS_RT;DBXDb2Driver;frxe;emsclientfiredac;FireDACPgDriver;FireDACDSDriver;tethering;TMS;bindcompvcl;fs;CloudService;DBXSybaseASADriver;IconFontsImageListFMX;FMXTee;frxDB;soaprtl;soapserver;FireDACIBDriver;$(DCC_UsePackage)</DCC_UsePackage>
@@ -132,24 +133,40 @@
             <Form>Main2</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="dmCORE.pas">
+        <DCCReference Include="JSON\XSuperJSON.pas"/>
+        <DCCReference Include="JSON\XSuperObject.pas"/>
+        <DCCReference Include="TOOLS\scmUtils.pas"/>
+        <DCCReference Include="DATA\dmCORE.pas">
             <Form>CORE</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="dmIMG.pas">
+        <DCCReference Include="DATA\dmIMG.pas">
             <Form>IMG</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="dmSCM2.pas">
+        <DCCReference Include="DATA\dmSCM2.pas">
             <Form>SCM2</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="JSON\XSuperJSON.pas"/>
-        <DCCReference Include="JSON\XSuperObject.pas"/>
-        <DCCReference Include="UTILITY\scmUtils.pas"/>
+        <DCCReference Include="DATA\uDefines.pas"/>
+        <DCCReference Include="DATA\uSettings.pas"/>
+        <DCCReference Include="DIALOGS\SwimClub\dlgSwimClub_Switch.pas">
+            <Form>SwimClubSwitch</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="DIALOGS\dlgLogin.pas">
+            <Form>Login</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="TOOLS\SCMSimpleConnect.pas"/>
+        <DCCReference Include="FRAMES\uSwimClub.pas"/>
+        <DCCReference Include="DIALOGS\SwimClub\dlgSwimClub_Manage.pas">
+            <Form>SwimClubManage</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -22,7 +22,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 320
+    Left = 352
     Top = 144
   end
   object CollectionCore: TSVGIconImageCollection
@@ -2110,7 +2110,7 @@ object IMG: TIMG
         FixedColor = clMediumaquamarine
       end
       item
-        IconName = 'Connect'
+        IconName = 'Data-Connect'
         SVGText = 
           '<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><pat' +
           'h d="M4 4.99992C4 3.99292 4.875 3.24492 5.9 2.77692C7.19833 2.23' +
@@ -2156,6 +2156,167 @@ object IMG: TIMG
           'L14.9696 17.2C15.1535 17.016 15.2567 16.7666 15.2567 16.5065C15.' +
           '2567 16.2464 15.1535 15.9969 14.9696 15.813L13.5266 14.375Z"/></' +
           'svg>'
+      end
+      item
+        IconName = 'archive'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M5 19h14V8H5zm' +
+          '5.55-6v-3h2.91v3H16l-4 4l-4-4z" opacity=".3"/><path fill="curren' +
+          'tColor" d="M16 13h-2.55v-3h-2.9v3H8l4 4zm4.54-7.77l-1.39-1.68C18' +
+          '.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.5' +
+          '7 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-' +
+          '.93-.46-1.27M6.24 5h11.52l.81.97H5.44zM19 19H5V8h14z"/></svg>'
+      end
+      item
+        IconName = 'unknown'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M2 13v-3h9v3zm' +
+          '11 0v-3h9v3z"/></svg>'
+      end
+      item
+        IconName = 'close'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="m11.9 13.5l2.1' +
+          '-2.1l2.1 2.1l1.4-1.4l-2.1-2.1l2.1-2.1l-1.4-1.4L14 8.6l-2.1-2.1l-' +
+          '1.4 1.4l2.1 2.1l-2.1 2.1zM8 18q-.825 0-1.412-.587T6 16V4q0-.825.' +
+          '588-1.412T8 2h12q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 1' +
+          '8zm0-2h12V4H8zm-4 6q-.825 0-1.412-.587T2 20V6h2v14h14v2zM8 4v12z' +
+          '"/></svg>'
+      end
+      item
+        IconName = 'flag'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M5 21V4h9l.4 2' +
+          'H20v10h-7l-.4-2H7v7zm9.65-7H18V8h-5.25l-.4-2H7v6h7.25z"/></svg>'
+      end
+      item
+        IconName = 'folder-managed'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="m17 22l-.3-1.5' +
+          'q-.3-.125-.562-.262T15.6 19.9l-1.45.45l-1-1.7l1.15-1q-.05-.3-.05' +
+          '-.65t.05-.65l-1.15-1l1-1.7l1.45.45q.275-.2.538-.337t.562-.263L17' +
+          ' 12h2l.3 1.5q.3.125.563.263t.537.337l1.45-.45l1 1.7l-1.15 1q.05.' +
+          '3.05.65t-.05.65l1.15 1l-1 1.7l-1.45-.45q-.275.2-.537.338t-.563.2' +
+          '62L19 22zm1-3q.825 0 1.413-.587T20 17t-.587-1.412T18 15t-1.412.5' +
+          '88T16 17t.588 1.413T18 19M4 18V6v4.3v-.3zm0 2q-.825 0-1.412-.587' +
+          'T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T22 8v3.275' +
+          'q-.45-.325-.95-.562T20 10.3V8h-8.825l-2-2H4v12h7.075q.075.525.23' +
+          '8 1.025T11.7 20z"/></svg>'
+      end
+      item
+        IconName = 'folder'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M4 20q-.825 0-' +
+          '1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T' +
+          '22 8v10q0 .825-.587 1.413T20 20zm0-2h16V8h-8.825l-2-2H4zm0 0V6z"' +
+          '/></svg>'
+      end
+      item
+        IconName = 'folder-open'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M4 20q-.825 0-' +
+          '1.412-.587T2 18V6q0-.825.588-1.412T4 4h6l2 2h8q.825 0 1.413.588T' +
+          '22 8H11.175l-2-2H4v12l2.4-8h17.1l-2.575 8.575q-.2.65-.737 1.038T' +
+          '19 20zm2.1-2H19l1.8-6H7.9zm0 0l1.8-6zM4 8V6z"/></svg>'
+      end
+      item
+        IconName = 'attach'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M18 15.75q0 2.' +
+          '6-1.825 4.425T11.75 22t-4.425-1.825T5.5 15.75V6.5q0-1.875 1.313-' +
+          '3.187T10 2t3.188 1.313T14.5 6.5v8.75q0 1.15-.8 1.95t-1.95.8t-1.9' +
+          '5-.8t-.8-1.95V6h2v9.25q0 .325.213.538t.537.212t.538-.213t.212-.5' +
+          '37V6.5q-.025-1.05-.737-1.775T10 4t-1.775.725T7.5 6.5v9.25q-.025 ' +
+          '1.775 1.225 3.013T11.75 20q1.75 0 2.975-1.237T16 15.75V6h2z"/></' +
+          'svg>'
+      end
+      item
+        IconName = 'file-map'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M5 21q-.825 0-' +
+          '1.412-.587T3 19V5q0-.825.588-1.412T5 3h14q.825 0 1.413.588T21 5v' +
+          '14q0 .825-.587 1.413T19 21zm7-3q2.425-2.05 3.613-3.812t1.187-3.2' +
+          '63q0-2.275-1.45-3.6T12 6T8.65 7.325t-1.45 3.6q0 1.5 1.188 3.263T' +
+          '12 18m0-5.75q-.525 0-.888-.363T10.75 11t.363-.888T12 9.75t.888.3' +
+          '63t.362.887t-.363.888t-.887.362"/></svg>'
+      end
+      item
+        IconName = 'group'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M6 16q-.825 0-' +
+          '1.412-.587T4 14t.588-1.412T6 12t1.413.588T8 14t-.587 1.413T6 16m' +
+          '12 0q-.825 0-1.412-.587T16 14t.588-1.412T18 12t1.413.588T20 14t-' +
+          '.587 1.413T18 16m-6-1q-1.05 0-1.775-.725T9.5 12.5t.725-1.775T12 ' +
+          '10t1.775.725t.725 1.775t-.725 1.775T12 15m-4.9 6q.35-1.725 1.713' +
+          '-2.863T12 17t3.188 1.138T16.9 21zM2 21q0-1.65 1.175-2.825T6 17q.' +
+          '425 0 .8.075t.725.225q-.75.725-1.25 1.663T5.6 21zm16.4 0q-.175-1' +
+          '.1-.675-2.037t-1.25-1.663q.35-.15.725-.225T18 17q1.65 0 2.825 1.' +
+          '175T22 21zM2.2 12L1 10.4L12 2l4 3.05V3h3v4.35l4 3.05l-1.2 1.6L12' +
+          ' 4.525z"/></svg>'
+      end
+      item
+        IconName = 'house-shield'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M12 22q-3.475-' +
+          '.875-5.738-3.988T4 11.1V5l8-3l8 3v6.1q0 3.8-2.262 6.913T12 22m0-' +
+          '12.475l-5.6 4.35q.475 1.575 1.4 2.863T10 18.9V15h4v3.9q1.275-.87' +
+          '5 2.2-2.162t1.4-2.863zm0-5.4l-6 2.25V11.1q0 .125.013.275t.012.27' +
+          '5L12 7l5.975 4.65q0-.125.013-.275T18 11.1V6.375z"/></svg>'
+      end
+      item
+        IconName = 'house'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 16 16"><path fill="currentColor" d="M8.707 1.5a1 1' +
+          ' 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1' +
+          '.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 ' +
+          '0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.2' +
+          '93zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z' +
+          '"/></svg>'
+      end
+      item
+        IconName = 'houses'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 16 16"><path fill="currentColor" d="M5.793 1a1 1 0' +
+          ' 0 1 1.414 0l.647.646a.5.5 0 1 1-.708.708L6.5 1.707L2 6.207V12.5' +
+          'a.5.5 0 0 0 .5.5a.5.5 0 0 1 0 1A1.5 1.5 0 0 1 1 12.5V7.207l-.146' +
+          '.147a.5.5 0 0 1-.708-.708zm3 1a1 1 0 0 1 1.414 0L12 3.793V2.5a.5' +
+          '.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v3.293l1.854 1.853a.5.5 0 0 1-.7' +
+          '08.708L15 8.207V13.5a1.5 1.5 0 0 1-1.5 1.5h-8A1.5 1.5 0 0 1 4 13' +
+          '.5V8.207l-.146.147a.5.5 0 1 1-.708-.708zm.707.707L5 7.207V13.5a.' +
+          '5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5V7.207z"/></svg>'
+      end
+      item
+        IconName = 'house-gear'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 16 16"><g fill="currentColor"><path d="M7.293 1.5a' +
+          '1 1 0 0 1 1.414 0L11 3.793V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.' +
+          '5v3.293l2.354 2.353a.5.5 0 0 1-.708.708L8 2.207l-5 5V13.5a.5.5 0' +
+          ' 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 2 13.5V8.207l-.646.6' +
+          '47a.5.5 0 1 1-.708-.708z"/><path d="M11.886 9.46c.18-.613 1.048-' +
+          '.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 ' +
+          '1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18' +
+          '.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.5' +
+          '61-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-' +
+          '.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.' +
+          '074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92' +
+          'l-.148-.044c-.613-.181-.613-1.049 0-1.23l.148-.043a.64.64 0 0 0 ' +
+          '.382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.6' +
+          '4 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0a1.5 1.5 0 0 0 3 0"/>' +
+          '</g></svg>'
       end>
     Left = 320
     Top = 8
@@ -4721,7 +4882,7 @@ object IMG: TIMG
           end>
       end
       item
-        Name = 'Connection'
+        Name = 'Data-Connection'
         SourceImages = <
           item
             Image.Data = {
@@ -12434,9 +12595,139 @@ object IMG: TIMG
               81625C28460086625C2846007F8974A9F94EE2D07201160000000049454E44AE
               426082}
           end>
+      end
+      item
+        Name = 'file-map'
+        SourceImages = <
+          item
+            Image.Data = {
+              89504E470D0A1A0A0000000D4948445200000040000000400806000000AA6971
+              DE000002C14944415478DAED9B4D4854511886EFB432A845466DA3552B75E522
+              52ECCF141D770A516850413F546EAA85CCACD48DBA52304525522685DC8D4A52
+              F48369B4AC36D1AA75A24105B552DF8F99D90CCE9C73CF39D7EF1BE7BCF0A0DE
+              7BCEBDDF79E6727FCE5C63419927C65D0077BC00EE02B8E3057017C01D2F80BB
+              00EE8411701A8C816AEEA215F9026E838F2E05DC0323DC230B99073A35EB08A0
+              4F7E8D7B348639A3AA5D47C0E740FE615F285F55B5EB08D8E61E856562C62BBD
+              002FC00B702D600B8C83A5207372FD995D7E1CD48016700B1CD86F0236C065F0
+              5AB3FD4530078EEE070149D067D837017A4B59C079F0D67200E7C09B5214500F
+              3E580E3E973AB0524A021E81214783CFE521182C0501BF40A5E3C1E7B2098E48
+              17D001E62312D00E5E481710F5248BD37A5C0BA0935E7DC402E864582755005D
+              EF931AED8E8145509BFDFB136803EB1A7DE9BE202155C055F05CA3DD6F70386F
+              D9DF5D96ED962B20255540335856B4B91014BE256E0CD4B7CB4DE0A55401F120
+              736817CB75305564DD5345FF56B02055C05DF044D1E614F85664DD7745FF3B60
+              54AA00FA646F6AB49B069D79CB66409746DF09CD7DB008D03D9151AE811BD9DF
+              49DC33CD7E7FC021A9022827C18F907D7473C260DB7B2E6036C85CAAA248CA60
+              DB2C4F833493B3E978F0F480B561D08F45005D0AE38E05A40DB7C93621A2FC5A
+              2A446CBE9E639D123B08FE5B0EBE02FCB3E8CF2AE015B8642960D9721BECB3C2
+              F4E4D66FD8B7C7A2AF18011493592293D91FB1022861A6C86DA7C2450AA0D04C
+              CEAAA20D5D3D5C4DA78B1340390BDE1758D700DE39DE9F3801149AFECA7FA6A7
+              9B9C7404FB122980428FB4B989117A2A9C8C683F62055006B23F1F47B80FD102
+              F6225E8017E005D80928FB1725CBFE5559CA7D30CC3D9A90E9D6A939ECEBF2F4
+              8A5B15F7C814A1C39E5E97D73A6AFD3F4C7017C01D2F80BB00EE7801DC0570C7
+              0BE02E803B3B07E38B41C4373E7A0000000049454E44AE426082}
+          end>
+      end
+      item
+        Name = 'flag'
+        SourceImages = <
+          item
+            Image.Data = {
+              89504E470D0A1A0A0000000D4948445200000040000000400806000000AA6971
+              DE000001434944415478DAEDD8316AC2601C05F004570F11C44DDC7A863A38B8
+              7880D4C1C16E6D770FE06EC7EA1D9CC41B74751017F10C2E1D5ADA973DD0F0E5
+              0BCF7FFEEFC15B0209CF5F20C29726CE93B207B02300F6007604C01EC08E00D8
+              03D811007B003BA1008F68BFC15D07F47CCF004774D0E0AE0DFAE419E082F63C
+              03D4D9D61A800CBD7A06C8D1AD2580E2DA30E0591DF43BF2EF7A46D756008ADC
+              D06E448005FA6E0960878E3D03BCA12BCF000FE8A76780E243380FBCB7EC6367
+              0EA04E7E0520000108400002108000044006889D2CA97622D45A803CA97622D4
+              5A800F74E619A0EAD1786B01AAEEBB1B802FF425F07923745272FD84FEFC736F
+              D98B30F737A813A124EED1B8398022318FC64D02C43C1A370930459791005ED1
+              BD35004A04200001084000021080000420000108C06504C01EC08E00D803D811
+              007B003BEE01FE003E769241343D4AE20000000049454E44AE426082}
+          end>
+      end
+      item
+        Name = 'group'
+        SourceImages = <
+          item
+            Image.Data = {
+              89504E470D0A1A0A0000000D4948445200000040000000400806000000AA6971
+              DE0000056D4944415478DAED5A698C144518FDF0BE155DBC89233F14CF40D623
+              718DF140BCC2A97820C1236B0C6A168977A251A389EB1D8D46133C307870082A
+              1B040F9044C58B8D8262C41FBAAE788046C5FBD6F75235DADBDB5D55DD55B33D
+              C3CC4B5E66BAE7ABFAAADFD4F57DD5FDA4CED1AFE806148D86004537A0683404
+              28D8FF04FDF968BD09B011F808385E5F3F014E04FFAC070106826F833BC4EE7F
+              030E013F5D9F0518093E63B1199D62730178AFA1DC7BE001D52CC03DE0858EB6
+              F7E9075E2F041800BE01EE99B1DC27E021E0DA5A16E048F025CF3A8E0117D7A2
+              003780575B6CEED49F532C763781AB2D02AC04F7AF0601B6019780432D762782
+              0BF4F713C0673DFD56450F38087CCB62F325D80C7E1EBBBF2BD809EE5CAB02B0
+              1BDF61B179186C05FF4EF97D03F001F09C5A126073B043D46465C269E02CC73A
+              4F0567D68200FB889A7C4CF5FC041E087E94B1EE41E00A70CB6A1580DDF4218B
+              CD53A2FEF93F72FAD858544F18534D02B0518F83A758ECCE13359E4380F3C654
+              8BCD3AB04932065459052881CB452D7526703D5E19E8E1CBD84FD4BF6CC2B7A2
+              02AAEE4A0830169C63B159029E04FE1CF8E1CBD8029C2F6A87690287CCD3A104
+              E0D274BFA82E6DC2A5E0ED157AF0382E016FB3D8B0CD937C05D8095C06EE6EB1
+              63D062DB0085C6C1E09B169B6EDDB635790438167CDEE2E01D51DD715D1F3F7C
+              19DB8A1A76432C76C3C04559046807AFB0547A23784D410F1E874BE0C567BACA
+              26C076E0CB628FAA8E16FF3097C1D2BEFAFBFBA2D2643E384A54D86CC2BBE011
+              E0774902306161DBAD7D0C1E0A7EE5D1D036F0AE94DF2683777BD4ED9A7C19A4
+              9FA587001B8ACABE6C9F5288B1F8451E8D231682C7596C9E038FF7F4634ABF31
+              F9BA23F8575C00620FB02BA11093991D9E8DE2BFDEE668CB5E30D9D3DF08705E
+              C2FD92A8749B2409408C93FFA3B6AF458DD5D59E8DD92D471D5C7A3FF3F4CB3A
+              38B734E96B4699B3A30669AB00E376EEF9CF12DD553C711D786DC632D7EB72BE
+              E0D0E6210C03B25E7986BCD1E0C5A2969EADF435B7BE5C12D312222F8A3D5F10
+              07D7ED6181FCA722AB0054F37551A9AF2430A5C55522DE6BB89B6CCEE8AB33C1
+              4F5EFFC1046048DA6AB17930C1867981D1197D319889E701F2FA0F2200BBDB0F
+              8EB65B833F46AECF1635AF6401C7EBB440FE8308304A1C434CE97DBEC709F5F7
+              8C026C223D33493EFE8308E092022BE35CE9FD8F7373B3C0B13CCF091606F6EF
+              2D400BF84A06DBA509F75DB2BD69D9E310FEBD0420FE71B433D5BB8BA864C6F8
+              D87DE6199954F9A2C2FEBD0488EE124D364F66ACB730FF793642E78B4A372561
+              92E1B75008EA3FEF4E90DD9847612DFAFA355127BDBE7BF73EF75FF45B6285A3
+              21408E3225514BD561A2C25C825DEF555133B929ECE55E9E41D1705169B701FA
+              3E334C4C57BD202A0832EDE519E272056989F9E7B2C725B6AB520234EB07DCCB
+              60B30A1C9C709FE9752E7D13C40DD3452D896B137EFB00DCDB50F6432D506748
+              016E012FB3D8FC06F6077F89DDBF52D42B2E79C02C6E7BEC1E8FE37904B6A9A5
+              ECADE0E52104E071D85807BBFF128D1ADCFF334B7B78CE872F83BB3F66A1A371
+              814B0297980B9EEC2380CB3F4FC48FC5F82A2CC7F46087B22EE0D0E29C113DF9
+              75391E238C3DC12400C7FC320707BF8AEA965130121B19E8E1CBE848A893C36D
+              3387B24CA024CE092601A8BA69C22B8313DB63916BBE3730DBA15C1EC4939A67
+              8ADB9BE69C181327CE34014AD2733C9B10AD8327C92192A82670298DBE64E51A
+              2071DEE8721580E782ED62C70CF08CC835B3C8D32A2C403C53C457ED4F7728C7
+              D5E86657015CC730B334D1C3074E7C99DFD6CC88F81BA12E6FA08B6EE7285701
+              5CB3B83C9EFE5E7FEF8BEE5F467418F0751D97E3F9A42C73231668085074038A
+              464380A21B50341A0214DD80A251F702FC0B1D4D10502F785647000000004945
+              4E44AE426082}
+          end>
+      end
+      item
+        Name = 'houses'
+        SourceImages = <
+          item
+            Image.Data = {
+              89504E470D0A1A0A0000000D4948445200000040000000400806000000AA6971
+              DE0000023F4944415478DAED9A4B4AC3501486EF45F1B10805D18DB80007A233
+              B5E002ECC0A10EC4811D0ADA05083E668A0317E046144117E1038B9E6B1389B1
+              37B9EF73929E1F7ED2E43E7AFF2FCD296D22C5984B622F005BA9002C64DB27EC
+              C0A901AC81AF4BC7D6C137D8C15300D8019F6ADABAE03E76F89800AAC2938210
+              038049F85C1DF0C588E3C96A466800BAF0DD6C5B6E1B80270BFBC96B46480055
+              E1FB9A3E4500AE3563037CA969DB045FA50060123ED716F82C7BBD0ABE137E35
+              E3AB669C746E8C10DE66BC29045400B1C2EB6AC6A8B9D100C40CDFB7E8830220
+              4578D3BEC901A40C6F32A6AE7E04058011BE6E6C9D8201C00CEF032108000AE1
+              5D217803A014DE058217008AE16D213803A01CDE0682138026843785600DA049
+              E14D205801686278AFF796BE131009EFBC0659E8706200897278A7B5A870EA0F
+              8AF38A09637F55A24250E17C7E4D510C6FB5361F0094C31BAF51855B01DF660D
+              DBE2FFE5203513F8D48C94D29DE01F08D26040B98F6FCDA00240A9E302E0133C
+              D112000306E000C0A5665002A06EC7FDDE977001E0DB1F1B80D4EE300006C000
+              18000360000C8001300006C00018000360000C20D712F8719C00BC82670AFB2F
+              E0E50A08AD037004DE1B715C3DD79B3FDADA6A0053E077CD64E5A7BB5B094069
+              0EFCEC08A0AE66A4D422F8C1058092FA241C8077C5B026E82E01DB9A9132FCBD
+              189ECC5C6FE0595300A6D2D50C8AEA81F74303A8AA19D4340DFE080D40495733
+              28695E0C2FCF3F0A59B1CB358382D4357F0C3E14A5331F034023C500B01780AD
+              B107F00DAA3CF3E36D761EEF0000000049454E44AE426082}
+          end>
       end>
-    Left = 40
-    Top = 488
+    Left = 320
+    Top = 368
   end
   object imglstPNGMenuBar: TVirtualImageList
     Images = <
@@ -12576,29 +12867,29 @@ object IMG: TIMG
         Name = 'Checked'
       end
       item
-        CollectionIndex = 52
-        CollectionName = 'HeatstatusOpen'
-        Name = 'HeatstatusOpen'
+        CollectionIndex = 82
+        CollectionName = 'flag'
+        Name = 'flag'
       end
       item
-        CollectionIndex = 51
-        CollectionName = 'HeatStatusRaced'
-        Name = 'HeatStatusRaced'
+        CollectionIndex = 81
+        CollectionName = 'file-map'
+        Name = 'file-map'
       end
       item
         CollectionIndex = 50
-        CollectionName = 'Connection'
-        Name = 'Connection'
+        CollectionName = 'Data-Connection'
+        Name = 'Data-Connection'
       end
       item
-        CollectionIndex = 55
-        CollectionName = 'HeatStatusOpenActive'
-        Name = 'HeatStatusOpenActive'
+        CollectionIndex = 83
+        CollectionName = 'group'
+        Name = 'group'
       end
       item
-        CollectionIndex = 54
-        CollectionName = 'HeatStatusRacedActive'
-        Name = 'HeatStatusRacedActive'
+        CollectionIndex = 84
+        CollectionName = 'houses'
+        Name = 'houses'
       end
       item
         CollectionIndex = 53
@@ -12703,8 +12994,8 @@ object IMG: TIMG
     ImageCollection = PNGCollection
     Width = 32
     Height = 32
-    Left = 152
-    Top = 488
+    Left = 320
+    Top = 424
   end
   object imgList3: TVirtualImageList
     Images = <
@@ -12716,8 +13007,8 @@ object IMG: TIMG
     ImageCollection = PNGCollection
     Width = 24
     Height = 24
-    Left = 424
-    Top = 504
+    Left = 488
+    Top = 544
   end
   object imgNominate: TVirtualImageList
     Images = <
@@ -12739,8 +13030,8 @@ object IMG: TIMG
     ImageCollection = PNGCollection
     Width = 40
     Height = 40
-    Left = 344
-    Top = 504
+    Left = 408
+    Top = 544
   end
   object imgForm: TVirtualImageList
     Images = <
@@ -12891,7 +13182,7 @@ object IMG: TIMG
       end
       item
         CollectionIndex = 50
-        CollectionName = 'Connection'
+        CollectionName = 'Data-Connection'
         Name = 'HeatStatusClosed'
       end
       item
@@ -12982,8 +13273,8 @@ object IMG: TIMG
     ImageCollection = PNGCollection
     Width = 48
     Height = 48
-    Left = 488
-    Top = 504
+    Left = 552
+    Top = 544
   end
   object imglstHeatStatus: TSVGIconVirtualImageList
     Images = <
@@ -13011,7 +13302,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 440
+    Left = 472
     Top = 128
   end
   object imglstHeatStroke: TSVGIconVirtualImageList
@@ -13050,7 +13341,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 440
+    Left = 472
     Top = 176
   end
   object imglstHeatCntrl: TSVGIconVirtualImageList
@@ -13109,7 +13400,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 440
+    Left = 472
     Top = 80
   end
   object imglstSessCntrl: TSVGIconVirtualImageList
@@ -13183,7 +13474,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 192
+    Left = 224
     Top = 80
   end
   object imglstEventCntrl: TSVGIconVirtualImageList
@@ -13227,7 +13518,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 320
+    Left = 352
     Top = 80
   end
   object imglstMemberCntrl: TSVGIconVirtualImageList
@@ -13246,7 +13537,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 704
+    Left = 736
     Top = 80
   end
   object imglstSessPopupMenu: TSVGIconVirtualImageList
@@ -13317,7 +13608,7 @@ object IMG: TIMG
         Name = 'sort'
       end>
     ImageCollection = CollectionCore
-    Left = 192
+    Left = 224
     Top = 144
   end
   object imglstMiscButtons: TSVGIconVirtualImageList
@@ -13366,7 +13657,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 824
+    Left = 856
     Top = 80
   end
   object imglstLaneCntrl: TSVGIconVirtualImageList
@@ -13425,7 +13716,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 576
+    Left = 608
     Top = 80
   end
   object imglstNomCheckBox: TSVGIconVirtualImageList
@@ -13612,7 +13903,7 @@ object IMG: TIMG
         Name = 'user-check'
       end>
     ImageCollection = CollectionCore
-    Left = 192
+    Left = 224
     Top = 208
   end
   object imglstTitleBar: TSVGIconVirtualImageList
@@ -13787,6 +14078,16 @@ object IMG: TIMG
         CollectionIndex = 30
         CollectionName = 'delete'
         Name = 'delete'
+      end
+      item
+        CollectionIndex = 76
+        CollectionName = 'archive'
+        Name = 'archive'
+      end
+      item
+        CollectionIndex = 58
+        CollectionName = 'cancel-circle'
+        Name = 'cancel-circle'
       end>
     ImageCollection = CollectionCore
     Width = 48
@@ -13794,5 +14095,24 @@ object IMG: TIMG
     Size = 48
     Left = 80
     Top = 80
+  end
+  object imglstSwimClubArchived: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 77
+        CollectionName = 'unknown'
+        Name = 'unknown'
+      end
+      item
+        CollectionIndex = 76
+        CollectionName = 'archive'
+        Name = 'archive'
+      end>
+    ImageCollection = CollectionCore
+    Width = 30
+    Height = 30
+    Size = 30
+    Left = 80
+    Top = 144
   end
 end

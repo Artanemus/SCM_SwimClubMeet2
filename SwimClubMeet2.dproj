@@ -167,6 +167,7 @@
             <Form>SwimClubManage</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="FRAMES\uSession.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

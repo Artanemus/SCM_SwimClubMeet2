@@ -2,10 +2,11 @@ object SwimClubManage: TSwimClubManage
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Manage SwimClubs ...'
+  Caption = 'Manage Swimming Clubs ...'
   ClientHeight = 616
-  ClientWidth = 598
+  ClientWidth = 760
   Color = clBtnFace
+  DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -16
@@ -2676,68 +2677,56 @@ object SwimClubManage: TSwimClubManage
     000000000000000000000000000000000000000000000000000000000000}
   KeyPreview = True
   Position = poOwnerFormCenter
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   TextHeight = 21
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 598
+    Width = 760
     Height = 41
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitLeft = 272
-    ExplicitTop = 96
-    ExplicitWidth = 185
-  end
-  object pnlFooter: TPanel
-    Left = 0
-    Top = 568
-    Width = 598
-    Height = 48
-    Align = alBottom
-    BevelOuter = bvNone
-    TabOrder = 1
-    ExplicitWidth = 624
-    object btnOK: TButton
-      Left = 501
-      Top = 8
-      Width = 75
-      Height = 32
-      Caption = 'OK'
-      TabOrder = 0
-    end
+    ExplicitWidth = 598
   end
   object pnlBody: TPanel
-    Left = 0
+    Left = 764
     Top = 41
-    Width = 464
-    Height = 527
+    Width = 626
+    Height = 575
     Align = alClient
     BevelOuter = bvNone
-    TabOrder = 2
-    ExplicitLeft = 120
-    ExplicitTop = 320
-    ExplicitWidth = 185
-    ExplicitHeight = 41
+    TabOrder = 1
+    ExplicitWidth = 2
     object gSwimClub: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 464
-      Height = 527
+      Width = 626
+      Height = 575
       Cursor = crDefault
       Align = alClient
+      Color = clWhite
       ColCount = 5
       DefaultRowHeight = 60
       DrawingStyle = gdsClassic
       FixedColor = clWhite
       RowCount = 2
       FixedRows = 1
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      Options = [goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
+      ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
-      GridLineColor = 13948116
-      GridFixedLineColor = 11250603
+      OnDblClick = gSwimClubDblClick
+      GridLineColor = 15987699
+      GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
@@ -2751,6 +2740,7 @@ object SwimClubManage: TSwimClubManage
       ControlLook.FixedGradientTo = clWhite
       ControlLook.FixedGradientMirrorFrom = clWhite
       ControlLook.FixedGradientMirrorTo = clWhite
+      ControlLook.FixedGradientHoverFrom = clGray
       ControlLook.FixedGradientHoverTo = clWhite
       ControlLook.FixedGradientHoverMirrorFrom = clWhite
       ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -2796,7 +2786,7 @@ object SwimClubManage: TSwimClubManage
       FixedColWidth = 20
       FixedRowHeight = 30
       FixedFont.Charset = DEFAULT_CHARSET
-      FixedFont.Color = 3881787
+      FixedFont.Color = clBlack
       FixedFont.Height = -16
       FixedFont.Name = 'Tahoma'
       FixedFont.Style = [fsBold]
@@ -2854,7 +2844,7 @@ object SwimClubManage: TSwimClubManage
       AutoRemoveColumns = True
       Columns = <
         item
-          Borders = []
+          Borders = [cbTop]
           BorderPen.Color = clSilver
           ButtonHeight = 18
           CheckFalse = 'N'
@@ -2955,13 +2945,14 @@ object SwimClubManage: TSwimClubManage
           HTMLTemplate = 
             '<FONT size="12"><#Caption></FONT><BR><FONT size="8"></FONT><#Nic' +
             'kName>'
+          Name = 'htmlSwimClub'
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
           PrintFont.Color = clWindowText
           PrintFont.Height = -16
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 231
+          Width = 389
         end
         item
           Borders = []
@@ -2969,27 +2960,28 @@ object SwimClubManage: TSwimClubManage
           ButtonHeight = 18
           CheckFalse = 'N'
           CheckTrue = 'Y'
-          Color = clWindow
+          Color = clWhite
           DataImageField = True
+          FieldName = 'imgIndxArchived'
           Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
+          Font.Color = clBlack
           Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
-          Header = 'Archive'
+          Header = 'Archived'
           HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = clWindowText
+          HeaderFont.Color = clBlack
           HeaderFont.Height = -16
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
-          Images = IMG.imglstNomCheckBox
+          Images = IMG.imglstSwimClubArchived
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
+          PrintFont.Color = clBlack
           PrintFont.Height = -16
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 64
+          Width = 78
         end>
       DataSource = CORE.dsSwimClub
       InvalidPicture.Data = {
@@ -3129,32 +3121,32 @@ object SwimClubManage: TSwimClubManage
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
-      ExplicitWidth = 400
+      ExplicitWidth = 632
+      ExplicitHeight = 527
       ColWidths = (
         20
         46
         64
-        231
-        64)
+        389
+        78)
       RowHeights = (
         30
         60)
     end
   end
   object pnlTools: TPanel
-    Left = 464
+    Left = 0
     Top = 41
     Width = 134
-    Height = 527
-    Align = alRight
+    Height = 575
+    Align = alLeft
     BevelOuter = bvNone
-    TabOrder = 3
-    ExplicitLeft = 400
+    TabOrder = 2
     object actnToolBar: TActionToolBar
       Left = 0
       Top = 0
       Width = 134
-      Height = 527
+      Height = 575
       ActionManager = actnSwimClub
       Align = alClient
       Caption = 'actnToolBar'
@@ -3169,26 +3161,299 @@ object SwimClubManage: TSwimClubManage
       Font.Name = 'Segoe UI'
       Font.Style = []
       ParentFont = False
+      ParentShowHint = False
+      ShowHint = True
       Spacing = 0
-      ExplicitLeft = 427
-      ExplicitTop = 41
-      ExplicitWidth = 107
+    end
+  end
+  object splitvEdit: TSplitView
+    Left = 134
+    Top = 41
+    Width = 630
+    Height = 575
+    AnimationDelay = 40
+    AnimationStep = 100
+    OpenedWidth = 630
+    Placement = svpLeft
+    TabOrder = 3
+    OnClosing = splitvEditClosing
+    OnOpening = splitvEditOpening
+    object pcntrlEdit: TPageControl
+      Left = 0
+      Top = 0
+      Width = 630
+      Height = 575
+      ActivePage = tsMain
+      Align = alClient
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+      object tsMain: TTabSheet
+        Caption = 'Main'
+        ParentShowHint = False
+        ShowHint = True
+        object lblClubName: TLabel
+          Left = 39
+          Top = 80
+          Width = 78
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Club Name'
+        end
+        object lblNickname: TLabel
+          Left = 11
+          Top = 112
+          Width = 106
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Club Nickname'
+        end
+        object lblEmail: TLabel
+          Left = 79
+          Top = 150
+          Width = 38
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Email'
+        end
+        object lblContactNum: TLabel
+          Left = 3
+          Top = 240
+          Width = 115
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Contact Number'
+        end
+        object lblWebSite: TLabel
+          Left = 60
+          Top = 185
+          Width = 57
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'WebSite'
+        end
+        object lblNumOfLanes: TLabel
+          Left = 1
+          Top = 275
+          Width = 116
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Number of lanes'
+        end
+        object lblPoolLength: TLabel
+          Left = 39
+          Top = 310
+          Width = 78
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Pool length'
+        end
+        object lblMeters: TLabel
+          Left = 181
+          Top = 311
+          Width = 51
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Meters.'
+        end
+        object lblSeasonStart: TLabel
+          Left = 24
+          Top = 345
+          Width = 93
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Season Starts'
+        end
+        object lblIsArchived: TLabel
+          Left = 56
+          Top = 385
+          Width = 61
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Archived'
+        end
+        object imgIndxArchive: TSVGIconImage
+          Left = 123
+          Top = 377
+          Width = 43
+          Height = 41
+          Hint = 'Toogle retirement of the club.'
+          AutoSize = False
+          ImageList = IMG.imglstSwimClubArchived
+          ImageIndex = 0
+          ImageName = 'unknown'
+          OnClick = imgIndxArchiveClick
+        end
+        object DBTextPrimaryKey: TDBText
+          Left = 123
+          Top = 32
+          Width = 65
+          Height = 21
+          DataField = 'SwimClubID'
+          DataSource = CORE.dsSwimClub
+        end
+        object lblPrimaryKey: TLabel
+          Left = 102
+          Top = 32
+          Width = 15
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'ID'
+        end
+        object DBClubName: TDBEdit
+          Left = 123
+          Top = 77
+          Width = 387
+          Height = 29
+          DataField = 'Caption'
+          DataSource = CORE.dsSwimClub
+          TabOrder = 0
+        end
+        object DBNickName: TDBEdit
+          Left = 123
+          Top = 112
+          Width = 387
+          Height = 29
+          DataField = 'NickName'
+          DataSource = CORE.dsSwimClub
+          TabOrder = 1
+        end
+        object DBEmail: TDBEdit
+          Left = 123
+          Top = 147
+          Width = 486
+          Height = 29
+          DataField = 'Email'
+          DataSource = CORE.dsSwimClub
+          TabOrder = 2
+        end
+        object DBContactNum: TDBEdit
+          Left = 123
+          Top = 237
+          Width = 166
+          Height = 29
+          Hint = 'Input is Alpha Numerical.'
+          DataField = 'ContactNum'
+          DataSource = CORE.dsSwimClub
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 3
+          TextHint = 'MB 018 018 018'
+        end
+        object DBWebSite: TDBEdit
+          Left = 123
+          Top = 182
+          Width = 486
+          Height = 29
+          DataField = 'WebSite'
+          DataSource = CORE.dsSwimClub
+          TabOrder = 4
+        end
+        object DBEditNumOfLanes: TDBEdit
+          Left = 123
+          Top = 272
+          Width = 56
+          Height = 29
+          DataField = 'NumOfLanes'
+          DataSource = CORE.dsSwimClub
+          TabOrder = 5
+        end
+        object DBPoolLength: TDBEdit
+          Left = 123
+          Top = 307
+          Width = 56
+          Height = 29
+          Hint = 'Fractions of a meter are accepted.'
+          DataField = 'LenOfPool'
+          DataSource = CORE.dsSwimClub
+          TabOrder = 6
+        end
+        object AdvDBDTPicker: TAdvDBDateTimePicker
+          Left = 123
+          Top = 342
+          Width = 166
+          Height = 29
+          Hint = 'Uses the locale short time format.'
+          ParentCustomHint = False
+          Date = 43754.000000000000000000
+          Format = ''
+          Time = 43754.000000000000000000
+          DoubleBuffered = True
+          Kind = dkDate
+          ParentDoubleBuffered = False
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 7
+          BorderStyle = bsSingle
+          Ctl3D = True
+          DateTime = 43754.000000000000000000
+          Version = '1.3.6.0'
+          LabelFont.Charset = DEFAULT_CHARSET
+          LabelFont.Color = clWindowText
+          LabelFont.Height = -12
+          LabelFont.Name = 'Segoe UI'
+          LabelFont.Style = []
+          DataField = 'StartOfSwimSeason'
+          DataSource = CORE.dsSwimClub
+        end
+      end
+      object tsLogo: TTabSheet
+        Caption = 'Logo'
+        ImageIndex = 1
+        object lblLogoHintTxt: TLabel
+          Left = 32
+          Top = 336
+          Width = 306
+          Height = 21
+          Alignment = taCenter
+          AutoSize = False
+          Caption = '(Square formatted images work best.)'
+        end
+        object DBLogo: TDBImage
+          Left = 32
+          Top = 24
+          Width = 306
+          Height = 306
+          DataField = 'LogoImg'
+          DataSource = CORE.dsSwimClub
+          Proportional = True
+          Stretch = True
+          TabOrder = 0
+        end
+        object btnLoadClubLogo: TButton
+          Left = 344
+          Top = 24
+          Width = 101
+          Height = 33
+          Caption = 'Load'
+          TabOrder = 1
+          OnClick = btnLoadClubLogoClick
+        end
+        object btnSaveClubLogo: TButton
+          Left = 344
+          Top = 63
+          Width = 101
+          Height = 33
+          Caption = 'Save'
+          TabOrder = 2
+          OnClick = btnSaveClubLogoClick
+        end
+        object btnClearClubLogo: TButton
+          Left = 344
+          Top = 102
+          Width = 101
+          Height = 33
+          Caption = 'Clear'
+          TabOrder = 3
+          OnClick = btnClearClubLogoClick
+        end
+      end
     end
   end
   object actnSwimClub: TActionManager
     ActionBars = <
       item
         Items = <
-          item
-            Action = actnMoveUp
-            ImageIndex = 0
-            ImageName = 'up'
-          end
-          item
-            Action = actnMoveDown
-            ImageIndex = 1
-            ImageName = 'down'
-          end
           item
             Action = actnEdit
             Caption = '&Edit'
@@ -3206,37 +3471,73 @@ object SwimClubManage: TSwimClubManage
             Caption = '&Delete'
             ImageIndex = 4
             ImageName = 'delete'
+          end
+          item
+            Action = actnArchive
+            Caption = '&Archive'
+            ImageIndex = 5
+            ImageName = 'archive'
+          end
+          item
+            Action = actnClose
+            Caption = 'E&xit'
+            ImageIndex = 6
+            ImageName = 'cancel-circle'
           end>
         ActionBar = actnToolBar
       end>
     Images = IMG.imglstSwimClubCntrl
-    Left = 512
-    Top = 384
+    Left = 48
+    Top = 408
     StyleName = 'Platform Default'
-    object actnMoveUp: TAction
-      Caption = 'Up'
-      ImageIndex = 0
-      ImageName = 'up'
-    end
-    object actnMoveDown: TAction
-      Caption = 'Down'
-      ImageIndex = 1
-      ImageName = 'down'
-    end
     object actnEdit: TAction
+      AutoCheck = True
       Caption = 'Edit'
+      Hint = 'Edit the selected club.'
       ImageIndex = 2
       ImageName = 'edit'
+      OnExecute = actnEditExecute
     end
     object actnNew: TAction
       Caption = 'New'
+      Hint = 'Create a new swimming club.'
       ImageIndex = 3
       ImageName = 'new'
+      OnExecute = actnNewExecute
+      OnUpdate = actnGenericUpdate
     end
     object actnDelete: TAction
       Caption = 'Delete'
+      Hint = 'Delete the club (Tip: best to archive)'
       ImageIndex = 4
       ImageName = 'delete'
+      OnExecute = actnDeleteExecute
+      OnUpdate = actnGenericUpdate
     end
+    object actnArchive: TAction
+      Caption = 'Archive'
+      Hint = 'Retire the club. Archived clubs are hidden, except here.'
+      ImageIndex = 5
+      ImageName = 'archive'
+      OnExecute = actnArchiveExecute
+      OnUpdate = actnGenericUpdate
+    end
+    object actnClose: TAction
+      Caption = 'Exit'
+      Hint = 'Close the dialog. Changes will be saved.'
+      ImageIndex = 6
+      ImageName = 'cancel-circle'
+      OnExecute = actnCloseExecute
+    end
+  end
+  object SaveLogoDlg: TSavePictureDialog
+    Left = 52
+    Top = 473
+  end
+  object OpenLogoDlg: TOpenPictureDialog
+    Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
+    Title = 'Load SCM Club Logo'
+    Left = 53
+    Top = 541
   end
 end

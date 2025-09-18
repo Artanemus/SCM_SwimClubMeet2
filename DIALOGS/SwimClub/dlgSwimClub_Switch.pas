@@ -30,7 +30,7 @@ implementation
 
 procedure TSwimClubSwitch.btnOkClick(Sender: TObject);
 begin
-  ModalResult := mrClose;
+  ModalResult := mrOk;
 end;
 
 procedure TSwimClubSwitch.FormKeyDown(Sender: TObject; var Key: Word; Shift:
@@ -38,7 +38,7 @@ procedure TSwimClubSwitch.FormKeyDown(Sender: TObject; var Key: Word; Shift:
 begin
   if Key = VK_ESCAPE then
   begin
-    ModalResult := mrClose;
+    ModalResult := mrCancel;
   end;
 end;
 

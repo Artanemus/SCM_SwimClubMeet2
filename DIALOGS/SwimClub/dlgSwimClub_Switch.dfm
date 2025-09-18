@@ -2,7 +2,7 @@ object SwimClubSwitch: TSwimClubSwitch
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Switch to another SwimClub...'
+  Caption = 'Switch to another swimming club ...'
   ClientHeight = 517
   ClientWidth = 433
   Color = clBtnFace

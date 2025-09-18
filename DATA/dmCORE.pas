@@ -91,6 +91,7 @@ type
     qrySessionModifiedOn: TSQLTimeStampField;
     qrySessionSwimClubID: TIntegerField;
     qrySessionSessionStatusID: TIntegerField;
+    TestConnection: TFDConnection;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterScroll(DataSet: TDataSet);
@@ -102,6 +103,7 @@ type
         DisplayText: Boolean);
     procedure qrySessionSessionDTSetText(Sender: TField; const Text: string);
     procedure qrySwimClubAfterScroll(DataSet: TDataSet);
+    procedure qrySwimClubNewRecord(DataSet: TDataSet);
 	private
     FIsActive: boolean;
     msgHandle: HWND;  // TForm.dtfrmExec ...   // Both DataModules
@@ -150,6 +152,7 @@ begin
     try
       // MASTER.
       qrySwimClub.Open;
+      qrySession.IndexName := 'indxHideArchived';
       qrySwimClub.First;
       // lookup tables.
       tblStroke.Open;
@@ -305,6 +308,20 @@ begin
   begin
     PostMessage(msgHandle, SCM_SCROLL_SWIMCLUB, 0,0);
   end;
+end;
+
+procedure TCORE.qrySwimClubNewRecord(DataSet: TDataSet);
+begin
+  // ensure all boolean fields are assigned a value.
+  Dataset.FieldByName('IsArchived').AsBoolean := false;
+  Dataset.FieldByName('EnableSimpleDQ').AsBoolean := true;
+  Dataset.FieldByName('NumOfLanes').AsInteger := 10;
+  Dataset.FieldByName('LenOfPool').AsInteger := 50;
+  Dataset.FieldByName('DefTeamSize').AsInteger := 4;
+  Dataset.FieldByName('StartOfSwimSeason').AsDateTime := Now;
+  Dataset.FieldByName('CreatedOn').AsDateTime := Now;
+  Dataset.FieldByName('Caption').AsString := 'Unnamed swimming club';
+  Dataset.FieldByName('NickName').AsString := 'No nick name given.';
 end;
 
 

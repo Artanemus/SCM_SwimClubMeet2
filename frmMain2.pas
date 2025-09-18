@@ -17,7 +17,7 @@ uses
 
   FireDAC.Stan.Option,
 
-  dmSCM2, dmIMG, dmCore,  uSettings, uSwimClub
+  dmSCM2, dmIMG, dmCore,  uSettings, uSwimClub, Data.DB, Vcl.Grids, Vcl.DBGrids
 
   ;
 
@@ -66,7 +66,6 @@ type
     Tools_Swimmercategory: TAction;
     Heat_PrintSet: TAction;
     Heat_Report: TAction;
-    Tools_House: TAction;
     Nominate_MemberDetails: TAction;
     Nominate_ClearEventNominations: TAction;
     Nominate_ClearSessionNominations: TAction;
@@ -108,17 +107,15 @@ type
     Members_Manage: TAction;
     StatusBar: TStatusBar;
     PageControl: TPageControl;
-    pnlDebug: TPanel;
-    btnDebugFocus: TButton;
-    lblDebugRW: TLabel;
     tabSession: TTabSheet;
     tabNominate: TTabSheet;
     tabHeats: TTabSheet;
-    procedure btnDebugFocusClick(Sender: TObject);
+    dbgSwimClub: TDBGrid;
+    SwimClub_Groups: TAction;
+    SwimClub_Houses: TAction;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure pnlTitleBarCustomButtons0Click(Sender: TObject);
     procedure pnlTitleBarCustomButtons0Paint(Sender: TObject);
     procedure pnlTitleBarCustomButtons1Click(Sender: TObject);
@@ -144,20 +141,6 @@ uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin;
 
 
-
-procedure TMain2.btnDebugFocusClick(Sender: TObject);
-begin
-  // DEBUG - clicking the button displays RW state for SwimClub table.
-  if CORE.IsActive then
-  begin
-    if CORE.qrySwimClub.UpdateOptions.ReadOnly then
-      lblDebugRW.Caption := 'SwimClub R'
-    else
-      lblDebugRW.Caption := 'SwimClub RW'
-  end
-  else
-    lblDebugRW.Caption := 'SwimClub ?';
-end;
 
 procedure TMain2.File_ConnectionExecute(Sender: TObject);
 var
@@ -276,12 +259,8 @@ begin
   StatusBar.Panels[2].Text := ''; // entrant count
   StatusBar.Panels[2].Text := ''; // status messages
 
-end;
+  Application.ShowHint := true;
 
-procedure TMain2.FormShow(Sender: TObject);
-begin
-  if btnDebugFocus.CanFocus then
-    btnDebugFocus.SetFocus;
 end;
 
 procedure TMain2.GenericActionUpdate(Sender: TObject);
@@ -347,9 +326,12 @@ procedure TMain2.SwimClub_ManageExecute(Sender: TObject);
 var
   dlg: TSwimClubManage;
 begin
-  dlg :=  TSwimClubManage.Create(Self);
-  dlg.ShowModal;
-  dlg.Free;
+  dlg := TSwimClubManage.Create(Self);
+  try
+    dlg.ShowModal;
+  finally
+    dlg.Free;
+  end;
 end;
 
 procedure TMain2.SwimClub_SwitchExecute(Sender: TObject);

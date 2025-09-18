@@ -61,7 +61,7 @@ var
 implementation
 
 uses
-  uSwimClub, uEvent, uHeat, uLane;
+  uSwimClub; //, uEvent, uHeat, uLane;
 
 constructor T_Session.Create;
 begin
@@ -151,12 +151,13 @@ end;
 
 procedure DetailTBLs_DisableCNTRLs;
 begin
-    CORE.qryEvent.DisableControls;
-    CORE.qryHeat.DisableControls;
-    CORE.qryLane.DisableControls;
-    CORE.qryWatchTime.DisableControls;
-    CORE.qrySplitTime.DisableControls;
+    CORE.qryTeamLink.DisableControls;
     CORE.qryTeam.DisableControls;
+    CORE.qrySplitTime.DisableControls;
+    CORE.qryWatchTime.DisableControls;
+    CORE.qryLane.DisableControls;
+    CORE.qryHeat.DisableControls;
+    CORE.qryEvent.DisableControls;
 end;
 
 procedure DetailTBLs_ApplyMaster;
@@ -167,6 +168,7 @@ begin
     CORE.qryWatchTime.ApplyMaster;
     CORE.qrySplitTime.ApplyMaster;
     CORE.qryTeam.ApplyMaster;
+    CORE.qryTeamLink.ApplyMaster;
 end;
 
 procedure DetailTBLs_EnableCNTLs;
@@ -177,6 +179,7 @@ begin
     CORE.qryWatchTime.EnableControls;
     CORE.qrySplitTime.EnableControls;
     CORE.qryTeam.EnableControls;
+    CORE.qryTeamLink.DisableControls;
 end;
 
 function DeleteSession(DoExclude: Boolean = true): boolean;
@@ -191,13 +194,8 @@ begin
   if not uSession.Assert then exit;
   if uSession.IsLocked then exit; // No locked session is ever deleted.
 
+  DetailTBLs_DisableCNTRLs;
   CORE.qrySession.DisableControls;
-  CORE.qryEvent.DisableControls;
-  CORE.qryNominee.DisableControls;
-  CORE.qryHeat.DisableControls;
-  CORE.qryLane.DisableControls;
-  CORE.qryTeam.DisableControls;
-  CORE.qryTeamLink.DisableControls;
 
   try
     CORE.qryEvent.ApplyMaster; // assert sync to master.
@@ -213,6 +211,9 @@ begin
       Nulls FK in clears scheduledEvent.
       Enables controls for detailed tables.
       }
+
+      { BSA - DISABLED TO ENABLE COMPILE IN DEBUG
+
       done := uEvent.DeleteEvent(DoExclude); // DeleteSession current Event + Dependants
       if done then
       begin
@@ -220,6 +221,7 @@ begin
         continue;
       end
       else
+      }
         CORE.qryEvent.next;
     end;
 
@@ -239,22 +241,11 @@ begin
       uSession.RenumberEvents(false); // don't relocate
     // ASSERT MASTER-DETAIL STATE.
     CORE.qrySession.ApplyMaster;
-    CORE.qryEvent.ApplyMaster;
-    CORE.qryNominee.ApplyMaster;
-    CORE.qryHeat.ApplyMaster;
-    CORE.qryLane.ApplyMaster;
-    CORE.qryTeam.ApplyMaster;
-    CORE.qryTeamLink.ApplyMaster;
+    DetailTBLs_ApplyMaster;
 
     // Enable all controls.
-    CORE.qryTeamLink.EnableControls;
-    CORE.qryTeam.EnableControls;
-    CORE.qryLane.EnableControls;
-    CORE.qryHeat.EnableControls;
-    CORE.qryNominee.EnableControls;
-    CORE.qryEvent.EnableControls;
     CORE.qrySession.EnableControls;
-    CORE.qryEvent.EnableControls;
+    DetailTBLs_EnableCNTLs;
   end;
 end;
 
@@ -325,8 +316,10 @@ begin
   CORE.qryLane.DisableControls;
   CORE.qryHeat.DisableControls;
   try
+    { BSA - DISABLED TO ENABLE COMPILE IN DEBUG
     if DoLocate then
       aEvent := uHeat.PK;
+    }
     // BSA wip
     (*
     SCM2.procRenumberEvents.Params[1].Value := uSession.PK;
@@ -335,8 +328,10 @@ begin
     *)
   finally
     CORE.qryHeat.ApplyMaster;
+    { BSA - DISABLED TO ENABLE COMPILE IN DEBUG
     if DoLocate then
       uHeat.Locate(aEvent);
+    }
     CORE.qryHeat.EnableControls;
     CORE.qryLane.EnableControls;
   end;
@@ -415,7 +410,6 @@ procedure SetVisibilityOfLocked(IsVisible: Boolean);
 /// </param>
 var
 ID: integer;
-found: boolean;
 begin
   CORE.qryTeam.DisableControls;
   CORE.qryLane.DisableControls;
@@ -465,7 +459,6 @@ procedure NewSession();
 /// Sorting of session grid handled by active index.
 /// </remarks>
 var
-  fld: TField;
   aSessionNum: integer;
 begin
   try

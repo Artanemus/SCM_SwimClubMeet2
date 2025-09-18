@@ -1,0 +1,26 @@
+USE SwimClubMeet2
+go
+
+/*
+ALTER TABLE dbo.SwimClub
+ADD GUID uniqueidentifier NULL;
+go
+
+
+UPDATE dbo.SwimClub
+SET GUID = NEWSEQUENTIALID()
+WHERE GUID IS NULL;
+GO
+*/
+
+ALTER TABLE dbo.SwimClub
+ALTER COLUMN GUID uniqueidentifier NOT NULL;
+GO
+
+
+/*
+ALTER TABLE dbo.SwimClub
+ADD CONSTRAINT DF_SwimClub_GUID
+DEFAULT NEWSEQUENTIALID() FOR GUID;
+GO
+*/

@@ -346,7 +346,6 @@ object CORE: TCORE
     IndexName = 'indxEvent_DESC'
     MasterFields = 'EventID'
     DetailFields = 'EventID'
-    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvCheckRequired]
     UpdateOptions.CheckRequired = False
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Heat'
@@ -427,7 +426,22 @@ object CORE: TCORE
     ActiveStoredUsage = [auDesignTime]
     Active = True
     AfterScroll = qrySwimClubAfterScroll
-    IndexFieldNames = 'SwimClubID'
+    OnNewRecord = qrySwimClubNewRecord
+    Filter = 'IsArchived <> 1'
+    Indexes = <
+      item
+        Active = True
+        Selected = True
+        Name = 'indxHideArchived'
+        Fields = 'SwimClubID'
+        Filter = 'IsArchived <> 1'
+      end
+      item
+        Active = True
+        Name = 'indxShowAll'
+        Fields = 'SwimClubID'
+      end>
+    IndexName = 'indxHideArchived'
     Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..SwimClub'
     UpdateOptions.KeyFields = 'SwimClubID'
@@ -441,17 +455,17 @@ object CORE: TCORE
       '      ,[ContactNum]'
       '      ,[WebSite]'
       '      ,[HeatAlgorithm]'
-      '      ,[EnableSimpleDisqualification]'
+      '      ,[EnableSimpleDQ]'
       '      ,[NumOfLanes]'
       '      ,[DefTeamSize]'
       '      ,[LenOfPool]'
       '      ,[StartOfSwimSeason]'
       '      ,[CreatedOn]'
-      '      ,[LogoDir]'
       '      ,[LogoImg]'
-      '      ,[LogoType]'
       '      ,[PoolTypeID]'
       '      ,[SwimClubTypeID]'
+      '      ,[IsArchived]'
+      '      ,Cast([IsArchived] as integer) AS imgIndxArchived'
       '  FROM [dbo].[SwimClub]'
       '  ORDER BY [SwimClubID];'
       ''
@@ -474,7 +488,6 @@ object CORE: TCORE
     MasterSource = dsHeat
     MasterFields = 'HeatID'
     DetailFields = 'HeatID'
-    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Lane'
     UpdateOptions.KeyFields = 'LaneID'
     SQL.Strings = (
@@ -591,7 +604,6 @@ object CORE: TCORE
     MasterSource = dsLane
     MasterFields = 'LaneID'
     DetailFields = 'LaneID'
-    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayDateTime, fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
     UpdateOptions.AssignedValues = [uvEInsert, uvCheckRequired]
@@ -642,7 +654,6 @@ object CORE: TCORE
     MasterSource = dsLane
     MasterFields = 'LaneID'
     DetailFields = 'LaneID'
-    Connection = SCM2.scmConnection
     SQL.Strings = (
       'SELECT [SplitTimeID]'
       '      ,[WatchNum]'
@@ -670,7 +681,6 @@ object CORE: TCORE
     MasterSource = dsLane
     MasterFields = 'LaneID'
     DetailFields = 'LaneID'
-    Connection = SCM2.scmConnection
     SQL.Strings = (
       ''
       ''
@@ -698,7 +708,6 @@ object CORE: TCORE
         DescFields = 'TeamID'
       end>
     IndexName = 'mcTeam_DESC'
-    Connection = SCM2.scmConnection
     SQL.Strings = (
       'DECLARE @TeamID AS INTEGER;'
       'SET @TeamID = :TEAMID;'
@@ -724,7 +733,6 @@ object CORE: TCORE
   object tblStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'StrokeID'
-    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Stroke'
     UpdateOptions.KeyFields = 'StrokeID'
@@ -735,7 +743,6 @@ object CORE: TCORE
   object tblDistance: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'DistanceID'
-    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Distance'
     UpdateOptions.KeyFields = 'DistanceID'
@@ -771,7 +778,6 @@ object CORE: TCORE
     MasterSource = dsMemberLink
     MasterFields = 'MemberID'
     DetailFields = 'MemberID'
-    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Member'
     UpdateOptions.KeyFields = 'MemberID'
     SQL.Strings = (
@@ -883,7 +889,6 @@ object CORE: TCORE
     MasterSource = dsSwimClub
     MasterFields = 'SwimClubID'
     DetailFields = 'SwimClubID'
-    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.MemberLink'
     UpdateOptions.KeyFields = 'SwimClubID;MemberID'
     SQL.Strings = (
@@ -893,5 +898,12 @@ object CORE: TCORE
       '  FROM [SwimClubMeet2].[dbo].[MemberLink]')
     Left = 744
     Top = 72
+  end
+  object TestConnection: TFDConnection
+    Params.Strings = (
+      'ConnectionDef=MSSQL_SwimClubMeet2')
+    LoginPrompt = False
+    Left = 496
+    Top = 40
   end
 end

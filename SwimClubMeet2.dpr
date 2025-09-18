@@ -17,7 +17,8 @@ uses
   dlgLogin in 'DIALOGS\dlgLogin.pas' {Login},
   SCMSimpleConnect in 'TOOLS\SCMSimpleConnect.pas',
   uSwimClub in 'FRAMES\uSwimClub.pas',
-  dlgSwimClub_Manage in 'DIALOGS\SwimClub\dlgSwimClub_Manage.pas' {SwimClubManage};
+  dlgSwimClub_Manage in 'DIALOGS\SwimClub\dlgSwimClub_Manage.pas' {SwimClubManage},
+  uSession in 'FRAMES\uSession.pas';
 
 {$R *.res}
 

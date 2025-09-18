@@ -2696,7 +2696,6 @@ object Main2: TMain2
   Position = poScreenCenter
   StyleElements = [seFont, seClient]
   OnCreate = FormCreate
-  OnShow = FormShow
   TextHeight = 21
   object pnlTitleBar: TTitleBarPanel
     Left = 0
@@ -2724,7 +2723,6 @@ object Main2: TMain2
         OnPaint = pnlTitleBarCustomButtons1Paint
         OnClick = pnlTitleBarCustomButtons1Click
       end>
-    ExplicitTop = -6
     DesignSize = (
       1109
       35)
@@ -2774,7 +2772,7 @@ object Main2: TMain2
     ColorMap.UnusedColor = clWhite
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
-    Font.Height = -16
+    Font.Height = -13
     Font.Name = 'Segoe UI'
     Font.Style = []
     Spacing = 6
@@ -2811,15 +2809,34 @@ object Main2: TMain2
     UseSystemFont = False
   end
   object PageControl: TPageControl
-    Left = 0
-    Top = 118
-    Width = 1109
-    Height = 636
+    AlignWithMargins = True
+    Left = 3
+    Top = 87
+    Width = 1103
+    Height = 664
+    Margins.Top = 10
     ActivePage = tabSession
     Align = alClient
     TabOrder = 3
+    ExplicitLeft = 0
+    ExplicitTop = 118
+    ExplicitWidth = 1109
+    ExplicitHeight = 636
     object tabSession: TTabSheet
       Caption = 'Session'
+      object dbgSwimClub: TDBGrid
+        Left = 216
+        Top = 176
+        Width = 697
+        Height = 289
+        DataSource = CORE.dsSwimClub
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -16
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+      end
     end
     object tabNominate: TTabSheet
       Caption = 'Nominate'
@@ -2828,32 +2845,6 @@ object Main2: TMain2
     object tabHeats: TTabSheet
       Caption = 'Heats'
       ImageIndex = 2
-    end
-  end
-  object pnlDebug: TPanel
-    Left = 0
-    Top = 77
-    Width = 1109
-    Height = 41
-    Align = alTop
-    BevelOuter = bvNone
-    Caption = 'DEBUG PANEL'
-    TabOrder = 4
-    object lblDebugRW: TLabel
-      Left = 96
-      Top = 6
-      Width = 82
-      Height = 21
-      Caption = 'SwimClub ?'
-    end
-    object btnDebugFocus: TButton
-      Left = 6
-      Top = 6
-      Width = 75
-      Height = 25
-      Caption = 'Focus'
-      TabOrder = 0
-      OnClick = btnDebugFocusClick
     end
   end
   object actnManager: TActionManager
@@ -3246,10 +3237,6 @@ object Main2: TMain2
                 Caption = 'S&wimmer Categories...'
               end
               item
-                Action = Tools_House
-                Caption = '&House...'
-              end
-              item
                 Action = Tools_Score
                 Caption = '&Score, Place, Points...'
               end
@@ -3312,9 +3299,9 @@ object Main2: TMain2
             Items = <
               item
                 Action = File_Connection
-                Caption = '&Manage Connection...'
+                Caption = '&DataBase Connection...'
                 ImageIndex = 29
-                ImageName = 'Connection'
+                ImageName = 'Data-Connection'
               end
               item
                 Caption = '-'
@@ -3341,8 +3328,8 @@ object Main2: TMain2
                 ImageName = 'Exit'
               end>
             Caption = '&File'
-            ImageIndex = 51
-            ImageName = 'hamburger'
+            ImageIndex = 50
+            ImageName = 'folder_managed'
           end
           item
             Items = <
@@ -3351,6 +3338,21 @@ object Main2: TMain2
                 Caption = '&Switch Clubs ...'
                 ImageIndex = 11
                 ImageName = 'Switch'
+              end
+              item
+                Caption = '-'
+              end
+              item
+                Action = SwimClub_Houses
+                Caption = 'S&wimClub Houses...'
+                ImageIndex = 31
+                ImageName = 'houses'
+              end
+              item
+                Action = SwimClub_Groups
+                Caption = 'Sw&imClub Groups...'
+                ImageIndex = 30
+                ImageName = 'group'
               end
               item
                 Caption = '-'
@@ -3748,8 +3750,6 @@ object Main2: TMain2
                 ImageName = 'import'
               end>
             Caption = '&Members'
-            ImageIndex = 1
-            ImageName = 'Members'
           end
           item
             Items = <
@@ -3769,10 +3769,6 @@ object Main2: TMain2
               item
                 Action = Tools_Swimmercategory
                 Caption = '&Swimmer Categories...'
-              end
-              item
-                Action = Tools_House
-                Caption = '&House...'
               end
               item
                 Action = Tools_Score
@@ -3796,8 +3792,6 @@ object Main2: TMain2
               item
                 Action = Tools_FireDAC
                 Caption = '&FireDAC Connection Manager...'
-                ImageIndex = 29
-                ImageName = 'Connection'
               end>
             Caption = 'T&ools'
             ImageIndex = 40
@@ -3847,9 +3841,9 @@ object Main2: TMain2
     end
     object File_Connection: TAction
       Category = 'File'
-      Caption = 'Manage Connection...'
+      Caption = 'DataBase Connection...'
       ImageIndex = 29
-      ImageName = 'Connection'
+      ImageName = 'Data-Connection'
       OnExecute = File_ConnectionExecute
       OnUpdate = File_ConnectionUpdate
     end
@@ -4132,10 +4126,6 @@ object Main2: TMain2
       ImageIndex = 17
       ImageName = 'Report'
     end
-    object Tools_House: TAction
-      Category = 'Tools'
-      Caption = 'House...'
-    end
     object Nominate_MemberDetails: TAction
       Category = 'Nominate'
       Caption = 'Member'#39's Details...'
@@ -4325,18 +4315,9 @@ object Main2: TMain2
       OnExecute = SwimClub_SwitchExecute
       OnUpdate = GenericActionUpdate
     end
-    object SwimClub_Manage: TAction
-      Category = 'SwimClub'
-      Caption = 'Manage Swim Clubs ...'
-      ImageIndex = 50
-      ImageName = 'folder_managed'
-      OnExecute = SwimClub_ManageExecute
-      OnUpdate = GenericActionUpdate
-    end
     object Tools_FireDAC: TAction
       Category = 'Tools'
       Caption = 'FireDAC Connection Manager...'
-      ImageIndex = 29
       ImageName = 'Connection'
     end
     object Members_Manage: TAction
@@ -4356,6 +4337,26 @@ object Main2: TMain2
       Caption = 'Import Members...'
       ImageIndex = 39
       ImageName = 'import'
+    end
+    object SwimClub_Houses: TAction
+      Category = 'SwimClub'
+      Caption = 'SwimClub Houses...'
+      ImageIndex = 31
+      ImageName = 'houses'
+    end
+    object SwimClub_Groups: TAction
+      Category = 'SwimClub'
+      Caption = 'SwimClub Groups...'
+      ImageIndex = 30
+      ImageName = 'group'
+    end
+    object SwimClub_Manage: TAction
+      Category = 'SwimClub'
+      Caption = 'Manage Swim Clubs ...'
+      ImageIndex = 50
+      ImageName = 'folder_managed'
+      OnExecute = SwimClub_ManageExecute
+      OnUpdate = GenericActionUpdate
     end
   end
 end

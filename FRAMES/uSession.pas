@@ -35,7 +35,7 @@ function SessionDT: TDateTime;
 
 procedure DetailTBLs_DisableCNTRLs;
 procedure DetailTBLs_ApplyMaster;
-procedure DetailTBLs_EnableCNTLs;
+procedure DetailTBLs_EnableCNTRLs;
 procedure SetVisibilityOfLocked(IsVisible: Boolean);
 procedure SetEntrantCount();
 procedure SetNomineeCount();
@@ -46,45 +46,14 @@ procedure NewSession();
 //procedure ReSyncSession();
 
 
-
-
-type
-  T_Session = class
-  public
-    constructor Create;
-    destructor Destroy;
-  end;
-
-var
-  scmSession: T_Session;
-
 implementation
 
 uses
   uSwimClub; //, uEvent, uHeat, uLane;
 
-constructor T_Session.Create;
-begin
-  inherited;
-  if not Assigned(SCM2) then
-    raise Exception.Create('Data module SCM2 not assigned.');
-  if not SCM2.scmConnection.Connected then
-    raise Exception.Create('Data module SCM2 tables are offline.');
-  if not Assigned(CORE) then
-    raise Exception.Create('Core data module not assigned.');
-  if not CORE.IsActive then
-    raise Exception.Create('Core data module tables are offline.');
-end;
-
-destructor T_Session.Destroy;
-begin
-  // do cleanup...
-  inherited;
-end;
 
 function AllEventsAreClosed: Boolean;
 var
-  i: integer;
   SQL: string;
   v: variant;
 begin
@@ -162,16 +131,28 @@ end;
 
 procedure DetailTBLs_ApplyMaster;
 begin
+  // FireDAC throws exception error if Master is empty?
+  if CORE.qrySession.RecordCount <> 0 then
+  begin
     CORE.qryEvent.ApplyMaster;
-    CORE.qryHeat.ApplyMaster;
-    CORE.qryLane.ApplyMaster;
-    CORE.qryWatchTime.ApplyMaster;
-    CORE.qrySplitTime.ApplyMaster;
-    CORE.qryTeam.ApplyMaster;
-    CORE.qryTeamLink.ApplyMaster;
+    if CORE.qryEvent.RecordCount <> 0 then
+    begin
+      CORE.qryHeat.ApplyMaster;
+      if CORE.qryHeat.RecordCount <> 0 then
+      begin
+        CORE.qryLane.ApplyMaster;
+        if CORE.qryLane.RecordCount <> 0 then
+        begin
+          CORE.qryWatchTime.ApplyMaster;
+          CORE.qrySplitTime.ApplyMaster;
+          CORE.qryTeam.ApplyMaster;
+        end;
+      end;
+    end;
+  end;
 end;
 
-procedure DetailTBLs_EnableCNTLs;
+procedure DetailTBLs_EnableCNTRLs;
 begin
     CORE.qryEvent.EnableControls;
     CORE.qryHeat.EnableControls;
@@ -185,9 +166,7 @@ end;
 function DeleteSession(DoExclude: Boolean = true): boolean;
 var
   SQL: string;
-  qry: TFDQuery;
-  aEventID, rows: integer;
-  done, doRenumber: boolean;
+  doRenumber: boolean;
 begin
   result := false;
   doRenumber := false;
@@ -245,7 +224,7 @@ begin
 
     // Enable all controls.
     CORE.qrySession.EnableControls;
-    DetailTBLs_EnableCNTLs;
+    DetailTBLs_EnableCNTRLs;
   end;
 end;
 
@@ -307,12 +286,11 @@ begin
 end;
 
 function RenumberEvents(DoLocate: Boolean = true): integer;
-var
-  aEvent: integer;
 begin
+  result := 0;
   if not Assigned(SCM2) or not SCM2.scmConnection.Connected then exit;
   if CORE.dsHeat.DataSet.IsEmpty then exit;
-  result := 0;
+
   CORE.qryLane.DisableControls;
   CORE.qryHeat.DisableControls;
   try
@@ -376,7 +354,6 @@ end;
 
 procedure SetSessionStatusID(aSessionStatusID: Integer);
 var
-  i: integer;
   fld: TField;
 begin
   if aSessionStatusID in [1,2] then // Check out of bounds.
@@ -390,7 +367,7 @@ begin
       try
         try
           Edit;
-          FieldByName('SessionStatusID').AsInteger := i;
+          FieldByName('SessionStatusID').AsInteger := aSessionStatusID;
           Post;
         except on E: Exception do
             Cancel;
@@ -408,8 +385,7 @@ procedure SetVisibilityOfLocked(IsVisible: Boolean);
 ///  true: show both locked and unlocked sessions.
 ///  false: hides locked sessions.
 /// </param>
-var
-ID: integer;
+
 begin
   CORE.qryTeam.DisableControls;
   CORE.qryLane.DisableControls;
@@ -418,7 +394,6 @@ begin
   CORE.qryEvent.DisableControls;
   CORE.qrySession.DisableControls;
   try
-    ID := uSession.PK;
     try
       if IsVisible then
         CORE.qrySession.IndexName := 'indxShowAll'
@@ -458,8 +433,6 @@ procedure NewSession();
 /// <remarks>
 /// Sorting of session grid handled by active index.
 /// </remarks>
-var
-  aSessionNum: integer;
 begin
   try
     CORE.qrySplitTime.DisableControls;

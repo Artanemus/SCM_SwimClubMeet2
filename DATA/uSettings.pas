@@ -12,6 +12,7 @@ type
   TAppSetting = Class
   private
     { private declarations }
+    DoAutoLoad: boolean;
   protected
     { protected declarations }
   public
@@ -19,15 +20,20 @@ type
     DoLoginOnBoot: boolean;
     LastSwimClubPK: integer;
 
-    constructor Create();
-    function GetDefaultSettingsFilename(): string;
-    function GetSettingsFolder(): string;
-    procedure LoadFromFile(AFileName: string = '');
-    procedure SaveToFile(AFileName: string = '');
+    constructor Create(); overload;
+    constructor Create(AutoLoad: boolean); overload;
+    destructor Destroy(); override;
+    function GetDefPathFileName: string;
+    function GetDefPath: string;
+    procedure LoadFromFile(APathFileName: string = '');
+    procedure SaveToFile(APathFileName: string = '');
+    procedure InitDefaults;
   end;
 
   const
     CONNECTIONTIMEOUT = 20;  // default is 0 - infinate...
+    DEFSETTINGSSUBPATH = 'Artanemus\SCM2\SwimClubMeet';
+    DEFSETTINGSFILENAME = 'scmPref.json';
 
 var
   Settings: TAppSetting;
@@ -36,51 +42,75 @@ implementation
 
 constructor TAppSetting.Create();
 begin
+  inherited Create(); // call default constructor
+  InitDefaults;
+end;
+
+
+constructor TAppSetting.Create(AutoLoad: boolean);
+begin
+  inherited Create(); // call default constructor
+  InitDefaults;
+  DoAutoLoad := AutoLoad;
+  if DoAutoLoad then
+      LoadFromFile(GetDefPathFileName());
+end;
+
+destructor TAppSetting.Destroy();
+begin
+  if DoAutoLoad then
+    SaveToFile(GetDefPathFileName());
+  inherited Destroy;
+end;
+
+procedure TAppSetting.InitDefaults;
+begin
   LoginTimeOut := CONNECTIONTIMEOUT;
   DoLoginOnBoot := false;
+  DoAutoLoad := false;
   LastSwimClubPK := 0;
-  ForceDirectories(Settings.GetSettingsFolder());
+  ForceDirectories(GetDefPath());
+  if not FileExists(GetDefPathFileName()) then
+    SaveToFile();
 end;
 
-function TAppSetting.GetDefaultSettingsFilename(): string;
+function TAppSetting.GetDefPathFileName: string;
 begin
-  result := TPath.Combine(GetSettingsFolder(), 'scmPref.json');
+  result := TPath.Combine(GetDefPath(), DEFSETTINGSFILENAME);
 end;
 
-function TAppSetting.GetSettingsFolder(): string;
+function TAppSetting.GetDefPath: string;
 begin
-//  result := TPath.Combine(TPath.GetHomePath(), 'MyProg');
-//  result := ExtractFilePath(ParamStr(0));
 {$IFDEF MACOS}
-  Result := TPath.Combine(TPath.GetLibraryPath(), 'Artanemus\SWimClubMeet');
+  Result := TPath.Combine(TPath.GetLibraryPath(), DEFSETTINGSSUBPATH);
 {$ELSE}
   // GETHOMEPATH = C:Users\<username>\AppData\Roaming (WINDOWS)
   // Should also work on ANDROID.
-  Result := TPath.Combine(TPath.GetHomePath(), 'Artanemus\SCM2\SwimClubMeet');
+  Result := TPath.Combine(TPath.GetHomePath(), DEFSETTINGSSUBPATH);
 {$ENDIF}
 
 end;
 
-procedure TAppSetting.LoadFromFile(AFileName: string = '');
+procedure TAppSetting.LoadFromFile(APathFileName: string = '');
 var
   Json: string;
 begin
-  if AFileName = '' then
-    AFileName := GetDefaultSettingsFilename();
-  if not FileExists(AFileName) then
+  if APathFileName = '' then
+    APathFileName := GetDefPathFileName();
+  if not FileExists(APathFileName) then
     exit;
-  Json := TFile.ReadAllText(AFileName, TEncoding.UTF8);
+  Json := TFile.ReadAllText(APathFileName, TEncoding.UTF8);
   AssignFromJSON(Json); // magic method from XSuperObject's helper
 end;
 
-procedure TAppSetting.SaveToFile(AFileName: string = '');
+procedure TAppSetting.SaveToFile(APathFileName: string = '');
 var
   Json: string;
 begin
-  if AFileName = '' then
-    AFileName := GetDefaultSettingsFilename();
+  if APathFileName = '' then
+    APathFileName := GetDefPathFileName();
   Json := AsJSON(True); // magic method from XSuperObject's helper too
-  TFile.WriteAllText(AFileName, Json, TEncoding.UTF8);
+  TFile.WriteAllText(APathFileName, Json, TEncoding.UTF8);
 end;
 
 

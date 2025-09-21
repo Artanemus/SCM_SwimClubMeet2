@@ -23,10 +23,62 @@ function HasLockedSession(): boolean;
 function HasRaceData(): Boolean;
 function Delete_SwimClub(DoExclude: boolean = true): boolean;
 
+
 // procedure RenumberSessions();
 
 
 implementation
+
+
+
+procedure DetailTBLs_DisableCNTRLs;
+begin
+    CORE.qryTeam.DisableControls;
+    CORE.qrySplitTime.DisableControls;
+    CORE.qryWatchTime.DisableControls;
+    CORE.qryLane.DisableControls;
+    CORE.qryHeat.DisableControls;
+    CORE.qryEvent.DisableControls;
+    CORE.qrySession.DisableControls;
+end;
+
+procedure DetailTBLs_ApplyMaster;
+begin
+  // FireDAC throws exception error if Master is empty?
+  if CORE.qrySwimClub.RecordCount <> 0 then
+  begin
+    CORE.qrySession.ApplyMaster;
+    if CORE.qrySession.RecordCount <> 0 then
+    begin
+      CORE.qryEvent.ApplyMaster;
+      if CORE.qryEvent.RecordCount <> 0 then
+      begin
+        CORE.qryHeat.ApplyMaster;
+        if CORE.qryHeat.RecordCount <> 0 then
+        begin
+          CORE.qryLane.ApplyMaster;
+          if CORE.qryLane.RecordCount <> 0 then
+          begin
+            CORE.qryWatchTime.ApplyMaster;
+            CORE.qrySplitTime.ApplyMaster;
+            CORE.qryTeam.ApplyMaster;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure DetailTBLs_EnableCNTRLs;
+begin
+    CORE.qrySession.EnableControls;
+    CORE.qryEvent.EnableControls;
+    CORE.qryHeat.EnableControls;
+    CORE.qryLane.EnableControls;
+    CORE.qryWatchTime.EnableControls;
+    CORE.qrySplitTime.EnableControls;
+    CORE.qryTeam.EnableControls;
+end;
 
 function Assert(): boolean;
 begin
@@ -42,9 +94,43 @@ begin
 end;
 
 function Delete_SwimClub(DoExclude: boolean): boolean;
+var
+  SQL: string;
 begin
-  if True then
-    exit;
+  result := false;
+  if not Assigned(SCM2) or not SCM2.scmConnection.Connected then exit;
+  DetailTBLs_DisableCNTRLs;
+  try
+    // delete the club data - Sessions, Events, Heats,
+    CORE.qrySession.ApplyMaster; // Assert Master-Detail.
+    while not CORE.qrySession.Eof do
+    begin
+     //      uSession.DeleteSession(DoExclude);
+      CORE.qrySession.next;
+    end;
+    // delete THE CLUB.
+    if CORE.qrySession.IsEmpty then
+    begin
+      // DELETE ALL Club Groups
+      SQL := '''
+        DELETE FROM [SwimClubMeet2].[dbo].[ClubGroup]
+        WHERE [SwimClubID] = :ID;
+        ''';
+      SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
+      // DELETE ALL MEMBER LINK RECORDS
+      SQL := '''
+        DELETE FROM [SwimClubMeet2].[dbo].[MemberLink]
+        WHERE [SwimClubID] = :ID;
+        ''';
+      SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
+      // F I N A L L Y  Delete THE SWIMMING CLUB.
+      CORE.qrySwimClub.Delete;
+      result := true;
+    end;
+  finally
+    DetailTBLs_ApplyMaster;
+    DetailTBLs_EnableCNTRLs;
+  end;
 end;
 
 function GetSwimClubID: integer;
@@ -62,8 +148,8 @@ begin
   result := false;
   if not Assigned(SCM2) or not SCM2.scmConnection.Connected then exit;
   SQL := '''
-    SELECT Count(SesionID) FROM  [SwimClubMeet2].[dbo].[Session]
-    WHERE [Session].SessionStatusID > 1 AND [Session].SwimClubID = :ID'
+    SELECT Count(SessionID) FROM  [SwimClubMeet2].[dbo].[Session]
+    WHERE [Session].SessionStatusID > 1 AND [Session].SwimClubID = :ID;
     ''';
   v := SCM2.scmConnection.ExecSQLScalar(SQL, [uSwimClub.PK]);
   if not VarIsNull(v) and not VarIsEmpty(v) and (v > 0) then result := true;
@@ -115,10 +201,10 @@ begin
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
   begin
     SQL := '''
-    SELECT Count(SessionID)
-    FROM SwimClubMeet2.dbo.Session
-    WHERE Session.SwimClubID = :ID1;
-    ''';
+      SELECT Count(SessionID)
+      FROM SwimClubMeet2.dbo.Session
+      WHERE Session.SwimClubID = :ID1;
+      ''';
     v := SCM2.scmConnection.ExecSQLScalar(SQL, [uSwimClub.PK]);
     if not VarIsClear(v) then result := v;
   end;

@@ -1,9 +1,10 @@
-unit frmMain2;
+﻿unit frmMain2;
 
 interface
 
 uses
   Winapi.Windows, Winapi.Messages,
+
   System.SysUtils, System.Variants, System.Classes,
   System.UITypes, System.Actions, System.ImageList,
 
@@ -14,10 +15,13 @@ uses
   Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan, Vcl.ToolWin, Vcl.ActnCtrls,
   Vcl.ActnMenus, Vcl.BaseImageCollection,
   Vcl.ImageCollection,  Vcl.ImgList, Vcl.VirtualImageList,
+  Vcl.Grids, Vcl.DBGrids,
+
+  Data.DB,
 
   FireDAC.Stan.Option,
 
-  dmSCM2, dmIMG, dmCore,  uSettings, uSwimClub, Data.DB, Vcl.Grids, Vcl.DBGrids
+  dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub
 
   ;
 
@@ -110,12 +114,13 @@ type
     tabSession: TTabSheet;
     tabNominate: TTabSheet;
     tabHeats: TTabSheet;
-    dbgSwimClub: TDBGrid;
-    SwimClub_Groups: TAction;
+    gSwimClub: TDBGrid;
     SwimClub_Houses: TAction;
+    SwimClub_Stats: TAction;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure pnlTitleBarCustomButtons0Click(Sender: TObject);
     procedure pnlTitleBarCustomButtons0Paint(Sender: TObject);
     procedure pnlTitleBarCustomButtons1Click(Sender: TObject);
@@ -126,6 +131,14 @@ type
     procedure SwimClub_SwitchExecute(Sender: TObject);
   private
     { Private declarations }
+    procedure GridBeginUpdate(level: integer = 0);
+    procedure GridEndUpdate(level: integer = 0);
+
+
+  protected
+    // Note: don't name procedure same as winapi.message name.
+    procedure Msg_SCM_Connect(var Msg: TMessage); message SCM_Connect;
+
   public
     { Public declarations }
   end;
@@ -233,20 +246,16 @@ begin
     Application.Terminate();
   end;
 
-  { A Class that uses JSON to read and write application configuration }
-  Settings := TAppSetting.Create;
-  if Assigned(Settings) then
-  begin
-    // C:Users\<username>\AppData\Roaming\Artanemus\SCM2\SwimClubMeet\scmPref.json
-    // contains mostly preferences assigned in dlgPrefences.
-    if not FileExists(Settings.GetDefaultSettingsFilename()) then
-    begin
-      ForceDirectories(Settings.GetSettingsFolder());
-      Settings.SaveToFile();
-    end;
-    Settings.LoadFromFile();
-  end;
+  { A Class that uses JSON to read and write application configuration.
 
+    The overloaded contructor will auto-load the default preference.json file
+    HOMEPATH = C:Users\<username>\AppData\Roaming (WINDOWS)
+    DEFSETTINGSSUBPATH = 'Artanemus\SCM2\SwimClubMeet';
+    DEFSETTINGSFILENAME = 'scmPref.json';
+  }
+  Settings := TAppSetting.Create(true);
+  // DEBUG :::: REMOVE.🔻
+  Settings.DoLoginOnBoot := true;
 
   // Checks for default state of data and controls.
   SCM2.scmConnection.Connected := false;
@@ -263,6 +272,12 @@ begin
 
 end;
 
+procedure TMain2.FormShow(Sender: TObject);
+begin
+  if Assigned(Settings) and Settings.DoLoginOnBoot then
+    PostMessage(Handle, SCM_CONNECT, 0, 0);
+end;
+
 procedure TMain2.GenericActionUpdate(Sender: TObject);
 var
   DoEnable: boolean;
@@ -271,6 +286,42 @@ begin
   if Assigned(SCM2) and SCM2.scmConnection.Connected and CORE.IsActive then
     DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TMain2.GridBeginUpdate(level: integer);
+begin
+  if level in [0,1,2,3,4]  then
+    // gLane.BeginUpdate;
+    ;
+  if level in [0,1,2,3]  then
+    // gHeat.BeginUpdate;
+    ;
+  if level in [0,1,2]  then
+    // gEvent.BeginUpdate;
+    ;
+  if level in [0,1]  then
+    // gSession.BeginUpdate;
+    ;
+  if level = 0 then
+    gSwimClub.BeginUpdate;
+end;
+
+procedure TMain2.GridEndUpdate(level: integer);
+begin
+  if level = 0 then
+    gSwimClub.EndUpdate;
+  if level in [0,1]  then
+    // gSession.BeginUpdate;
+    ;
+  if level in [0,1,2]  then
+    // gEvent.BeginUpdate;
+    ;
+  if level in [0,1,2,3]  then
+    // gHeat.BeginUpdate;
+    ;
+  if level in [0,1,2,3,4]  then
+    // gLane.BeginUpdate;
+    ;
 end;
 
 procedure TMain2.pnlTitleBarCustomButtons0Click(Sender: TObject);
@@ -322,15 +373,28 @@ begin
   inherited;
 end;
 
+procedure TMain2.Msg_SCM_Connect(var Msg: TMessage);
+begin
+  // already connected..
+  if SCM2.scmConnection.Connected then exit;
+  //  actnManager.ExecuteAction(File_Connection); // doesn't work
+  File_Connection.Execute;
+end;
+
 procedure TMain2.SwimClub_ManageExecute(Sender: TObject);
 var
   dlg: TSwimClubManage;
 begin
-  dlg := TSwimClubManage.Create(Self);
+  GridBeginUpdate;
   try
-    dlg.ShowModal;
+    dlg := TSwimClubManage.Create(Self);
+    try
+      dlg.ShowModal;
+    finally
+      dlg.Free;
+    end;
   finally
-    dlg.Free;
+    GridEndUpdate;
   end;
 end;
 

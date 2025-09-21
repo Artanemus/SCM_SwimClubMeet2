@@ -313,7 +313,10 @@ end;
 procedure TCORE.qrySwimClubNewRecord(DataSet: TDataSet);
 begin
   // ensure all boolean fields are assigned a value.
+  // MSSQL should handle this but if FireDAC UpdateOptions.CheckRequired
+  // is true (default) then FireDAC will thrown N exception.
   Dataset.FieldByName('IsArchived').AsBoolean := false;
+  Dataset.FieldByName('IsClubGroup').AsBoolean := false;
   Dataset.FieldByName('EnableSimpleDQ').AsBoolean := true;
   Dataset.FieldByName('NumOfLanes').AsInteger := 10;
   Dataset.FieldByName('LenOfPool').AsInteger := 50;
@@ -323,50 +326,6 @@ begin
   Dataset.FieldByName('Caption').AsString := 'Unnamed swimming club';
   Dataset.FieldByName('NickName').AsString := 'No nick name given.';
 end;
-
-
-
-(*
-		procedure qrySessionAfterDelete(DataSet: TDataSet);
-		procedure qrySessionAfterPost(DataSet: TDataSet);
-		procedure qrySessionAfterScroll(DataSet: TDataSet);
-		procedure qrySessionBeforePost(DataSet: TDataSet);
-		procedure qrySessionNewRecord(DataSet: TDataSet);
-		procedure qrySessionSessionStartGetText(Sender: TField; var Text: string;
-			DisplayText: Boolean);
-		procedure qrySessionSessionStartSetText(Sender: TField; const Text: string);
-*)
-
-
-
-(*
-	procedure qryEventAfterDelete(DataSet: TDataSet);
-	procedure qryEventAfterInsert(DataSet: TDataSet);
-	procedure qryEventAfterPost(DataSet: TDataSet);
-	procedure qryEventAfterScroll(DataSet: TDataSet);
-	procedure qryEventBeforeEdit(DataSet: TDataSet);
-	procedure qryEventBeforeInsert(DataSet: TDataSet);
-	procedure qryEventBeforePost(DataSet: TDataSet);
-	procedure qryEventDistanceIDValidate(Sender: TField);
-	procedure qryEventEventStatusIDGetText(Sender: TField; var Text: string;
-		DisplayText: Boolean);
-	procedure qryEventNewRecord(DataSet: TDataSet);
-	procedure qryEventScheduleDTGetText(Sender: TField; var Text: string;
-		DisplayText: Boolean);
-	procedure qryEventScheduleDTSetText(Sender: TField; const Text: string);
-
-
-*)
-
-
-(*
-		procedure qryHeatAfterDelete(DataSet: TDataSet);
-		procedure qryHeatAfterInsert(DataSet: TDataSet);
-		procedure qryHeatAfterPost(DataSet: TDataSet);
-		procedure qryHeatAfterScroll(DataSet: TDataSet);
-		procedure qryHeatNewRecord(DataSet: TDataSet);
-
-*)
 
 
 

@@ -35,6 +35,7 @@ type
     CollectionMenuBar: TSVGIconImageCollection;
     imglstSwimClubCntrl: TSVGIconVirtualImageList;
     imglstSwimClubArchived: TSVGIconVirtualImageList;
+    imglstSwimClubGroup: TSVGIconVirtualImageList;
   private
     { Private declarations }
 

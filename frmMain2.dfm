@@ -2696,6 +2696,7 @@ object Main2: TMain2
   Position = poScreenCenter
   StyleElements = [seFont, seClient]
   OnCreate = FormCreate
+  OnShow = FormShow
   TextHeight = 21
   object pnlTitleBar: TTitleBarPanel
     Left = 0
@@ -2762,7 +2763,6 @@ object Main2: TMain2
     Top = 35
     Width = 1109
     Height = 42
-    UseSystemFont = False
     ActionManager = actnManager
     Caption = 'actnMainMenuBar'
     Color = clMenuBar
@@ -2771,7 +2771,7 @@ object Main2: TMain2
     ColorMap.BtnSelectedFont = clBlack
     ColorMap.UnusedColor = clWhite
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
+    Font.Color = clWindowText
     Font.Height = -13
     Font.Name = 'Segoe UI'
     Font.Style = []
@@ -2818,13 +2818,9 @@ object Main2: TMain2
     ActivePage = tabSession
     Align = alClient
     TabOrder = 3
-    ExplicitLeft = 0
-    ExplicitTop = 118
-    ExplicitWidth = 1109
-    ExplicitHeight = 636
     object tabSession: TTabSheet
       Caption = 'Session'
-      object dbgSwimClub: TDBGrid
+      object gSwimClub: TDBGrid
         Left = 216
         Top = 176
         Width = 697
@@ -3344,15 +3340,15 @@ object Main2: TMain2
               end
               item
                 Action = SwimClub_Houses
-                Caption = 'S&wimClub Houses...'
+                Caption = '&Club Houses...'
                 ImageIndex = 31
                 ImageName = 'houses'
               end
               item
-                Action = SwimClub_Groups
-                Caption = 'Sw&imClub Groups...'
-                ImageIndex = 30
-                ImageName = 'group'
+                Action = SwimClub_Stats
+                Caption = 'C&lub Statistics...'
+                ImageIndex = 52
+                ImageName = 'Query-Stats'
               end
               item
                 Caption = '-'
@@ -3792,6 +3788,7 @@ object Main2: TMain2
               item
                 Action = Tools_FireDAC
                 Caption = '&FireDAC Connection Manager...'
+                ImageName = 'Connection'
               end>
             Caption = 'T&ools'
             ImageIndex = 40
@@ -4340,15 +4337,15 @@ object Main2: TMain2
     end
     object SwimClub_Houses: TAction
       Category = 'SwimClub'
-      Caption = 'SwimClub Houses...'
+      Caption = 'Club Houses...'
       ImageIndex = 31
       ImageName = 'houses'
     end
-    object SwimClub_Groups: TAction
+    object SwimClub_Stats: TAction
       Category = 'SwimClub'
-      Caption = 'SwimClub Groups...'
-      ImageIndex = 30
-      ImageName = 'group'
+      Caption = 'Club Statistics...'
+      ImageIndex = 52
+      ImageName = 'Query-Stats'
     end
     object SwimClub_Manage: TAction
       Category = 'SwimClub'

@@ -18,6 +18,7 @@ const
    SCM_SCROLL_LANE  = WM_USER + 11;
    SCM_SCROLL_NOMINATE =WM_USER + 12;
    SCM_CONNECT = WM_USER + 13;
+   SCM_DISCONNECT = WM_USER + 13;
 
  type
  scmSendToFileType = (sftPDF, sftXLS, sftHTML, sftIMG, sftNA);

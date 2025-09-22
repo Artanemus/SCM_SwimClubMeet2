@@ -36,6 +36,7 @@ type
     imglstSwimClubCntrl: TSVGIconVirtualImageList;
     imglstSwimClubArchived: TSVGIconVirtualImageList;
     imglstSwimClubGroup: TSVGIconVirtualImageList;
+    imglstSwimClubCell: TSVGIconVirtualImageList;
   private
     { Private declarations }
 

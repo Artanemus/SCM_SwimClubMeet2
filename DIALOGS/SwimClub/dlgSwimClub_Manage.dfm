@@ -2692,13 +2692,14 @@ object SwimClubManage: TSwimClubManage
     TabOrder = 0
   end
   object pnlBody: TPanel
-    Left = 146
+    Left = 776
     Top = 41
     Width = 614
     Height = 575
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitLeft = 146
     object gSwimClub: TDBAdvGrid
       Left = 0
       Top = 0
@@ -2711,7 +2712,7 @@ object SwimClubManage: TSwimClubManage
       DefaultRowHeight = 60
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 5
+      RowCount = 6
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -2722,10 +2723,12 @@ object SwimClubManage: TSwimClubManage
       ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
+      OnClick = gSwimClubClick
       OnDblClick = gSwimClubDblClick
       GridLineColor = 15987699
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
+      OnAnchorClick = gSwimClubAnchorClick
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
       ActiveCellFont.Height = -12
@@ -2734,8 +2737,8 @@ object SwimClubManage: TSwimClubManage
       ActiveCellColor = 11565130
       ActiveCellColorTo = 11565130
       BorderColor = 11250603
-      ControlLook.FixedGradientFrom = clWhite
-      ControlLook.FixedGradientTo = clWhite
+      ControlLook.FixedGradientFrom = clMoneyGreen
+      ControlLook.FixedGradientTo = clMoneyGreen
       ControlLook.FixedGradientMirrorFrom = clWhite
       ControlLook.FixedGradientMirrorTo = clWhite
       ControlLook.FixedGradientHoverFrom = clGray
@@ -2762,6 +2765,7 @@ object SwimClubManage: TSwimClubManage
       ControlLook.DropDownFooter.Font.Style = []
       ControlLook.DropDownFooter.Visible = True
       ControlLook.DropDownFooter.Buttons = <>
+      ControlLook.FlatButton = True
       Filter = <>
       FilterDropDown.Font.Charset = DEFAULT_CHARSET
       FilterDropDown.Font.Color = clWindowText
@@ -2791,6 +2795,7 @@ object SwimClubManage: TSwimClubManage
       FloatFormat = '%.2f'
       HoverButtons.Buttons = <>
       HoverButtons.Position = hbLeftFromColumnLeft
+      HTMLSettings.ExportImages = False
       HTMLSettings.ImageFolder = 'images'
       HTMLSettings.ImageBaseName = 'img'
       Look = glCustom
@@ -2903,6 +2908,7 @@ object SwimClubManage: TSwimClubManage
           CheckFalse = 'N'
           CheckTrue = 'Y'
           Color = clWindow
+          FieldName = 'SwimClubID'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -16
@@ -2916,6 +2922,7 @@ object SwimClubManage: TSwimClubManage
           HTMLTemplate = 
             '<FONT size="12"><#Caption></FONT><BR><FONT size="8"></FONT><#Nic' +
             'kName>'
+          Images = IMG.imglstSwimClubCell
           Name = 'htmlSwimClub'
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
@@ -3149,6 +3156,7 @@ object SwimClubManage: TSwimClubManage
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
+      OnGetHTMLTemplate = gSwimClubGetHTMLTemplate
       ColWidths = (
         0
         64
@@ -3158,6 +3166,7 @@ object SwimClubManage: TSwimClubManage
         0)
       RowHeights = (
         30
+        60
         60
         60
         60
@@ -3199,11 +3208,10 @@ object SwimClubManage: TSwimClubManage
   object splitvEdit: TSplitView
     Left = 146
     Top = 41
-    Width = 0
+    Width = 630
     Height = 575
     AnimationDelay = 30
     AnimationStep = 100
-    Opened = False
     OpenedWidth = 630
     Placement = svpLeft
     TabOrder = 3
@@ -3212,15 +3220,15 @@ object SwimClubManage: TSwimClubManage
     object pcntrlEdit: TPageControl
       Left = 0
       Top = 0
-      Width = 0
+      Width = 630
       Height = 575
-      ActivePage = tsMain
+      ActivePage = ts_LinkedClubs
       Align = alClient
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
       object tsMain: TTabSheet
-        Caption = 'Main'
+        Caption = 'Options'
         ParentShowHint = False
         ShowHint = True
         object lblClubName: TLabel
@@ -3316,8 +3324,8 @@ object SwimClubManage: TSwimClubManage
           OnClick = imgIndxArchiveClick
         end
         object DBTextPrimaryKey: TDBText
-          Left = 32
-          Top = 12
+          Left = 200
+          Top = 32
           Width = 65
           Height = 21
           DataField = 'SwimClubID'
@@ -3325,8 +3333,8 @@ object SwimClubManage: TSwimClubManage
           Visible = False
         end
         object lblPrimaryKey: TLabel
-          Left = 11
-          Top = 12
+          Left = 179
+          Top = 32
           Width = 15
           Height = 21
           Alignment = taRightJustify
@@ -3495,7 +3503,7 @@ object SwimClubManage: TSwimClubManage
         end
       end
       object ts_LinkedClubs: TTabSheet
-        Caption = 'Link Clubs'
+        Caption = 'Linked Swim Clubs'
         ImageIndex = 2
         object gClubGroups: TDBAdvGrid
           AlignWithMargins = True
@@ -3540,6 +3548,7 @@ object SwimClubManage: TSwimClubManage
           ControlLook.FixedGradientTo = clWhite
           ControlLook.FixedGradientMirrorFrom = clWhite
           ControlLook.FixedGradientMirrorTo = clWhite
+          ControlLook.FixedGradientHoverFrom = clGray
           ControlLook.FixedGradientHoverTo = clWhite
           ControlLook.FixedGradientHoverMirrorFrom = clWhite
           ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -3675,7 +3684,7 @@ object SwimClubManage: TSwimClubManage
               CheckTrue = 'Y'
               Color = clWindow
               DataPictureField = True
-              FieldName = 'SwimClubID'
+              FieldName = 'LinkedClubID'
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clWindowText
               Font.Height = -16
@@ -3863,9 +3872,6 @@ object SwimClubManage: TSwimClubManage
             80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
             FFC003FF}
           ShowUnicode = False
-          ExplicitLeft = 18
-          ExplicitTop = 16
-          ExplicitHeight = 520
           ColWidths = (
             0
             80
@@ -3895,6 +3901,7 @@ object SwimClubManage: TSwimClubManage
           end
           item
             Action = actnNewGroup
+            Caption = 'Ne&w Group'
             ImageIndex = 7
             ImageName = 'group'
           end
@@ -3909,6 +3916,11 @@ object SwimClubManage: TSwimClubManage
             Caption = '&Archive'
             ImageIndex = 5
             ImageName = 'archive'
+          end
+          item
+            Action = actnInfo
+            ImageIndex = 8
+            ImageName = 'info'
           end
           item
             Action = actnClose
@@ -3961,6 +3973,12 @@ object SwimClubManage: TSwimClubManage
       OnExecute = actnArchiveExecute
       OnUpdate = actnGenericUpdate
     end
+    object actnInfo: TAction
+      Caption = 'Info'
+      ImageIndex = 8
+      ImageName = 'info'
+      OnUpdate = actnInfoUpdate
+    end
     object actnClose: TAction
       Caption = 'Exit'
       Hint = 'Close the dialog. Changes will be saved.'
@@ -3980,7 +3998,6 @@ object SwimClubManage: TSwimClubManage
     Top = 541
   end
   object qryLinkedClubs: TFDQuery
-    Active = True
     Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -3988,29 +4005,30 @@ object SwimClubManage: TSwimClubManage
     UpdateOptions.EnableUpdate = False
     SQL.Strings = (
       'DECLARE @ID AS INTEGER;'
-      'SET @ID = :CLUBGROUPID;'
+      'SET @ID = :SWIMCLUBID;'
       ''
       'SELECT [ClubGroupID]'
       '      ,[ClubLinkID]'
       '      ,[ClubGroup].[SwimClubID]'
+      '      ,[SwimClub].[SwimClubID] AS LinkedClubID'
       '      ,[SwimClub].[Caption]'
       '      ,[SwimClub].[NickName]'
       '      ,[SwimClub].[LogoImg]'
       '  FROM [dbo].[ClubGroup]'
-      '  INNER JOIN [dbo].[SwimClub] '
+      '  LEFT JOIN [dbo].[SwimClub] '
       
         '    ON [dbo].[ClubGroup].[ClubLinkID] = [dbo].[SwimClub].[SwimCl' +
         'ubID]'
-      '  WHERE [ClubGroupID] = @ID;'
+      '  WHERE [ClubGroup].[SwimClubID] = @ID;'
       ''
       ''
       ''
       '')
-    Left = 154
+    Left = 226
     Top = 409
     ParamData = <
       item
-        Name = 'CLUBGROUPID'
+        Name = 'SWIMCLUBID'
         DataType = ftInteger
         ParamType = ptInput
         Value = Null
@@ -4018,7 +4036,7 @@ object SwimClubManage: TSwimClubManage
   end
   object dsLinkedClubs: TDataSource
     DataSet = qryLinkedClubs
-    Left = 154
+    Left = 226
     Top = 473
   end
   object qryClubGroup: TFDQuery
@@ -4032,7 +4050,7 @@ object SwimClubManage: TSwimClubManage
       ''
       ''
       '')
-    Left = 262
+    Left = 342
     Top = 409
   end
 end

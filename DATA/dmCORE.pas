@@ -323,8 +323,8 @@ begin
   Dataset.FieldByName('DefTeamSize').AsInteger := 4;
   Dataset.FieldByName('StartOfSwimSeason').AsDateTime := Now;
   Dataset.FieldByName('CreatedOn').AsDateTime := Now;
-  Dataset.FieldByName('Caption').AsString := 'Unnamed swimming club';
-  Dataset.FieldByName('NickName').AsString := 'No nick name given.';
+  Dataset.FieldByName('Caption').AsString := '';
+  Dataset.FieldByName('NickName').AsString := '';
 end;
 
 

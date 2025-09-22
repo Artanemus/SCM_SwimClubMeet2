@@ -2329,6 +2329,33 @@ object IMG: TIMG
           '2.7-2.7q-.525.35-1.137.525T14.5 20q-1.875 0-3.187-1.312T10 15.5t' +
           '1.313-3.187T14.5 11t3.188 1.313T19 15.5q0 .65-.175 1.263T18.3 17' +
           '.9l2.7 2.7z"/></svg>'
+      end
+      item
+        IconName = 'info'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M11 17h2v-6h-2' +
+          'zm1-8q.425 0 .713-.288T13 8t-.288-.712T12 7t-.712.288T11 8t.288.' +
+          '713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.78' +
+          '8-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T' +
+          '22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675' +
+          '-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 2' +
+          '0m0-8"/></svg>'
+      end
+      item
+        IconName = 'help'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M11.95 18q.525' +
+          ' 0 .888-.363t.362-.887t-.362-.888t-.888-.362t-.887.363t-.363.887' +
+          't.363.888t.887.362m-.9-3.85h1.85q0-.825.188-1.3t1.062-1.3q.65-.6' +
+          '5 1.025-1.238T15.55 8.9q0-1.4-1.025-2.15T12.1 6q-1.425 0-2.312.7' +
+          '5T8.55 8.55l1.65.65q.125-.45.563-.975T12.1 7.7q.8 0 1.2.438t.4.9' +
+          '62q0 .5-.3.938t-.75.812q-1.1.975-1.35 1.475t-.25 1.825M12 22q-2.' +
+          '075 0-3.9-.787t-3.175-2.138T2.788 15.9T2 12t.788-3.9t2.137-3.175' +
+          'T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-' +
+          '2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.3' +
+          '25-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8"/></svg>'
       end>
     Left = 320
     Top = 8
@@ -14128,6 +14155,11 @@ object IMG: TIMG
         CollectionIndex = 85
         CollectionName = 'group'
         Name = 'group'
+      end
+      item
+        CollectionIndex = 91
+        CollectionName = 'info'
+        Name = 'info'
       end>
     ImageCollection = CollectionCore
     Width = 48
@@ -14173,5 +14205,19 @@ object IMG: TIMG
     Size = 30
     Left = 80
     Top = 208
+  end
+  object imglstSwimClubCell: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 91
+        CollectionName = 'info'
+        Name = 'info'
+      end>
+    ImageCollection = CollectionCore
+    Width = 24
+    Height = 24
+    Size = 24
+    Left = 80
+    Top = 272
   end
 end

@@ -21,7 +21,8 @@ uses
 
   FireDAC.Stan.Option,
 
-  dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub
+  dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub, AdvUtil, AdvObj,
+  BaseGrid, AdvGrid, DBAdvGrid
 
   ;
 
@@ -114,9 +115,9 @@ type
     tabSession: TTabSheet;
     tabNominate: TTabSheet;
     tabHeats: TTabSheet;
-    gSwimClub: TDBGrid;
     SwimClub_Houses: TAction;
     SwimClub_Stats: TAction;
+    gSwimClub: TDBAdvGrid;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -269,6 +270,9 @@ begin
   StatusBar.Panels[2].Text := ''; // status messages
 
   Application.ShowHint := true;
+
+  // for Debug only
+
 
 end;
 

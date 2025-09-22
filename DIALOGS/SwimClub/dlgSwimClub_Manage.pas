@@ -75,6 +75,7 @@ type
     imgindxGroup: TSVGIconImage;
     actnNewGroup: TAction;
     qryClubGroup: TFDQuery;
+    actnInfo: TAction;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure actnArchiveExecute(Sender: TObject);
@@ -82,6 +83,7 @@ type
     procedure actnDeleteExecute(Sender: TObject);
     procedure actnEditExecute(Sender: TObject);
     procedure actnGenericUpdate(Sender: TObject);
+    procedure actnInfoUpdate(Sender: TObject);
     procedure actnNewExecute(Sender: TObject);
     procedure actnNewGroupExecute(Sender: TObject);
     procedure actnNewGroupUpdate(Sender: TObject);
@@ -90,7 +92,12 @@ type
     procedure btnSaveClubLogoClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure gSwimClubAnchorClick(Sender: TObject; ARow, ACol: Integer; Anchor:
+        string; var AutoHandle: Boolean);
+    procedure gSwimClubClick(Sender: TObject);
     procedure gSwimClubDblClick(Sender: TObject);
+    procedure gSwimClubGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
+        HTMLTemplate: string; Fields: TFields);
     procedure imgIndxArchiveClick(Sender: TObject);
     procedure splitvEditClosing(Sender: TObject);
     procedure splitvEditOpening(Sender: TObject);
@@ -126,6 +133,8 @@ begin
   splitvEdit.Opened := false;
   splitvEdit.UseAnimation := true;
   if pcntrlEdit.ActivePageIndex <> 0 then pcntrlEdit.ActivePageIndex := 0;
+  qryClubGroup.Open;
+
 end;
 
 procedure TSwimClubManage.actnArchiveExecute(Sender: TObject);
@@ -169,7 +178,10 @@ begin
 
   // uses EXECSCALAR method to ensure it's empty.
   if uSwimClub.SessionCount = 0 then
+  begin
     uSwimClub.Delete_SwimClub(false); // false = ignore locked states.
+    exit;
+  end;
 
   // We have sessions. Are there any locked sessions?
   if uSwimClub.HasLockedSession then
@@ -234,6 +246,18 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
+procedure TSwimClubManage.actnInfoUpdate(Sender: TObject);
+var
+DoEnable: boolean;
+begin
+  DoEnable := false;
+  // Is the table begin modified? (used by buttons, new, delete, archive)
+  if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
+    if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
+      DoEnable := true;
+  TAction(Sender).Enabled := DoEnable;
+end;
+
 procedure TSwimClubManage.actnNewExecute(Sender: TObject);
 var
   success: boolean;
@@ -241,6 +265,7 @@ begin
   success := false;
   try
     CORE.qrySwimClub.Insert; // defaults handled by CORE.OnNewRecord
+    CORE.qrySwimClub.FieldByName('Caption').AsString := 'UNNAMED CLUB';
     CORE.qrySwimClub.Post;
     Success := true;
   except on E: Exception do
@@ -249,18 +274,19 @@ begin
   if Success then // Start editing the new club.
   begin
     CORE.qrySwimClub.Refresh; // ensured all ImageIndex values are correct.
-    actnEdit.Checked := true;
-    actnEditExecute(actnEdit);
+//    actnEdit.Checked := true;
+//    actnEditExecute(actnEdit);
   end;
 end;
 
 procedure TSwimClubManage.actnNewGroupExecute(Sender: TObject);
 var
-  i, recNo, ASwimClubID: integer;
+  i, refSwimClubID, ASwimClubID: integer;
   txt, SQL: string;
+//  v: variant;
 begin
   txt := '';
-
+  ASwimClubID := 0;
   if gSwimClub.RowSelectCount > 1 then
   begin
     gSwimClub.BeginUpdate;
@@ -269,50 +295,92 @@ begin
         try  // create a new Club .. default values handle by CORE.OnNewRecord.
           CORE.qrySwimClub.Insert;
           CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean := true;
-          CORE.qrySwimClub.FieldByName('Caption').AsString := 'CLUB GROUP;';
+          CORE.qrySwimClub.FieldByName('Caption').AsString := 'NEW CLUB GROUP';
           CORE.qrySwimClub.Post;
+
+          // Get the newly created CLUBGROUP-SWIMCLUB.. Safe to do this in FireDAC.
+          ASwimClubID := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+
+          // Alternative method...
+          {
+          v := SCM2.scmConnection.ExecSQLScalar('SELECT IDENT_CURRENT (''dbo.SwimClub'');' );
+          if not VarIsClear(v) and (v=0) then  ASwimClubID := v;
+          }
+
+          {NOTE: on create - CLUBGROUP-SWIMCLUB is an additional selected row in grid!}
+
         except on E: Exception do
           begin
             CORE.qrySwimClub.Cancel;
             exit;
           end;
         end;
-        // RECOMMENDED Method..
-        ASwimClubID := SCM2.scmConnection.ExecSQLScalar('SELECT CAST(SCOPE_IDENTITY() AS INT);');
-        // Loop through all data rows in the grid..
-        for i := gSwimClub.FixedRows to gSwimClub.RowCount - 1 do
-        begin
-          // Check if the row is 'selected ROW'
-          if gSwimClub.RowSelect[i] then
-          begin
-            // if the row is a 'GROUP' club - then skip
-            if (StrToIntDef(gSwimClub.Cells[4, i], 0) = 1) then
-              continue; // sorry 'group inception' is not allowed...
 
-            // get the SwimClubID of the 'selected row'.
-            recNo := StrToIntDef(gSwimClub.Cells[5, i], 0);
-            if recNo > 0 then
+        if ASwimClubID <> 0 then
+        begin
+          // Loop through all data rows in the grid..
+          for i := gSwimClub.FixedRows to gSwimClub.RowCount - 1 do
+          begin
+            txt := '';
+            // Check if the row is 'selected ROW'
+            if gSwimClub.RowSelect[i] then
             begin
-              try
-                // Create a new ClubGroupRecord..
-                qryClubGroup.Insert;
-                // the linked id value.
-                qryClubGroup.FieldByName('ClubLinkID').AsInteger := recNo;
-                // the newly created GROUP SWIMCLUB ID
-                qryClubGroup.FieldByName('SwimClubID').AsInteger := ASwimClubID;
-                qryClubGroup.Post;
-              except on E: Exception do
-                  qryClubGroup.Cancel;
+              // if the row is a 'GROUP' club - then skip
+              if (StrToIntDef(gSwimClub.Cells[4, i], 0) = 1) then
+                continue; // sorry 'group inception' is not allowed...
+
+              // get the SwimClubID of the 'selected row'.
+              refSwimClubID := StrToIntDef(gSwimClub.Cells[5, i], 0);
+              // don't insert the CLUBGROUP-SWIMCLUB into table (it'll also be selected)
+              if (refSwimClubID > 0) and (ASwimClubID <> refSwimClubID) then
+              begin
+//                if uSwimClub.Locate(refSwimClubID) then // assert
+//                begin
+                  try
+                    // Create a new ClubGroupRecord..
+                    qryClubGroup.Insert;
+                    // the linked swim club.
+                    qryClubGroup.FieldByName('ClubLinkID').AsInteger := refSwimClubID;
+                    // the newly created CLUBGROUP-SWIMCLUB
+                    qryClubGroup.FieldByName('SwimClubID').AsInteger := ASwimClubID;
+                    qryClubGroup.Post;
+                  except on E: Exception do
+                    begin
+                        qryClubGroup.Cancel;
+                        break;
+                    end;
+                  end;
+//                end;
+                // it would be sweet to build some text for a cell comment .
+                txt := txt + ' ' + IntToStr(refSwimClubID);
               end;
-              // it would be sweet to build some text for the NickName field.
-              txt := txt + ' ' + IntToStr(recNo);
             end;
+
           end;
-        end;
-        if not txt.IsEmpty then
-        begin // a string of numbers...
-          SQL := 'UPDATE [SwimClubMeet2].[dbo].[SwimClub] SET [NickName] = :ID1 WHERE SwimClubID = :ID2;';
-          SCM2.scmConnection.ExecSQL(SQL, [txt, ASwimClubID]);
+
+          // TRIANGLE IS TINY UN_ABLE TO HOVER OVER..
+          (*
+          if not txt.IsEmpty then
+          begin
+            // add comment text.
+            var aRow := gSwimClub.RealRowIndex(CORE.qrySwimClub.RecNo);
+            // gSwimClub.RemoveComment(2, aRow); // is this needed?
+            gSwimClub.AddComment(2, aRow, txt);
+          end;
+          *)
+
+          // locate grid at new record.
+          gSwimClub.Row := gSwimClub.RealRowIndex(CORE.qrySwimClub.RecNo);
+          gSwimClub.Invalidate;
+
+          {
+          if not txt.IsEmpty then
+          begin // a string of numbers...
+            SQL := 'UPDATE [SwimClubMeet2].[dbo].[SwimClub] SET [NickName] = :ID1 WHERE SwimClubID = :ID2;';
+            SCM2.scmConnection.ExecSQL(SQL, [txt, ASwimClubID]);
+          end;
+          }
+
         end;
       end;
     finally
@@ -408,39 +476,26 @@ begin
   end;
 end;
 
-procedure TSwimClubManage.gSwimClubDblClick(Sender: TObject);
+procedure TSwimClubManage.gSwimClubAnchorClick(Sender: TObject; ARow, ACol:
+    Integer; Anchor: string; var AutoHandle: Boolean);
 begin
-    actnEdit.Checked := true;
-    actnEditExecute(actnEdit); // this works.
-end;
-
-procedure TSwimClubManage.imgIndxArchiveClick(Sender: TObject);
-begin
-  if (CORE.qrySwimClub.State = dsEdit) or (CORE.qrySwimClub.State = dsInsert) then
+  // Check if the clicked anchor matches our custom action string
+  if Anchor = 'IMAGE_CLICK_ACTION' then
   begin
-    // toggle boolean
-    CORE.qrySwimClub.FieldByName('IsArchived').AsBoolean := not
-      CORE.qrySwimClub.FieldByName('IsArchived').AsBoolean;
-    // paint the correct icon
-    imgIndxArchive.ImageIndex :=
-      ORD(CORE.qrySwimClub.FieldByName('IsArchived').AsBoolean);
+    if (CORE.qrySwimClub.RecNo <> gSwimclub.GetRealRow) then
+      CORE.qrySwimClub.RecNo := gSwimclub.GetRealRow;
+
+    // The image was clicked, so perform the desired action.
+    ShowMessage('Image in cell (' + IntToStr(ACol) + ',' + IntToStr(ARow) + ') was clicked!');
+
+    // Prevent the grid from trying to open "IMAGE_CLICK_ACTION" as a URL
+    AutoHandle := False;
   end;
 end;
 
-procedure TSwimClubManage.splitvEditClosing(Sender: TObject);
-var
-i, RecNo: integer;
-
+procedure TSwimClubManage.gSwimClubClick(Sender: TObject);
 begin
-
-
-
-  if (CORE.qrySwimClub.State = dsEdit) or (CORE.qrySwimClub.State = dsInsert) then
-  begin
-    CORE.qrySwimClub.Post; // finalize changes..
-    CORE.qrySwimClub.Refresh; // Updates qrySwimClub.imgIndxArchived value.
-  end;
-
+(*
   { FIX the HTML cell not moving the record selector - wit DB unsynced
     On cell click this routine is call twice. Probably mouse down, then
     mouse up.
@@ -459,6 +514,78 @@ begin
     gSwimclub.Options := gSwimclub.Options - [goRangeSelect, goEditing] + [goRowSelect];
   end;
   gSwimclub.SelectRows(RecNo, 1);
+*)
+  if (CORE.qrySwimClub.RecNo <> gSwimclub.GetRealRow) then
+    CORE.qrySwimClub.RecNo := gSwimclub.GetRealRow;
+
+end;
+
+procedure TSwimClubManage.gSwimClubDblClick(Sender: TObject);
+begin
+    actnEdit.Checked := true;
+    actnEditExecute(actnEdit); // this works.
+end;
+
+procedure TSwimClubManage.gSwimClubGetHTMLTemplate(Sender: TObject; ACol, ARow:
+  Integer; var HTMLTemplate: string; Fields: TFields);
+var
+  htmlStr: string;
+begin
+  htmlStr := '';
+  if (ARow >= gSwimClub.FixedRows) then
+  begin
+    if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
+    begin
+      htmlStr := '''
+    <FONT size="12"><A HREF="IMAGE_CLICK_ACTION"><IMG SRC="idx:0"></A>  <#Caption></FONT>
+    <FONT size="8"></FONT><#NickName>
+    ''';
+    end
+    else
+    begin
+      htmlStr := '''
+    <FONT size="12"><#SwimClubID>:  <#Caption></FONT>
+    <FONT size="8"></FONT><#NickName>
+    ''';
+    end;
+    if not htmlStr.IsEmpty then
+    begin
+      HTMLTemplate := htmlStr;
+    end;
+
+  end;
+end;
+
+procedure TSwimClubManage.imgIndxArchiveClick(Sender: TObject);
+begin
+  if (CORE.qrySwimClub.State = dsEdit) or (CORE.qrySwimClub.State = dsInsert) then
+  begin
+    // toggle boolean
+    CORE.qrySwimClub.FieldByName('IsArchived').AsBoolean := not
+      CORE.qrySwimClub.FieldByName('IsArchived').AsBoolean;
+    // paint the correct icon
+    imgIndxArchive.ImageIndex :=
+      ORD(CORE.qrySwimClub.FieldByName('IsArchived').AsBoolean);
+  end;
+end;
+
+procedure TSwimClubManage.splitvEditClosing(Sender: TObject);
+var
+RecNo: integer;
+
+begin
+  (*
+  if (CORE.qrySwimClub.State = dsEdit) or (CORE.qrySwimClub.State = dsInsert) then
+  begin
+    CORE.qrySwimClub.Post; // finalize changes..
+    CORE.qrySwimClub.Refresh; // Updates qrySwimClub.imgIndxArchived value.
+  end;
+  *)
+
+  CORE.qrySwimClub.CheckBrowseMode;
+  CORE.qrySwimClub.Refresh; // Updates qrySwimClub.imgIndxArchived value.
+
+  qryLinkedClubs.Close;
 
   if fGridIsUpdating then
   begin
@@ -480,14 +607,23 @@ begin
   if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
   begin
     lblClubName.Caption := 'Group Name';
-    lblNickname.Caption := 'Group Nickname';
+    lblNickname.Caption := 'Description';
     lblEmail.Visible := false;
     lblWebSite.Visible := false;
     lblContactNum.Visible := false;
     DBEmail.Visible := false;
     DBWebSite.Visible := false;
     DBContactNum.Visible := false;
+    DBTextPrimaryKey.Visible := true;
+    lblPrimaryKey.Visible := true;
     imgindxGroup.Visible := true;
+    ts_LinkedClubs.Visible := true;
+    ts_LinkedClubs.Enabled := true;
+    qryLinkedClubs.Close;
+    qryLinkedClubs.ParamByName('SWIMCLUBID').AsInteger :=
+      CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+    qryLinkedClubs.Prepare;
+    qryLinkedClubs.Open;
   end
   else
   begin
@@ -499,8 +635,16 @@ begin
     DBEmail.Visible := true;
     DBWebSite.Visible := true;
     DBContactNum.Visible := true;
+    DBTextPrimaryKey.Visible := false;
+    lblPrimaryKey.Visible := false;
     imgindxGroup.Visible := false;
+    ts_LinkedClubs.Visible := false;
+    ts_LinkedClubs.Enabled := false;
+
   end;
+
+  pcntrlEdit.ActivePageIndex := 0;  // default to tabsheet 'tsMAIN'
+
 end;
 
 end.

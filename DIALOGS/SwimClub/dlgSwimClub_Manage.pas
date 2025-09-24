@@ -104,6 +104,11 @@ type
     procedure splitvEditOpening(Sender: TObject);
   private
     fGridIsUpdating: Boolean;
+    procedure SyncDBtoGrid(AMethod: integer); overload;
+    procedure SyncDBtoGrid(AMethod, ARow: integer); overload;
+    procedure SyncGridToDB(AMethod: integer); overload;
+  protected
+
   public
     { Public declarations }
 
@@ -179,7 +184,7 @@ begin
   // clean up the UI
   gSwimClub.ClearSelection; // GRID : highlight 'nothing' and../
   try  // ...then set row selection to current record.
-    gSwimClub.Row := gSwimClub.RealRowIndex(RecNo);
+    gSwimClub.Row := gSwimClub.DisplRowIndex(RecNo);
   finally
     actnDelete.Checked := false; // de-select buttons on the actnToolBar.
     if gSwimClub.CanFocus then
@@ -281,34 +286,19 @@ var
   success: boolean;
 begin
   success := false;
-//  gSwimClub.BeginUpdate;
-  CORE.dsSwimClub.Enabled := false;
   try
-    try
-      CORE.qrySwimClub.Insert; // defaults handled by CORE.OnNewRecord
-      CORE.qrySwimClub.FieldByName('Caption').AsString := 'UNNAMED CLUB';
-      CORE.qrySwimClub.Post;
-      Success := true;
-    except on E: Exception do
-        CORE.qrySwimClub.Cancel;
-    end;
+    CORE.qrySwimClub.Insert; // defaults handled by CORE.OnNewRecord
+    CORE.qrySwimClub.FieldByName('Caption').AsString := 'UNNAMED CLUB';
+    CORE.qrySwimClub.Post;
+    Success := true;
+  except on E: Exception do
+      CORE.qrySwimClub.Cancel;
+  end;
 
-    if Success then // Start editing the new club.
-    begin
-      CORE.qrySwimClub.Refresh; // ensured all ImageIndex values are correct.
-      CORE.dsSwimClub.Enabled := true;
-      gSwimClub.ClearSelection;
-      try  // ...then set row selection to current record.
-        gSwimClub.Row := gSwimClub.RealRowIndex(CORE.qrySwimClub.RecNo);
-      finally
-        actnNew.Checked := false; // de-select buttons on the actnToolBar.
-        if gSwimClub.CanFocus then
-          gSwimClub.SetFocus; // lose focus on the ToolBar buttons
-      end;
-    end;
-  finally
-//    gSwimClub.EndUpdate;
-;
+  if Success then // Fix UI selection. Sync to database
+  begin
+    CORE.qrySwimClub.Refresh; // ensured all ImageIndex values are correct.
+    SyncGridToDB(1);
   end;
 end;
 
@@ -321,6 +311,7 @@ begin
     gSwimClub.BeginUpdate;
     try
       begin
+
         try  // create a new Club .. default values handle by CORE.OnNewRecord.
           CORE.qrySwimClub.Insert;
           CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean := true;
@@ -329,14 +320,12 @@ begin
 
           // Get the newly created CLUBGROUP-SWIMCLUB.. Safe to do this in FireDAC.
           ASwimClubID := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+        {  // Alternative method...
+        v := SCM2.scmConnection.ExecSQLScalar('SELECT IDENT_CURRENT (''dbo.SwimClub'');' );
+        if not VarIsClear(v) and (v=0) then  ASwimClubID := v;
+        }
 
-
-{  // Alternative method...
-v := SCM2.scmConnection.ExecSQLScalar('SELECT IDENT_CURRENT (''dbo.SwimClub'');' );
-if not VarIsClear(v) and (v=0) then  ASwimClubID := v;
-}
-
-{NOTE: on create - CLUBGROUP-SWIMCLUB is an additional selected row in grid!}
+        {NOTE: on create - CLUBGROUP-SWIMCLUB is an additional selected row in grid!}
 
         except on E: Exception do
           begin
@@ -381,11 +370,10 @@ if not VarIsClear(v) and (v=0) then  ASwimClubID := v;
 
           end;
 
-          // locate grid at new record.
+          // STEP : locate grid to sync with new record. Fix UI selection.
+          // NOTE: Doesn't require toggeling of MouseAction.DisjunctRowSelect
           CORE.qrySwimClub.Refresh; // ensured all ImageIndex values are correct.
-          gSwimClub.ClearSelection;
-          gSwimClub.Row := gSwimClub.RealRowIndex(CORE.qrySwimClub.RecNo);
-          gSwimClub.Invalidate;
+          SyncGridToDB(1);
         end;
       end;
     finally
@@ -477,45 +465,54 @@ end;
 procedure TSwimClubManage.gSwimClubAnchorClick(Sender: TObject; ARow, ACol:
     Integer; Anchor: string; var AutoHandle: Boolean);
 begin
+
+  // User click on an UNSELECTED 'Gropued Club' HTML row's anchor
+  // ... fix UI display. Select the row.
+  if (ARow <> gSwimClub.DisplRowIndex(CORE.qrySwimClub.RecNo)) then
+  begin
+    // toggleing DisjunctRowSelect ensures it get painted correctly.
+    gSwimClub.MouseActions.DisjunctRowSelect := false;
+    CORE.qrySwimClub.RecNo := gSwimClub.RealRowIndex(ARow);
+    gSwimClub.MouseActions.DisjunctRowSelect := true;
+  end;
+
   // Check if the clicked anchor matches our custom action string
-  if Anchor = 'IMAGE_CLICK_ACTION' then
+  if Anchor = 'INFO_CLICK_ACTION' then
   begin
     if (CORE.qrySwimClub.RecNo <> gSwimclub.GetRealRow) then
       CORE.qrySwimClub.RecNo := gSwimclub.GetRealRow;
 
     // The image was clicked, so perform the desired action.
-    ShowMessage('Image in cell (' + IntToStr(ACol) + ',' + IntToStr(ARow) + ') was clicked!');
+    ShowMessage('QUICK DISPLAY LINKED CLUBS');
 
     // Prevent the grid from trying to open "IMAGE_CLICK_ACTION" as a URL
     AutoHandle := False;
+  end
+  else if Anchor = 'EDIT_CLICK_ACTION' then
+  begin
+    if (CORE.qrySwimClub.RecNo <> gSwimclub.GetRealRow) then
+      CORE.qrySwimClub.RecNo := gSwimclub.GetRealRow;
+    // The image was clicked, so perform the desired action.
+    ShowMessage('REVEAL AND EDIT LINK CLUBS.');
+    // Prevent the grid from trying to open "IMAGE_CLICK_ACTION" as a URL
+    AutoHandle := False;
+  end
+  else if Anchor = 'UPDATE_CLICK_ACTION' then
+  begin
+    if (CORE.qrySwimClub.RecNo <> gSwimclub.GetRealRow) then
+      CORE.qrySwimClub.RecNo := gSwimclub.GetRealRow;
+    // The image was clicked, so perform the desired action.
+    ShowMessage('UPDATE LINK CLUB SELECTION.');
+    // Prevent the grid from trying to open "IMAGE_CLICK_ACTION" as a URL
+    AutoHandle := False;
   end;
+
 end;
 
 procedure TSwimClubManage.gSwimClubClick(Sender: TObject);
 begin
-(*
-  { FIX the HTML cell not moving the record selector - wit DB unsynced
-    On cell click this routine is call twice. Probably mouse down, then
-    mouse up.
-    After mouse up the GetRealRow will be equal to ARow.
-    Assigning RecNo will move the record selector and the HTML cell
-    is painted with the correct data.
-  }
-  RecNo := gSwimclub.GetRealRow;
-  if (RecNo >= 0) and (RecNo < CORE.qrySwimClub.RecordCount) then
-    CORE.qrySwimClub.RecNo := RecNo;
-
-  { FIX row selection.
-    Often a range of rows are selected. Force single selection of row.}
-  if ([goRangeSelect, goEditing] * gSwimclub.Options) <> [] then
-  begin
-    gSwimclub.Options := gSwimclub.Options - [goRangeSelect, goEditing] + [goRowSelect];
-  end;
-  gSwimclub.SelectRows(RecNo, 1);
-*)
-  if (CORE.qrySwimClub.RecNo <> gSwimclub.GetRealRow) then
-    CORE.qrySwimClub.RecNo := gSwimclub.GetRealRow;
-
+  { FIX SYNC - Locate DataBase to Grid ROW.}
+//  SyncDBtoGrid(1); // TESTING SYNC METHODS.
 end;
 
 procedure TSwimClubManage.gSwimClubDblClick(Sender: TObject);
@@ -534,17 +531,22 @@ begin
   begin
     if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
     begin
+      {NOTE: gSwimClub.HTMLKeepLineBreak := false. Use <BR> for line breaks}
       htmlStr := '''
-    <FONT size="12"><A HREF="IMAGE_CLICK_ACTION"><IMG SRC="idx:0"></A>  <#Caption></FONT>
-    <FONT size="8"></FONT><#NickName>
-    ''';
+        <FONT size="12"><A HREF="INFO_CLICK_ACTION"><IMG SRC="idx:0"></A>
+          <#Caption></FONT><BR>
+        <IND x="30">
+        <FONT size="12"><A HREF="EDIT_CLICK_ACTION"><IMG SRC="idx:1"></A>
+        <FONT size="12"><A HREF="UPDATE_CLICK_ACTION"><IMG SRC="idx:2"></A>
+           <FONT size="8"></FONT><#NickName>
+        ''';
     end
     else
     begin
       htmlStr := '''
-    <FONT size="12"><#SwimClubID>:  <#Caption></FONT>
-    <FONT size="8"></FONT><#NickName>
-    ''';
+        <FONT size="12"><#SwimClubID>:  <#Caption></FONT><BR>
+        <FONT size="8"></FONT><#NickName>
+        ''';
     end;
     if not htmlStr.IsEmpty then
     begin
@@ -569,7 +571,7 @@ end;
 
 procedure TSwimClubManage.splitvEditClosed(Sender: TObject);
 begin
-  gSwimClub.ClearSelection; // clean up the UI
+//  gSwimClub.ClearSelection; // clean up the UI
   actnEdit.Checked := false; // de-select buttons on the actnToolBar.
 end;
 
@@ -639,6 +641,66 @@ begin
   end;
   pcntrlEdit.ActivePageIndex := 0; // default to tabsheet 'tsMAIN'
 
+end;
+
+procedure TSwimClubManage.SyncDBtoGrid(AMethod, ARow: integer);
+begin
+  case AMethod of
+    1: // METHOD 1: typically use when moving grid-row to DB
+    begin
+      gSwimClub.ClearRowSelect; // nils 'selected items' and REPAINTS!
+      // map visible row to realrow index;
+      CORE.qrySwimClub.RecNo := gSwimclub.RealRowIndex(ARow);
+      gSwimClub.SelectRows(gSwimClub.Row, 1); // Select current Focused row.
+    end;
+    2: // METHOD 2: typically use when moving DB to grid-row
+    begin
+      gSwimClub.MouseActions.DisjunctRowSelect := false;
+      CORE.qrySwimClub.RecNo := gSwimclub.RealRowIndex(ARow);
+      gSwimClub.MouseActions.DisjunctRowSelect := true;
+    end;
+  end;
+end;
+
+procedure TSwimClubManage.SyncGridToDB(AMethod: integer);
+begin
+  case AMethod of
+    1: // METHOD 1: typically use when moving grid-row to DB
+    begin
+      gSwimClub.ClearRowSelect; // nils 'selected items' and REPAINTS!
+      gSwimClub.Row := gSwimclub.DisplRowIndex(CORE.qrySwimClub.RecNo);
+      gSwimClub.SelectRows(gSwimClub.Row, 1); // Select current Focused row.
+    end;
+    2: // METHOD 2: typically use when moving DB to grid-row
+    begin
+      gSwimClub.MouseActions.DisjunctRowSelect := false;
+      gSwimClub.Row := gSwimclub.DisplRowIndex(CORE.qrySwimClub.RecNo);
+      gSwimClub.MouseActions.DisjunctRowSelect := true;
+    end;
+  end;
+end;
+
+procedure TSwimClubManage.SyncDBtoGrid(AMethod: integer);
+begin
+  {
+    // intersection operator : test if either rangeselect or editing is in options.
+    if ([goRangeSelect, goEditing] * gSwimclub.Options) <> [] then
+      gSwimclub.Options := gSwimclub.Options - [goRangeSelect, goEditing] + [goRowSelect];
+  }
+  case AMethod of
+    1: // METHOD 1: typically use when moving grid-row to DB
+    begin
+      gSwimClub.ClearRowSelect; // nils 'selected items' and REPAINTS!
+      CORE.qrySwimClub.RecNo := gSwimclub.DisplRowIndex(gSwimClub.Row);
+      gSwimClub.SelectRows(gSwimClub.Row, 1); // Select current Focused row.
+    end;
+    2: // METHOD 2: typically use when moving DB to grid-row
+    begin
+      gSwimClub.MouseActions.DisjunctRowSelect := false;
+      CORE.qrySwimClub.RecNo := gSwimclub.DisplRowIndex(gSwimClub.Row);
+      gSwimClub.MouseActions.DisjunctRowSelect := true;
+    end;
+  end;
 end;
 
 end.

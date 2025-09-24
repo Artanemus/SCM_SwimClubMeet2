@@ -1840,6 +1840,7 @@ object IMG: TIMG
           '2.92L5.92 19H5v-.92zM17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83l3.75 ' +
           '3.75l1.83-1.83a.996.996 0 0 0 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.' +
           '71-.29m-3.6 3.19L3 17.25V21h3.75L17.81 9.94z"/></svg>'
+        FixedColor = clDarkgoldenrod
       end
       item
         IconName = 'in'
@@ -2356,6 +2357,16 @@ object IMG: TIMG
           'T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-' +
           '2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.3' +
           '25-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8"/></svg>'
+      end
+      item
+        IconName = 'update'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M4 20q-.825 0-' +
+          '1.412-.587T2 18V6q0-.825.588-1.412T4 4h5v2H4v12h16V6h-5V4h5q.825' +
+          ' 0 1.413.588T22 6v12q0 .825-.587 1.413T20 20zm8-4.6l-5-5L8.4 9l2' +
+          '.6 2.6V4h2v7.6L15.6 9l1.4 1.4z"/></svg>'
+        FixedColor = clDarkgoldenrod
       end>
     Left = 320
     Top = 8
@@ -14212,6 +14223,16 @@ object IMG: TIMG
         CollectionIndex = 91
         CollectionName = 'info'
         Name = 'info'
+      end
+      item
+        CollectionIndex = 23
+        CollectionName = 'visible_on'
+        Name = 'visible_on'
+      end
+      item
+        CollectionIndex = 93
+        CollectionName = 'update'
+        Name = 'update'
       end>
     ImageCollection = CollectionCore
     Width = 24

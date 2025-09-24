@@ -4,7 +4,7 @@ object SwimClubManage: TSwimClubManage
   BorderStyle = bsDialog
   Caption = 'Manage Swimming Clubs ...'
   ClientHeight = 616
-  ClientWidth = 760
+  ClientWidth = 772
   Color = clBtnFace
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
@@ -2685,25 +2685,26 @@ object SwimClubManage: TSwimClubManage
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 760
+    Width = 772
     Height = 41
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 760
   end
   object pnlBody: TPanel
     Left = 146
     Top = 41
-    Width = 614
+    Width = 626
     Height = 575
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 776
+    ExplicitWidth = 614
     object gSwimClub: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 614
+      Width = 626
       Height = 575
       Cursor = crDefault
       Align = alClient
@@ -2712,14 +2713,14 @@ object SwimClubManage: TSwimClubManage
       DefaultRowHeight = 60
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 4
+      RowCount = 8
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
       Font.Height = -16
       Font.Name = 'Segoe UI'
       Font.Style = []
-      Options = [goVertLine, goHorzLine, goRowSelect, goFixedRowDefAlign]
+      Options = [goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
       ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
@@ -2729,6 +2730,7 @@ object SwimClubManage: TSwimClubManage
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
       OnAnchorClick = gSwimClubAnchorClick
+      HTMLKeepLineBreak = False
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
       ActiveCellFont.Height = -12
@@ -2800,6 +2802,8 @@ object SwimClubManage: TSwimClubManage
       HTMLSettings.ImageBaseName = 'img'
       Look = glCustom
       MouseActions.AutoSizeColOnDblClick = False
+      MouseActions.DisjunctRowSelect = True
+      MouseActions.RowSelect = True
       PrintSettings.DateFormat = 'dd/mm/yyyy'
       PrintSettings.Font.Charset = DEFAULT_CHARSET
       PrintSettings.Font.Color = clWindowText
@@ -3156,6 +3160,8 @@ object SwimClubManage: TSwimClubManage
         FFC003FF}
       ShowUnicode = False
       OnGetHTMLTemplate = gSwimClubGetHTMLTemplate
+      ExplicitLeft = 6
+      ExplicitTop = 6
       ColWidths = (
         0
         64
@@ -3165,6 +3171,10 @@ object SwimClubManage: TSwimClubManage
         0)
       RowHeights = (
         30
+        60
+        60
+        60
+        60
         60
         60
         60)
@@ -3226,7 +3236,6 @@ object SwimClubManage: TSwimClubManage
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
-      ExplicitWidth = 630
       object tsMain: TTabSheet
         Caption = 'Options'
         ParentShowHint = False
@@ -3500,7 +3509,7 @@ object SwimClubManage: TSwimClubManage
           AlignWithMargins = True
           Left = 10
           Top = 10
-          Width = 383
+          Width = 375
           Height = 519
           Cursor = crDefault
           Margins.Left = 10
@@ -3879,16 +3888,7 @@ object SwimClubManage: TSwimClubManage
           end
           item
             Action = actnNewGroup
-            ImageIndex = 7
-            ImageName = 'group'
-          end
-          item
-            Action = actnGroupSelect
-            ImageIndex = 7
-            ImageName = 'group'
-          end
-          item
-            Action = actnGroupUpdate
+            Caption = 'Ne&w'#13#10'Group'
             ImageIndex = 7
             ImageName = 'group'
           end

@@ -1,6 +1,6 @@
 object IMG: TIMG
   Height = 622
-  Width = 938
+  Width = 1193
   object imglstEventStatus: TSVGIconVirtualImageList
     Images = <
       item
@@ -2367,6 +2367,36 @@ object IMG: TIMG
           ' 0 1.413.588T22 6v12q0 .825-.587 1.413T20 20zm8-4.6l-5-5L8.4 9l2' +
           '.6 2.6V4h2v7.6L15.6 9l1.4 1.4z"/></svg>'
         FixedColor = clDarkgoldenrod
+      end
+      item
+        IconName = 'arrow-left2'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="m11 18l-6-6l6-' +
+          '6l1.4 1.4L7.825 12l4.575 4.6zm6.6 0l-6-6l6-6L19 7.4L14.425 12L19' +
+          ' 16.6z"/></svg>'
+      end
+      item
+        IconName = 'arrow-right2'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M9.575 12L5 7.' +
+          '4L6.4 6l6 6l-6 6L5 16.6zm6.6 0L11.6 7.4L13 6l6 6l-6 6l-1.4-1.4z"' +
+          '/></svg>'
+      end
+      item
+        IconName = 'arrow-left'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="m14 18l-6-6l6-' +
+          '6l1.4 1.4l-4.6 4.6l4.6 4.6z"/></svg>'
+      end
+      item
+        IconName = 'arrow-right'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 12L8 7.4' +
+          'L9.4 6l6 6l-6 6L8 16.6z"/></svg>'
       end>
     Left = 320
     Top = 8
@@ -12794,8 +12824,8 @@ object IMG: TIMG
               B107F00DAA3CF3E36D761EEF0000000049454E44AE426082}
           end>
       end>
-    Left = 320
-    Top = 368
+    Left = 928
+    Top = 352
   end
   object imglstPNGMenuBar: TVirtualImageList
     Images = <
@@ -13067,8 +13097,8 @@ object IMG: TIMG
     ImageCollection = PNGCollection
     Width = 32
     Height = 32
-    Left = 320
-    Top = 424
+    Left = 928
+    Top = 416
   end
   object imgList3: TVirtualImageList
     Images = <
@@ -13080,8 +13110,8 @@ object IMG: TIMG
     ImageCollection = PNGCollection
     Width = 24
     Height = 24
-    Left = 488
-    Top = 544
+    Left = 936
+    Top = 488
   end
   object imgNominate: TVirtualImageList
     Images = <
@@ -13103,8 +13133,8 @@ object IMG: TIMG
     ImageCollection = PNGCollection
     Width = 40
     Height = 40
-    Left = 408
-    Top = 544
+    Left = 856
+    Top = 488
   end
   object imgForm: TVirtualImageList
     Images = <
@@ -13346,8 +13376,8 @@ object IMG: TIMG
     ImageCollection = PNGCollection
     Width = 48
     Height = 48
-    Left = 552
-    Top = 544
+    Left = 1000
+    Top = 488
   end
   object imglstHeatStatus: TSVGIconVirtualImageList
     Images = <
@@ -13725,6 +13755,11 @@ object IMG: TIMG
         CollectionIndex = 65
         CollectionName = 'plus-box'
         Name = 'plus-box'
+      end
+      item
+        CollectionIndex = 67
+        CollectionName = 'search'
+        Name = 'search'
       end>
     ImageCollection = CollectionCore
     Width = 24
@@ -14240,5 +14275,39 @@ object IMG: TIMG
     Size = 24
     Left = 80
     Top = 272
+  end
+  object imglstClubGroup: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 94
+        CollectionName = 'arrow-left2'
+        Name = 'arrow-left2'
+      end
+      item
+        CollectionIndex = 95
+        CollectionName = 'arrow-right2'
+        Name = 'arrow-right2'
+      end
+      item
+        CollectionIndex = 96
+        CollectionName = 'arrow-left'
+        Name = 'arrow-left'
+      end
+      item
+        CollectionIndex = 97
+        CollectionName = 'arrow-right'
+        Name = 'arrow-right'
+      end
+      item
+        CollectionIndex = 67
+        CollectionName = 'search'
+        Name = 'search'
+      end>
+    ImageCollection = CollectionCore
+    Width = 48
+    Height = 48
+    Size = 48
+    Left = 984
+    Top = 80
   end
 end

@@ -2690,7 +2690,6 @@ object SwimClubManage: TSwimClubManage
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 760
   end
   object pnlBody: TPanel
     Left = 146
@@ -2700,7 +2699,7 @@ object SwimClubManage: TSwimClubManage
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 614
+    ExplicitLeft = 776
     object gSwimClub: TDBAdvGrid
       Left = 0
       Top = 0
@@ -2713,7 +2712,7 @@ object SwimClubManage: TSwimClubManage
       DefaultRowHeight = 60
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 8
+      RowCount = 5
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -3160,8 +3159,6 @@ object SwimClubManage: TSwimClubManage
         FFC003FF}
       ShowUnicode = False
       OnGetHTMLTemplate = gSwimClubGetHTMLTemplate
-      ExplicitLeft = 6
-      ExplicitTop = 6
       ColWidths = (
         0
         64
@@ -3171,9 +3168,6 @@ object SwimClubManage: TSwimClubManage
         0)
       RowHeights = (
         30
-        60
-        60
-        60
         60
         60
         60
@@ -3236,6 +3230,7 @@ object SwimClubManage: TSwimClubManage
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
+      ExplicitWidth = 630
       object tsMain: TTabSheet
         Caption = 'Options'
         ParentShowHint = False
@@ -3503,7 +3498,7 @@ object SwimClubManage: TSwimClubManage
         end
       end
       object ts_LinkedClubs: TTabSheet
-        Caption = 'Linked Swim Clubs'
+        Caption = 'Group Details'
         ImageIndex = 2
         object gClubGroups: TDBAdvGrid
           AlignWithMargins = True
@@ -3658,7 +3653,7 @@ object SwimClubManage: TSwimClubManage
               CheckFalse = 'N'
               CheckTrue = 'Y'
               Color = clWindow
-              FieldName = 'ClubLinkID'
+              FieldName = 'ChildClubID'
               Font.Charset = DEFAULT_CHARSET
               Font.Color = clWindowText
               Font.Height = -16
@@ -3709,7 +3704,7 @@ object SwimClubManage: TSwimClubManage
               PrintFont.Style = []
               Width = 350
             end>
-          DataSource = dsLinkedClubs
+          DataSource = dsChildClubs
           InvalidPicture.Data = {
             055449636F6E0000010001002020200000000000A81000001600000028000000
             2000000040000000010020000000000000100000000000000000000000000000
@@ -3847,6 +3842,7 @@ object SwimClubManage: TSwimClubManage
             80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
             FFC003FF}
           ShowUnicode = False
+          ExplicitLeft = 9
           ColWidths = (
             0
             350)
@@ -3979,8 +3975,7 @@ object SwimClubManage: TSwimClubManage
     Left = 53
     Top = 541
   end
-  object qryLinkedClubs: TFDQuery
-    Active = True
+  object qryChildClubs: TFDQuery
     Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -3988,52 +3983,56 @@ object SwimClubManage: TSwimClubManage
     UpdateOptions.EnableUpdate = False
     SQL.Strings = (
       'DECLARE @ID AS INTEGER;'
-      'SET @ID = :SWIMCLUBID;'
+      'SET @ID = :PARENTCLUBID;'
       ''
-      'SELECT [ClubGroupID]'
-      '      ,[ClubLinkID]'
-      '      ,[ClubGroup].[SwimClubID]'
-      '      ,[SwimClub].[SwimClubID] AS LinkedClubID'
+      'SELECT [SwimClubGroupID]'
+      '      ,[SwimClubGroup].[ChildClubID]'
+      '      ,[SwimClubGroup].[ParentClubID]'
+      '      ,[SwimClub].[SwimClubID]'
       '      ,[SwimClub].[Caption]'
       '      ,[SwimClub].[NickName]'
       '      ,[SwimClub].[LogoImg]'
-      '  FROM [dbo].[ClubGroup]'
+      '  FROM [dbo].[SwimClubGroup]'
       '  LEFT JOIN [dbo].[SwimClub] '
       
-        '    ON [dbo].[ClubGroup].[ClubLinkID] = [dbo].[SwimClub].[SwimCl' +
-        'ubID]'
-      '  WHERE [ClubGroup].[SwimClubID] = @ID;'
+        '    ON [dbo].[SwimClubGroup].[ChildClubID] = [dbo].[SwimClub].[S' +
+        'wimClubID]'
+      '  WHERE [SwimClubGroup].[ParentClubID] = @ID;'
       ''
       ''
       ''
       '')
-    Left = 226
-    Top = 409
+    Left = 234
+    Top = 361
     ParamData = <
       item
-        Name = 'SWIMCLUBID'
+        Name = 'PARENTCLUBID'
         DataType = ftInteger
         ParamType = ptInput
         Value = Null
       end>
   end
-  object dsLinkedClubs: TDataSource
-    DataSet = qryLinkedClubs
-    Left = 226
-    Top = 473
+  object dsChildClubs: TDataSource
+    DataSet = qryChildClubs
+    Left = 242
+    Top = 441
   end
-  object qryClubGroup: TFDQuery
+  object qrySwimClubGroup: TFDQuery
     Connection = SCM2.scmConnection
     SQL.Strings = (
-      'SELECT [ClubGroupID]'
-      '      ,[ClubLinkID]'
-      '      ,[SwimClubID]'
-      '  FROM [dbo].[ClubGroup];'
+      'SELECT [SwimClubGroupID]'
+      '      ,[ChildClubID]'
+      '      ,[ParentClubID]'
+      '  FROM [dbo].[SwimClubGroup];'
       ''
       ''
       ''
       '')
-    Left = 342
-    Top = 409
+    Left = 438
+    Top = 361
+  end
+  object hintInfo: TBalloonHint
+    Left = 574
+    Top = 361
   end
 end

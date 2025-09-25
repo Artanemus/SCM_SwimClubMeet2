@@ -162,12 +162,17 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="TOOLS\SCMSimpleConnect.pas"/>
-        <DCCReference Include="FRAMES\uSwimClub.pas"/>
         <DCCReference Include="DIALOGS\SwimClub\dlgSwimClub_Manage.pas">
             <Form>SwimClubManage</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="FRAMES\uSession.pas"/>
+        <DCCReference Include="DATA_Helper\uSession.pas"/>
+        <DCCReference Include="DATA_Helper\uSwimClub.pas"/>
+        <DCCReference Include="FRAMES\f_FrameClubGroup.pas">
+            <Form>ClubGroupAssign</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

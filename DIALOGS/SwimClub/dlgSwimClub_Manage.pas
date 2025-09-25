@@ -20,7 +20,7 @@ uses
   AdvDateTimePicker, AdvDBDateTimePicker, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, hintlist
   ;
 
 type
@@ -68,15 +68,16 @@ type
     DBTextPrimaryKey: TDBText;
     AdvDBDTPicker: TAdvDBDateTimePicker;
     ts_LinkedClubs: TTabSheet;
-    qryLinkedClubs: TFDQuery;
+    qryChildClubs: TFDQuery;
     gClubGroups: TDBAdvGrid;
-    dsLinkedClubs: TDataSource;
+    dsChildClubs: TDataSource;
     imgindxGroup: TSVGIconImage;
     actnNewGroup: TAction;
-    qryClubGroup: TFDQuery;
+    qrySwimClubGroup: TFDQuery;
     actnInfo: TAction;
     actnGroupSelect: TAction;
     actnGroupUpdate: TAction;
+    hintInfo: TBalloonHint;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure actnArchiveExecute(Sender: TObject);
@@ -140,7 +141,7 @@ begin
   splitvEdit.Opened := false;
   splitvEdit.UseAnimation := true;
   if pcntrlEdit.ActivePageIndex <> 0 then pcntrlEdit.ActivePageIndex := 0;
-  qryClubGroup.Open;
+  qrySwimClubGroup.Open;
 
 end;
 
@@ -304,7 +305,7 @@ end;
 
 procedure TSwimClubManage.actnNewGroupExecute(Sender: TObject);
 var
-  i, refSwimClubID, ASwimClubID: integer;
+  i, ChildClubID, ParentClubID: integer;
 begin
   if gSwimClub.RowSelectCount > 1 then
   begin
@@ -319,13 +320,16 @@ begin
           CORE.qrySwimClub.Post;
 
           // Get the newly created CLUBGROUP-SWIMCLUB.. Safe to do this in FireDAC.
-          ASwimClubID := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+          ParentClubID := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
         {  // Alternative method...
         v := SCM2.scmConnection.ExecSQLScalar('SELECT IDENT_CURRENT (''dbo.SwimClub'');' );
-        if not VarIsClear(v) and (v=0) then  ASwimClubID := v;
+        if not VarIsClear(v) and (v=0) then  ParentClubID := v;
         }
 
-        {NOTE: on create - CLUBGROUP-SWIMCLUB is an additional selected row in grid!}
+        {NOTE: because we have created a new CLUBGROUP-SWIMCLUB
+          it's has 'focus' and counts as a selected row in grid!
+          CONSIDER: To avoid this, get all the selected 'clubs' then create.
+        }
 
         except on E: Exception do
           begin
@@ -334,7 +338,7 @@ begin
           end;
         end;
 
-        if ASwimClubID <> 0 then
+        if ParentClubID <> 0 then
         begin
           // Loop through all data rows in the grid..
           for i := gSwimClub.FixedRows to gSwimClub.RowCount - 1 do
@@ -344,24 +348,24 @@ begin
             begin
               // if the row is a 'GROUP' club - then skip
               if (StrToIntDef(gSwimClub.Cells[4, i], 0) = 1) then
-                continue; // sorry 'group inception' is not allowed...
+                continue; // sorry, 'group inception' is not allowed...
 
-              // get the SwimClubID of the 'selected row'.
-              refSwimClubID := StrToIntDef(gSwimClub.Cells[5, i], 0);
+              // get the SwimClubID (ChildClub) of the 'selected row'.
+              ChildClubID := StrToIntDef(gSwimClub.Cells[5, i], 0);
               // don't insert the CLUBGROUP-SWIMCLUB into table (it'll also be selected)
-              if (refSwimClubID > 0) and (ASwimClubID <> refSwimClubID) then
+              if (ChildClubID > 0) and (ParentClubID <> ChildClubID) then
               begin
                 try
                   // Create a new ClubGroupRecord..
-                  qryClubGroup.Insert;
+                  qrySwimClubGroup.Insert;
                   // the linked swim club.
-                  qryClubGroup.FieldByName('ClubLinkID').AsInteger := refSwimClubID;
+                  qrySwimClubGroup.FieldByName('ChildClubID').AsInteger := ChildClubID;
                   // the newly created CLUBGROUP-SWIMCLUB
-                  qryClubGroup.FieldByName('SwimClubID').AsInteger := ASwimClubID;
-                  qryClubGroup.Post;
+                  qrySwimClubGroup.FieldByName('ParentClubID').AsInteger := ParentClubID;
+                  qrySwimClubGroup.Post;
                 except on E: Exception do
                   begin
-                      qryClubGroup.Cancel;
+                      qrySwimClubGroup.Cancel;
                       break;
                   end;
                 end;
@@ -483,26 +487,17 @@ begin
       CORE.qrySwimClub.RecNo := gSwimclub.GetRealRow;
 
     // The image was clicked, so perform the desired action.
-    ShowMessage('QUICK DISPLAY LINKED CLUBS');
+    ShowMessage('POP-UP');
 
     // Prevent the grid from trying to open "IMAGE_CLICK_ACTION" as a URL
     AutoHandle := False;
   end
-  else if Anchor = 'EDIT_CLICK_ACTION' then
+  else if Anchor = 'EYE_CLICK_ACTION' then
   begin
     if (CORE.qrySwimClub.RecNo <> gSwimclub.GetRealRow) then
       CORE.qrySwimClub.RecNo := gSwimclub.GetRealRow;
     // The image was clicked, so perform the desired action.
-    ShowMessage('REVEAL AND EDIT LINK CLUBS.');
-    // Prevent the grid from trying to open "IMAGE_CLICK_ACTION" as a URL
-    AutoHandle := False;
-  end
-  else if Anchor = 'UPDATE_CLICK_ACTION' then
-  begin
-    if (CORE.qrySwimClub.RecNo <> gSwimclub.GetRealRow) then
-      CORE.qrySwimClub.RecNo := gSwimclub.GetRealRow;
-    // The image was clicked, so perform the desired action.
-    ShowMessage('UPDATE LINK CLUB SELECTION.');
+    ShowMessage('SHOW SELECT CLUBS IN GROUP.');
     // Prevent the grid from trying to open "IMAGE_CLICK_ACTION" as a URL
     AutoHandle := False;
   end;
@@ -533,12 +528,15 @@ begin
     begin
       {NOTE: gSwimClub.HTMLKeepLineBreak := false. Use <BR> for line breaks}
       htmlStr := '''
-        <FONT size="12"><A HREF="INFO_CLICK_ACTION"><IMG SRC="idx:0"></A>
+        <FONT size="12">
+        <IND x="3">
           <#Caption></FONT><BR>
-        <IND x="30">
-        <FONT size="12"><A HREF="EDIT_CLICK_ACTION"><IMG SRC="idx:1"></A>
-        <FONT size="12"><A HREF="UPDATE_CLICK_ACTION"><IMG SRC="idx:2"></A>
-           <FONT size="8"></FONT><#NickName>
+        <FONT size="12">
+        <IND x="3">
+        <A HREF="INFO_CLICK_ACTION"><IMG SRC="idx:0"></A>
+        <A HREF="EYE_CLICK_ACTION"><IMG SRC="idx:1"></A>
+        </FONT>
+        <FONT size="8">  <#NickName></FONT>
         ''';
     end
     else
@@ -579,7 +577,7 @@ procedure TSwimClubManage.splitvEditClosing(Sender: TObject);
 begin
   CORE.qrySwimClub.CheckBrowseMode;
   CORE.qrySwimClub.Refresh; // Updates qrySwimClub.imgIndxArchived value.
-  qryLinkedClubs.Close;
+  qryChildClubs.Close;
   if fGridIsUpdating then
   begin
     gSwimClub.EndUpdate; // Enable changes in TMS grid.
@@ -616,12 +614,13 @@ begin
     ts_LinkedClubs.TabVisible := true; // 'Group Club' info on linked clubs.
     tsMain.TabVisible := true;
     tsLogo.TabVisible := true;
-    // build table with information on linked clubs - read only.
-    qryLinkedClubs.Close;
-    qryLinkedClubs.ParamByName('SWIMCLUBID').AsInteger :=
-    CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
-    qryLinkedClubs.Prepare;
-    qryLinkedClubs.Open;
+    // Find the child clubs linked to this parent - read only.
+    qryChildClubs.Close;
+    // Current selected 'Grouped Swimming Club' is the parent.
+    qryChildClubs.ParamByName('PARENTCLUBID').AsInteger :=
+      CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+    qryChildClubs.Prepare;
+    qryChildClubs.Open;
   end
   else
   begin

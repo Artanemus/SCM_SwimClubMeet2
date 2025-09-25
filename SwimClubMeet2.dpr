@@ -16,9 +16,10 @@ uses
   dlgSwimClub_Switch in 'DIALOGS\SwimClub\dlgSwimClub_Switch.pas' {SwimClubSwitch},
   dlgLogin in 'DIALOGS\dlgLogin.pas' {Login},
   SCMSimpleConnect in 'TOOLS\SCMSimpleConnect.pas',
-  uSwimClub in 'FRAMES\uSwimClub.pas',
   dlgSwimClub_Manage in 'DIALOGS\SwimClub\dlgSwimClub_Manage.pas' {SwimClubManage},
-  uSession in 'FRAMES\uSession.pas';
+  uSession in 'DATA_Helper\uSession.pas',
+  uSwimClub in 'DATA_Helper\uSwimClub.pas',
+  f_FrameClubGroup in 'FRAMES\f_FrameClubGroup.pas' {ClubGroupAssign: TFrame};
 
 {$R *.res}
 

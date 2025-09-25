@@ -111,13 +111,24 @@ begin
     // delete THE CLUB.
     if CORE.qrySession.IsEmpty then
     begin
-      // DELETE ALL Club Groups
-      SQL := '''
-        DELETE FROM [SwimClubMeet2].[dbo].[ClubGroup]
-        WHERE [SwimClubID] = :ID;
-        ''';
-      SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
+      if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
+      begin  // DELETE ALL Club Groups
+        SQL := '''
+          DELETE FROM [SwimClubMeet2].[dbo].[SwimClubGroup]
+          WHERE [ParentClubID] = :ID;
+          ''';
+        SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
+      end
+      else
+      begin
+        SQL := '''
+          DELETE FROM [SwimClubMeet2].[dbo].[SwimClubGroup]
+          WHERE [ChildClubID] = :ID;
+          ''';
+        SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
+      end;
       // DELETE ALL MEMBER LINK RECORDS
+      // Actual member data remains.
       SQL := '''
         DELETE FROM [SwimClubMeet2].[dbo].[MemberLink]
         WHERE [SwimClubID] = :ID;

@@ -19,7 +19,8 @@ uses
   dlgSwimClub_Manage in 'DIALOGS\SwimClub\dlgSwimClub_Manage.pas' {SwimClubManage},
   uSession in 'DATA_Helper\uSession.pas',
   uSwimClub in 'DATA_Helper\uSwimClub.pas',
-  f_FrameClubGroup in 'FRAMES\f_FrameClubGroup.pas' {ClubGroupAssign: TFrame};
+  f_FrameClubGroup in 'FRAMES\f_FrameClubGroup.pas' {FrClubGroup: TFrame},
+  dlgSwimClubGroup_View in 'DIALOGS\SwimClub\dlgSwimClubGroup_View.pas' {SwimClubGroup_View};
 
 {$R *.res}
 

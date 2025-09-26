@@ -22,14 +22,12 @@ function StartOfSwimSeason(): TDateTime; overload;
 function HasLockedSession(): boolean;
 function HasRaceData(): Boolean;
 function Delete_SwimClub(DoExclude: boolean = true): boolean;
-
+function TestForSwimClubID(SwimCLubID: integer): boolean;
 
 // procedure RenumberSessions();
 
 
 implementation
-
-
 
 procedure DetailTBLs_DisableCNTRLs;
 begin
@@ -242,6 +240,24 @@ end;
 function StartOfSwimSeason: TDateTime;
 begin
   result := CORE.dsSwimClub.DataSet.FieldByName('StartOfSwimSeason').AsDateTime;
+end;
+
+function TestForSwimClubID(SwimCLubID: integer): boolean;
+var
+  SQL: string;
+  v: variant;
+begin
+  result := false;
+  SQL := '''
+      SELECT
+        CASE WHEN EXISTS (
+          SELECT 1 FROM [SwimClubMeet2].[dbo].[SwimClub] sc
+          WHERE sc.[SwimClubID] = :ID
+        ) THEN 1 ELSE 0 END;
+      ''';
+  v := SCM2.scmConnection.ExecSQLScalar(SQL, [SwimCLubID]);
+  if  (not VarIsNull(v)) and (v = 1) then
+    result := true;
 end;
 
 end.

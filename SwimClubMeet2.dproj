@@ -169,9 +169,13 @@
         <DCCReference Include="DATA_Helper\uSession.pas"/>
         <DCCReference Include="DATA_Helper\uSwimClub.pas"/>
         <DCCReference Include="FRAMES\f_FrameClubGroup.pas">
-            <Form>ClubGroupAssign</Form>
+            <Form>FrClubGroup</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="DIALOGS\SwimClub\dlgSwimClubGroup_View.pas">
+            <Form>SwimClubGroup_View</Form>
+            <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

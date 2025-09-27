@@ -1,7 +1,7 @@
 object FrClubGroup: TFrClubGroup
   Left = 0
   Top = 0
-  Width = 620
+  Width = 613
   Height = 537
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,20 +13,20 @@ object FrClubGroup: TFrClubGroup
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 620
+    Width = 613
     Height = 39
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 571
+    ExplicitWidth = 620
     object vimg1: TVirtualImage
       AlignWithMargins = True
-      Left = 562
+      Left = 283
       Top = 3
       Width = 48
       Height = 33
-      Margins.Right = 10
-      Align = alRight
+      Margins.Left = 0
+      Align = alLeft
       ImageCollection = IMG.CollectionCore
       ImageWidth = 0
       ImageHeight = 0
@@ -38,33 +38,31 @@ object FrClubGroup: TFrClubGroup
       AlignWithMargins = True
       Left = 10
       Top = 3
-      Width = 546
+      Width = 270
       Height = 33
       Margins.Left = 10
-      Align = alClient
+      Align = alLeft
       TabOrder = 0
-      ExplicitWidth = 255
     end
   end
   object pnlFooter: TPanel
     Left = 0
     Top = 496
-    Width = 620
+    Width = 613
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 445
-    ExplicitWidth = 571
+    ExplicitWidth = 620
     object lbl1: TLabel
       Left = 56
       Top = 6
-      Width = 162
+      Width = 150
       Height = 21
-      Caption = #9651'  Swimming Clubs  '#9651
+      Caption = #9651'  Available Clubs  '#9651
     end
     object lbl2: TLabel
-      Left = 415
+      Left = 407
       Top = 6
       Width = 124
       Height = 21
@@ -74,7 +72,7 @@ object FrClubGroup: TFrClubGroup
   object rpnlBody: TRelativePanel
     Left = 0
     Top = 39
-    Width = 620
+    Width = 612
     Height = 457
     ControlCollection = <
       item
@@ -82,7 +80,6 @@ object FrClubGroup: TFrClubGroup
         AlignBottomWithPanel = True
         AlignHorizontalCenterWithPanel = False
         AlignLeftWithPanel = True
-        AlignRightWith = spnlBtns
         AlignRightWithPanel = False
         AlignTopWithPanel = True
         AlignVerticalCenterWithPanel = False
@@ -91,34 +88,36 @@ object FrClubGroup: TFrClubGroup
         Control = lbxR
         AlignBottomWithPanel = True
         AlignHorizontalCenterWithPanel = False
-        AlignLeftWith = spnlBtns
         AlignLeftWithPanel = False
         AlignRightWithPanel = True
         AlignTopWithPanel = True
         AlignVerticalCenterWithPanel = False
+        RightOf = spnlBtns
       end
       item
         Control = spnlBtns
         AlignBottomWithPanel = True
-        AlignHorizontalCenterWithPanel = True
+        AlignHorizontalCenterWithPanel = False
         AlignLeftWithPanel = False
         AlignRightWithPanel = False
         AlignTopWithPanel = True
         AlignVerticalCenterWithPanel = False
+        RightOf = lbxL
       end>
-    Align = alClient
+    Align = alLeft
+    BevelOuter = bvNone
+    Padding.Left = 10
+    Padding.Right = 10
     TabOrder = 2
-    ExplicitWidth = 571
-    ExplicitHeight = 406
+    ExplicitWidth = 620
     DesignSize = (
-      620
+      612
       457)
     object lbxL: TListBox
-      AlignWithMargins = True
-      Left = 11
-      Top = 4
-      Width = 323
-      Height = 449
+      Left = 10
+      Top = 0
+      Width = 270
+      Height = 457
       Margins.Left = 10
       Anchors = []
       ItemHeight = 21
@@ -127,23 +126,21 @@ object FrClubGroup: TFrClubGroup
       TabOrder = 0
     end
     object lbxR: TListBox
-      AlignWithMargins = True
-      Left = 284
-      Top = 4
-      Width = 325
-      Height = 449
+      Left = 332
+      Top = 0
+      Width = 270
+      Height = 457
       Margins.Right = 10
-      Anchors = []
       ItemHeight = 21
       MultiSelect = True
       Sorted = True
       TabOrder = 1
     end
     object spnlBtns: TStackPanel
-      Left = 284
-      Top = 1
-      Width = 50
-      Height = 455
+      Left = 280
+      Top = 0
+      Width = 52
+      Height = 457
       Anchors = []
       BevelOuter = bvNone
       ControlCollection = <
@@ -159,9 +156,10 @@ object FrClubGroup: TFrClubGroup
         item
           Control = spbtnMoveL2
         end>
+      HorizontalPositioning = sphpCenter
       TabOrder = 2
       object spbtnMoveR: TSpeedButton
-        Left = 0
+        Left = 2
         Top = 0
         Width = 48
         Height = 48
@@ -171,7 +169,7 @@ object FrClubGroup: TFrClubGroup
         OnClick = spbtnMoveRClick
       end
       object spbtnMoveR2: TSpeedButton
-        Left = 0
+        Left = 2
         Top = 50
         Width = 48
         Height = 48
@@ -181,7 +179,7 @@ object FrClubGroup: TFrClubGroup
         OnClick = spbtnMoveR2Click
       end
       object spbtnMoveL: TSpeedButton
-        Left = 0
+        Left = 2
         Top = 100
         Width = 48
         Height = 48
@@ -191,7 +189,7 @@ object FrClubGroup: TFrClubGroup
         OnClick = spbtnMoveLClick
       end
       object spbtnMoveL2: TSpeedButton
-        Left = 0
+        Left = 2
         Top = 150
         Width = 48
         Height = 48

@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages,
-  System.SysUtils, System.Variants, System.Classes,
+  System.SysUtils, System.Variants, System.Classes, system.UITypes,
 
   Data.DB,
 
@@ -75,7 +75,7 @@ type
     actnGroupSelect: TAction;
     actnGroupUpdate: TAction;
     hintInfo: TBalloonHint;
-    FrSCG: TFrClubGroup;
+    frSCG: TFrClubGroup;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure actnArchiveExecute(Sender: TObject);
@@ -107,6 +107,7 @@ type
     procedure SyncDBtoGrid(AMethod: integer; ARow: integer = 0);
     // ScrollInView currently not enabled...
     procedure SyncGridToDB(AMethod: integer);
+    procedure SelectClubsInGroup;
   protected
 
   public
@@ -127,6 +128,8 @@ uses
 
 procedure TSwimClubManage.FormDestroy(Sender: TObject);
 begin
+  if qrySwimClubGroup.Active then
+    qrySwimClubGroup.Close;
   CORE.qrySwimClub.IndexName := 'indxHideArchived';
 end;
 
@@ -141,7 +144,6 @@ begin
   splitvEdit.UseAnimation := true;
   if pcntrlEdit.ActivePageIndex <> 0 then pcntrlEdit.ActivePageIndex := 0;
   qrySwimClubGroup.Open;
-
 end;
 
 procedure TSwimClubManage.actnArchiveExecute(Sender: TObject);
@@ -168,8 +170,8 @@ end;
 
 procedure TSwimClubManage.actnDeleteExecute(Sender: TObject);
 var
-  msgResults, ID, recNo: integer;
-  msg: string;
+  msgResults, PK: integer;
+  msg, clubName, mbTitle: string;
 begin
   {
     if qrySession.IsEmpty then .... is used, and 'hide closed session'
@@ -178,41 +180,46 @@ begin
     Using the ExecSQLScalar function with SQL script - much safer.
   }
 
-  ID := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
-  recNo := CORE.qrySwimClub.RecNo;
+  SyncGridToDB(2); // clean up the UI
+  actnDelete.Checked := false; // de-select button on the actnToolBar.
 
-  // clean up the UI
-  gSwimClub.ClearSelection; // GRID : highlight 'nothing' and../
-  try  // ...then set row selection to current record.
-    gSwimClub.Row := gSwimClub.DisplRowIndex(RecNo);
-  finally
-    actnDelete.Checked := false; // de-select buttons on the actnToolBar.
-    if gSwimClub.CanFocus then
-      gSwimClub.SetFocus; //lose focus on the ToolBar buttons
+  if gSwimClub.RowSelectCount > 1 then
+  begin
+    msg := '''
+      Sorry, the deletion of 'multi-selected' grid rows
+      is currently not implemented.
+      ''';
+    MessageDlg(msg, mtInformation, [mbOK], 0);
+    exit;
   end;
 
-//  if gSwimClub.SelectedRowCount > 1 then
-//  begin
-//    MessageDlg('Deletion of multi-selected swimming clubs not currently implemented.', mtInformation, [mbOK], 0);
-//    exit;
-//  end;
+  // collect some helpful db info.
+  PK := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+  ClubName := CORE.qrySwimClub.FieldByName('Caption').AsString;
+  mbTitle := 'DELETE ' + ClubName + '...';
 
-
-
-
-
-{$IFDEF DEBUG}
-  // DEBUG ..... HANDS OF THIS SWIMCLUB
-  // DEBUG ... don't delete this club - used for demonstrating SCM.
-  if ID = 1 then exit;
-{$ELSE}
-  if ID = 1 then exit;
-{$ENDIF}
 
   // uses EXECSCALAR method to ensure it's empty.
   if uSwimClub.SessionCount = 0 then
   begin
-    uSwimClub.Delete_SwimClub(false); // false = ignore locked states.
+    msg := '''
+      Are you sure you want to delete this club?
+      ''';
+    msg := 'DELETE (empty - no sessions) ' + ClubName + sLineBreak + msg;
+    msgResults := MessageBox(0, PChar(msg), PChar(mbTitle),
+      MB_ICONEXCLAMATION or MB_YESNO or MB_DEFBUTTON2);
+    if msgResults = IDYES then
+    begin
+      // includes deletion of club group and member link records.
+      // false = ignore locked states.
+      {$IFDEF DEBUG}
+        // ... DON'T DELETE THIS SWIMCLUB - used for demonstrating SCM.
+        if PK = 1 then exit;
+      {$ELSE}
+        if PK = 1 then exit;
+      {$ENDIF}
+      uSwimClub.Delete_SwimClub(false);
+    end;
     exit;
   end;
 
@@ -221,11 +228,11 @@ begin
   begin
     msg := '''
     This club has locked session!
-    Deleting it will remove all sessions (Locked or Unlocked).
+    Deleting will remove all sessions, locked or unlocked.
 
     Are you sure you want to delete this club?
     ''';
-    msgResults := MessageBox(0, PChar(msg), PChar('Delete Swimming Club ...'),
+    msgResults := MessageBox(0, PChar(msg), PChar(mbTitle),
       MB_ICONEXCLAMATION or MB_YESNO or MB_DEFBUTTON2);
     if msgResults <> IDYES then exit;
   end;
@@ -233,14 +240,15 @@ begin
   if uSwimClub.HasRaceData then
   begin
     msg := '''
-      This club has session data. Deleting it will remove all sessions, events, heats, and race times.
-      Members will be unassigned (not deleted).
+      This club has race data.
+      Deleting it will remove all sessions, events, heats, and race times.
+      Note: Members will be unassigned from the club and will not be deleted.
 
       Tip: Archiving is safer than losing valuable data.
 
       Are you sure you want to delete this club?
       ''';
-    msgResults := MessageBox(0, PChar(msg), PChar('Delete Swimming Club ...'),
+    msgResults := MessageBox(0, PChar(msg), PChar(mbTitle),
       MB_ICONEXCLAMATION or MB_YESNO or MB_DEFBUTTON2);
     if msgResults <> IDYES then exit;
   end;
@@ -248,17 +256,25 @@ begin
   // If empty of race-data, wit: Event were not run and heats have no
   // race-times, then the crypt isn't stone-walled by warning messages.
   msg := '''
-    Just checking�
+    .... Just checking.
 
     Deleting this club will permanently remove all its data.
     Are you sure you want to continue?
     ''';
-  msgResults := MessageBox(0, PChar(msg), PChar('Delete Swimming Club ...'),
+  msgResults := MessageBox(0, PChar(msg), PChar(mbTitle),
     MB_ICONEXCLAMATION or MB_YESNO or MB_DEFBUTTON2);
 
   if (msgResults = IDYES) then
   begin
+    {$IFDEF DEBUG}
+      // ... DON'T DELETE THIS SWIMCLUB - used for demonstrating SCM.
+      if PK = 1 then exit;
+    {$ELSE}
+      if PK = 1 then exit;
+    {$ENDIF}
+
     uSwimClub.Delete_SwimClub(false); // false = ignore locked states.
+
   end;
 end;
 
@@ -287,7 +303,8 @@ var
 begin
   success := false;
   try
-    CORE.qrySwimClub.Insert; // defaults handled by CORE.OnNewRecord
+    CORE.qrySwimClub.Insert;
+    // NOTE: IsClubGroup = false in CORE.qrySwimClub.OnNewRecord.
     CORE.qrySwimClub.FieldByName('Caption').AsString := 'NEW UNNAMED CLUB';
     CORE.qrySwimClub.Post;
     Success := true;
@@ -304,85 +321,87 @@ end;
 
 procedure TSwimClubManage.actnNewGroupExecute(Sender: TObject);
 var
-  i, ChildClubID, ParentClubID: integer;
+  i, ChildClubID, ParentClubID, NumOfSelectedRows: integer;
+  ilst: TIntList;
 begin
-  if gSwimClub.RowSelectCount > 1 then
-  begin
+  ilst := TIntList.Create(0,0);
+  try
+    ilst.Clear;
+    if gSwimClub.RowSelectCount = 0 then exit;
     gSwimClub.BeginUpdate;
     try
+      // collect select row SwimClubID's (wit: ChildClubID's)
+      // Loop through all data rows in the grid..
+      for i := gSwimClub.FixedRows to gSwimClub.RowCount-1 do
       begin
-
-        try  // create a new Club .. default values handle by CORE.OnNewRecord.
-          CORE.qrySwimClub.Insert;
-          CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean := true;
-          CORE.qrySwimClub.FieldByName('Caption').AsString := 'NEW CLUB GROUP';
-          CORE.qrySwimClub.Post;
-
-          // Get the newly created CLUBGROUP-SWIMCLUB.. Safe to do this in FireDAC.
-          ParentClubID := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
-        {  // Alternative method...
-        v := SCM2.scmConnection.ExecSQLScalar('SELECT IDENT_CURRENT (''dbo.SwimClub'');' );
-        if not VarIsClear(v) and (v=0) then  ParentClubID := v;
-        }
-
-        {NOTE: because we have created a new CLUBGROUP-SWIMCLUB
-          it's has 'focus' and counts as a selected row in grid!
-          CONSIDER: To avoid this, get all the selected 'clubs' then create.
-        }
-
-        except on E: Exception do
-          begin
-            CORE.qrySwimClub.Cancel;
-            exit;
-          end;
-        end;
-
-        if ParentClubID <> 0 then
+        // Check if the row is 'selected ROW'
+        if gSwimClub.RowSelect[i] then
         begin
-          // Loop through all data rows in the grid..
-          for i := gSwimClub.FixedRows to gSwimClub.RowCount - 1 do
-          begin
-            // Check if the row is 'selected ROW'
-            if gSwimClub.RowSelect[i] then
-            begin
-              // if the row is a 'GROUP' club - then skip
-              if (StrToIntDef(gSwimClub.Cells[4, i], 0) = 1) then
-                continue; // sorry, 'group inception' is not allowed...
-
-              // get the SwimClubID (ChildClub) of the 'selected row'.
-              ChildClubID := StrToIntDef(gSwimClub.Cells[5, i], 0);
-              // don't insert the CLUBGROUP-SWIMCLUB into table (it'll also be selected)
-              if (ChildClubID > 0) and (ParentClubID <> ChildClubID) then
-              begin
-                try
-                  // Create a new ClubGroupRecord..
-                  qrySwimClubGroup.Insert;
-                  // the linked swim club.
-                  qrySwimClubGroup.FieldByName('ChildClubID').AsInteger := ChildClubID;
-                  // the newly created CLUBGROUP-SWIMCLUB
-                  qrySwimClubGroup.FieldByName('ParentClubID').AsInteger := ParentClubID;
-                  qrySwimClubGroup.Post;
-                except on E: Exception do
-                  begin
-                      qrySwimClubGroup.Cancel;
-                      break;
-                  end;
-                end;
-              end;
-            end;
-
-          end;
-
-          // STEP : locate grid to sync with new record. Fix UI selection.
-          // NOTE: Doesn't require toggeling of MouseAction.DisjunctRowSelect
-          CORE.qrySwimClub.Refresh; // ensured all ImageIndex values are correct.
-          SyncGridToDB(1);
+          // if the row is a 'GROUP' club - then skip
+          if (StrToIntDef(gSwimClub.Cells[4, i], 0) = 1) then
+            continue; // sorry, 'group inception' is not allowed...
+          // get the SwimClubID (ChildClub) of the 'selected row'.
+          ChildClubID := StrToIntDef(gSwimClub.Cells[5, i], 0);
+          ilst.Add(ChildClubID);
         end;
       end;
     finally
       gSwimClub.EndUpdate;
     end;
+
+    if not ilst.IsEmpty then
+    begin
+
+      try  // create a new Club .. default values handle by CORE.OnNewRecord.
+        CORE.qrySwimClub.Insert;
+        CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean := true;
+        CORE.qrySwimClub.FieldByName('Caption').AsString := 'NEW CLUB GROUP';
+        CORE.qrySwimClub.Post;
+
+        // Get the newly created CLUBGROUP-SWIMCLUB.. Safe to do this in FireDAC.
+        ParentClubID := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+
+      {  // BEST PRACTISE - Alternative method...
+      v := SCM2.scmConnection.ExecSQLScalar('SELECT IDENT_CURRENT (''dbo.SwimClub'');' );
+      if not VarIsClear(v) and (v=0) then  ParentClubID := v;
+      }
+
+      { NOTE: because we have created a new CLUBGROUP-SWIMCLUB
+        it's has 'focus' and counts as a selected row in grid!
+        CONSIDER: To avoid this, get all the selected 'clubs' then create.
+      }
+      except on E: Exception do
+        begin
+          CORE.qrySwimClub.Cancel;
+          exit;
+        end;
+      end;
+      for I := 0 to ilst.Count-1 do
+      begin
+        try
+          // Create a new ClubGroupRecord..
+          qrySwimClubGroup.Insert;
+          // the linked swim club.
+          qrySwimClubGroup.FieldByName('ChildClubID').AsInteger := ilst[i];
+          // the newly created CLUBGROUP-SWIMCLUB
+          qrySwimClubGroup.FieldByName('ParentClubID').AsInteger := ParentClubID;
+          qrySwimClubGroup.Post;
+        except on E: Exception do
+          begin
+              qrySwimClubGroup.Cancel;
+              break;
+          end;
+        end;
+      end;
+    end;
+  finally
+    ilst.Free;
   end;
+
+  // STEP : locate grid to sync with new record. Fix UI selection.
+  // NOTE: Doesn't require toggeling of MouseAction.DisjunctRowSelect
+  CORE.qrySwimClub.Refresh; // ensured all ImageIndex values are correct.
+  SyncGridToDB(1);
 end;
 
 procedure TSwimClubManage.actnNewGroupUpdate(Sender: TObject);
@@ -473,16 +492,18 @@ begin
   // ... fix UI display. Select the row.
   if (ARow <> gSwimClub.DisplRowIndex(CORE.qrySwimClub.RecNo)) then
   begin
-    SyncDBtoGrid(2); // toggles DisjunctRowSelect, current focused row.
+    // DB record must move to display ARow.
+    SyncDBtoGrid(2, ARow); // method toggles DisjunctRowSelect.
   end;
 
   // Check if the clicked anchor matches our custom action string
   if Anchor = 'EYE_CLICK_ACTION' then
   begin
     // The image was clicked, so perform the desired action.
-    ShowMessage('SHOW SELECT CLUBS IN GROUP.');
-    // Prevent the grid from trying to open "IMAGE_CLICK_ACTION" as a URL
+    SelectClubsInGroup();
+    // Prevent the grid from trying to open as a URL
     AutoHandle := False;
+
   end;
 
 end;
@@ -547,6 +568,48 @@ begin
     imgIndxArchive.ImageIndex :=
       ORD(CORE.qrySwimClub.FieldByName('IsArchived').AsBoolean);
   end;
+end;
+
+procedure TSwimClubManage.SelectClubsInGroup;
+var
+  idx, ChildClubID, PK: integer;
+  doOnce: boolean;
+begin
+  doOnce := true;
+  PK := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+  gSwimClub.ClearRowSelect; // nils 'selected items' and REPAINTS!
+  // club group - SwimClubID = ParentClubID in dbo.SwimClubGroup.
+  // full re-query on table.
+  qrySwimClubGroup.Close;
+  qrySwimClubGroup.Open;
+  qrySwimClubGroup.Filter := 'ParentClubID = ' + IntToStr(PK);
+  qrySwimClubGroup.Filtered := true;
+  // iterate over rows in grid.
+  for idx := gSwimClub.FixedRows to gSwimClub.RowCount do
+  begin
+    qrySwimClubGroup.First;
+    while not qrySwimClubGroup.eof do
+    begin
+      ChildClubID := qrySwimClubGroup.FieldByName('ChildClubID').AsInteger;
+      // Cell holds [SwimClub].[SwimClubID] ..
+      if gSwimClub.Cells[5,idx] = IntToStr(ChildClubID) then
+      begin
+        if doOnce then
+        begin
+          // de-select Club Croup row and ...
+          SyncDBtoGrid(2, idx); // make this the current selected row.
+          doOnce := false;
+        end
+        else
+          gSwimClub.RowSelect[gSwimClub.DisplRowIndex(idx)] := true;
+      end;
+      qrySwimClubGroup.next;
+    end;
+  end;
+  // finally - reposition to active rec
+  qrySwimClubGroup.Filter := '';
+  qrySwimClubGroup.Filtered := false;
+
 end;
 
 procedure TSwimClubManage.splitvEditClosed(Sender: TObject);

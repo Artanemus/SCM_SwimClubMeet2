@@ -103,38 +103,48 @@ begin
     CORE.qrySession.ApplyMaster; // Assert Master-Detail.
     while not CORE.qrySession.Eof do
     begin
-     //      uSession.DeleteSession(DoExclude);
+//      uSession.DeleteSession(DoExclude);
       CORE.qrySession.next;
     end;
-    // delete THE CLUB.
+
+    // delete  ClubGroup records then delete the club.
     if CORE.qrySession.IsEmpty then
     begin
-      if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
-      begin  // DELETE ALL Club Groups
+      SCM2.scmConnection.StartTransaction;
+      try
+        // THIS CLUB IS A 'GROUP CLUB'
+        if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
+        begin  // DELETE ALL Club Groups
+          SQL := '''
+            DELETE FROM [SwimClubMeet2].[dbo].[SwimClubGroup]
+            WHERE [ParentClubID] = :ID;
+            ''';
+          SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
+        end
+        else
+        // THIS CLUB is the standard/default club type...
+        begin
+          SQL := '''
+            DELETE FROM [SwimClubMeet2].[dbo].[SwimClubGroup]
+            WHERE [ChildClubID] = :ID;
+            ''';
+          SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
+        end;
+        // DELETE ALL MEMBER LINK RECORDS (member data remains intact).
         SQL := '''
-          DELETE FROM [SwimClubMeet2].[dbo].[SwimClubGroup]
-          WHERE [ParentClubID] = :ID;
+          DELETE FROM [SwimClubMeet2].[dbo].[MemberLink]
+          WHERE [SwimClubID] = :ID;
           ''';
         SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
-      end
-      else
-      begin
-        SQL := '''
-          DELETE FROM [SwimClubMeet2].[dbo].[SwimClubGroup]
-          WHERE [ChildClubID] = :ID;
-          ''';
-        SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
+
+        // F I N A L L Y  Delete THE SWIMMING CLUB.
+        CORE.qrySwimClub.Delete;
+        result := true;
+        SCM2.scmConnection.Commit;
+      except
+        SCM2.scmConnection.Rollback;
+        raise;
       end;
-      // DELETE ALL MEMBER LINK RECORDS
-      // Actual member data remains.
-      SQL := '''
-        DELETE FROM [SwimClubMeet2].[dbo].[MemberLink]
-        WHERE [SwimClubID] = :ID;
-        ''';
-      SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
-      // F I N A L L Y  Delete THE SWIMMING CLUB.
-      CORE.qrySwimClub.Delete;
-      result := true;
     end;
   finally
     DetailTBLs_ApplyMaster;
@@ -152,7 +162,7 @@ end;
 function HasLockedSession(): boolean;
 var
   SQL: string;
-  v: variant;
+  sessionCount: variant;
 begin
   result := false;
   if not Assigned(SCM2) or not SCM2.scmConnection.Connected then exit;
@@ -160,8 +170,14 @@ begin
     SELECT Count(SessionID) FROM  [SwimClubMeet2].[dbo].[Session]
     WHERE [Session].SessionStatusID > 1 AND [Session].SwimClubID = :ID;
     ''';
-  v := SCM2.scmConnection.ExecSQLScalar(SQL, [uSwimClub.PK]);
-  if not VarIsNull(v) and not VarIsEmpty(v) and (v > 0) then result := true;
+  try
+    // COUNT() will always return 0 or more, never NULL or Empty.
+    // So, just checking if sessionCount is greater than 0 is sufficient.
+    sessionCount := SCM2.scmConnection.ExecSQLScalar(SQL, [uSwimClub.PK]);
+    if sessionCount > 0 then  result := true;
+  except on E: exception do
+    result := false;
+  end;
 end;
 
 function HasRaceData(): Boolean;

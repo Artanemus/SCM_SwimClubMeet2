@@ -105,8 +105,6 @@ begin
     While not qryLstSwimClub.eof do
     begin
       s := qryLstSwimClub.FieldByName('Caption').AsString;
-      s := s.Replace('The', '');
-      s := s.Replace('Swimming Club', '');
       idx := lbxL.Items.Add(s); // show the caption
       lbxL.Items.Objects[idx] := TObject(qryLstSwimClub.FieldByName('SwimClubID').AsInteger);
       //  RESTORE SwimClubID := Integer(lbxL.Items.Objects[idx]);
@@ -132,8 +130,6 @@ begin
     While not qryLstSwimClubGroup.eof do
     begin
       s := qryLstSwimClubGroup.FieldByName('Caption').AsString;
-      s := s.Replace('The', '');
-      s := s.Replace('Swimming Club', '');
       idx := lbxR.Items.Add(s); // show the caption
       lbxR.Items.Objects[idx] := TObject(qryLstSwimClubGroup.FieldByName('ChildClubID').AsInteger);
       //  RESTORE SwimClubID := Integer(lbxR.Items.Objects[idx]);
@@ -203,31 +199,34 @@ var
   SQLDelete, SQLInsert: string;
   idx, ChildClubID: Integer;
 begin
-  SQLDelete := '''
-    DELETE FROM [SwimClubMeet2].[dbo].[SwimClubGroup]
-    WHERE [ParentClubID] = :ID;
-    ''';
+  if fIsChanged then
+  begin
+    SQLDelete := '''
+      DELETE FROM [SwimClubMeet2].[dbo].[SwimClubGroup]
+      WHERE [ParentClubID] = :ID;
+      ''';
 
-  SQLInsert := '''
-    INSERT INTO [SwimClubMeet2].[dbo].[SwimClubGroup]
-      ([ParentClubID], [ChildClubID])
-    VALUES (:ID1, :ID2);
-    ''';
-  SCM2.scmConnection.StartTransaction;
-  try
-    // clear all old records
-    SCM2.scmConnection.ExecSQL(SQLDelete, [ParentClubID]);
-    // add new records
-    for idx := 0 to lbxR.Items.Count - 1 do
-    begin
-      ChildClubID := Integer(lbxR.Items.Objects[idx]);
-      // if trust FK constraints, just insert:
-      SCM2.scmConnection.ExecSQL(SQLInsert, [ParentClubID, ChildClubID]);
+    SQLInsert := '''
+      INSERT INTO [SwimClubMeet2].[dbo].[SwimClubGroup]
+        ([ParentClubID], [ChildClubID])
+      VALUES (:ID1, :ID2);
+      ''';
+    SCM2.scmConnection.StartTransaction;
+    try
+      // clear all old records
+      SCM2.scmConnection.ExecSQL(SQLDelete, [ParentClubID]);
+      // add new records
+      for idx := 0 to lbxR.Items.Count - 1 do
+      begin
+        ChildClubID := Integer(lbxR.Items.Objects[idx]);
+        // if trust FK constraints, just insert:
+        SCM2.scmConnection.ExecSQL(SQLInsert, [ParentClubID, ChildClubID]);
+      end;
+      SCM2.scmConnection.Commit;
+    except
+      SCM2.scmConnection.Rollback;
+      raise;
     end;
-    SCM2.scmConnection.Commit;
-  except
-    SCM2.scmConnection.Rollback;
-    raise;
   end;
 end;
 

@@ -4,7 +4,7 @@ object SwimClubManage: TSwimClubManage
   BorderStyle = bsDialog
   Caption = 'Manage Swimming Clubs ...'
   ClientHeight = 616
-  ClientWidth = 772
+  ClientWidth = 773
   Color = clBtnFace
   DoubleBuffered = True
   Font.Charset = DEFAULT_CHARSET
@@ -2685,25 +2685,27 @@ object SwimClubManage: TSwimClubManage
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 772
+    Width = 773
     Height = 41
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 772
   end
   object pnlBody: TPanel
-    Left = 776
+    Left = 146
     Top = 41
-    Width = 626
+    Width = 627
     Height = 575
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 146
+    ExplicitLeft = 776
+    ExplicitWidth = 626
     object gSwimClub: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 626
+      Width = 627
       Height = 575
       Cursor = crDefault
       Align = alClient
@@ -2712,7 +2714,7 @@ object SwimClubManage: TSwimClubManage
       DefaultRowHeight = 60
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 5
+      RowCount = 6
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -3159,6 +3161,7 @@ object SwimClubManage: TSwimClubManage
         FFC003FF}
       ShowUnicode = False
       OnGetHTMLTemplate = gSwimClubGetHTMLTemplate
+      ExplicitWidth = 626
       ColWidths = (
         0
         64
@@ -3168,6 +3171,7 @@ object SwimClubManage: TSwimClubManage
         0)
       RowHeights = (
         30
+        60
         60
         60
         60
@@ -3209,10 +3213,11 @@ object SwimClubManage: TSwimClubManage
   object splitvEdit: TSplitView
     Left = 146
     Top = 41
-    Width = 630
+    Width = 0
     Height = 575
     AnimationDelay = 30
     AnimationStep = 100
+    Opened = False
     OpenedWidth = 630
     Placement = svpLeft
     TabOrder = 3
@@ -3222,14 +3227,14 @@ object SwimClubManage: TSwimClubManage
     object pcntrlEdit: TPageControl
       Left = 0
       Top = 0
-      Width = 630
+      Width = 0
       Height = 575
       ActivePage = ts_LinkedClubs
       Align = alClient
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
-      ExplicitWidth = 0
+      ExplicitWidth = 630
       object tsMain: TTabSheet
         Caption = 'Options'
         ParentShowHint = False
@@ -3499,11 +3504,12 @@ object SwimClubManage: TSwimClubManage
       object ts_LinkedClubs: TTabSheet
         Caption = 'Group Details'
         ImageIndex = 2
-        inline FrSCG: TFrClubGroup
-          Left = 2
-          Top = 2
-          Width = 620
-          Height = 537
+        inline frSCG: TFrClubGroup
+          Left = 0
+          Top = 0
+          Width = 622
+          Height = 539
+          Align = alClient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -16
@@ -3511,66 +3517,74 @@ object SwimClubManage: TSwimClubManage
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitLeft = 2
+          ExplicitLeft = 10
           ExplicitTop = 2
           inherited pnlHeader: TPanel
-            ExplicitWidth = 620
-            inherited edtL: TEdit
-              ExplicitWidth = 546
-              ExplicitHeight = 29
-            end
+            Width = 622
+            ExplicitWidth = 612
           end
           inherited pnlFooter: TPanel
-            ExplicitTop = 496
-            ExplicitWidth = 620
+            Top = 498
+            Width = 622
+            ExplicitWidth = 612
           end
           inherited rpnlBody: TRelativePanel
+            Height = 459
             ControlCollection = <
               item
-                Control = FrSCG.lbxL
+                Control = frSCG.lbxL
                 AlignBottomWithPanel = True
                 AlignHorizontalCenterWithPanel = False
                 AlignLeftWithPanel = True
-                AlignRightWith = FrSCG.spnlBtns
                 AlignRightWithPanel = False
                 AlignTopWithPanel = True
                 AlignVerticalCenterWithPanel = False
               end
               item
-                Control = FrSCG.lbxR
+                Control = frSCG.lbxR
                 AlignBottomWithPanel = True
                 AlignHorizontalCenterWithPanel = False
-                AlignLeftWith = FrSCG.spnlBtns
                 AlignLeftWithPanel = False
                 AlignRightWithPanel = True
                 AlignTopWithPanel = True
                 AlignVerticalCenterWithPanel = False
+                RightOf = frSCG.spnlBtns
               end
               item
-                Control = FrSCG.spnlBtns
+                Control = frSCG.spnlBtns
                 AlignBottomWithPanel = True
-                AlignHorizontalCenterWithPanel = True
+                AlignHorizontalCenterWithPanel = False
                 AlignLeftWithPanel = False
                 AlignRightWithPanel = False
                 AlignTopWithPanel = True
                 AlignVerticalCenterWithPanel = False
+                RightOf = frSCG.lbxL
               end>
-            ExplicitWidth = 620
-            ExplicitHeight = 457
+            ExplicitWidth = 612
+            inherited lbxL: TListBox
+              Height = 459
+              ExplicitHeight = 459
+            end
+            inherited lbxR: TListBox
+              Height = 459
+              ExplicitHeight = 459
+            end
             inherited spnlBtns: TStackPanel
+              Height = 459
               ControlCollection = <
                 item
-                  Control = FrSCG.spbtnMoveR
+                  Control = frSCG.spbtnMoveR
                 end
                 item
-                  Control = FrSCG.spbtnMoveR2
+                  Control = frSCG.spbtnMoveR2
                 end
                 item
-                  Control = FrSCG.spbtnMoveL
+                  Control = frSCG.spbtnMoveL
                 end
                 item
-                  Control = FrSCG.spbtnMoveL2
+                  Control = frSCG.spbtnMoveL2
                 end>
+              ExplicitHeight = 459
             end
           end
         end

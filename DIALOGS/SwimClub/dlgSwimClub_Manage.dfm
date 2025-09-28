@@ -2690,18 +2690,16 @@ object SwimClubManage: TSwimClubManage
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 772
   end
   object pnlBody: TPanel
-    Left = 146
+    Left = 776
     Top = 41
     Width = 627
     Height = 575
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 776
-    ExplicitWidth = 626
+    ExplicitLeft = 146
     object gSwimClub: TDBAdvGrid
       Left = 0
       Top = 0
@@ -3161,7 +3159,6 @@ object SwimClubManage: TSwimClubManage
         FFC003FF}
       ShowUnicode = False
       OnGetHTMLTemplate = gSwimClubGetHTMLTemplate
-      ExplicitWidth = 626
       ColWidths = (
         0
         64
@@ -3213,11 +3210,10 @@ object SwimClubManage: TSwimClubManage
   object splitvEdit: TSplitView
     Left = 146
     Top = 41
-    Width = 0
+    Width = 630
     Height = 575
     AnimationDelay = 30
     AnimationStep = 100
-    Opened = False
     OpenedWidth = 630
     Placement = svpLeft
     TabOrder = 3
@@ -3227,14 +3223,14 @@ object SwimClubManage: TSwimClubManage
     object pcntrlEdit: TPageControl
       Left = 0
       Top = 0
-      Width = 0
+      Width = 630
       Height = 575
       ActivePage = ts_LinkedClubs
       Align = alClient
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
-      ExplicitWidth = 630
+      ExplicitWidth = 0
       object tsMain: TTabSheet
         Caption = 'Options'
         ParentShowHint = False
@@ -3457,10 +3453,10 @@ object SwimClubManage: TSwimClubManage
           Left = 32
           Top = 336
           Width = 306
-          Height = 21
+          Height = 49
           Alignment = taCenter
           AutoSize = False
-          Caption = '(Square formatted images work best.)'
+          Caption = 'Max 400x400 pixels.'#13#10'(For best performance)'
         end
         object DBLogo: TDBImage
           Left = 32
@@ -3517,16 +3513,17 @@ object SwimClubManage: TSwimClubManage
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitLeft = 10
-          ExplicitTop = 2
+          ExplicitWidth = 0
+          ExplicitHeight = 539
           inherited pnlHeader: TPanel
             Width = 622
-            ExplicitWidth = 612
+            ExplicitWidth = 0
           end
           inherited pnlFooter: TPanel
             Top = 498
             Width = 622
-            ExplicitWidth = 612
+            ExplicitTop = 498
+            ExplicitWidth = 0
           end
           inherited rpnlBody: TRelativePanel
             Height = 459
@@ -3560,7 +3557,7 @@ object SwimClubManage: TSwimClubManage
                 AlignVerticalCenterWithPanel = False
                 RightOf = frSCG.lbxL
               end>
-            ExplicitWidth = 612
+            ExplicitHeight = 459
             inherited lbxL: TListBox
               Height = 459
               ExplicitHeight = 459
@@ -3637,7 +3634,7 @@ object SwimClubManage: TSwimClubManage
       end>
     Images = IMG.imglstSwimClubCntrl
     Left = 48
-    Top = 448
+    Top = 280
     StyleName = 'Platform Default'
     object actnEdit: TAction
       AutoCheck = True
@@ -3658,7 +3655,7 @@ object SwimClubManage: TSwimClubManage
     end
     object actnArchive: TAction
       Caption = 'Archive'
-      Hint = 'Retire the club. Archived clubs are hidden, except here.'
+      Hint = 'Retire the club. Archived clubs are hidden.'
       ImageIndex = 5
       ImageName = 'archive'
       OnExecute = actnArchiveExecute
@@ -3674,29 +3671,21 @@ object SwimClubManage: TSwimClubManage
     end
     object actnNewGroup: TAction
       Caption = 'New'#13#10'Group'
+      Hint = 'Create a new Club Group.'
       ImageIndex = 7
       ImageName = 'group'
       OnExecute = actnNewGroupExecute
       OnUpdate = actnNewGroupUpdate
     end
-    object actnGroupSelect: TAction
-      Caption = 'Group'#13#10'Reveal'
-      ImageIndex = 7
-      ImageName = 'group'
-    end
-    object actnGroupUpdate: TAction
-      Caption = 'Group'#13#10'Update'
-      ImageIndex = 7
-      ImageName = 'group'
-    end
     object actnInfo: TAction
       Caption = 'Group'#13#10'Information'
+      Hint = 'List the clubs in the Club Group.'
       ImageIndex = 8
       ImageName = 'info'
     end
     object actnClose: TAction
       Caption = 'Exit'
-      Hint = 'Close the dialog. Changes will be saved.'
+      Hint = 'Close the dialog. Changes are saved.'
       ImageIndex = 6
       ImageName = 'cancel-circle'
       ShortCut = 27
@@ -3725,7 +3714,7 @@ object SwimClubManage: TSwimClubManage
       ''
       '')
     Left = 48
-    Top = 400
+    Top = 424
   end
   object hintInfo: TBalloonHint
     Left = 48

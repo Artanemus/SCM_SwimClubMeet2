@@ -33,8 +33,8 @@ type
     DBTextNickName: TDBText;
     actnManager: TActionManager;
     Help_About: TAction;
-    File_ExportCarnival: TAction;
-    File_ImportCarnival: TAction;
+    File_ExportClub: TAction;
+    File_ImportClub: TAction;
     File_Exit: TAction;
     Session_ToggleVisible: TAction;
     Session_ToggleLock: TAction;

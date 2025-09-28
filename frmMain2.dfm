@@ -2730,7 +2730,7 @@ object Main2: TMain2
     object DBTextClubName: TDBText
       Left = 6
       Top = 0
-      Width = 159
+      Width = 187
       Height = 20
       AutoSize = True
       DataField = 'Caption'
@@ -2827,15 +2827,23 @@ object Main2: TMain2
         Width = 993
         Height = 433
         Cursor = crDefault
+        Color = clWhite
         ColCount = 21
         DrawingStyle = gdsClassic
         FixedColor = clWhite
         RowCount = 6
         FixedRows = 1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
+        ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
-        GridLineColor = 13948116
-        GridFixedLineColor = 11250603
+        GridLineColor = 15987699
+        GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
@@ -2849,6 +2857,7 @@ object Main2: TMain2
         ControlLook.FixedGradientTo = clWhite
         ControlLook.FixedGradientMirrorFrom = clWhite
         ControlLook.FixedGradientMirrorTo = clWhite
+        ControlLook.FixedGradientHoverFrom = clGray
         ControlLook.FixedGradientHoverTo = clWhite
         ControlLook.FixedGradientHoverMirrorFrom = clWhite
         ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -2894,7 +2903,7 @@ object Main2: TMain2
         FixedColWidth = 20
         FixedRowHeight = 22
         FixedFont.Charset = DEFAULT_CHARSET
-        FixedFont.Color = 3881787
+        FixedFont.Color = clBlack
         FixedFont.Height = -12
         FixedFont.Name = 'Tahoma'
         FixedFont.Style = [fsBold]
@@ -3670,6 +3679,13 @@ object Main2: TMain2
           64
           64
           64)
+        RowHeights = (
+          22
+          22
+          22
+          22
+          22
+          22)
       end
     end
     object tabNominate: TTabSheet
@@ -3758,14 +3774,14 @@ object Main2: TMain2
           item
             Items = <
               item
-                Action = File_ExportCarnival
-                Caption = 'E&xport CarnivalMeet...'
+                Action = File_ExportClub
+                Caption = 'E&xport Club...'
                 ImageIndex = 46
                 ImageName = 'Export'
               end
               item
-                Action = File_ImportCarnival
-                Caption = '&Import CarnivalMeet...'
+                Action = File_ImportClub
+                Caption = '&Import Club...'
                 ImageIndex = 39
                 ImageName = 'import'
               end
@@ -4141,21 +4157,6 @@ object Main2: TMain2
                 Caption = '-'
               end
               item
-                Action = File_ExportCarnival
-                Caption = 'E&xport CarnivalMeet...'
-                ImageIndex = 46
-                ImageName = 'Export'
-              end
-              item
-                Action = File_ImportCarnival
-                Caption = '&Import CarnivalMeet...'
-                ImageIndex = 39
-                ImageName = 'import'
-              end
-              item
-                Caption = '-'
-              end
-              item
                 Action = File_Exit
                 Caption = 'Exi&t'
                 ImageIndex = 38
@@ -4187,6 +4188,21 @@ object Main2: TMain2
                 Caption = 'C&lub Statistics...'
                 ImageIndex = 52
                 ImageName = 'Query-Stats'
+              end
+              item
+                Caption = '-'
+              end
+              item
+                Action = File_ExportClub
+                Caption = '&Export Club...'
+                ImageIndex = 46
+                ImageName = 'Export'
+              end
+              item
+                Action = File_ImportClub
+                Caption = '&Import Club...'
+                ImageIndex = 39
+                ImageName = 'import'
               end
               item
                 Caption = '-'
@@ -4682,20 +4698,6 @@ object Main2: TMain2
       OnExecute = File_ConnectionExecute
       OnUpdate = File_ConnectionUpdate
     end
-    object File_ExportCarnival: TAction
-      Category = 'File'
-      Caption = 'Export CarnivalMeet...'
-      Enabled = False
-      ImageIndex = 46
-      ImageName = 'Export'
-    end
-    object File_ImportCarnival: TAction
-      Category = 'File'
-      Caption = 'Import CarnivalMeet...'
-      Enabled = False
-      ImageIndex = 39
-      ImageName = 'import'
-    end
     object File_Exit: TAction
       Category = 'File'
       Caption = 'Exit'
@@ -5184,6 +5186,20 @@ object Main2: TMain2
       Caption = 'Club Statistics...'
       ImageIndex = 52
       ImageName = 'Query-Stats'
+    end
+    object File_ExportClub: TAction
+      Category = 'SwimClub'
+      Caption = 'Export Club...'
+      Enabled = False
+      ImageIndex = 46
+      ImageName = 'Export'
+    end
+    object File_ImportClub: TAction
+      Category = 'SwimClub'
+      Caption = 'Import Club...'
+      Enabled = False
+      ImageIndex = 39
+      ImageName = 'import'
     end
     object SwimClub_Manage: TAction
       Category = 'SwimClub'

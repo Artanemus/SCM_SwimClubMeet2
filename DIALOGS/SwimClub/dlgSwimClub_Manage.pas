@@ -5,6 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages,
   System.SysUtils, System.Variants, System.Classes, system.UITypes,
+  System.Generics.Collections,
 
   Data.DB,
 
@@ -72,8 +73,6 @@ type
     actnNewGroup: TAction;
     qrySwimClubGroup: TFDQuery;
     actnInfo: TAction;
-    actnGroupSelect: TAction;
-    actnGroupUpdate: TAction;
     hintInfo: TBalloonHint;
     frSCG: TFrClubGroup;
     procedure FormDestroy(Sender: TObject);
@@ -179,7 +178,6 @@ begin
       and Master-Detailed relationship.
     Using the ExecSQLScalar function with SQL script - much safer.
   }
-
   SyncGridToDB(2); // clean up the UI
   actnDelete.Checked := false; // de-select button on the actnToolBar.
 
@@ -198,14 +196,13 @@ begin
   ClubName := CORE.qrySwimClub.FieldByName('Caption').AsString;
   mbTitle := 'DELETE ' + ClubName + '...';
 
-
   // uses EXECSCALAR method to ensure it's empty.
   if uSwimClub.SessionCount = 0 then
   begin
     msg := '''
       Are you sure you want to delete this club?
       ''';
-    msg := 'DELETE (empty - no sessions) ' + ClubName + sLineBreak + msg;
+    msg := 'DELETE ' + ClubName + sLineBreak + msg;
     msgResults := MessageBox(0, PChar(msg), PChar(mbTitle),
       MB_ICONEXCLAMATION or MB_YESNO or MB_DEFBUTTON2);
     if msgResults = IDYES then
@@ -321,44 +318,46 @@ end;
 
 procedure TSwimClubManage.actnNewGroupExecute(Sender: TObject);
 var
-  i, ChildClubID, ParentClubID, NumOfSelectedRows: integer;
-  ilst: TIntList;
+  i, ChildClubID, ParentClubID: integer;
+  cc: TList<integer>; // List of ChildClubIDs.
 begin
-  ilst := TIntList.Create(0,0);
+  // TRAP: no grid rows have been selected...
+  if gSwimClub.RowSelectCount = 0 then exit;
+  { NOTE: when we create the new CLUB GROUP, TMS will place
+    'focus' and 'select' row.
+    To avoid selection issues, collect the ChildClub's IDs first.
+  }
+  cc := TList<integer>.Create;
   try
-    ilst.Clear;
-    if gSwimClub.RowSelectCount = 0 then exit;
     gSwimClub.BeginUpdate;
     try
-      // collect select row SwimClubID's (wit: ChildClubID's)
-      // Loop through all data rows in the grid..
+      // STEP 1: COLLECT THE CILDCLUBID's
+      // iterate over selected rows - gather the ChildClubID's.
       for i := gSwimClub.FixedRows to gSwimClub.RowCount-1 do
       begin
         // Check if the row is 'selected ROW'
         if gSwimClub.RowSelect[i] then
         begin
-          // if the row is a 'GROUP' club - then skip
+          // row[4] = Field: dbo.SwimClub.IsClubGroup.
           if (StrToIntDef(gSwimClub.Cells[4, i], 0) = 1) then
             continue; // sorry, 'group inception' is not allowed...
-          // get the SwimClubID (ChildClub) of the 'selected row'.
+          // row[5] = Field: dbo.Swimclub.SwimClubID
           ChildClubID := StrToIntDef(gSwimClub.Cells[5, i], 0);
-          ilst.Add(ChildClubID);
+          cc.Add(ChildClubID); // store ChildClubID.
         end;
       end;
     finally
       gSwimClub.EndUpdate;
     end;
-
-    if not ilst.IsEmpty then
+    if not cc.IsEmpty then
     begin
-
+      // STEP 2: CREATE THE CLUB GROUP.
       try  // create a new Club .. default values handle by CORE.OnNewRecord.
         CORE.qrySwimClub.Insert;
         CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean := true;
         CORE.qrySwimClub.FieldByName('Caption').AsString := 'NEW CLUB GROUP';
         CORE.qrySwimClub.Post;
-
-        // Get the newly created CLUBGROUP-SWIMCLUB.. Safe to do this in FireDAC.
+        // Get the newly created CLUBGROUP-SWIMCLUB.. Safe to do in FireDAC.
         ParentClubID := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
 
       {  // BEST PRACTISE - Alternative method...
@@ -366,23 +365,20 @@ begin
       if not VarIsClear(v) and (v=0) then  ParentClubID := v;
       }
 
-      { NOTE: because we have created a new CLUBGROUP-SWIMCLUB
-        it's has 'focus' and counts as a selected row in grid!
-        CONSIDER: To avoid this, get all the selected 'clubs' then create.
-      }
       except on E: Exception do
         begin
           CORE.qrySwimClub.Cancel;
           exit;
         end;
       end;
-      for I := 0 to ilst.Count-1 do
+      // STEP 3: ASSIGN CHILD CLUBs TO CLUB GROUP.
+      for I := 0 to cc.Count-1 do
       begin
         try
           // Create a new ClubGroupRecord..
           qrySwimClubGroup.Insert;
           // the linked swim club.
-          qrySwimClubGroup.FieldByName('ChildClubID').AsInteger := ilst[i];
+          qrySwimClubGroup.FieldByName('ChildClubID').AsInteger := cc[i];
           // the newly created CLUBGROUP-SWIMCLUB
           qrySwimClubGroup.FieldByName('ParentClubID').AsInteger := ParentClubID;
           qrySwimClubGroup.Post;
@@ -395,13 +391,13 @@ begin
       end;
     end;
   finally
-    ilst.Free;
+    cc.Free;
   end;
 
-  // STEP : locate grid to sync with new record. Fix UI selection.
-  // NOTE: Doesn't require toggeling of MouseAction.DisjunctRowSelect
+  // STEP 4: TIDY-U{ UI.
+  // locate grid to sync with new record. Fix UI selection.
   CORE.qrySwimClub.Refresh; // ensured all ImageIndex values are correct.
-  SyncGridToDB(1);
+  SyncGridToDB(1); // de-select all , focus and select ClubGroup.
 end;
 
 procedure TSwimClubManage.actnNewGroupUpdate(Sender: TObject);

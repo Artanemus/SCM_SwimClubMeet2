@@ -14217,9 +14217,9 @@ object IMG: TIMG
   object imglstSwimClubArchived: TSVGIconVirtualImageList
     Images = <
       item
-        CollectionIndex = 77
-        CollectionName = 'unknown'
-        Name = 'unknown'
+        CollectionIndex = 0
+        CollectionName = 'EmptyFrame'
+        Name = 'EmptyFrame'
       end
       item
         CollectionIndex = 76

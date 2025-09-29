@@ -1,44 +1,203 @@
-object FrameSession: TFrameSession
+object FrameSessionEx: TFrameSessionEx
   Left = 0
   Top = 0
-  Width = 726
-  Height = 548
+  Width = 446
+  Height = 569
   TabOrder = 0
-  object pnlgSession: TPanel
+  object stackpnlSess: TStackPanel
     Left = 0
     Top = 0
-    Width = 662
-    Height = 548
+    Width = 64
+    Height = 569
+    Align = alLeft
+    ControlCollection = <
+      item
+        Control = spbtnSessVisible
+      end
+      item
+        Control = spbtnSessLock
+      end
+      item
+        Control = ShapeSessBar1
+      end
+      item
+        Control = spbtnSessEdit
+      end
+      item
+        Control = spbtnSessNew
+      end
+      item
+        Control = spbtnSessClone
+      end
+      item
+        Control = spbtnSessDelete
+      end
+      item
+        Control = ShapeSessBar2
+      end
+      item
+        Control = spbtnSessReport
+      end>
+    HorizontalPositioning = sphpCenter
+    TabOrder = 0
+    ExplicitLeft = 503
+    ExplicitHeight = 548
+    DesignSize = (
+      64
+      569)
+    object spbtnSessVisible: TSpeedButton
+      Left = 8
+      Top = 1
+      Width = 48
+      Height = 48
+      ImageIndex = 1
+      ImageName = 'visible_on'
+      Images = IMG.imglstSessCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = False
+    end
+    object spbtnSessLock: TSpeedButton
+      Left = 8
+      Top = 51
+      Width = 48
+      Height = 48
+      Anchors = []
+      ImageIndex = 7
+      ImageName = 'lock-open-2'
+      Images = IMG.imglstSessCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+    end
+    object ShapeSessBar1: TShape
+      AlignWithMargins = True
+      Left = 8
+      Top = 104
+      Width = 48
+      Height = 4
+      Margins.Left = 0
+      Margins.Right = 0
+      Anchors = []
+      Brush.Color = 8421631
+    end
+    object spbtnSessEdit: TSpeedButton
+      Left = 8
+      Top = 113
+      Width = 48
+      Height = 48
+      ImageIndex = 8
+      ImageName = 'edit'
+      Images = IMG.imglstSessCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+    end
+    object spbtnSessNew: TSpeedButton
+      Left = 8
+      Top = 163
+      Width = 48
+      Height = 48
+      Anchors = []
+      ImageIndex = 3
+      ImageName = 'new'
+      Images = IMG.imglstSessCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+    end
+    object spbtnSessClone: TSpeedButton
+      Left = 8
+      Top = 213
+      Width = 48
+      Height = 48
+      ImageIndex = 11
+      ImageName = 'clone'
+      Images = IMG.imglstSessCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+    end
+    object spbtnSessDelete: TSpeedButton
+      Left = 8
+      Top = 263
+      Width = 48
+      Height = 48
+      ImageIndex = 4
+      ImageName = 'delete'
+      Images = IMG.imglstSessCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+    end
+    object ShapeSessBar2: TShape
+      AlignWithMargins = True
+      Left = 8
+      Top = 316
+      Width = 48
+      Height = 4
+      Margins.Left = 0
+      Margins.Right = 0
+      Anchors = []
+      Brush.Color = 8421631
+    end
+    object spbtnSessReport: TSpeedButton
+      Left = 8
+      Top = 325
+      Width = 48
+      Height = 48
+      ImageIndex = 5
+      ImageName = 'report'
+      Images = IMG.imglstSessCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+    end
+  end
+  object pnlBody: TPanel
+    Left = 64
+    Top = 0
+    Width = 382
+    Height = 569
     Align = alClient
     BevelOuter = bvNone
-    TabOrder = 0
+    TabOrder = 1
+    ExplicitLeft = 192
+    ExplicitTop = 264
+    ExplicitWidth = 185
+    ExplicitHeight = 41
     object gSession: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 662
-      Height = 548
+      Width = 382
+      Height = 569
       Cursor = crDefault
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 0
       Align = alClient
-      Color = clWhite
-      ColCount = 11
-      DefaultRowHeight = 34
+      ColCount = 2
+      DefaultRowHeight = 58
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 2
+      RowCount = 101
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlack
-      Font.Height = -12
+      Font.Color = clWindowText
+      Font.Height = -16
       Font.Name = 'Segoe UI'
       Font.Style = []
-      Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
       ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
-      OnDrawCell = gSessionDrawCell
-      GridLineColor = 15987699
-      GridFixedLineColor = 15987699
+      GridLineColor = 13948116
+      GridFixedLineColor = 11250603
       HoverRowCells = [hcNormal, hcSelected]
+      OnGetCellColor = gSessionGetCellColor
+      HTMLKeepLineBreak = False
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
       ActiveCellFont.Height = -12
@@ -51,7 +210,6 @@ object FrameSession: TFrameSession
       ControlLook.FixedGradientTo = clWhite
       ControlLook.FixedGradientMirrorFrom = clWhite
       ControlLook.FixedGradientMirrorTo = clWhite
-      ControlLook.FixedGradientHoverFrom = clGray
       ControlLook.FixedGradientHoverTo = clWhite
       ControlLook.FixedGradientHoverMirrorFrom = clWhite
       ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -94,12 +252,12 @@ object FrameSession: TFrameSession
         'Larger than'
         'Smaller than'
         'Clear')
-      FixedColWidth = 0
-      FixedRowHeight = 34
+      FixedColWidth = 20
+      FixedRowHeight = 24
       FixedFont.Charset = DEFAULT_CHARSET
-      FixedFont.Color = clBlack
+      FixedFont.Color = 3881787
       FixedFont.Height = -16
-      FixedFont.Name = 'Tahoma'
+      FixedFont.Name = 'Segoe UI'
       FixedFont.Style = [fsBold]
       FloatFormat = '%.2f'
       HoverButtons.Buttons = <>
@@ -161,14 +319,15 @@ object FrameSession: TFrameSession
           CheckFalse = 'N'
           CheckTrue = 'Y'
           Color = clWindow
+          FieldName = 'SessionID'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -16
+          Font.Height = -12
           Font.Name = 'Segoe UI'
           Font.Style = []
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
+          HeaderFont.Height = -12
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
@@ -177,10 +336,9 @@ object FrameSession: TFrameSession
           PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 0
+          Width = 20
         end
         item
-          Alignment = taRightJustify
           Borders = []
           BorderPen.Color = clSilver
           ButtonHeight = 18
@@ -190,260 +348,27 @@ object FrameSession: TFrameSession
           FieldName = 'SessionID'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -16
+          Font.Height = -12
           Font.Name = 'Segoe UI'
           Font.Style = []
+          Header = 'Session Details'
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
+          HeaderFont.Height = -12
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
+          HTMLTemplate = 
+            '<IND x="2"><FONT Size="9"<B><#SessionDT></B><br><IND x="2"><FONT' +
+            ' Size="10"><#Caption><br><IND x="4"><FONT Size="9"><IMG src="idx' +
+            ':6" align="middle">'
+          Images = IMG.imglstSessGrid
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
           PrintFont.Color = clWindowText
           PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 60
-        end
-        item
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWhite
-          EditLength = 128
-          FieldName = 'Caption'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 64
-        end
-        item
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWhite
-          FieldName = 'StartDT'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 64
-        end
-        item
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWhite
-          FieldName = 'EndDT'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 64
-        end
-        item
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWhite
-          FieldName = 'CreatedOn'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 64
-        end
-        item
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWhite
-          FieldName = 'ModifiedOn'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 64
-        end
-        item
-          Alignment = taRightJustify
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWhite
-          FieldName = 'NomineeCount'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 64
-        end
-        item
-          Alignment = taRightJustify
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWhite
-          FieldName = 'EntrantCount'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 64
-        end
-        item
-          Alignment = taRightJustify
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWhite
-          FieldName = 'SwimClubID'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 64
-        end
-        item
-          Alignment = taRightJustify
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWhite
-          FieldName = 'SessionStatusID'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 64
+          Width = 340
         end>
       DataSource = CORE.dsSession
       InvalidPicture.Data = {
@@ -583,283 +508,169 @@ object FrameSession: TFrameSession
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
+      OnGetHTMLTemplate = gSessionGetHTMLTemplate
       ColWidths = (
-        0
-        60
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64)
+        20
+        340)
+      RowHeights = (
+        24
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58)
     end
   end
-  object pnlStack: TStackPanel
-    Left = 662
-    Top = 0
-    Width = 64
-    Height = 548
-    Align = alRight
-    ControlCollection = <
-      item
-        Control = spbtnSessVisible
-      end
-      item
-        Control = spbtnSessLock
-      end
-      item
-        Control = ShapeSessBar1
-      end
-      item
-        Control = spbtnSessEdit
-      end
-      item
-        Control = spbtnSessNew
-      end
-      item
-        Control = spbtnSessClone
-      end
-      item
-        Control = spbtnSessDelete
-      end
-      item
-        Control = ShapeSessBar2
-      end
-      item
-        Control = spbtnSessReport
-      end>
-    HorizontalPositioning = sphpCenter
-    TabOrder = 1
-    DesignSize = (
-      64
-      548)
-    object spbtnSessVisible: TSpeedButton
-      Left = 8
-      Top = 1
-      Width = 48
-      Height = 48
-      Action = actnSess_Visible
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      ParentShowHint = False
-      ShowHint = False
-    end
-    object spbtnSessLock: TSpeedButton
-      Left = 8
-      Top = 51
-      Width = 48
-      Height = 48
-      Action = actnSess_Lock
-      Anchors = []
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-    end
-    object ShapeSessBar1: TShape
-      AlignWithMargins = True
-      Left = 8
-      Top = 104
-      Width = 48
-      Height = 4
-      Margins.Left = 0
-      Margins.Right = 0
-      Anchors = []
-      Brush.Color = 8421631
-    end
-    object spbtnSessEdit: TSpeedButton
-      Left = 8
-      Top = 113
-      Width = 48
-      Height = 48
-      Action = actnSess_Edit
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-    end
-    object spbtnSessNew: TSpeedButton
-      Left = 8
-      Top = 163
-      Width = 48
-      Height = 48
-      Action = actnSess_New
-      Anchors = []
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-    end
-    object spbtnSessClone: TSpeedButton
-      Left = 8
-      Top = 213
-      Width = 48
-      Height = 48
-      Action = actnSess_Clone
-      ImageIndex = 11
-      ImageName = 'clone'
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-    end
-    object spbtnSessDelete: TSpeedButton
-      Left = 8
-      Top = 263
-      Width = 48
-      Height = 48
-      Action = actnSess_Delete
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-    end
-    object ShapeSessBar2: TShape
-      AlignWithMargins = True
-      Left = 8
-      Top = 316
-      Width = 48
-      Height = 4
-      Margins.Left = 0
-      Margins.Right = 0
-      Anchors = []
-      Brush.Color = 8421631
-    end
-    object spbtnSessReport: TSpeedButton
-      Left = 8
-      Top = 325
-      Width = 48
-      Height = 48
-      Action = actnSess_Report
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-    end
-  end
-  object actnlistSess: TActionList
-    Left = 184
-    Top = 264
-    object actnSess_Visible: TAction
-      Category = 'Session'
-      Caption = 'Toggle Visibility'
-      Hint = 'Toggle - show, hide the visibility of locked sessions.'
+  object actnlstSession: TActionList
+    Images = IMG.imglstSessCntrl
+    Left = 208
+    Top = 56
+    object actnVisible: TAction
+      Caption = 'Hide/Show Locked.'
+      Hint = 'Toggle the visibility of locked sessions.'
       ImageIndex = 1
-      ImageName = 'visible-on'
-      OnExecute = actnSess_VisibleExecute
-      OnUpdate = actnSess_DefaultUpdate
+      ImageName = 'visible_on'
+      OnExecute = actnVisibleExecute
+      OnUpdate = actnGenericUpdate
     end
-    object actnSess_Lock: TAction
-      Category = 'Session'
-      Caption = 'Toggle Lock'
-      Hint = 'Toggle - lock-unlock the session.'
-      ImageIndex = 6
-      ImageName = 'lock-2'
-      OnExecute = actnSess_LockExecute
-      OnUpdate = actnSess_DefaultUpdate
+    object actnLock: TAction
+      Caption = 'Lock/UnLock'
+      Hint = 'Toggle the lock state of a session.'
+      ImageIndex = 7
+      ImageName = 'lock-open-2'
+      OnExecute = actnLockExecute
+      OnUpdate = actnGenericUpdate
     end
-    object actnSess_Edit: TAction
-      Category = 'Session'
-      Caption = 'Edit Session...'
-      Hint = 'Edit the selected session.'
+    object actnEdit: TAction
+      Caption = 'Edit'
+      Hint = 'Edit the current selected session.'
       ImageIndex = 8
       ImageName = 'edit'
-      OnExecute = actnSess_EditExecute
-      OnUpdate = actnSess_DefaultUpdate
+      OnExecute = actnEditExecute
+      OnUpdate = actnGenericUpdate
     end
-    object actnSess_New: TAction
-      Category = 'Session'
-      Caption = 'New Session...'
+    object actnNew: TAction
+      Caption = 'New'
       Hint = 'Create a new session.'
       ImageIndex = 3
       ImageName = 'new'
-      OnExecute = actnSess_NewExecute
-      OnUpdate = actnSess_NewUpdate
+      OnExecute = actnNewExecute
+      OnUpdate = actnNewUpdate
     end
-    object actnSess_Clone: TAction
-      Category = 'Session'
-      Caption = 'Clone Session...'
+    object actnClone: TAction
+      Caption = 'Clone'
       Hint = 'Duplicate the selected session.'
-      OnExecute = actnSess_CloneExecute
-      OnUpdate = actnSess_DefaultUpdate
+      ImageIndex = 11
+      ImageName = 'clone'
     end
-    object actnSess_Delete: TAction
-      Category = 'Session'
-      Caption = 'Delete Session...'
-      Hint = 'Delete the current selected session.'
+    object actnDelete: TAction
+      Caption = 'Delete'
+      Hint = 'Delete the selected session.'
       ImageIndex = 4
       ImageName = 'delete'
-      OnExecute = actnSess_DeleteExecute
-      OnUpdate = actnSess_DeleteUpdate
+      OnExecute = actnDeleteExecute
+      OnUpdate = actnGenericUpdate
     end
-    object actnSess_Report: TAction
-      Category = 'Session'
+    object actnReport: TAction
       Caption = 'Session Report'
-      Hint = 'Display the session report. (Ready to print.)'
+      Hint = 'Create a Session report.'
       ImageIndex = 5
       ImageName = 'report'
-      OnExecute = actnSess_ReportExecute
-      OnUpdate = actnSess_DefaultUpdate
-    end
-    object actnSess_Import: TAction
-      Category = 'Session'
-      Caption = 'Import Session...'
-      Hint = 'Import a JSON file formatted with session data.'
-      ImageIndex = 9
-      ImageName = 'in'
-    end
-    object actnSess_Export: TAction
-      Category = 'Session'
-      Caption = 'Export Session...'
-      Hint = 'Export the session as a JSON file.'
-      ImageIndex = 10
-      ImageName = 'out'
-    end
-    object actnSess_Sort: TAction
-      Category = 'Session'
-      Caption = 'Sort Session...'
-      Hint = 'Sort the session stack in descending order.'
-      ImageIndex = 12
-      ImageName = 'sort'
-      OnExecute = actnSess_SortExecute
-      OnUpdate = actnSess_DefaultUpdate
-    end
-    object actnSess_BatchReport: TAction
-      Category = 'Session'
-      Caption = 'Batch Report'
-    end
-    object actnSess_RenumberEvents: TAction
-      Category = 'Session'
-      Caption = 'Renumber Events'
-    end
-  end
-  object pumenuSess: TPopupMenu
-    Left = 184
-    Top = 336
-    object oggleVisibility1: TMenuItem
-      Action = actnSess_Visible
-    end
-    object oggleLock1: TMenuItem
-      Action = actnSess_Lock
-    end
-    object N1: TMenuItem
-      Caption = '-'
-    end
-    object EditSession1: TMenuItem
-      Action = actnSess_Edit
-    end
-    object NewSession1: TMenuItem
-      Action = actnSess_New
-    end
-    object CloneSession1: TMenuItem
-      Action = actnSess_Clone
-    end
-    object DeleteSession1: TMenuItem
-      Action = actnSess_Delete
-    end
-    object N2: TMenuItem
-      Caption = '-'
-    end
-    object SessionReport1: TMenuItem
-      Action = actnSess_Report
     end
   end
 end

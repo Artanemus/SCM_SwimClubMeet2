@@ -2699,7 +2699,6 @@ object SwimClubManage: TSwimClubManage
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 146
     object gSwimClub: TDBAdvGrid
       Left = 0
       Top = 0
@@ -2712,7 +2711,7 @@ object SwimClubManage: TSwimClubManage
       DefaultRowHeight = 60
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 6
+      RowCount = 5
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -3171,7 +3170,6 @@ object SwimClubManage: TSwimClubManage
         60
         60
         60
-        60
         60)
     end
   end
@@ -3230,7 +3228,6 @@ object SwimClubManage: TSwimClubManage
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
-      ExplicitWidth = 0
       object tsMain: TTabSheet
         Caption = 'Options'
         ParentShowHint = False
@@ -3513,17 +3510,17 @@ object SwimClubManage: TSwimClubManage
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitWidth = 0
+          ExplicitWidth = 622
           ExplicitHeight = 539
           inherited pnlHeader: TPanel
             Width = 622
-            ExplicitWidth = 0
+            ExplicitWidth = 622
           end
           inherited pnlFooter: TPanel
             Top = 498
             Width = 622
             ExplicitTop = 498
-            ExplicitWidth = 0
+            ExplicitWidth = 622
           end
           inherited rpnlBody: TRelativePanel
             Height = 459

@@ -24,26 +24,29 @@ function DeleteSession(DoExclude: Boolean = true): boolean;
 function EntrantCount: integer;
 function NomineeCount: integer;
 function GetSessionID: integer; // Assert - SAFE.
-function HasClosedOrRacedHeats: Boolean; deprecated;
 function HasEvents: Boolean;  deprecated;
 function IsEmptyOrLocked: Boolean;
-function IsLocked: Boolean;
 function Locate(SessionID: integer): Boolean;
 function PK(): integer; // NO CHECKS. RTNS: Primary key.
 function RenumberEvents(DoLocate: Boolean = true): integer;
 function SessionDT: TDateTime;
 
-procedure DetailTBLs_DisableCNTRLs;
-procedure DetailTBLs_ApplyMaster;
-procedure DetailTBLs_EnableCNTRLs;
-procedure SetVisibilityOfLocked(IsVisible: Boolean);
 procedure SetEntrantCount();
 procedure SetNomineeCount();
-procedure SetSessionStatusID(aSessionStatusID: Integer);
 //procedure SortSession();
 procedure NewSession();
 //procedure EditSession();
 //procedure ReSyncSession();
+
+
+// LIST BELOW ARE ROUTINES THAT ARE IN-USE AND DEBUGGED
+function IsLocked: Boolean;
+function HasClosedOrRacedHeats: Boolean; deprecated;
+procedure SetVisibilityOfLocked(IsVisible: Boolean);
+procedure SetSessionStatusID(const aSessionStatusID: Integer);
+procedure DetailTBLs_DisableCNTRLs;
+procedure DetailTBLs_ApplyMaster;
+procedure DetailTBLs_EnableCNTRLs;
 
 
 implementation
@@ -120,13 +123,13 @@ end;
 
 procedure DetailTBLs_DisableCNTRLs;
 begin
-    CORE.qryTeamLink.DisableControls;
-    CORE.qryTeam.DisableControls;
-    CORE.qrySplitTime.DisableControls;
-    CORE.qryWatchTime.DisableControls;
-    CORE.qryLane.DisableControls;
-    CORE.qryHeat.DisableControls;
-    CORE.qryEvent.DisableControls;
+  CORE.qryTeamLink.DisableControls;
+  CORE.qryTeam.DisableControls;
+  CORE.qrySplitTime.DisableControls;
+  CORE.qryWatchTime.DisableControls;
+  CORE.qryLane.DisableControls;
+  CORE.qryHeat.DisableControls;
+  CORE.qryEvent.DisableControls;
 end;
 
 procedure DetailTBLs_ApplyMaster;
@@ -251,8 +254,8 @@ begin
     INNER JOIN [Heat] ON [Event].EventID = [Heat].EventID
     WHERE [Heat].HeatStatusID > 1 AND [Session].SessionID = :ID'
     ''';
-  v := SCM2.scmConnection.ExecSQLScalar(SQL, [uSession.PK]);
-  if not VarIsNull(v) and not VarIsEmpty(v) and (v > 0) then result := true;
+  v := SCM2.scmConnection.ExecSQLScalar(SQL, [uSession.PK]); // never returns null or empty.
+  if (v > 0) then result := true;
 end;
 
 function HasEvents: Boolean; deprecated;
@@ -352,31 +355,19 @@ begin
   end;
 end;
 
-procedure SetSessionStatusID(aSessionStatusID: Integer);
-var
-  fld: TField;
+procedure SetSessionStatusID(const aSessionStatusID: Integer);
 begin
   if aSessionStatusID in [1,2] then // Check out of bounds.
   begin
-    with CORE.qrySession do
-    begin
-      CORE.qrySession.DisableControls;
-      fld := CORE.qrySession.FindField('SessionStatusID');
-      if Assigned(fld) and fld.ReadOnly = true then
-        fld.ReadOnly := false;
-      try
-        try
-          Edit;
-          FieldByName('SessionStatusID').AsInteger := aSessionStatusID;
-          Post;
-        except on E: Exception do
-            Cancel;
-        end;
-      finally
-        if Assigned(fld) then fld.ReadOnly := true;
-        CORE.qrySession.EnableControls;
-      end;
+    CORE.qrySession.DisableControls;
+    try
+      CORE.qrySession.Edit;
+      CORE.qrySession.FieldByName('SessionStatusID').AsInteger := aSessionStatusID;
+      CORE.qrySession.Post;
+    except on E: Exception do
+        CORE.qrySession.Cancel;
     end;
+    CORE.qrySession.EnableControls;
   end;
 end;
 
@@ -385,13 +376,8 @@ procedure SetVisibilityOfLocked(IsVisible: Boolean);
 ///  true: show both locked and unlocked sessions.
 ///  false: hides locked sessions.
 /// </param>
-
 begin
-  CORE.qryTeam.DisableControls;
-  CORE.qryLane.DisableControls;
-  CORE.qryHeat.DisableControls;
-  CORE.qryNominee.DisableControls;
-  CORE.qryEvent.DisableControls;
+  DetailTBLs_DisableCNTRLs;
   CORE.qrySession.DisableControls;
   try
     try
@@ -407,20 +393,10 @@ begin
         raise;
       end;
     end;
-
-    // Activate Detailed tables
-    CORE.qryEvent.ApplyMaster;
-    CORE.qryNominee.ApplyMaster;
-    CORE.qryHeat.ApplyMaster;
-    CORE.qryLane.ApplyMaster;
-    CORE.qryTeam.ApplyMaster;
+    DetailTBLs_ApplyMaster;   // Re-Sync Master detail relationship.
   finally
     CORE.qrySession.EnableControls;
-    CORE.qryEvent.EnableControls;
-    CORE.qryNominee.EnableControls;
-    CORE.qryHeat.EnableControls;
-    CORE.qryLane.EnableControls;
-    CORE.qryTeam.EnableControls;
+    DetailTBLs_EnableCNTRLs;
   end;
 end;
 

@@ -18,7 +18,6 @@ object FrClubGroup: TFrClubGroup
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 620
     object vimg1: TVirtualImage
       AlignWithMargins = True
       Left = 283
@@ -43,6 +42,7 @@ object FrClubGroup: TFrClubGroup
       Margins.Left = 10
       Align = alLeft
       TabOrder = 0
+      ExplicitHeight = 29
     end
   end
   object pnlFooter: TPanel
@@ -53,7 +53,6 @@ object FrClubGroup: TFrClubGroup
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 620
     object lbl1: TLabel
       Left = 56
       Top = 6
@@ -109,7 +108,6 @@ object FrClubGroup: TFrClubGroup
     Padding.Left = 10
     Padding.Right = 10
     TabOrder = 2
-    ExplicitWidth = 620
     DesignSize = (
       612
       457)

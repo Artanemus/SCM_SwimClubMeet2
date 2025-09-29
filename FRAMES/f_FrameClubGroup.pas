@@ -44,8 +44,9 @@ type
   private
     fParentClubID: integer;
     fIsChanged: boolean;
-    procedure MoveSelectedItem(lstL, lstR: TListBox);
+//    procedure MoveSelectedItem(lstL, lstR: TListBox);
     procedure MoveSelectedItems(lstL, lstR: TListBox);
+    procedure MoveAllItems(lstL, lstR: TListBox);
 
 
   public
@@ -138,6 +139,25 @@ begin
   end;
 end;
 
+procedure TFrClubGroup.MoveAllItems(lstL, lstR: TListBox);
+var
+  i: Integer;
+begin
+  if lstL.Items.IsEmpty then exit;
+  // Iterate backwards so Delete() won’t shift unprocessed items
+  for i := lstL.Count - 1 downto 0 do
+  begin
+      fIsChanged := true;
+      // Add to destination
+      lstR.Items.AddObject(lstL.Items[i], lstL.Items.Objects[i]);
+      // Remove from source
+      lstL.Items.Delete(i);
+  end;
+  // UI - update
+  lstR.ItemIndex := -1;
+end;
+
+(*
 procedure TFrClubGroup.MoveSelectedItem(lstL, lstR: TListBox);
 var
   idx, newIdx: Integer;
@@ -153,11 +173,13 @@ begin
   // Optionally select the newly added item in lstR
   lstR.ItemIndex := newIdx;
 end;
+*)
 
 procedure TFrClubGroup.MoveSelectedItems(lstL, lstR: TListBox);
 var
-  i, newIdx: Integer;
+  i: Integer;
 begin
+  if lstL.Items.IsEmpty then exit;
   // Iterate backwards so Delete() won’t shift unprocessed items
   for i := lstL.Count - 1 downto 0 do
   begin
@@ -165,33 +187,33 @@ begin
     begin
       fIsChanged := true;
       // Add to destination
-      newIdx := lstR.Items.AddObject(lstL.Items[i], lstL.Items.Objects[i]);
+      lstR.Items.AddObject(lstL.Items[i], lstL.Items.Objects[i]);
       // Remove from source
       lstL.Items.Delete(i);
-      // Optional: select newly added item(s) in lstR
-      lstR.ItemIndex := newIdx;
     end;
   end;
+  // UI - update
+  lstR.ItemIndex := -1;
 end;
 
 procedure TFrClubGroup.spbtnMoveL2Click(Sender: TObject);
 begin
-  MoveSelectedItems(lbxR, lbxL);
+  MoveAllItems(lbxR, lbxL);
 end;
 
 procedure TFrClubGroup.spbtnMoveLClick(Sender: TObject);
 begin
-  MoveSelectedItem(lbxR, lbxL);
+  MoveSelectedItems(lbxR, lbxL);
 end;
 
 procedure TFrClubGroup.spbtnMoveR2Click(Sender: TObject);
 begin
-  MoveSelectedItems(lbxL, lbxR);
+  MoveAllItems(lbxL, lbxR);
 end;
 
 procedure TFrClubGroup.spbtnMoveRClick(Sender: TObject);
 begin
-  MoveSelectedItem(lbxL, lbxR);
+  MoveSelectedItems(lbxL, lbxR);
 end;
 
 procedure TFrClubGroup.UpdateData_SwimClubGroup(ParentClubID: Integer);

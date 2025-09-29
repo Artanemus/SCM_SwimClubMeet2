@@ -20,7 +20,9 @@ uses
   uSession in 'DATA_Helper\uSession.pas',
   uSwimClub in 'DATA_Helper\uSwimClub.pas',
   f_FrameClubGroup in 'FRAMES\f_FrameClubGroup.pas' {FrClubGroup: TFrame},
-  dlgSwimClubGroup_View in 'DIALOGS\SwimClub\dlgSwimClubGroup_View.pas' {SwimClubGroup_View};
+  dlgSwimClubGroup_View in 'DIALOGS\SwimClub\dlgSwimClubGroup_View.pas' {SwimClubGroup_View},
+  frFrameSessionEx in 'FRAMES\frFrameSessionEx.pas' {FrameSessionEx: TFrame},
+  f_FrameSession in 'FRAMES\f_FrameSession.pas' {FrameSession: TFrame};
 
 {$R *.res}
 

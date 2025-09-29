@@ -117,7 +117,6 @@ type
     tabHeats: TTabSheet;
     SwimClub_Houses: TAction;
     SwimClub_Stats: TAction;
-    gSwimClub: TDBAdvGrid;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);

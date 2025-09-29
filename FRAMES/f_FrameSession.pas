@@ -9,8 +9,8 @@ uses
   System.Actions, Vcl.ActnList, Vcl.StdCtrls, Data.DB,
 
   uDefines,
-  dmSCM,dmCORE, dmIMG,
-  uSwimClub, uSession, uEvent, uHeat, uLane,
+  dmSCM2,dmCORE, dmIMG,
+  uSwimClub, uSession, // uEvent, uHeat, uLane,
   Vcl.Menus
   ;
 

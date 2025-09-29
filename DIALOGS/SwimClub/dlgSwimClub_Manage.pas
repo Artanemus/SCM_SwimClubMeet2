@@ -529,20 +529,24 @@ begin
       {NOTE: gSwimClub.HTMLKeepLineBreak := false. Use <BR> for line breaks}
       htmlStr := '''
         <FONT size="12">
-        <IND x="3">
-          <#Caption></FONT><BR>
-        <FONT size="12">
-        <IND x="3">
-        <A HREF="EYE_CLICK_ACTION"><IMG SRC="idx:1"></A>
+        <IND x="8"><#Caption></FONT><BR>
+        <FONT size="9">
+        <IND x="4">
+        <A HREF="EYE_CLICK_ACTION"><IMG SRC="idx:1" align="middle"></A>
         </FONT>
-        <FONT size="8">  <#NickName></FONT>
+        <FONT size="9">
+        <IND x="8">
+        <#NickName></FONT>
         ''';
     end
     else
     begin
       htmlStr := '''
-        <FONT size="12"><#SwimClubID>:  <#Caption></FONT><BR>
-        <FONT size="8"></FONT><#NickName>
+        <FONT size="12">
+        <IND x="4"><#Caption></FONT><BR>
+        <FONT size="9">
+        <IND x="8">
+        <#NickName></FONT>
         ''';
     end;
     if not htmlStr.IsEmpty then

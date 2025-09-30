@@ -2711,7 +2711,7 @@ object SwimClubManage: TSwimClubManage
       DefaultRowHeight = 60
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 5
+      RowCount = 3
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -3167,8 +3167,6 @@ object SwimClubManage: TSwimClubManage
         0)
       RowHeights = (
         30
-        60
-        60
         60
         60)
     end

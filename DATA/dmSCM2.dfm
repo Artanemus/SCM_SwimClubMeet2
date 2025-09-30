@@ -37,8 +37,66 @@ object SCM2: TSCM2
   end
   object FDGUIxErrorDialog: TFDGUIxErrorDialog
     Provider = 'Forms'
-    Caption = 'SwimClubMeet Version 2'
+    Caption = 'SwimClubMeet FireDAC Error'
+    Enabled = False
     Left = 72
     Top = 264
+  end
+  object procRenumberHeats: TFDStoredProc
+    Connection = scmConnection
+    StoredProcName = 'SwimClubMeet2.dbo.RenumberHeats'
+    Left = 280
+    Top = 85
+    ParamData = <
+      item
+        Position = 1
+        Name = '@RETURN_VALUE'
+        DataType = ftInteger
+        ParamType = ptResult
+      end
+      item
+        Position = 2
+        Name = '@EventID'
+        DataType = ftInteger
+        ParamType = ptInput
+      end>
+  end
+  object procRenumberEvents: TFDStoredProc
+    Connection = scmConnection
+    StoredProcName = 'SwimClubMeet2.dbo.RenumberEvents'
+    Left = 280
+    Top = 29
+    ParamData = <
+      item
+        Position = 1
+        Name = '@RETURN_VALUE'
+        DataType = ftInteger
+        ParamType = ptResult
+      end
+      item
+        Position = 2
+        Name = '@SessionID'
+        DataType = ftInteger
+        ParamType = ptInput
+      end>
+  end
+  object procRenumberLanes: TFDStoredProc
+    Connection = scmConnection
+    StoredProcName = 'SwimClubMeet2.dbo.RenumberLanes'
+    Left = 280
+    Top = 149
+    ParamData = <
+      item
+        Position = 1
+        Name = '@RETURN_VALUE'
+        DataType = ftInteger
+        ParamType = ptResult
+      end
+      item
+        Position = 2
+        Name = '@HeatID'
+        DataType = ftInteger
+        ParamType = ptInput
+      end>
   end
 end

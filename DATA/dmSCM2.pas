@@ -23,6 +23,9 @@ type
     qrySCMSystem: TFDQuery;
     scmFDManager: TFDManager;
     FDGUIxErrorDialog: TFDGUIxErrorDialog;
+    procRenumberHeats: TFDStoredProc;
+    procRenumberEvents: TFDStoredProc;
+    procRenumberLanes: TFDStoredProc;
     procedure scmConnectionAfterConnect(Sender: TObject);
     procedure scmConnectionAfterDisconnect(Sender: TObject);
   private

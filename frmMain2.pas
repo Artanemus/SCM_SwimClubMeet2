@@ -22,7 +22,7 @@ uses
   FireDAC.Stan.Option,
 
   dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub, AdvUtil, AdvObj,
-  BaseGrid, AdvGrid, DBAdvGrid
+  BaseGrid, AdvGrid, DBAdvGrid, frFrameSession
 
   ;
 
@@ -117,6 +117,8 @@ type
     tabHeats: TTabSheet;
     SwimClub_Houses: TAction;
     SwimClub_Stats: TAction;
+    pnlSession: TPanel;
+    frgSession: TFrameSession;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -131,9 +133,9 @@ type
     procedure SwimClub_SwitchExecute(Sender: TObject);
   private
     { Private declarations }
-    procedure GridBeginUpdate(level: integer = 0);
-    procedure GridEndUpdate(level: integer = 0);
-
+    procedure DetailTBLs_DisableCNTRLs;
+    procedure DetailTBLs_ApplyMaster;
+    procedure DetailTBLs_EnableCNTRLs;
 
   protected
     // Note: don't name procedure same as winapi.message name.
@@ -153,7 +155,56 @@ implementation
 uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin;
 
+procedure TMain2.DetailTBLs_ApplyMaster;
+begin
+  // FireDAC throws exception error if Master is empty?
+  if CORE.qrySwimClub.RecordCount <> 0 then
+  begin
+    CORE.qrySession.ApplyMaster;
+    if CORE.qrySession.RecordCount <> 0 then
+    begin
+      CORE.qryEvent.ApplyMaster;
+      if CORE.qryEvent.RecordCount <> 0 then
+      begin
+        CORE.qryHeat.ApplyMaster;
+        if CORE.qryHeat.RecordCount <> 0 then
+        begin
+          CORE.qryLane.ApplyMaster;
+          if CORE.qryLane.RecordCount <> 0 then
+          begin
+            CORE.qryWatchTime.ApplyMaster;
+            CORE.qrySplitTime.ApplyMaster;
+            CORE.qryTeam.ApplyMaster;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
 
+procedure TMain2.DetailTBLs_DisableCNTRLs;
+begin
+  CORE.qryTeamLink.DisableControls;
+  CORE.qryTeam.DisableControls;
+  CORE.qrySplitTime.DisableControls;
+  CORE.qryWatchTime.DisableControls;
+  CORE.qryLane.DisableControls;
+  CORE.qryHeat.DisableControls;
+  CORE.qryEvent.DisableControls;
+  CORE.qrySession.DisableControls;
+end;
+
+procedure TMain2.DetailTBLs_EnableCNTRLs;
+begin
+  CORE.qrySession.EnableControls;
+  CORE.qryEvent.EnableControls;
+  CORE.qryHeat.EnableControls;
+  CORE.qryLane.EnableControls;
+  CORE.qryWatchTime.EnableControls;
+  CORE.qrySplitTime.EnableControls;
+  CORE.qryTeam.EnableControls;
+  CORE.qryTeamLink.DisableControls;
+end;
 
 procedure TMain2.File_ConnectionExecute(Sender: TObject);
 var
@@ -291,42 +342,6 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TMain2.GridBeginUpdate(level: integer);
-begin
-  if level in [0,1,2,3,4]  then
-    // gLane.BeginUpdate;
-    ;
-  if level in [0,1,2,3]  then
-    // gHeat.BeginUpdate;
-    ;
-  if level in [0,1,2]  then
-    // gEvent.BeginUpdate;
-    ;
-  if level in [0,1]  then
-    // gSession.BeginUpdate;
-    ;
-  if level = 0 then
-    gSwimClub.BeginUpdate;
-end;
-
-procedure TMain2.GridEndUpdate(level: integer);
-begin
-  if level = 0 then
-    gSwimClub.EndUpdate;
-  if level in [0,1]  then
-    // gSession.BeginUpdate;
-    ;
-  if level in [0,1,2]  then
-    // gEvent.BeginUpdate;
-    ;
-  if level in [0,1,2,3]  then
-    // gHeat.BeginUpdate;
-    ;
-  if level in [0,1,2,3,4]  then
-    // gLane.BeginUpdate;
-    ;
-end;
-
 procedure TMain2.pnlTitleBarCustomButtons0Click(Sender: TObject);
 begin
   MessageBox(Handle, PChar('Open the Member Management Tool.'),
@@ -388,7 +403,7 @@ procedure TMain2.SwimClub_ManageExecute(Sender: TObject);
 var
   dlg: TSwimClubManage;
 begin
-  GridBeginUpdate;
+  DetailTBLs_EnableCNTRLs;
   try
     dlg := TSwimClubManage.Create(Self);
     try
@@ -397,7 +412,7 @@ begin
       dlg.Free;
     end;
   finally
-    GridEndUpdate;
+    DetailTBLs_DisableCNTRLs;
   end;
 end;
 

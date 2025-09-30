@@ -47,11 +47,17 @@ object SwimClubGroup_View: TSwimClubGroup_View
       FixedColor = clWhite
       RowCount = 2
       FixedRows = 1
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
       Options = [goRowSelect, goFixedRowDefAlign]
+      ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
-      GridLineColor = 13948116
-      GridFixedLineColor = 11250603
+      GridLineColor = 15987699
+      GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
@@ -65,6 +71,7 @@ object SwimClubGroup_View: TSwimClubGroup_View
       ControlLook.FixedGradientTo = clWhite
       ControlLook.FixedGradientMirrorFrom = clWhite
       ControlLook.FixedGradientMirrorTo = clWhite
+      ControlLook.FixedGradientHoverFrom = clGray
       ControlLook.FixedGradientHoverTo = clWhite
       ControlLook.FixedGradientHoverMirrorFrom = clWhite
       ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -110,7 +117,7 @@ object SwimClubGroup_View: TSwimClubGroup_View
       FixedColWidth = 0
       FixedRowHeight = 0
       FixedFont.Charset = DEFAULT_CHARSET
-      FixedFont.Color = 3881787
+      FixedFont.Color = clBlack
       FixedFont.Height = -16
       FixedFont.Name = 'Tahoma'
       FixedFont.Style = [fsBold]
@@ -389,15 +396,12 @@ object SwimClubGroup_View: TSwimClubGroup_View
     object lblTitle: TLabel
       Left = 0
       Top = 0
-      Width = 399
-      Height = 41
+      Width = 196
+      Height = 21
       Align = alClient
       Alignment = taCenter
       Caption = 'NAME OF CLUB GROUP (ID)'
       Layout = tlCenter
-      ExplicitTop = 7
-      ExplicitWidth = 196
-      ExplicitHeight = 21
     end
   end
   object qryChildClubs: TFDQuery

@@ -3,17 +3,11 @@ go
 
 -- Standard Alter Table SQL
 
-ALTER TABLE dbo.SwimClubGroup DROP CONSTRAINT PK_ClubGroup
+ALTER TABLE dbo.ScoreDivision DROP CONSTRAINT FK_ScoreDivision
 go
-ALTER TABLE dbo.SwimClubGroup
-ALTER COLUMN ChildClubID int NOT NULL
+ALTER TABLE dbo.ScoreDivision DROP COLUMN SwimClubID
 go
-ALTER TABLE dbo.SwimClubGroup ADD CONSTRAINT PK_ClubGroup
-PRIMARY KEY CLUSTERED (SwimClubGroupID,ParentClubID,ChildClubID)
+ALTER TABLE dbo.ScorePoints DROP CONSTRAINT FK_ScorePoints
 go
-EXEC sp_rename 'dbo.FK_SwimClubGroup','FK_ParentClub'
-go
-ALTER TABLE dbo.SwimClubGroup ADD CONSTRAINT FK_ChildClub
-FOREIGN KEY (ChildClubID)
-REFERENCES dbo.SwimClub (SwimClubID)
+ALTER TABLE dbo.ScorePoints DROP COLUMN SwimClubID
 go

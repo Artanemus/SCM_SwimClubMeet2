@@ -21,8 +21,10 @@ uses
   uSwimClub in 'DATA_Helper\uSwimClub.pas',
   f_FrameClubGroup in 'FRAMES\f_FrameClubGroup.pas' {FrClubGroup: TFrame},
   dlgSwimClubGroup_View in 'DIALOGS\SwimClub\dlgSwimClubGroup_View.pas' {SwimClubGroup_View},
-  frFrameSessionEx in 'FRAMES\frFrameSessionEx.pas' {FrameSessionEx: TFrame},
-  f_FrameSession in 'FRAMES\f_FrameSession.pas' {FrameSession: TFrame};
+  frFrameSession in 'FRAMES\frFrameSession.pas' {FrameSession: TFrame},
+  dlgEditSession in 'DIALOGS\Session\dlgEditSession.pas' {EditSession},
+  dlgDatePicker in 'DIALOGS\Picker\dlgDatePicker.pas' {DatePicker},
+  dlgNewSession in 'DIALOGS\Session\dlgNewSession.pas' {NewSession};
 
 {$R *.res}
 

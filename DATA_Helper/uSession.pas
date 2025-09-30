@@ -8,7 +8,7 @@ uses
   System.StrUtils,
   vcl.Dialogs, Data.DB,
   dmCORE, dmSCM2, uDefines,
-  FireDAC.Comp.Client;
+  FireDAC.Comp.Client, FireDAC.Stan.Param;
 
 /// <summary>
 ///  Only call here if SCM2 is assigned and connected...
@@ -16,18 +16,15 @@ uses
 /// </summary>
 ///
 function AllEventsAreClosed: Boolean;
-function Assert: Boolean;
 function CalcEntrantCount: integer;
 function CalcNomineeCount(): integer;
 function CalcEventCount: integer;
-function DeleteSession(DoExclude: Boolean = true): boolean;
 function EntrantCount: integer;
 function NomineeCount: integer;
 function GetSessionID: integer; // Assert - SAFE.
 function HasEvents: Boolean;  deprecated;
 function IsEmptyOrLocked: Boolean;
 function Locate(SessionID: integer): Boolean;
-function PK(): integer; // NO CHECKS. RTNS: Primary key.
 function RenumberEvents(DoLocate: Boolean = true): integer;
 function SessionDT: TDateTime;
 
@@ -39,9 +36,14 @@ procedure NewSession();
 //procedure ReSyncSession();
 
 
-// LIST BELOW ARE ROUTINES THAT ARE IN-USE AND DEBUGGED
+// LISTED BELOW ARE ROUTINES WIP.
+function Delete_Session(DoExclude: Boolean = true): boolean;
+
+// LISTED BELOW ARE ROUTINES THAT ARE IN-USE AND DEBUGGED
+function PK(): integer; // NO CHECKS. RTNS: Primary key.
+function Assert: Boolean;
 function IsLocked: Boolean;
-function HasClosedOrRacedHeats: Boolean; deprecated;
+function HasClosedOrRacedHeats: Boolean;
 procedure SetVisibilityOfLocked(IsVisible: Boolean);
 procedure SetSessionStatusID(const aSessionStatusID: Integer);
 procedure DetailTBLs_DisableCNTRLs;
@@ -157,24 +159,23 @@ end;
 
 procedure DetailTBLs_EnableCNTRLs;
 begin
-    CORE.qryEvent.EnableControls;
-    CORE.qryHeat.EnableControls;
-    CORE.qryLane.EnableControls;
-    CORE.qryWatchTime.EnableControls;
-    CORE.qrySplitTime.EnableControls;
-    CORE.qryTeam.EnableControls;
-    CORE.qryTeamLink.DisableControls;
+  CORE.qryEvent.EnableControls;
+  CORE.qryHeat.EnableControls;
+  CORE.qryLane.EnableControls;
+  CORE.qryWatchTime.EnableControls;
+  CORE.qrySplitTime.EnableControls;
+  CORE.qryTeam.EnableControls;
+  CORE.qryTeamLink.DisableControls;
 end;
 
-function DeleteSession(DoExclude: Boolean = true): boolean;
+function Delete_Session(DoExclude: Boolean = true): boolean;
 var
   SQL: string;
-  doRenumber: boolean;
 begin
   result := false;
-  doRenumber := false;
   if not uSession.Assert then exit;
-  if uSession.IsLocked then exit; // No locked session is ever deleted.
+  if DoExclude then
+    if uSession.IsLocked then exit; // Locked sessions are never deleted.
 
   DetailTBLs_DisableCNTRLs;
   CORE.qrySession.DisableControls;
@@ -187,42 +188,30 @@ begin
     while not CORE.qryEvent.Eof do
     begin
       {
-      Disables controls for detailed tables.
-      Deletes detailed tables ... including ...
-          nominees, heats, lanes, teams, teamlinks.
-      Nulls FK in clears scheduledEvent.
-      Enables controls for detailed tables.
+      uEvent.DeleteEvent(DoExclude); // Event & all it's dependants
       }
-
-      { BSA - DISABLED TO ENABLE COMPILE IN DEBUG
-
-      done := uEvent.DeleteEvent(DoExclude); // DeleteSession current Event + Dependants
-      if done then
-      begin
-        doRenumber := true;
-        continue;
-      end
-      else
-      }
-        CORE.qryEvent.next;
+      CORE.qryEvent.next;
     end;
 
-    // ASSERT that all events have been removed within Master-Detail relationship.
-    // Can't delete remaining dependants if eventsare retained.
-    if CORE.qryEvent.IsEmpty then
+    // ASSERT that all events have been removed.
+    // Can't delete session if events remain.
+    if not CORE.qryEvent.IsEmpty then
+      RenumberEvents(False)
+    else
     begin
-          // Clear Scheduled Sessions.
-      SQL := 'UPDATE SwimClubMeet2.dbo.ScheduleSession SET SessionID = NULL WHERE SessionID = :ID';
+      // DELETE dbo.SchedualeSession
+      SQL := '''
+        DELETE FROM [SwimClubMeet2].[dbo].[ScheduleSession]
+        WHERE [SessionID] = :ID';
+        ''';
       SCM2.scmConnection.ExecSQL(SQL, [uSession.PK]);
       // F I N A L L Y  Delete THE SESSION.
       CORE.qrySession.Delete;
     end;
 
   finally
-    if doRenumber then
-      uSession.RenumberEvents(false); // don't relocate
     // ASSERT MASTER-DETAIL STATE.
-    CORE.qrySession.ApplyMaster;
+    // CORE.qrySession.ApplyMaster; // REDUNDANT...
     DetailTBLs_ApplyMaster;
 
     // Enable all controls.
@@ -241,7 +230,7 @@ begin
   result := CORE.qrySession.FieldByName('SessionID').AsInteger;
 end;
 
-function HasClosedOrRacedHeats: Boolean; deprecated;
+function HasClosedOrRacedHeats: Boolean;
 var
   SQL: string;
   v: variant;
@@ -254,8 +243,8 @@ begin
     INNER JOIN [Heat] ON [Event].EventID = [Heat].EventID
     WHERE [Heat].HeatStatusID > 1 AND [Session].SessionID = :ID'
     ''';
-  v := SCM2.scmConnection.ExecSQLScalar(SQL, [uSession.PK]); // never returns null or empty.
-  if (v > 0) then result := true;
+  v := SCM2.scmConnection.ExecSQLScalar(SQL, [uSession.PK]);
+  if (v > 0) then result := true;  // Count(..) never returns null or empty.
 end;
 
 function HasEvents: Boolean; deprecated;
@@ -291,30 +280,15 @@ end;
 function RenumberEvents(DoLocate: Boolean = true): integer;
 begin
   result := 0;
-  if not Assigned(SCM2) or not SCM2.scmConnection.Connected then exit;
-  if CORE.dsHeat.DataSet.IsEmpty then exit;
-
-  CORE.qryLane.DisableControls;
-  CORE.qryHeat.DisableControls;
   try
-    { BSA - DISABLED TO ENABLE COMPILE IN DEBUG
-    if DoLocate then
-      aEvent := uHeat.PK;
-    }
-    // BSA wip
-    (*
+//    if DoLocate then
+//      aEvent := uEvent.PK;
     SCM2.procRenumberEvents.Params[1].Value := uSession.PK;
     SCM2.procRenumberEvents.Prepare;
     SCM2.procRenumberEvents.ExecProc;
-    *)
   finally
-    CORE.qryHeat.ApplyMaster;
-    { BSA - DISABLED TO ENABLE COMPILE IN DEBUG
-    if DoLocate then
-      uHeat.Locate(aEvent);
-    }
-    CORE.qryHeat.EnableControls;
-    CORE.qryLane.EnableControls;
+//    if DoLocate then
+//      uEvent.Locate(aEvent);
   end;
 end;
 

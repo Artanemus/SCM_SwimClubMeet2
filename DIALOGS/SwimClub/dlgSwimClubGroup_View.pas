@@ -42,9 +42,6 @@ begin
 end;
 
 procedure TSwimClubGroup_View.FormCreate(Sender: TObject);
-var
-SQL: string;
-v: variant;
 begin
 
   if CORE.qrySwimClub.IsEmpty then

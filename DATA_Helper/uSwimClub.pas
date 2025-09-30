@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Classes, System.DateUtils,
   System.Variants, Data.DB,
   vcl.Dialogs,
-  dmCORE, dmSCM2;
+  dmCORE, dmSCM2, uSession;
 
 function Assert(): boolean;
 function ClubName(): string;
@@ -103,7 +103,7 @@ begin
     CORE.qrySession.ApplyMaster; // Assert Master-Detail.
     while not CORE.qrySession.Eof do
     begin
-//      uSession.DeleteSession(DoExclude);
+      uSession.Delete_Session(DoExclude);
       CORE.qrySession.next;
     end;
 
@@ -114,7 +114,7 @@ begin
       try
         // THIS CLUB IS A 'GROUP CLUB'
         if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
-        begin  // DELETE ALL Club Groups
+        begin  // DELETE ParentClubID records
           SQL := '''
             DELETE FROM [SwimClubMeet2].[dbo].[SwimClubGroup]
             WHERE [ParentClubID] = :ID;
@@ -122,20 +122,32 @@ begin
           SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
         end
         else
-        // THIS CLUB is the standard/default club type...
-        begin
+        begin // DELETE ChildClubID records
           SQL := '''
             DELETE FROM [SwimClubMeet2].[dbo].[SwimClubGroup]
             WHERE [ChildClubID] = :ID;
             ''';
           SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
         end;
-        // DELETE ALL MEMBER LINK RECORDS (member data remains intact).
+
+        // DELETE ALL dbo.MemberLink RECORDS (member's data remains intact).
         SQL := '''
           DELETE FROM [SwimClubMeet2].[dbo].[MemberLink]
           WHERE [SwimClubID] = :ID;
           ''';
         SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
+
+        // DELETE ALL dbo.House RECORDS
+        // MUST FOLLOW MemberLink deletions else DB integerity exceptions.
+        SQL := '''
+          DELETE FROM [SwimClubMeet2].[dbo].[House]
+          WHERE [SwimClubID] = :ID;
+          ''';
+        SCM2.scmConnection.ExecSQL(SQL, [uSwimClub.PK]);
+
+        // NOTE: In SwimClubMeet version 2
+        // dbo.ScoreDivision and dbo.ScorePoints are universal
+        // and are no longer joined on swimming clubs.
 
         // F I N A L L Y  Delete THE SWIMMING CLUB.
         CORE.qrySwimClub.Delete;

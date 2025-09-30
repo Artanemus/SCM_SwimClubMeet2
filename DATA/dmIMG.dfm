@@ -1977,6 +1977,7 @@ object IMG: TIMG
           ' viewBox="0 0 24 24"><path fill="currentColor" d="M17 13H7v-2h10' +
           'm2-8H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2' +
           ' 0 0 0-2-2"/></svg>'
+        FixedColor = clDarkgoldenrod
       end
       item
         IconName = 'plus-box'
@@ -1985,6 +1986,7 @@ object IMG: TIMG
           ' viewBox="0 0 24 24"><path fill="currentColor" d="M17 13h-4v4h-2' +
           'v-4H7v-2h4V7h2v4h4m2-8H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2' +
           ' 2 0 0 0 2-2V5a2 2 0 0 0-2-2"/></svg>'
+        FixedColor = clDarkgoldenrod
       end
       item
         IconName = 'swap'
@@ -2397,6 +2399,18 @@ object IMG: TIMG
           '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
           ' viewBox="0 0 24 24"><path fill="currentColor" d="M12.6 12L8 7.4' +
           'L9.4 6l6 6l-6 6L8 16.6z"/></svg>'
+      end
+      item
+        IconName = 'schedule'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M12 4c-4.42 0-' +
+          '8 3.58-8 8s3.58 8 8 8s8-3.58 8-8s-3.58-8-8-8m4.25 12.15L11 13V7h' +
+          '1.5v5.25l4.5 2.67z" opacity=".3"/><path fill="currentColor" d="M' +
+          '11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 ' +
+          '12S17.52 2 11.99 2M12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8s8 3.58 8 ' +
+          '8s-3.58 8-8 8m.5-13H11v6l5.25 3.15l.75-1.23l-4.5-2.67z"/></svg>'
+        FixedColor = clDarkgoldenrod
       end>
     Left = 320
     Top = 8
@@ -12824,8 +12838,8 @@ object IMG: TIMG
               B107F00DAA3CF3E36D761EEF0000000049454E44AE426082}
           end>
       end>
-    Left = 928
-    Top = 352
+    Left = 1000
+    Top = 376
   end
   object imglstPNGMenuBar: TVirtualImageList
     Images = <
@@ -13097,8 +13111,8 @@ object IMG: TIMG
     ImageCollection = PNGCollection
     Width = 32
     Height = 32
-    Left = 928
-    Top = 416
+    Left = 1000
+    Top = 440
   end
   object imgList3: TVirtualImageList
     Images = <
@@ -13110,8 +13124,8 @@ object IMG: TIMG
     ImageCollection = PNGCollection
     Width = 24
     Height = 24
-    Left = 936
-    Top = 488
+    Left = 1008
+    Top = 512
   end
   object imgNominate: TVirtualImageList
     Images = <
@@ -13133,8 +13147,8 @@ object IMG: TIMG
     ImageCollection = PNGCollection
     Width = 40
     Height = 40
-    Left = 856
-    Top = 488
+    Left = 928
+    Top = 512
   end
   object imgForm: TVirtualImageList
     Images = <
@@ -13376,8 +13390,8 @@ object IMG: TIMG
     ImageCollection = PNGCollection
     Width = 48
     Height = 48
-    Left = 1000
-    Top = 488
+    Left = 1072
+    Top = 512
   end
   object imglstHeatStatus: TSVGIconVirtualImageList
     Images = <
@@ -13760,11 +13774,34 @@ object IMG: TIMG
         CollectionIndex = 67
         CollectionName = 'search'
         Name = 'search'
+      end
+      item
+        CollectionIndex = 64
+        CollectionName = 'minus-box'
+        Disabled = True
+        Name = 'minus-box_Disabled'
+      end
+      item
+        CollectionIndex = 65
+        CollectionName = 'plus-box'
+        Disabled = True
+        Name = 'plus-box_Disabled'
+      end
+      item
+        CollectionIndex = 32
+        CollectionName = 'build'
+        Name = 'build'
+      end
+      item
+        CollectionIndex = 98
+        CollectionName = 'schedule'
+        Name = 'schedule'
       end>
     ImageCollection = CollectionCore
-    Width = 24
-    Height = 24
-    Size = 24
+    Width = 36
+    Height = 36
+    ApplyFixedColorToRootOnly = True
+    Size = 36
     Left = 856
     Top = 80
   end
@@ -13843,8 +13880,8 @@ object IMG: TIMG
     Width = 38
     Height = 38
     Size = 38
-    Left = 712
-    Top = 288
+    Left = 784
+    Top = 312
   end
   object imglstNomQualified: TSVGIconVirtualImageList
     Images = <
@@ -13862,8 +13899,8 @@ object IMG: TIMG
     Width = 38
     Height = 38
     Size = 38
-    Left = 712
-    Top = 352
+    Left = 784
+    Top = 376
   end
   object imglstNomStroke: TSVGIconVirtualImageList
     Images = <
@@ -13901,8 +13938,8 @@ object IMG: TIMG
     Width = 38
     Height = 38
     Size = 38
-    Left = 712
-    Top = 416
+    Left = 784
+    Top = 440
   end
   object imglstNomEventType: TSVGIconVirtualImageList
     Images = <
@@ -13925,8 +13962,8 @@ object IMG: TIMG
     Width = 38
     Height = 38
     Size = 38
-    Left = 712
-    Top = 480
+    Left = 784
+    Top = 504
   end
   object imglstSessGrid: TSVGIconVirtualImageList
     Images = <
@@ -14307,7 +14344,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 984
+    Left = 976
     Top = 80
   end
 end

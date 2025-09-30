@@ -1,4 +1,4 @@
-unit frFrameSessionEx;
+unit frFrameSession;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages,
 
   System.SysUtils, System.Variants, System.Classes,  System.Actions,
-  System.DateUtils,
+  System.DateUtils, System.UITypes,
 
   Data.DB, BaseGrid,
 
@@ -19,14 +19,12 @@ uses
   dmSCM2, dmIMG, dmCORE, uSettings, uSession;
 
 type
-  TFrameSessionEx = class(TFrame)
+  TFrameSession = class(TFrame)
     actnlstSession: TActionList;
     actnVisible: TAction;
-    stackpnlSess: TStackPanel;
     spbtnSessVisible: TSpeedButton;
     spbtnSessLock: TSpeedButton;
     ShapeSessBar1: TShape;
-    spbtnSessEdit: TSpeedButton;
     spbtnSessNew: TSpeedButton;
     spbtnSessClone: TSpeedButton;
     spbtnSessDelete: TSpeedButton;
@@ -40,6 +38,8 @@ type
     actnClone: TAction;
     actnDelete: TAction;
     actnReport: TAction;
+    pnlCntrl: TPanel;
+    spbtnEdit: TSpeedButton;
     procedure actnDeleteExecute(Sender: TObject);
     procedure actnEditExecute(Sender: TObject);
     procedure actnVisibleExecute(Sender: TObject);
@@ -59,9 +59,12 @@ type
 
 implementation
 
+uses
+  dlgEditSession;
+
 {$R *.dfm}
 
-procedure TFrameSessionEx.actnDeleteExecute(Sender: TObject);
+procedure TFrameSession.actnDeleteExecute(Sender: TObject);
 var
   rtnValue: integer;
 begin
@@ -94,18 +97,22 @@ begin
   try
     { D E L E T E  S E S S I O N   D O   N O T   E X C L U D E ! }
     { uSession handles enable/disable and re-sync of Master-Detail}
-    uSession.DeleteSession(false);
+    uSession.Delete_Session(false);
   finally
     gSession.EndUpdate;
   end;
 end;
 
-procedure TFrameSessionEx.actnEditExecute(Sender: TObject);
+procedure TFrameSession.actnEditExecute(Sender: TObject);
+var
+dlg: TEditSession;
 begin
-  // open the session DLG editing EDIT MODE.
+  dlg := TEditSession(Self);
+  dlg.ShowModal;
+  dlg.Free;
 end;
 
-procedure TFrameSessionEx.actnVisibleExecute(Sender: TObject);
+procedure TFrameSession.actnVisibleExecute(Sender: TObject);
 begin
     gSession.BeginUpdate;
     TAction(Sender).Checked := not TAction(Sender).Checked;
@@ -122,7 +129,7 @@ begin
     end;
 end;
 
-procedure TFrameSessionEx.actnGenericUpdate(Sender: TObject);
+procedure TFrameSession.actnGenericUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -132,7 +139,7 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameSessionEx.actnLockExecute(Sender: TObject);
+procedure TFrameSession.actnLockExecute(Sender: TObject);
 begin
   with (Sender as TAction) do
   begin
@@ -155,12 +162,12 @@ begin
   end;
 end;
 
-procedure TFrameSessionEx.actnNewExecute(Sender: TObject);
+procedure TFrameSession.actnNewExecute(Sender: TObject);
 begin
   // open the session DLG editing INSERT MODE.
 end;
 
-procedure TFrameSessionEx.actnNewUpdate(Sender: TObject);
+procedure TFrameSession.actnNewUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -170,18 +177,20 @@ begin
 end;
 
 
-procedure TFrameSessionEx.gSessionGetCellColor(Sender: TObject; ARow, ACol:
+procedure TFrameSession.gSessionGetCellColor(Sender: TObject; ARow, ACol:
     Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
 begin
   if (ARow >= gSession.FixedRows) then   // (ARow >= gSession.FixedCols)
   begin
     if (CORE.qrySession.FieldByName('SessionStatusID').AsInteger = 2) then
         AFont.Color := gSession.DisabledFontColor
-    else AFont.Color := Font.Color;
+    else if gSession.RowSelect[ARow] then
+      AFont.Color := clWebGoldenRod
+    else AFont.Color := clWhite;
   end;
 end;
 
-procedure TFrameSessionEx.gSessionGetHTMLTemplate(Sender: TObject; ACol, ARow:
+procedure TFrameSession.gSessionGetHTMLTemplate(Sender: TObject; ACol, ARow:
     Integer; var HTMLTemplate: string; Fields: TFields);
 var
   s: string;
@@ -217,6 +226,8 @@ begin
         <IND x="2"><FONT Size="10"><B><#SessionDT></B><br>
         <IND x="2"><FONT Size="10"><#Caption><br>
         <IND x="4"><FONT Size="9"><IMG src="idx:7" align="middle">
+        <IND x="50"><IMG src="idx:14" align="middle"> <#NomineeCount>
+        <IND x="100"><IMG src="idx:15" align="middle"> <#EntrantCount>
         ''';
     end
     else // The session is locked - alternative display.
@@ -229,7 +240,7 @@ begin
     end;
 
     if ShowSeasonIcon then
-      s := s + '<IND x="32"><IMG src="idx:13" align="middle">';
+      s := s + '<IND x="20"><IMG src="idx:13" align="middle">';
 
     // Nominees Entrants
 //    s := s + '  <IMG src="idx:14" align="middle"> <#NomineeCount>  <IMG src="idx:15" align="middle"> <#EntrantCount> ';

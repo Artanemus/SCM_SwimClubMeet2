@@ -2821,6 +2821,74 @@ object Main2: TMain2
     TabOrder = 3
     object tabSession: TTabSheet
       Caption = 'Session'
+      object pnlSession: TPanel
+        AlignWithMargins = True
+        Left = 3
+        Top = 10
+        Width = 440
+        Height = 615
+        Margins.Top = 10
+        Align = alLeft
+        BevelOuter = bvNone
+        TabOrder = 0
+        ExplicitLeft = 0
+        ExplicitTop = 0
+        ExplicitHeight = 628
+        inline frgSession: TFrameSession
+          Left = 0
+          Top = 0
+          Width = 440
+          Height = 615
+          Align = alClient
+          TabOrder = 0
+          inherited pnlBody: TPanel
+            Width = 386
+            Height = 615
+            ExplicitLeft = 54
+            ExplicitWidth = 386
+            inherited gSession: TDBAdvGrid
+              Width = 386
+              Height = 615
+              ExplicitWidth = 390
+              ExplicitHeight = 698
+            end
+          end
+          inherited pnlCntrl: TPanel
+            Height = 615
+            inherited spbtnSessClone: TSpeedButton
+              ImageIndex = -1
+              ImageName = ''
+            end
+            inherited spbtnSessDelete: TSpeedButton
+              ImageIndex = -1
+              ImageName = ''
+            end
+            inherited spbtnSessLock: TSpeedButton
+              ImageIndex = -1
+              ImageName = ''
+              ExplicitLeft = -3
+              ExplicitTop = 45
+              ExplicitWidth = 54
+            end
+            inherited spbtnSessNew: TSpeedButton
+              ImageIndex = -1
+              ImageName = ''
+            end
+            inherited spbtnSessReport: TSpeedButton
+              ImageIndex = -1
+              ImageName = ''
+            end
+            inherited spbtnSessVisible: TSpeedButton
+              ImageIndex = -1
+              ImageName = ''
+            end
+          end
+          inherited actnlstSession: TActionList
+            Left = 344
+            Top = 48
+          end
+        end
+      end
     end
     object tabNominate: TTabSheet
       Caption = 'Nominate'
@@ -3815,8 +3883,8 @@ object Main2: TMain2
         ActionBar = actnMainMenuBar
       end>
     Images = IMG.imglstPNGMenuBar
-    Left = 1024
-    Top = 136
+    Left = 352
+    Top = 104
     StyleName = 'Platform Default'
     object Help_About: TAction
       Category = 'Help'

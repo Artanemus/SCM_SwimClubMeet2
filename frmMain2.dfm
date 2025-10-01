@@ -2831,9 +2831,6 @@ object Main2: TMain2
         Align = alLeft
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitLeft = 0
-        ExplicitTop = 0
-        ExplicitHeight = 628
         inline frgSession: TFrameSession
           Left = 0
           Top = 0
@@ -2841,51 +2838,40 @@ object Main2: TMain2
           Height = 615
           Align = alClient
           TabOrder = 0
+          ExplicitLeft = -6
+          ExplicitTop = -83
           inherited pnlBody: TPanel
             Width = 386
             Height = 615
-            ExplicitLeft = 54
-            ExplicitWidth = 386
             inherited gSession: TDBAdvGrid
               Width = 386
               Height = 615
-              ExplicitWidth = 390
-              ExplicitHeight = 698
             end
           end
           inherited pnlCntrl: TPanel
             Height = 615
             inherited spbtnSessClone: TSpeedButton
-              ImageIndex = -1
-              ImageName = ''
+              Glyph.Data = {00000000}
             end
             inherited spbtnSessDelete: TSpeedButton
-              ImageIndex = -1
-              ImageName = ''
+              Glyph.Data = {00000000}
             end
             inherited spbtnSessLock: TSpeedButton
-              ImageIndex = -1
-              ImageName = ''
-              ExplicitLeft = -3
-              ExplicitTop = 45
-              ExplicitWidth = 54
+              Glyph.Data = {00000000}
             end
             inherited spbtnSessNew: TSpeedButton
-              ImageIndex = -1
-              ImageName = ''
+              Glyph.Data = {00000000}
             end
             inherited spbtnSessReport: TSpeedButton
-              ImageIndex = -1
-              ImageName = ''
+              Glyph.Data = {00000000}
             end
             inherited spbtnSessVisible: TSpeedButton
-              ImageIndex = -1
-              ImageName = ''
+              Glyph.Data = {00000000}
             end
-          end
-          inherited actnlstSession: TActionList
-            Left = 344
-            Top = 48
+            inherited spbtnEdit: TSpeedButton
+              Glyph.Data = {00000000}
+              OnClick = nil
+            end
           end
         end
       end
@@ -3741,37 +3727,37 @@ object Main2: TMain2
           item
             Items = <
               item
-                Action = actnClearSlot
+                Action = Team_ClearSlot
                 Caption = '&Empty Slot'
                 ImageIndex = 19
                 ImageName = 'Delete'
               end
               item
-                Action = actnStrikeSlot
+                Action = Team_StrikeSlot
                 Caption = '&Strike Slot'
                 ImageIndex = 18
                 ImageName = 'DeleteForever'
               end
               item
-                Action = actnAddSlot
+                Action = Team_AddSlot
                 Caption = '&Add Slot'
                 ImageIndex = 48
                 ImageName = 'add'
               end
               item
-                Action = actnRemoveSlot
+                Action = Team_RemoveSlot
                 Caption = '&Remove Slot'
                 ImageIndex = 49
                 ImageName = 'remove'
               end
               item
-                Action = actnMoveUpSlot
+                Action = Team_MoveUpSlot
                 Caption = '&Move Up'
                 ImageIndex = 12
                 ImageName = 'Up'
               end
               item
-                Action = actnMoveDownSlot
+                Action = Team_MoveDownSlot
                 Caption = 'M&ove Down'
                 ImageIndex = 13
                 ImageName = 'Down'
@@ -3882,9 +3868,14 @@ object Main2: TMain2
           end>
         ActionBar = actnMainMenuBar
       end>
+    LinkedActionLists = <
+      item
+        ActionList = frgSession.actnlstSession
+        Caption = 'actnlstSession'
+      end>
     Images = IMG.imglstPNGMenuBar
-    Left = 352
-    Top = 104
+    Left = 552
+    Top = 136
     StyleName = 'Platform Default'
     object Help_About: TAction
       Category = 'Help'
@@ -4309,38 +4300,38 @@ object Main2: TMain2
       Category = 'SCM'
       Caption = 'SCM_StatusBar'
     end
-    object actnClearSlot: TAction
+    object Team_ClearSlot: TAction
       Category = 'Teams'
       Caption = 'Empty Slot'
       Hint = 'Clear team entrant from slot.'
       ImageIndex = 19
       ImageName = 'Delete'
     end
-    object actnStrikeSlot: TAction
+    object Team_StrikeSlot: TAction
       Category = 'Teams'
       Caption = 'Strike Slot'
       ImageIndex = 18
       ImageName = 'DeleteForever'
     end
-    object actnAddSlot: TAction
+    object Team_AddSlot: TAction
       Category = 'Teams'
       Caption = 'Add Slot'
       ImageIndex = 48
       ImageName = 'add'
     end
-    object actnRemoveSlot: TAction
+    object Team_RemoveSlot: TAction
       Category = 'Teams'
       Caption = 'Remove Slot'
       ImageIndex = 49
       ImageName = 'remove'
     end
-    object actnMoveUpSlot: TAction
+    object Team_MoveUpSlot: TAction
       Category = 'Teams'
       Caption = 'Move Up'
       ImageIndex = 12
       ImageName = 'Up'
     end
-    object actnMoveDownSlot: TAction
+    object Team_MoveDownSlot: TAction
       Category = 'Teams'
       Caption = 'Move Down'
       ImageIndex = 13

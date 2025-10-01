@@ -2412,6 +2412,7 @@ object IMG: TIMG
           '8s-3.58 8-8 8m.5-13H11v6l5.25 3.15l.75-1.23l-4.5-2.67z"/></svg>'
         FixedColor = clDarkgoldenrod
       end>
+    ApplyFixedColorToRootOnly = True
     Left = 320
     Top = 8
   end
@@ -13796,6 +13797,16 @@ object IMG: TIMG
         CollectionIndex = 98
         CollectionName = 'schedule'
         Name = 'schedule'
+      end
+      item
+        CollectionIndex = 37
+        CollectionName = 'lock'
+        Name = 'lock'
+      end
+      item
+        CollectionIndex = 38
+        CollectionName = 'lock-open'
+        Name = 'lock-open'
       end>
     ImageCollection = CollectionCore
     Width = 36

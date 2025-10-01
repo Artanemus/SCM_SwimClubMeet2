@@ -12,8 +12,6 @@ object FrameSession: TFrameSession
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitLeft = 288
-    ExplicitWidth = 426
     object gSession: TDBAdvGrid
       Left = 0
       Top = 0
@@ -26,7 +24,7 @@ object FrameSession: TFrameSession
       Margins.Bottom = 0
       Align = alClient
       Color = clWhite
-      ColCount = 2
+      ColCount = 3
       DefaultRowHeight = 58
       DrawingStyle = gdsClassic
       FixedColor = clWhite
@@ -101,7 +99,7 @@ object FrameSession: TFrameSession
         'Larger than'
         'Smaller than'
         'Clear')
-      FixedColWidth = 20
+      FixedColWidth = 0
       FixedRowHeight = 24
       FixedFont.Charset = DEFAULT_CHARSET
       FixedFont.Color = clBlack
@@ -186,7 +184,7 @@ object FrameSession: TFrameSession
           PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 20
+          Width = 0
         end
         item
           Borders = []
@@ -219,6 +217,32 @@ object FrameSession: TFrameSession
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
           Width = 340
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          FieldName = 'SessionStatusID'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 0
         end>
       DataSource = CORE.dsSession
       InvalidPicture.Data = {
@@ -359,11 +383,10 @@ object FrameSession: TFrameSession
         FFC003FF}
       ShowUnicode = False
       OnGetHTMLTemplate = gSessionGetHTMLTemplate
-      ExplicitWidth = 382
-      ExplicitHeight = 573
       ColWidths = (
-        20
-        340)
+        0
+        340
+        0)
       RowHeights = (
         24
         58
@@ -511,7 +534,7 @@ object FrameSession: TFrameSession
       Top = 208
       Width = 54
       Height = 48
-      Action = actnClone
+      Action = actnSessFr_Clone
       Align = alTop
       Images = IMG.imglstSessCntrl
       Flat = True
@@ -525,7 +548,7 @@ object FrameSession: TFrameSession
       Top = 256
       Width = 54
       Height = 48
-      Action = actnDelete
+      Action = actnSessFr_Delete
       Align = alTop
       Images = IMG.imglstSessCntrl
       Flat = True
@@ -539,7 +562,7 @@ object FrameSession: TFrameSession
       Top = 48
       Width = 54
       Height = 48
-      Action = actnLock
+      Action = actnSessFr_Lock
       Align = alTop
       Images = IMG.imglstSessCntrl
       Flat = True
@@ -553,7 +576,7 @@ object FrameSession: TFrameSession
       Top = 160
       Width = 54
       Height = 48
-      Action = actnNew
+      Action = actnSessFr_New
       Align = alTop
       Images = IMG.imglstSessCntrl
       Flat = True
@@ -567,7 +590,7 @@ object FrameSession: TFrameSession
       Top = 320
       Width = 54
       Height = 48
-      Action = actnReport
+      Action = actnSessFr_Report
       Align = alTop
       Images = IMG.imglstSessCntrl
       Flat = True
@@ -581,7 +604,7 @@ object FrameSession: TFrameSession
       Top = 0
       Width = 54
       Height = 48
-      Action = actnVisible
+      Action = actnSessFr_Visible
       Align = alTop
       Images = IMG.imglstSessCntrl
       Flat = True
@@ -598,7 +621,7 @@ object FrameSession: TFrameSession
       Top = 112
       Width = 54
       Height = 48
-      Action = actnEdit
+      Action = actnSessFr_Edit
       Align = alTop
       Images = IMG.imglstSessCntrl
       Flat = True
@@ -612,47 +635,54 @@ object FrameSession: TFrameSession
     Images = IMG.imglstSessCntrl
     Left = 208
     Top = 56
-    object actnVisible: TAction
+    object actnSessFr_Visible: TAction
+      Category = 'Session_Frame'
       Hint = 'Toggle the visibility of locked sessions.'
       ImageIndex = 1
       ImageName = 'visible_on'
-      OnExecute = actnVisibleExecute
-      OnUpdate = actnGenericUpdate
+      OnExecute = actnSessFr_VisibleExecute
+      OnUpdate = actnDefSessionUpdate
     end
-    object actnLock: TAction
+    object actnSessFr_Lock: TAction
+      Category = 'Session_Frame'
       Hint = 'Toggle the lock state of a session.'
       ImageIndex = 7
       ImageName = 'lock-open-2'
-      OnExecute = actnLockExecute
-      OnUpdate = actnGenericUpdate
+      OnExecute = actnSessFr_LockExecute
+      OnUpdate = actnDefSessionUpdate
     end
-    object actnEdit: TAction
+    object actnSessFr_Edit: TAction
+      Category = 'Session_Frame'
       Hint = 'Edit the current selected session.'
       ImageIndex = 8
       ImageName = 'edit'
-      OnExecute = actnEditExecute
-      OnUpdate = actnGenericUpdate
+      OnExecute = actnSessFr_EditExecute
+      OnUpdate = actnDefSessionUpdate
     end
-    object actnNew: TAction
+    object actnSessFr_New: TAction
+      Category = 'Session_Frame'
       Hint = 'Create a new session.'
       ImageIndex = 3
       ImageName = 'new'
-      OnExecute = actnNewExecute
-      OnUpdate = actnNewUpdate
+      OnExecute = actnSessFr_NewExecute
+      OnUpdate = actnSessFr_NewUpdate
     end
-    object actnClone: TAction
+    object actnSessFr_Clone: TAction
+      Category = 'Session_Frame'
       Hint = 'Duplicate the selected session.'
       ImageIndex = 11
       ImageName = 'clone'
     end
-    object actnDelete: TAction
+    object actnSessFr_Delete: TAction
+      Category = 'Session_Frame'
       Hint = 'Delete the selected session.'
       ImageIndex = 4
       ImageName = 'delete'
-      OnExecute = actnDeleteExecute
-      OnUpdate = actnGenericUpdate
+      OnExecute = actnSessFr_DeleteExecute
+      OnUpdate = actnDefSessionUpdate
     end
-    object actnReport: TAction
+    object actnSessFr_Report: TAction
+      Category = 'Session_Frame'
       Hint = 'Create a Session report.'
       ImageIndex = 5
       ImageName = 'report'

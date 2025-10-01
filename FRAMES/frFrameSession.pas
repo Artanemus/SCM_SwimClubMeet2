@@ -21,7 +21,7 @@ uses
 type
   TFrameSession = class(TFrame)
     actnlstSession: TActionList;
-    actnVisible: TAction;
+    actnSessFr_Visible: TAction;
     spbtnSessVisible: TSpeedButton;
     spbtnSessLock: TSpeedButton;
     ShapeSessBar1: TShape;
@@ -32,21 +32,21 @@ type
     spbtnSessReport: TSpeedButton;
     pnlBody: TPanel;
     gSession: TDBAdvGrid;
-    actnLock: TAction;
-    actnEdit: TAction;
-    actnNew: TAction;
-    actnClone: TAction;
-    actnDelete: TAction;
-    actnReport: TAction;
+    actnSessFr_Lock: TAction;
+    actnSessFr_Edit: TAction;
+    actnSessFr_New: TAction;
+    actnSessFr_Clone: TAction;
+    actnSessFr_Delete: TAction;
+    actnSessFr_Report: TAction;
     pnlCntrl: TPanel;
     spbtnEdit: TSpeedButton;
-    procedure actnDeleteExecute(Sender: TObject);
-    procedure actnEditExecute(Sender: TObject);
-    procedure actnVisibleExecute(Sender: TObject);
-    procedure actnGenericUpdate(Sender: TObject);
-    procedure actnLockExecute(Sender: TObject);
-    procedure actnNewExecute(Sender: TObject);
-    procedure actnNewUpdate(Sender: TObject);
+    procedure actnSessFr_DeleteExecute(Sender: TObject);
+    procedure actnSessFr_EditExecute(Sender: TObject);
+    procedure actnSessFr_VisibleExecute(Sender: TObject);
+    procedure actnDefSessionUpdate(Sender: TObject);
+    procedure actnSessFr_LockExecute(Sender: TObject);
+    procedure actnSessFr_NewExecute(Sender: TObject);
+    procedure actnSessFr_NewUpdate(Sender: TObject);
     procedure gSessionGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
     procedure gSessionGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
@@ -64,7 +64,7 @@ uses
 
 {$R *.dfm}
 
-procedure TFrameSession.actnDeleteExecute(Sender: TObject);
+procedure TFrameSession.actnSessFr_DeleteExecute(Sender: TObject);
 var
   rtnValue: integer;
 begin
@@ -103,16 +103,16 @@ begin
   end;
 end;
 
-procedure TFrameSession.actnEditExecute(Sender: TObject);
+procedure TFrameSession.actnSessFr_EditExecute(Sender: TObject);
 var
 dlg: TEditSession;
 begin
-  dlg := TEditSession(Self);
+  dlg := TEditSession.Create(Self);  // Owner vs Self - when using TFrame?
   dlg.ShowModal;
   dlg.Free;
 end;
 
-procedure TFrameSession.actnVisibleExecute(Sender: TObject);
+procedure TFrameSession.actnSessFr_VisibleExecute(Sender: TObject);
 begin
     gSession.BeginUpdate;
     TAction(Sender).Checked := not TAction(Sender).Checked;
@@ -129,7 +129,7 @@ begin
     end;
 end;
 
-procedure TFrameSession.actnGenericUpdate(Sender: TObject);
+procedure TFrameSession.actnDefSessionUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -139,7 +139,7 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameSession.actnLockExecute(Sender: TObject);
+procedure TFrameSession.actnSessFr_LockExecute(Sender: TObject);
 begin
   with (Sender as TAction) do
   begin
@@ -162,12 +162,12 @@ begin
   end;
 end;
 
-procedure TFrameSession.actnNewExecute(Sender: TObject);
+procedure TFrameSession.actnSessFr_NewExecute(Sender: TObject);
 begin
   // open the session DLG editing INSERT MODE.
 end;
 
-procedure TFrameSession.actnNewUpdate(Sender: TObject);
+procedure TFrameSession.actnSessFr_NewUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -180,71 +180,69 @@ end;
 procedure TFrameSession.gSessionGetCellColor(Sender: TObject; ARow, ACol:
     Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
 begin
+  //gSession.FontColors[Acol, ARow]; // clWhite;  //
+
   if (ARow >= gSession.FixedRows) then   // (ARow >= gSession.FixedCols)
   begin
-    if (CORE.qrySession.FieldByName('SessionStatusID').AsInteger = 2) then
-        AFont.Color := gSession.DisabledFontColor
-    else if gSession.RowSelect[ARow] then
-      AFont.Color := clWebGoldenRod
-    else AFont.Color := clWhite;
+//    if (gdFocused in AState) then
+//      AFont.Color := clWebGoldenRod
+//    else
+//    begin
+
+      if (gSession.Cells[2, ARow] = '2') then
+          AFont.Color := gSession.DisabledFontColor
+      else AFont.Color :=  $00FFE4D8;
+
+//    end;
   end;
 end;
 
 procedure TFrameSession.gSessionGetHTMLTemplate(Sender: TObject; ACol, ARow:
     Integer; var HTMLTemplate: string; Fields: TFields);
 var
-  s: string;
+  s, s2: string;
   DT1, DT2: TDateTime;
-  ShowSeasonIcon: boolean;
-//  fColor: TColor;
-//  sColor: string;
-//  fFont: TFont;
-//  cp: TCellProperties;
+  ShowSeasonIcon, Locked: boolean;
 begin
   if (not Assigned(CORE)) or (not CORE.IsActive) or
     CORE.qrySession.IsEmpty then exit;
 
   ShowSeasonIcon := false;
-  {
-  cp := gSession.GetCellProperties(ACol, ARow);
-  fColor := cp.FontColor;
-  fFont := gSession.ActiveCellFont;
-  fColor := fFont.Color;
-  sColor := ColorToString(fColor);
-  s := s + '<FONT Color=' + sColor +'"';
-   }
+  if CORE.qrySession.FieldByName('SessionStatusID').AsInteger = 2 then
+    Locked := true else Locked := false;
   DT1 := CORE.qrySession.FieldByName('SessionDT').AsDateTime;
   DT2 := CORE.qrySwimClub.FieldByName('StartOfSwimSeason').AsDateTime;
   if WithinPastMonths(Dt1,DT2,6) then ShowSeasonIcon := true;
 
   if (ACol = 1) then     // and (ARow >= gSession.FixedRows)
   begin
-    if (CORE.qrySession.FieldByName('SessionStatusID').AsInteger <> 2) then
+    if not Locked then
     begin
-      // Session date and time. Caption. Status buttons.
+      // Session date and time. Caption. Status buttons. 2xlines
       s := '''
-        <IND x="2"><FONT Size="10"><B><#SessionDT></B><br>
-        <IND x="2"><FONT Size="10"><#Caption><br>
-        <IND x="4"><FONT Size="9"><IMG src="idx:7" align="middle">
-        <IND x="50"><IMG src="idx:14" align="middle"> <#NomineeCount>
-        <IND x="100"><IMG src="idx:15" align="middle"> <#EntrantCount>
+        <IND x="2"><FONT Size="12"><B><#SessionDT></B></FONT><br>
+        <IND x="4"><FONT Size="12"><IMG src="idx:7" align="middle">
         ''';
+      if ShowSeasonIcon then
+        s := s + '<IND x="24"><IMG src="idx:13" align="middle">';
+      s := s + '  <#Caption></FONT>';
     end
-    else // The session is locked - alternative display.
+    else // The session is locked - 3xlines at reduced font size.
     begin
       s := '''
-        <IND x="2"><FONT Size="10"><#SessionDT>
-        <br><IND x="2"><FONT Size="10"><#Caption>
-        <br><IND x="4"><FONT Size="9"><IMG src="idx:6" align="middle">
+        <IND x="2"><FONT Size="10"><#SessionDT><br>
+        <IND x="4">'<#Caption><br>
+        <IND x="4"><IMG src="idx:6" align="middle">
         ''';
+      if ShowSeasonIcon then
+        s := s + '<IND x="24"><IMG src="idx:13" align="middle">';
+      // extended info shown only on locked sessions
+      s2 := '''
+        <IND x="44"><IMG src="idx:14" align="middle"> <#NomineeCount>
+        <IND x="104"><IMG src="idx:15" align="middle"> <#EntrantCount></FONT>
+        ''';
+      s := s + s2;
     end;
-
-    if ShowSeasonIcon then
-      s := s + '<IND x="20"><IMG src="idx:13" align="middle">';
-
-    // Nominees Entrants
-//    s := s + '  <IMG src="idx:14" align="middle"> <#NomineeCount>  <IMG src="idx:15" align="middle"> <#EntrantCount> ';
-
     HTMLTemplate := s;
   end;
 

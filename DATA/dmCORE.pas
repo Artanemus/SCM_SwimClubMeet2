@@ -251,6 +251,7 @@ begin
     qrySwimClub.FieldByName('SwimClubID').AsInteger; // Master-Detail
   DataSet.FieldByName('SessionDT').AsDateTime := Now();
   DataSet.FieldByName('CreatedOn').AsDateTime := Now();
+  DataSet.FieldByName('ModifiedOn').AsDateTime := Now();
   DataSet.FieldByName('SessionStatusID').AsInteger := 1; // Open.
   DataSet.FieldByName('NomineeCount').AsInteger := 0;
   DataSet.FieldByName('EntrantCount').AsInteger := 0; // Open.

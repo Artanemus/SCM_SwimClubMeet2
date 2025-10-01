@@ -3,7 +3,7 @@ object EditSession: TEditSession
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Edit Session ...'
-  ClientHeight = 359
+  ClientHeight = 410
   ClientWidth = 590
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,36 +20,41 @@ object EditSession: TEditSession
   TextHeight = 21
   object Panel1: TPanel
     Left = 0
-    Top = 0
+    Top = 57
     Width = 590
-    Height = 310
+    Height = 304
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitTop = 0
+    ExplicitHeight = 310
     object Label1: TLabel
       Left = 8
-      Top = 212
+      Top = 205
       Width = 149
       Height = 21
       Caption = 'Session Description ...'
+      Enabled = False
     end
     object Label2: TLabel
       Left = 8
-      Top = 59
+      Top = 20
       Width = 89
       Height = 21
       Caption = 'Session Date'
+      Enabled = False
     end
     object Label3: TLabel
       Left = 8
-      Top = 137
+      Top = 114
       Width = 91
       Height = 21
       Caption = 'Session Time'
+      Enabled = False
     end
     object spbtnPlus: TSpeedButton
       Left = 313
-      Top = 163
+      Top = 140
       Width = 36
       Height = 36
       ImageIndex = 7
@@ -61,7 +66,7 @@ object EditSession: TEditSession
     end
     object spbtnMinus: TSpeedButton
       Left = 271
-      Top = 163
+      Top = 140
       Width = 36
       Height = 36
       ImageIndex = 6
@@ -71,43 +76,10 @@ object EditSession: TEditSession
       PressedImageName = 'minus-box_Disabled'
       OnClick = btnMinusClick
     end
-    object spbtnAutoDT: TSpeedButton
-      Left = 541
-      Top = 17
-      Width = 36
-      Height = 36
-      Hint = 'Auto assign date and time.'
-      ImageIndex = 11
-      ImageName = 'build'
-      Images = IMG.imglstMiscButtons
-      OnClick = spbtnAutoDTClick
-    end
-    object spbtnEdit: TSpeedButton
-      Left = 8
-      Top = 17
-      Width = 36
-      Height = 36
-      Hint = 'Auto assign date and time.'
-      ImageIndex = 8
-      ImageName = 'edit'
-      Images = IMG.imglstSessCntrl
-      OnClick = spbtnAutoDTClick
-    end
-    object spbtnSchedule: TSpeedButton
-      Left = 499
-      Top = 17
-      Width = 36
-      Height = 36
-      Hint = 'Auto assign date and time.'
-      ImageIndex = 12
-      ImageName = 'schedule'
-      Images = IMG.imglstMiscButtons
-      OnClick = spbtnScheduleClick
-    end
     object btnToday: TButton
       Tag = 1
       Left = 164
-      Top = 86
+      Top = 47
       Width = 93
       Height = 32
       Hint = 'Clear the house name.'
@@ -120,7 +92,7 @@ object EditSession: TEditSession
     object btnDate: TButton
       Tag = 1
       Left = 263
-      Top = 86
+      Top = 47
       Width = 121
       Height = 32
       Hint = 'Clear the house name.'
@@ -132,7 +104,7 @@ object EditSession: TEditSession
     end
     object datePickerSess: TDatePicker
       Left = 8
-      Top = 86
+      Top = 47
       Date = 45889.000000000000000000
       DateFormat = 'dd/mm/yyyy'
       Font.Charset = DEFAULT_CHARSET
@@ -144,7 +116,7 @@ object EditSession: TEditSession
     end
     object timePickerSess: TTimePicker
       Left = 8
-      Top = 164
+      Top = 141
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
@@ -157,7 +129,7 @@ object EditSession: TEditSession
     object btnNow: TButton
       Tag = 1
       Left = 164
-      Top = 166
+      Top = 143
       Width = 101
       Height = 32
       Hint = 'Clear the house name.'
@@ -169,7 +141,7 @@ object EditSession: TEditSession
     end
     object DBEdit1: TDBEdit
       Left = 8
-      Top = 239
+      Top = 232
       Width = 569
       Height = 32
       AutoSize = False
@@ -180,12 +152,13 @@ object EditSession: TEditSession
   end
   object Panel2: TPanel
     Left = 0
-    Top = 310
+    Top = 361
     Width = 590
     Height = 49
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitTop = 310
     object btnCancel: TButton
       Left = 213
       Top = 6
@@ -213,6 +186,74 @@ object EditSession: TEditSession
       ModalResult = 1
       TabOrder = 1
       OnClick = btnPostClick
+    end
+  end
+  object pnlHeader: TPanel
+    Left = 0
+    Top = 0
+    Width = 590
+    Height = 57
+    Align = alTop
+    BevelEdges = [beBottom]
+    BevelKind = bkFlat
+    BevelOuter = bvSpace
+    TabOrder = 2
+    object lblWeekNumber: TLabel
+      Left = 8
+      Top = 9
+      Width = 209
+      Height = 32
+      Caption = 'SESSION - Week 10'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -24
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+    end
+    object spbtnAutoDT: TSpeedButton
+      Left = 541
+      Top = 5
+      Width = 36
+      Height = 36
+      Hint = 'Auto assign date and time.'
+      ImageIndex = 11
+      ImageName = 'build'
+      Images = IMG.imglstMiscButtons
+      OnClick = spbtnAutoDTClick
+    end
+    object spbtnLockState: TSpeedButton
+      Left = 415
+      Top = 5
+      Width = 36
+      Height = 36
+      Hint = 'Schedule the session.'
+      ImageIndex = 14
+      ImageName = 'lock-open'
+      Images = IMG.imglstMiscButtons
+      OnClick = spbtnLockStateClick
+    end
+    object spbtnSchedule: TSpeedButton
+      Left = 499
+      Top = 5
+      Width = 36
+      Height = 36
+      Hint = 'Schedule the session.'
+      ImageIndex = 12
+      ImageName = 'schedule'
+      Images = IMG.imglstMiscButtons
+      OnClick = spbtnScheduleClick
+    end
+    object spbtnSeasonStart: TSpeedButton
+      Left = 457
+      Top = 5
+      Width = 36
+      Height = 36
+      Hint = 'Schedule the session.'
+      ImageIndex = 1
+      ImageName = 'pick-date'
+      Images = IMG.imglstMiscButtons
+      OnClick = spbtnSeasonStartClick
     end
   end
 end

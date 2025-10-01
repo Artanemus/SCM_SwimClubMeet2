@@ -29,41 +29,42 @@ type
   scmSessionMode = (smEditSession, smNewSession, swNotGiven);
 
   TEditSession = class(TForm)
-    Panel1: TPanel;
+    btnCancel: TButton;
+    btnDate: TButton;
+    btnNow: TButton;
+    btnPost: TButton;
+    btnToday: TButton;
+    datePickerSess: TDatePicker;
+    DBEdit1: TDBEdit;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    Panel1: TPanel;
     Panel2: TPanel;
-    btnCancel: TButton;
-    btnPost: TButton;
-    timePickerSess: TTimePicker;
-    DBEdit1: TDBEdit;
-    btnToday: TButton;
-    btnDate: TButton;
-    datePickerSess: TDatePicker;
-    btnNow: TButton;
-    spbtnPlus: TSpeedButton;
-    spbtnMinus: TSpeedButton;
     spbtnAutoDT: TSpeedButton;
-    spbtnEdit: TSpeedButton;
+    spbtnMinus: TSpeedButton;
+    spbtnPlus: TSpeedButton;
     spbtnSchedule: TSpeedButton;
-    procedure FormDestroy(Sender: TObject);
-    procedure btnPostClick(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    timePickerSess: TTimePicker;
+    spbtnLockState: TSpeedButton;
+    lblWeekNumber: TLabel;
+    pnlHeader: TPanel;
+    spbtnSeasonStart: TSpeedButton;
     procedure btnCancelClick(Sender: TObject);
     procedure btnDateClick(Sender: TObject);
     procedure btnMinusClick(Sender: TObject);
     procedure btnNowClick(Sender: TObject);
     procedure btnPlusClick(Sender: TObject);
+    procedure btnPostClick(Sender: TObject);
     procedure btnTodayClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
     procedure spbtnAutoDTClick(Sender: TObject);
+    procedure spbtnLockStateClick(Sender: TObject);
     procedure spbtnScheduleClick(Sender: TObject);
-  private
-    { Private declarations }
-  public
-    { Public declarations }
+    procedure spbtnSeasonStartClick(Sender: TObject);
   end;
 
 var
@@ -75,11 +76,6 @@ implementation
 
 uses
   System.DateUtils, dlgDatePicker;
-
-procedure TEditSession.FormDestroy(Sender: TObject);
-begin
-  CORE.qrySession.CheckBrowseMode;
-end;
 
 procedure TEditSession.btnCancelClick(Sender: TObject);
 begin
@@ -130,11 +126,17 @@ begin
   begin
     try
       dt := datePickerSess.Date + timePickerSess.Time;
-      if CORE.qrySession.FieldByName('SessionStart').AsDateTime <> dt then
-        CORE.qrySession.FieldByName('SessionStart').AsDateTime := dt;
+      if CORE.qrySession.FieldByName('SessionDT').AsDateTime <> dt then
+        CORE.qrySession.FieldByName('SessionDT').AsDateTime := dt;
+
+      CORE.qrySession.FieldByName('ModifiedOn').AsDateTime := Now;
 
       if CORE.qrySession.FieldByName('SessionStatusID').IsNull then
         CORE.qrySession.FieldByName('SessionStatusID').AsInteger := 1;
+
+      CORE.qrySession.FieldByName('NomineeCount').AsInteger := uSession.CalcNomineeCount;
+      CORE.qrySession.FieldByName('EntrantCount').AsInteger := uSession.CalcEntrantCount;
+
 
       CORE.qrySession.Post; // finalize the changes...
       ModalResult := mrOk;
@@ -176,6 +178,11 @@ begin
   end;
 end;
 
+procedure TEditSession.FormDestroy(Sender: TObject);
+begin
+  CORE.qrySession.CheckBrowseMode;
+end;
+
 procedure TEditSession.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -192,14 +199,22 @@ procedure TEditSession.FormShow(Sender: TObject);
 var
   dt: TDateTime;
 begin
-    if CORE.qrySession.FieldByName('StartDT').IsNull then
-      dt := Now
-    else
-      dt := CORE.qrySession.FieldByName('StartDT').AsDateTime;
+    try
+      if CORE.qrySession.FieldByName('SessionDT').IsNull then
+        dt := Now
+      else
+        dt := CORE.qrySession.FieldByName('SessionDT').AsDateTime;
+      datePickerSess.Date := DateOf(dt);
+      timePickerSess.Time := TimeOf(dt);
 
-    datePickerSess.Date := DateOf(dt);
-    timePickerSess.Time := TimeOf(dt);
-    if CanFocus then datePickerSess.SetFocus;
+      if (CORE.qrySession.FieldByName('SessionStatusID').AsInteger = 2) then
+        spbtnLockState.ImageName := 'lock'
+      else
+        spbtnLockState.ImageName := 'lock-open'
+
+    finally
+      if CanFocus then datePickerSess.SetFocus;
+    end;
 end;
 
 procedure TEditSession.spbtnAutoDTClick(Sender: TObject);
@@ -207,10 +222,10 @@ var
   msg: string;
 begin
   msg := '''
-    Auto assign date and time
+    Auto assign a date and time,
     based on the previous session.
     ''';
-  MessageBox(0, PChar(msg), PChar('AutoBuild Session Details...'),
+  MessageBox(0, PChar(msg), PChar('Button ideas ...'),
   MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
 end;
 
@@ -219,10 +234,33 @@ var
   msg: string;
 begin
   msg := '''
-    Save changes and run the schedule package.
+    Schedule the session.
     ''';
-  MessageBox(0, PChar(msg), PChar('Schedule Session...'),
+  MessageBox(0, PChar(msg), PChar('Button ideas ...'),
   MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
 end;
+
+procedure TEditSession.spbtnSeasonStartClick(Sender: TObject);
+var
+  msg: string;
+begin
+  msg := '''
+    Adjust the date: 'start of the swimming season'.
+    ''';
+  MessageBox(0, PChar(msg), PChar('Button ideas ...'),
+  MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
+end;
+
+procedure TEditSession.spbtnLockStateClick(Sender: TObject);
+var
+  msg: string;
+begin
+  msg := '''
+    Lock the session, save and close.
+    ''';
+  MessageBox(0, PChar(msg), PChar('Button ideas ...'),
+  MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
+end;
+
 
 end.

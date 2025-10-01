@@ -16,11 +16,7 @@ uses
 /// </summary>
 ///
 function AllEventsAreClosed: Boolean;
-function CalcEntrantCount: integer;
-function CalcNomineeCount(): integer;
 function CalcEventCount: integer;
-function EntrantCount: integer;
-function NomineeCount: integer;
 function GetSessionID: integer; // Assert - SAFE.
 function HasEvents: Boolean;  deprecated;
 function IsEmptyOrLocked: Boolean;
@@ -38,6 +34,10 @@ procedure NewSession();
 
 // LISTED BELOW ARE ROUTINES WIP.
 function Delete_Session(DoExclude: Boolean = true): boolean;
+function CalcNomineeCount(): integer;
+function CalcEntrantCount: integer;
+function EntrantCount: integer;
+function NomineeCount: integer;
 
 // LISTED BELOW ARE ROUTINES THAT ARE IN-USE AND DEBUGGED
 function PK(): integer; // NO CHECKS. RTNS: Primary key.
@@ -150,7 +150,7 @@ begin
         begin
           CORE.qryWatchTime.ApplyMaster;
           CORE.qrySplitTime.ApplyMaster;
-          CORE.qryTeam.ApplyMaster;
+//          CORE.qryTeam.ApplyMaster;
         end;
       end;
     end;

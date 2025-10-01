@@ -96,12 +96,12 @@ type
     Tools_DisqualifyCodes: TAction;
     Event_AutoSchedule: TAction;
     SCM_StatusBar: TAction;
-    actnClearSlot: TAction;
-    actnStrikeSlot: TAction;
-    actnAddSlot: TAction;
-    actnRemoveSlot: TAction;
-    actnMoveUpSlot: TAction;
-    actnMoveDownSlot: TAction;
+    Team_ClearSlot: TAction;
+    Team_StrikeSlot: TAction;
+    Team_AddSlot: TAction;
+    Team_RemoveSlot: TAction;
+    Team_MoveUpSlot: TAction;
+    Team_MoveDownSlot: TAction;
     SwimClub_Switch: TAction;
     SwimClub_Manage: TAction;
     actnMainMenuBar: TActionMainMenuBar;
@@ -281,19 +281,9 @@ begin
 
   // Database modules IMG, SCM and CORE have been set to AutoCreate
   // prior to form creation. Kills the app if missing!
-  if not Assigned(IMG) then
+  if not (Assigned(IMG) and Assigned(SCM2) and Assigned(CORE)) then
   begin
-    MessageDlg('Error creating IMG data module!', mtError,  [mbOK], 0);
-    Application.Terminate();
-  end;
-  if not Assigned(SCM2) then
-  begin
-    MessageDlg('Error creating SCM2 data module!', mtError,  [mbOK], 0);
-    Application.Terminate();
-  end;
-  if not Assigned(CORE) then
-  begin
-    MessageDlg('Error creating CORE data module!', mtError,  [mbOK], 0);
+    MessageDlg('Error creating Data module!', mtError,  [mbOK], 0);
     Application.Terminate();
   end;
 
@@ -305,8 +295,12 @@ begin
     DEFSETTINGSFILENAME = 'scmPref.json';
   }
   Settings := TAppSetting.Create(true);
+
+  // -------------------------------------
   // DEBUG :::: REMOVE.🔻
+  // -------------------------------------
   Settings.DoLoginOnBoot := true;
+  // -------------------------------------
 
   // Checks for default state of data and controls.
   SCM2.scmConnection.Connected := false;

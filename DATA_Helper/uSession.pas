@@ -16,14 +16,10 @@ uses
 /// </summary>
 ///
 function AllEventsAreClosed: Boolean;
-function CalcEventCount: integer;
-function GetSessionID: integer; // Assert - SAFE.
 function HasEvents: Boolean;  deprecated;
 function IsEmptyOrLocked: Boolean;
-function Locate(SessionID: integer): Boolean;
 function RenumberEvents(DoLocate: Boolean = true): integer;
 function SessionDT: TDateTime;
-
 procedure SetEntrantCount();
 procedure SetNomineeCount();
 //procedure SortSession();
@@ -33,6 +29,9 @@ procedure NewSession();
 
 
 // LISTED BELOW ARE ROUTINES WIP.
+function Locate(SessionID: integer): Boolean;
+function CalcEventCount: integer;
+function GetSessionID: integer; // Assert - SAFE.
 function Delete_Session(DoExclude: Boolean = true): boolean;
 function CalcNomineeCount(): integer;
 function CalcEntrantCount: integer;

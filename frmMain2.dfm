@@ -2838,18 +2838,23 @@ object Main2: TMain2
           Height = 615
           Align = alClient
           TabOrder = 0
-          ExplicitLeft = -6
-          ExplicitTop = -83
+          ExplicitWidth = 440
+          ExplicitHeight = 615
           inherited pnlBody: TPanel
             Width = 386
             Height = 615
+            ExplicitWidth = 386
+            ExplicitHeight = 615
             inherited gSession: TDBAdvGrid
               Width = 386
               Height = 615
+              ExplicitWidth = 386
+              ExplicitHeight = 615
             end
           end
           inherited pnlCntrl: TPanel
             Height = 615
+            ExplicitHeight = 615
             inherited spbtnSessClone: TSpeedButton
               Glyph.Data = {00000000}
             end
@@ -2870,7 +2875,6 @@ object Main2: TMain2
             end
             inherited spbtnEdit: TSpeedButton
               Glyph.Data = {00000000}
-              OnClick = nil
             end
           end
         end

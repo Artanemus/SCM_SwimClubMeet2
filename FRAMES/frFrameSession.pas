@@ -16,7 +16,7 @@ uses
 
   AdvUtil, AdvObj, AdvGrid, DBAdvGrid,
 
-  dmSCM2, dmIMG, dmCORE, uSettings, uSession;
+  dmSCM2, dmIMG, dmCORE, uSettings, uSession, uDefines;
 
 type
   TFrameSession = class(TFrame)
@@ -43,7 +43,8 @@ type
     procedure actnSessFr_DeleteExecute(Sender: TObject);
     procedure actnSessFr_EditExecute(Sender: TObject);
     procedure actnSessFr_VisibleExecute(Sender: TObject);
-    procedure actnDefSessionUpdate(Sender: TObject);
+    procedure actnSessFr_DefaultUpdate(Sender: TObject);
+    procedure actnSessFr_CheckLockUpdate(Sender: TObject);
     procedure actnSessFr_LockExecute(Sender: TObject);
     procedure actnSessFr_NewExecute(Sender: TObject);
     procedure actnSessFr_NewUpdate(Sender: TObject);
@@ -53,8 +54,16 @@ type
         HTMLTemplate: string; Fields: TFields);
   private
     { Private declarations }
+    procedure SetVisibilityIcons();
+    procedure SetLockIcons();
+
+  protected
+
   public
-    { Public declarations }
+    procedure Initialise();
+    // will message seen by main tunnle through to frame?  CHECK...
+    procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
+
   end;
 
 implementation
@@ -107,7 +116,7 @@ procedure TFrameSession.actnSessFr_EditExecute(Sender: TObject);
 var
 dlg: TEditSession;
 begin
-  dlg := TEditSession.Create(Self);  // Owner vs Self - when using TFrame?
+  dlg := TEditSession.Create(Self);
   dlg.ShowModal;
   dlg.Free;
 end;
@@ -117,19 +126,16 @@ begin
     gSession.BeginUpdate;
     TAction(Sender).Checked := not TAction(Sender).Checked;
     try
-      if TAction(Sender).Checked then
-        TAction(Sender).ImageIndex := 2 // Hide locked.
-      else
-        TAction(Sender).ImageIndex := 1; // Show locked.
-
-      uSession.SetVisibilityOfLocked(TAction(Sender).Checked);
-
+      SetVisibilityIcons;
+      // Assign index ... ApplyMaster.
+      // true - indxShowAll , false indxHideLocked.
+      uSession.SetVisibilityOfLocked(not TAction(Sender).Checked);
     finally
       gSession.EndUpdate;
     end;
 end;
 
-procedure TFrameSession.actnDefSessionUpdate(Sender: TObject);
+procedure TFrameSession.actnSessFr_DefaultUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -139,26 +145,36 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
+procedure TFrameSession.actnSessFr_CheckLockUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+  if Assigned(CORE) and CORE.IsActive and not CORE.qrySession.IsEmpty then
+  begin
+    if CORE.qrySession.FieldByName('SessionStatusID').AsInteger <> 2 then
+      DoEnable := true;
+  end;
+  TAction(Sender).Enabled := DoEnable;
+end;
+
 procedure TFrameSession.actnSessFr_LockExecute(Sender: TObject);
 begin
-  with (Sender as TAction) do
-  begin
-    gSession.BeginUpdate;
-    try
-    Checked := not Checked;
-    if Checked then
+  gSession.BeginUpdate;
+  try
+    TAction(Sender).Checked := not TAction(Sender).Checked;
+    if TAction(Sender).Checked then
     begin
-      TAction(Sender).ImageIndex := 7;
-      uSession.SetSessionStatusID(1); // UN-LOCKED.
+      uSession.SetSessionStatusID(2); // CLOSED ie.LOCKED.
+      SetLockIcons;
     end
     else
     begin
-      TAction(Sender).ImageIndex := 6;
-      uSession.SetSessionStatusID(2); // LOCKED.
+      uSession.SetSessionStatusID(1); // OPEN ie.UN-LOCKED.
+      SetLockIcons;
     end;
-    finally
-      gSession.endUpdate;
-    end;
+  finally
+    gSession.endUpdate;
   end;
 end;
 
@@ -175,7 +191,6 @@ begin
   if Assigned(CORE) and CORE.IsActive then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
-
 
 procedure TFrameSession.gSessionGetCellColor(Sender: TObject; ARow, ACol:
     Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
@@ -247,6 +262,83 @@ begin
   end;
 
 
+end;
+
+procedure TFrameSession.Initialise;
+var
+  HideLockedSessions: boolean;
+begin
+  HideLockedSessions := false;
+  if Assigned(Settings) then
+    HideLockedSessions := Settings.HideLockedSessions;
+
+  if (HideLockedSessions) then
+  begin
+    actnSessFr_Visible.Checked := true; // hide locked sessions.
+    SetVisibilityIcons;
+  end
+  else
+  begin
+    actnSessFr_Visible.Checked := false;  // Show all .
+    SetVisibilityIcons;
+  end;
+
+  gSession.BeginUpdate;
+  // true - indxShowAll , false indxHideLocked. (INVERTED LOGIC)
+  uSession.SetVisibilityOfLocked(not actnSessFr_Visible.Checked);
+  gSession.EndUpdate;
+
+end;
+
+procedure TFrameSession.Msg_SCM_Scroll_Session(var Msg: TMessage);
+var
+  i: integer;
+begin
+  // track the state of locked/unlocked.
+  i := CORE.qrySession.FieldByName('SessionStatusID').AsInteger;
+  if (i=2) and not actnSessFr_Lock.Checked then
+  begin
+    actnSessFr_Lock.Checked := true; // syncronize to equal db state
+    SetLockIcons;
+  end;
+
+  if (i=1) and actnSessFr_Lock.Checked then
+  begin
+    actnSessFr_Lock.Checked := false; // syncronize to equal db state
+    SetLockIcons;
+  end;
+end;
+
+procedure TFrameSession.SetLockIcons;
+begin
+  if actnSessFr_Lock.Checked then
+  begin
+    actnSessFr_Lock.ImageIndex := 6; // lock2 icon
+    if (spbtnSessLock.ImageIndex <> 6) then // saves a repaint..
+      spbtnSessLock.ImageIndex := 6;
+  end
+  else
+  begin
+    actnSessFr_Lock.ImageIndex := 7; // lock2-open icon
+    if (spbtnSessLock.ImageIndex <> 7) then // saves a repaint..
+      spbtnSessLock.ImageIndex := 7;
+  end;
+end;
+
+procedure TFrameSession.SetVisibilityIcons;
+begin
+    if actnSessFr_Visible.Checked then
+    begin
+      actnSessFr_Visible.ImageIndex := 2; // Eye+line - HIDE locked sessions.
+      if (spbtnSessVisible.ImageIndex <> 2) then // saves a repaint..
+        spbtnSessVisible.ImageIndex := 2;
+    end
+    else
+    begin
+      actnSessFr_Visible.ImageIndex := 1; // Eye - SHOW ALL sessions.
+      if (spbtnSessVisible.ImageIndex <> 1) then // saves a repaint..
+        spbtnSessVisible.ImageIndex := 1;
+    end;
 end;
 
 end.

@@ -19,6 +19,8 @@ type
     LoginTimeOut: integer;
     DoLoginOnBoot: boolean;
     LastSwimClubPK: integer;
+    HideLockedSessions: boolean;
+
 
     constructor Create(); overload;
     constructor Create(AutoLoad: boolean); overload;
@@ -69,6 +71,7 @@ begin
   DoLoginOnBoot := false;
   DoAutoLoad := false;
   LastSwimClubPK := 0;
+  HideLockedSessions := false;
   ForceDirectories(GetDefPath());
   if not FileExists(GetDefPathFileName()) then
     SaveToFile();

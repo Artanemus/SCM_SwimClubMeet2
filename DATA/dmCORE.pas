@@ -106,7 +106,7 @@ type
     procedure qrySwimClubNewRecord(DataSet: TDataSet);
 	private
     FIsActive: boolean;
-    msgHandle: HWND;  // TForm.dtfrmExec ...   // Both DataModules
+    msgHandle: HWND;  // handle to send wapi messages. typically Main Form.
 
 	public
     procedure ActivateCore;

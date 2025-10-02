@@ -641,7 +641,7 @@ object FrameSession: TFrameSession
       ImageIndex = 1
       ImageName = 'visible_on'
       OnExecute = actnSessFr_VisibleExecute
-      OnUpdate = actnDefSessionUpdate
+      OnUpdate = actnSessFr_DefaultUpdate
     end
     object actnSessFr_Lock: TAction
       Category = 'Session_Frame'
@@ -649,7 +649,7 @@ object FrameSession: TFrameSession
       ImageIndex = 7
       ImageName = 'lock-open-2'
       OnExecute = actnSessFr_LockExecute
-      OnUpdate = actnDefSessionUpdate
+      OnUpdate = actnSessFr_DefaultUpdate
     end
     object actnSessFr_Edit: TAction
       Category = 'Session_Frame'
@@ -657,7 +657,7 @@ object FrameSession: TFrameSession
       ImageIndex = 8
       ImageName = 'edit'
       OnExecute = actnSessFr_EditExecute
-      OnUpdate = actnDefSessionUpdate
+      OnUpdate = actnSessFr_CheckLockUpdate
     end
     object actnSessFr_New: TAction
       Category = 'Session_Frame'
@@ -672,6 +672,7 @@ object FrameSession: TFrameSession
       Hint = 'Duplicate the selected session.'
       ImageIndex = 11
       ImageName = 'clone'
+      OnUpdate = actnSessFr_DefaultUpdate
     end
     object actnSessFr_Delete: TAction
       Category = 'Session_Frame'
@@ -679,13 +680,14 @@ object FrameSession: TFrameSession
       ImageIndex = 4
       ImageName = 'delete'
       OnExecute = actnSessFr_DeleteExecute
-      OnUpdate = actnDefSessionUpdate
+      OnUpdate = actnSessFr_CheckLockUpdate
     end
     object actnSessFr_Report: TAction
       Category = 'Session_Frame'
       Hint = 'Create a Session report.'
       ImageIndex = 5
       ImageName = 'report'
+      OnUpdate = actnSessFr_DefaultUpdate
     end
   end
 end

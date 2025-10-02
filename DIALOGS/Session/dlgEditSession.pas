@@ -23,7 +23,7 @@ uses
 
   dmCORE, dmIMG,
 
-  uDefines, uSwimClub, uSession;
+  uDefines, uSwimClub, uSession, SVGIconImage;
 
 type
   scmSessionMode = (smEditSession, smNewSession, swNotGiven);
@@ -50,10 +50,28 @@ type
     lblWeekNumber: TLabel;
     pnlHeader: TPanel;
     spbtnSeasonStart: TSpeedButton;
+    lblNominees: TLabel;
+    lblEntrants: TLabel;
+    lblEvents: TLabel;
+    lblWeek: TLabel;
+    imgFR: TSVGIconImage;
+    imgBK: TSVGIconImage;
+    imgBS: TSVGIconImage;
+    imgBF: TSVGIconImage;
+    imgIM: TSVGIconImage;
+    imRFS: TSVGIconImage;
+    imgRBK: TSVGIconImage;
+    imgRBS: TSVGIconImage;
+    imgRBF: TSVGIconImage;
+    imgRIM: TSVGIconImage;
+    lblLongDate: TLabel;
+    DBTextNominees: TDBText;
+    DBTextEntrants: TDBText;
+    lblEventCount: TLabel;
     procedure btnCancelClick(Sender: TObject);
     procedure btnDateClick(Sender: TObject);
     procedure btnMinusClick(Sender: TObject);
-    procedure btnNowClick(Sender: TObject);
+    procedure btnThisHourClick(Sender: TObject);
     procedure btnPlusClick(Sender: TObject);
     procedure btnPostClick(Sender: TObject);
     procedure btnTodayClick(Sender: TObject);
@@ -65,6 +83,7 @@ type
     procedure spbtnLockStateClick(Sender: TObject);
     procedure spbtnScheduleClick(Sender: TObject);
     procedure spbtnSeasonStartClick(Sender: TObject);
+    procedure DTPickerSessChange(Sender: TObject);
   end;
 
 var
@@ -105,17 +124,22 @@ end;
 
 procedure TEditSession.btnMinusClick(Sender: TObject);
 begin
-  TDateTime(timePickerSess.time).IncMinute(-15);
+  timePickerSess.time := TDateTime(timePickerSess.time).IncMinute(-15);
 end;
 
-procedure TEditSession.btnNowClick(Sender: TObject);
+procedure TEditSession.btnThisHourClick(Sender: TObject);
+var
+  DT: TDateTime;
+  time: TTime;
 begin
-  TDateTime(timePickerSess.Time).SetTime(Now().GetHour(), 0, 0, 0);
+  DT := Now;
+  TDateTime(time).SetTime(DT.GetHour, 0, 0, 0);
+  timePickerSess.Time := time;
 end;
 
 procedure TEditSession.btnPlusClick(Sender: TObject);
 begin
-  TDateTime(timePickerSess.time).IncMinute(15);
+  timePickerSess.time := TDateTime(timePickerSess.time).IncMinute(15);
 end;
 
 procedure TEditSession.btnPostClick(Sender: TObject);
@@ -128,19 +152,11 @@ begin
       dt := datePickerSess.Date + timePickerSess.Time;
       if CORE.qrySession.FieldByName('SessionDT').AsDateTime <> dt then
         CORE.qrySession.FieldByName('SessionDT').AsDateTime := dt;
-
       CORE.qrySession.FieldByName('ModifiedOn').AsDateTime := Now;
-
       if CORE.qrySession.FieldByName('SessionStatusID').IsNull then
         CORE.qrySession.FieldByName('SessionStatusID').AsInteger := 1;
-
-      CORE.qrySession.FieldByName('NomineeCount').AsInteger := uSession.CalcNomineeCount;
-      CORE.qrySession.FieldByName('EntrantCount').AsInteger := uSession.CalcEntrantCount;
-
-
       CORE.qrySession.Post; // finalize the changes...
       ModalResult := mrOk;
-
     except on E: Exception do
       begin
         // ShowMessage('Error saving session: ' + E.Message);
@@ -170,6 +186,12 @@ begin
 
   try
     CORE.qrySession.Edit;
+
+    // re-calculate the stats for this session...
+    CORE.qrySession.FieldByName('NomineeCount').AsInteger := uSession.CalcNomineeCount;
+    CORE.qrySession.FieldByName('EntrantCount').AsInteger := uSession.CalcEntrantCount;
+    lblEventCount.Caption := IntToStr(uSession.CalcEventCount);
+
   except on E: Exception do
     begin
       CORE.qrySession.Cancel;
@@ -254,13 +276,66 @@ end;
 procedure TEditSession.spbtnLockStateClick(Sender: TObject);
 var
   msg: string;
+  id: integer;
+  dt: TDateTime;
 begin
   msg := '''
-    Lock the session, save and close.
+    Lock the session, save your changes, and close.
+    (Depending on the visibility settings, this session
+    may no longer appear in the main form.)
     ''';
-  MessageBox(0, PChar(msg), PChar('Button ideas ...'),
+  id := MessageBox(0, PChar(msg), PChar('LOCK SESSION ...'),
   MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
+
+  if (id = IDYES) then
+  begin
+    if CORE.qrySession.State = dsEdit then
+    begin
+      try
+
+        dt := datePickerSess.Date + timePickerSess.Time;
+        if CORE.qrySession.FieldByName('SessionDT').AsDateTime <> dt then
+          CORE.qrySession.FieldByName('SessionDT').AsDateTime := dt;
+        CORE.qrySession.FieldByName('ModifiedOn').AsDateTime := Now;
+        if CORE.qrySession.FieldByName('SessionStatusID').IsNull then
+          CORE.qrySession.FieldByName('SessionStatusID').AsInteger := 2;
+        CORE.qrySession.Post; // finalize the changes...
+
+        // ----------------------------------------------------
+        // u p d a t e   t a b l e .
+        uSession.SetVisibilityOfLocked(false);
+
+        ModalResult := mrOk;
+
+      except on E: Exception do
+        begin
+          // ShowMessage('Error saving session: ' + E.Message);
+          CORE.qrySession.Cancel;
+          ModalResult := mrCancel;
+        end;
+      end
+    end
+    else
+    begin
+      CORE.qrySession.Cancel; // safe....
+      ModalResult := mrCancel;
+    end;
+  end;
+
 end;
 
+procedure TEditSession.DTPickerSessChange(Sender: TObject);
+var
+  fs: TFormatSettings;
+  dt: TDateTime;
+begin
+  fs := TFormatSettings.Create; // default local format;
+  try
+    dt := DateOf(datePickerSess.Date) + TimeOf(timePickerSess.Time);
+    lblLongDate.Caption := FormatDateTime('dddd mmmm yyyy hh:nn', dt, fs);
+  except on E: Exception do
+    lblLongDate.Caption := '';
+  end;
+end;
 
 end.

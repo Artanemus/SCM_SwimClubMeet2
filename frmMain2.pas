@@ -140,6 +140,7 @@ type
   protected
     // Note: don't name procedure same as winapi.message name.
     procedure Msg_SCM_Connect(var Msg: TMessage); message SCM_Connect;
+    procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
 
   public
     { Public declarations }
@@ -219,7 +220,6 @@ begin
   if CORE.IsActive and Assigned(Settings) then
     Settings.LastSwimClubPK := uSwimClub.PK;
 
-  dlg := TLogin.Create(Self); // dlg to connect to the SCM DB.
   {TODO -oBSA -cUI : take grids offline with beginupdate }
   (*
     gSession.BeginUpdate;
@@ -228,6 +228,8 @@ begin
     gHeat.BeginUpdate;
     gLane.BeginUpdate;
   *)
+
+  dlg := TLogin.Create(Self); // dlg to connect to the SCM DB.
   dlg.ShowModal;
   dlg.Free;
 
@@ -315,8 +317,11 @@ begin
 
   Application.ShowHint := true;
 
-  // for Debug only
+  // Assign a handle to the CORE data module - for windows messages
+  CORE.MSG_Handle := Self.Handle;
 
+  // Initialize FRAMES
+  frgSession.Initialise;
 
 end;
 
@@ -391,6 +396,13 @@ begin
   if SCM2.scmConnection.Connected then exit;
   //  actnManager.ExecuteAction(File_Connection); // doesn't work
   File_Connection.Execute;
+end;
+
+procedure TMain2.Msg_SCM_Scroll_Session(var Msg: TMessage);
+begin
+  // pass message forward to frames...
+  SendMessage(frgSession.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
+  // update the status bar with nominee and entrant counts.
 end;
 
 procedure TMain2.SwimClub_ManageExecute(Sender: TObject);

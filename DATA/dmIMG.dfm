@@ -2412,7 +2412,6 @@ object IMG: TIMG
           '8s-3.58 8-8 8m.5-13H11v6l5.25 3.15l.75-1.23l-4.5-2.67z"/></svg>'
         FixedColor = clDarkgoldenrod
       end>
-    ApplyFixedColorToRootOnly = True
     Left = 320
     Top = 8
   end
@@ -14357,5 +14356,69 @@ object IMG: TIMG
     Size = 48
     Left = 976
     Top = 80
+  end
+  object imglstHeatStrokeEx: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 5
+        CollectionName = 'StrokeFS'
+        Name = 'StrokeFS'
+      end
+      item
+        CollectionIndex = 6
+        CollectionName = 'StrokeBK'
+        Name = 'StrokeBK'
+      end
+      item
+        CollectionIndex = 7
+        CollectionName = 'StrokeBS'
+        Name = 'StrokeBS'
+      end
+      item
+        CollectionIndex = 8
+        CollectionName = 'StrokeBF'
+        Name = 'StrokeBF'
+      end
+      item
+        CollectionIndex = 9
+        CollectionName = 'StrokeIM'
+        Name = 'StrokeIM'
+      end
+      item
+        CollectionIndex = 10
+        CollectionName = 'StrokeFSRelay'
+        Name = 'StrokeFSRelay'
+      end
+      item
+        CollectionIndex = 11
+        CollectionName = 'StrokeBKRelay'
+        Name = 'StrokeBKRelay'
+      end
+      item
+        CollectionIndex = 12
+        CollectionName = 'StrokeBRRelay'
+        Name = 'StrokeBRRelay'
+      end
+      item
+        CollectionIndex = 13
+        CollectionName = 'StrokeBFRelay'
+        Name = 'StrokeBFRelay'
+      end
+      item
+        CollectionIndex = 14
+        CollectionName = 'StrokeIMRelay'
+        Name = 'StrokeIMRelay'
+      end
+      item
+        CollectionIndex = 15
+        CollectionName = 'RELAY_DOT'
+        Name = 'RELAY_DOT'
+      end>
+    ImageCollection = CollectionCore
+    Width = 24
+    Height = 24
+    Size = 24
+    Left = 472
+    Top = 232
   end
 end

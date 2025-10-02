@@ -38,6 +38,7 @@ type
     imglstSwimClubGroup: TSVGIconVirtualImageList;
     imglstSwimClubCell: TSVGIconVirtualImageList;
     imglstClubGroup: TSVGIconVirtualImageList;
+    imglstHeatStrokeEx: TSVGIconVirtualImageList;
   private
     { Private declarations }
 

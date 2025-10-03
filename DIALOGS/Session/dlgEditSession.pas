@@ -54,20 +54,11 @@ type
     lblEntrants: TLabel;
     lblEvents: TLabel;
     lblWeek: TLabel;
-    imgFR: TSVGIconImage;
-    imgBK: TSVGIconImage;
-    imgBS: TSVGIconImage;
-    imgBF: TSVGIconImage;
-    imgIM: TSVGIconImage;
-    imRFS: TSVGIconImage;
-    imgRBK: TSVGIconImage;
-    imgRBS: TSVGIconImage;
-    imgRBF: TSVGIconImage;
-    imgRIM: TSVGIconImage;
     lblLongDate: TLabel;
     DBTextNominees: TDBText;
     DBTextEntrants: TDBText;
     lblEventCount: TLabel;
+    lblWeekCount: TLabel;
     procedure btnCancelClick(Sender: TObject);
     procedure btnDateClick(Sender: TObject);
     procedure btnMinusClick(Sender: TObject);
@@ -220,6 +211,7 @@ end;
 procedure TEditSession.FormShow(Sender: TObject);
 var
   dt: TDateTime;
+  WeeksBetween: integer;
 begin
     try
       if CORE.qrySession.FieldByName('SessionDT').IsNull then
@@ -232,7 +224,10 @@ begin
       if (CORE.qrySession.FieldByName('SessionStatusID').AsInteger = 2) then
         spbtnLockState.ImageName := 'lock'
       else
-        spbtnLockState.ImageName := 'lock-open'
+        spbtnLockState.ImageName := 'lock-open';
+
+      WeeksBetween := uSession.WeeksSinceSeasonStart(datePickerSess.Date);
+      lblWeekCount.Caption :=  IntToStr(WeeksBetween);
 
     finally
       if CanFocus then datePickerSess.SetFocus;
@@ -257,6 +252,7 @@ var
 begin
   msg := '''
     Schedule the session.
+    (Your changes will be saved.)
     ''';
   MessageBox(0, PChar(msg), PChar('Button ideas ...'),
   MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
@@ -267,7 +263,8 @@ var
   msg: string;
 begin
   msg := '''
-    Adjust the date: 'start of the swimming season'.
+    Adjust the 'start of the swimming season' date.
+    (Helpful if the week count isn't correct.)
     ''';
   MessageBox(0, PChar(msg), PChar('Button ideas ...'),
   MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
@@ -280,7 +277,7 @@ var
   dt: TDateTime;
 begin
   msg := '''
-    Lock the session, save your changes, and close.
+    The session will be locked, changes are saved, and the dialogue closes.
     (Depending on the visibility settings, this session
     may no longer appear in the main form.)
     ''';
@@ -328,11 +325,16 @@ procedure TEditSession.DTPickerSessChange(Sender: TObject);
 var
   fs: TFormatSettings;
   dt: TDateTime;
+  WeeksBetween: integer;
 begin
   fs := TFormatSettings.Create; // default local format;
   try
+    // header caption.
     dt := DateOf(datePickerSess.Date) + TimeOf(timePickerSess.Time);
     lblLongDate.Caption := FormatDateTime('dddd mmmm yyyy hh:nn', dt, fs);
+    // number of weeks since start of the swimmging season.
+    WeeksBetween := uSession.WeeksSinceSeasonStart(datePickerSess.Date);
+    lblWeekCount.Caption :=  IntToStr(WeeksBetween);
   except on E: Exception do
     lblLongDate.Caption := '';
   end;

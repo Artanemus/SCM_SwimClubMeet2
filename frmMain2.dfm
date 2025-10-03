@@ -2696,6 +2696,7 @@ object Main2: TMain2
   Position = poScreenCenter
   StyleElements = [seFont, seClient]
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnShow = FormShow
   TextHeight = 21
   object pnlTitleBar: TTitleBarPanel

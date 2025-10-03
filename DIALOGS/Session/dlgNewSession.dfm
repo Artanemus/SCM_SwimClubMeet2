@@ -3,7 +3,7 @@ object NewSession: TNewSession
   Top = 0
   BorderStyle = bsDialog
   Caption = 'New Session ...'
-  ClientHeight = 359
+  ClientHeight = 288
   ClientWidth = 590
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -22,34 +22,35 @@ object NewSession: TNewSession
     Left = 0
     Top = 0
     Width = 590
-    Height = 310
+    Height = 239
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitHeight = 310
     object Label1: TLabel
-      Left = 8
-      Top = 212
+      Left = 0
+      Top = 164
       Width = 149
       Height = 21
       Caption = 'Session Description ...'
     end
     object Label2: TLabel
-      Left = 8
-      Top = 59
+      Left = 0
+      Top = 11
       Width = 89
       Height = 21
       Caption = 'Session Date'
     end
     object Label3: TLabel
-      Left = 8
-      Top = 137
+      Left = 0
+      Top = 89
       Width = 91
       Height = 21
       Caption = 'Session Time'
     end
     object spbtnPlus: TSpeedButton
-      Left = 313
-      Top = 163
+      Left = 305
+      Top = 115
       Width = 36
       Height = 36
       ImageIndex = 7
@@ -60,8 +61,8 @@ object NewSession: TNewSession
       OnClick = btnPlusClick
     end
     object spbtnMinus: TSpeedButton
-      Left = 271
-      Top = 163
+      Left = 263
+      Top = 115
       Width = 36
       Height = 36
       ImageIndex = 6
@@ -71,43 +72,10 @@ object NewSession: TNewSession
       PressedImageName = 'minus-box_Disabled'
       OnClick = btnMinusClick
     end
-    object spbtnAutoDT: TSpeedButton
-      Left = 541
-      Top = 17
-      Width = 36
-      Height = 36
-      Hint = 'Auto assign date and time.'
-      ImageIndex = 11
-      ImageName = 'build'
-      Images = IMG.imglstMiscButtons
-      OnClick = spbtnAutoDTClick
-    end
-    object spbtnNew: TSpeedButton
-      Left = 8
-      Top = 17
-      Width = 40
-      Height = 36
-      Hint = 'Auto assign date and time.'
-      ImageIndex = 3
-      ImageName = 'new'
-      Images = IMG.imglstSessCntrl
-      OnClick = spbtnAutoDTClick
-    end
-    object spbtnSchedule: TSpeedButton
-      Left = 499
-      Top = 17
-      Width = 36
-      Height = 36
-      Hint = 'Auto assign date and time.'
-      ImageIndex = 12
-      ImageName = 'schedule'
-      Images = IMG.imglstMiscButtons
-      OnClick = spbtnScheduleClick
-    end
     object btnToday: TButton
       Tag = 1
-      Left = 164
-      Top = 86
+      Left = 156
+      Top = 38
       Width = 93
       Height = 32
       Hint = 'Clear the house name.'
@@ -119,8 +87,8 @@ object NewSession: TNewSession
     end
     object btnDate: TButton
       Tag = 1
-      Left = 263
-      Top = 86
+      Left = 255
+      Top = 38
       Width = 121
       Height = 32
       Hint = 'Clear the house name.'
@@ -131,8 +99,8 @@ object NewSession: TNewSession
       OnClick = btnDateClick
     end
     object datePickerSess: TDatePicker
-      Left = 8
-      Top = 86
+      Left = 0
+      Top = 38
       Date = 45889.000000000000000000
       DateFormat = 'dd/mm/yyyy'
       Font.Charset = DEFAULT_CHARSET
@@ -143,8 +111,8 @@ object NewSession: TNewSession
       TabOrder = 2
     end
     object timePickerSess: TTimePicker
-      Left = 8
-      Top = 164
+      Left = 0
+      Top = 116
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
@@ -156,8 +124,8 @@ object NewSession: TNewSession
     end
     object btnNow: TButton
       Tag = 1
-      Left = 164
-      Top = 166
+      Left = 156
+      Top = 118
       Width = 101
       Height = 32
       Hint = 'Clear the house name.'
@@ -168,8 +136,8 @@ object NewSession: TNewSession
       OnClick = btnNowClick
     end
     object DBEdit1: TDBEdit
-      Left = 8
-      Top = 239
+      Left = 0
+      Top = 191
       Width = 569
       Height = 32
       AutoSize = False
@@ -180,12 +148,13 @@ object NewSession: TNewSession
   end
   object Panel2: TPanel
     Left = 0
-    Top = 310
+    Top = 239
     Width = 590
     Height = 49
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitTop = 310
     object btnCancel: TButton
       Left = 213
       Top = 6

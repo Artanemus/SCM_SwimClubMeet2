@@ -13725,6 +13725,9 @@ object IMG: TIMG
         Name = 'sort'
       end>
     ImageCollection = CollectionCore
+    Width = 24
+    Height = 24
+    Size = 24
     Left = 224
     Top = 144
   end

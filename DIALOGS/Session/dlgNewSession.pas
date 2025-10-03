@@ -44,9 +44,6 @@ type
     btnNow: TButton;
     spbtnPlus: TSpeedButton;
     spbtnMinus: TSpeedButton;
-    spbtnAutoDT: TSpeedButton;
-    spbtnNew: TSpeedButton;
-    spbtnSchedule: TSpeedButton;
     procedure FormDestroy(Sender: TObject);
     procedure btnPostClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -109,7 +106,7 @@ end;
 
 procedure TNewSession.btnMinusClick(Sender: TObject);
 begin
-  TDateTime(timePickerSess.time).IncMinute(-15);
+  timePickerSess.time := TDateTime(timePickerSess.time).IncMinute(-15);
 end;
 
 procedure TNewSession.btnNowClick(Sender: TObject);
@@ -119,7 +116,7 @@ end;
 
 procedure TNewSession.btnPlusClick(Sender: TObject);
 begin
-  TDateTime(timePickerSess.time).IncMinute(15);
+  timePickerSess.time := TDateTime(timePickerSess.time).IncMinute(15);
 end;
 
 procedure TNewSession.btnPostClick(Sender: TObject);
@@ -168,7 +165,9 @@ procedure TNewSession.FormCreate(Sender: TObject);
 begin
   if (not Assigned(CORE)) or (not CORE.IsActive) then
     raise Exception.Create('DataBase (CORE) not active.');
+
   if not CORE.qrySession.IsEmpty then Close;
+
   try
     CORE.qrySession.Insert;
   except on E: Exception do
@@ -196,6 +195,7 @@ procedure TNewSession.FormShow(Sender: TObject);
 var
   dt: TDateTime;
 begin
+  try
     if CORE.qrySession.FieldByName('StartDT').IsNull then
       dt := Now
     else
@@ -203,7 +203,10 @@ begin
 
     datePickerSess.Date := DateOf(dt);
     timePickerSess.Time := TimeOf(dt);
+    
+  finally
     if CanFocus then datePickerSess.SetFocus;
+  end;
 end;
 
 procedure TNewSession.spbtnAutoDTClick(Sender: TObject);

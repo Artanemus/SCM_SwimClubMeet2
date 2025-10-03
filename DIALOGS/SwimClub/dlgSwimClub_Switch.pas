@@ -11,10 +11,8 @@ uses
 type
   TSwimClubSwitch = class(TForm)
     gSwitchSwimClub: TDBAdvGrid;
-    pnlFooter: TPanel;
-    btnOk: TButton;
-    procedure btnOkClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure gSwitchSwimClubDblClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -28,18 +26,19 @@ implementation
 
 {$R *.dfm}
 
-procedure TSwimClubSwitch.btnOkClick(Sender: TObject);
-begin
-  ModalResult := mrOk;
-end;
-
 procedure TSwimClubSwitch.FormKeyDown(Sender: TObject; var Key: Word; Shift:
     TShiftState);
 begin
-  if Key = VK_ESCAPE then
+  if (Key = VK_ESCAPE) or (Key = VK_RETURN) or (Key = VK_SPACE) then
   begin
-    ModalResult := mrCancel;
+    ModalResult := mrOk;
+    Key := 0;
   end;
+end;
+
+procedure TSwimClubSwitch.gSwitchSwimClubDblClick(Sender: TObject);
+begin
+  ModalResult := mrOk;
 end;
 
 end.

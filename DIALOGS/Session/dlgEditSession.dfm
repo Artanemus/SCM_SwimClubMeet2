@@ -3,7 +3,7 @@ object EditSession: TEditSession
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Edit Session ...'
-  ClientHeight = 536
+  ClientHeight = 443
   ClientWidth = 672
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -22,12 +22,11 @@ object EditSession: TEditSession
     Left = 0
     Top = 57
     Width = 672
-    Height = 430
+    Height = 337
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 590
-    ExplicitHeight = 304
+    ExplicitHeight = 430
     object Label1: TLabel
       Left = 8
       Top = 205
@@ -57,11 +56,14 @@ object EditSession: TEditSession
       Top = 140
       Width = 36
       Height = 36
+      Hint = 'Add 15mins to time.'
       ImageIndex = 7
       ImageName = 'plus-box'
       Images = IMG.imglstMiscButtons
+      ParentShowHint = False
       PressedImageIndex = 10
       PressedImageName = 'plus-box_Disabled'
+      ShowHint = True
       OnClick = btnPlusClick
     end
     object spbtnMinus: TSpeedButton
@@ -69,169 +71,80 @@ object EditSession: TEditSession
       Top = 140
       Width = 36
       Height = 36
+      Hint = 'Subtract 15mins from time.'
       ImageIndex = 6
       ImageName = 'minus-box'
       Images = IMG.imglstMiscButtons
+      ParentShowHint = False
       PressedImageIndex = 9
       PressedImageName = 'minus-box_Disabled'
+      ShowHint = True
       OnClick = btnMinusClick
     end
     object lblNominees: TLabel
       Left = 8
-      Top = 360
+      Top = 288
       Width = 78
       Height = 21
       Caption = 'Nominees: '
       Enabled = False
     end
     object lblEntrants: TLabel
-      Left = 164
-      Top = 360
+      Left = 119
+      Top = 288
       Width = 64
       Height = 21
       Caption = 'Entrants: '
       Enabled = False
     end
     object lblEvents: TLabel
-      Left = 297
-      Top = 360
+      Left = 225
+      Top = 288
       Width = 52
       Height = 21
       Caption = 'Events: '
       Enabled = False
     end
     object lblWeek: TLabel
-      Left = 427
-      Top = 360
+      Left = 339
+      Top = 288
       Width = 45
       Height = 21
       Caption = 'Week: '
       Enabled = False
     end
-    object imgFR: TSVGIconImage
-      Left = 8
-      Top = 313
-      Width = 41
-      Height = 32
-      AutoSize = False
-      ImageList = IMG.imglstHeatStrokeEx
-      ImageIndex = 0
-      ImageName = 'StrokeFS'
-    end
-    object imgBK: TSVGIconImage
-      Left = 55
-      Top = 313
-      Width = 41
-      Height = 32
-      AutoSize = False
-      ImageList = IMG.imglstHeatStrokeEx
-      ImageIndex = 1
-      ImageName = 'StrokeBK'
-    end
-    object imgBS: TSVGIconImage
-      Left = 102
-      Top = 313
-      Width = 41
-      Height = 32
-      AutoSize = False
-      ImageList = IMG.imglstHeatStrokeEx
-      ImageIndex = 2
-      ImageName = 'StrokeBS'
-    end
-    object imgBF: TSVGIconImage
-      Left = 149
-      Top = 313
-      Width = 41
-      Height = 32
-      AutoSize = False
-      ImageList = IMG.imglstHeatStrokeEx
-      ImageIndex = 3
-      ImageName = 'StrokeBF'
-    end
-    object imgIM: TSVGIconImage
-      Left = 196
-      Top = 313
-      Width = 41
-      Height = 32
-      AutoSize = False
-      ImageList = IMG.imglstHeatStrokeEx
-      ImageIndex = 4
-      ImageName = 'StrokeIM'
-    end
-    object imRFS: TSVGIconImage
-      Left = 243
-      Top = 313
-      Width = 41
-      Height = 32
-      AutoSize = False
-      ImageList = IMG.imglstHeatStrokeEx
-      ImageIndex = 5
-      ImageName = 'StrokeFSRelay'
-    end
-    object imgRBK: TSVGIconImage
-      Left = 290
-      Top = 313
-      Width = 41
-      Height = 32
-      AutoSize = False
-      ImageList = IMG.imglstHeatStrokeEx
-      ImageIndex = 6
-      ImageName = 'StrokeBKRelay'
-    end
-    object imgRBS: TSVGIconImage
-      Left = 337
-      Top = 313
-      Width = 41
-      Height = 32
-      AutoSize = False
-      ImageList = IMG.imglstHeatStrokeEx
-      ImageIndex = 7
-      ImageName = 'StrokeBRRelay'
-    end
-    object imgRBF: TSVGIconImage
-      Left = 384
-      Top = 313
-      Width = 41
-      Height = 32
-      AutoSize = False
-      ImageList = IMG.imglstHeatStrokeEx
-      ImageIndex = 8
-      ImageName = 'StrokeBFRelay'
-    end
-    object imgRIM: TSVGIconImage
-      Left = 431
-      Top = 313
-      Width = 41
-      Height = 32
-      AutoSize = False
-      ImageList = IMG.imglstHeatStrokeEx
-      ImageIndex = 9
-      ImageName = 'StrokeIMRelay'
-    end
     object DBTextNominees: TDBText
       Left = 92
-      Top = 360
-      Width = 51
+      Top = 288
+      Width = 24
       Height = 17
       DataField = 'NomineeCount'
       DataSource = CORE.dsSession
       Enabled = False
     end
     object DBTextEntrants: TDBText
-      Left = 234
-      Top = 360
-      Width = 51
+      Left = 189
+      Top = 288
+      Width = 30
       Height = 17
       DataField = 'EntrantCount'
       DataSource = CORE.dsSession
       Enabled = False
     end
     object lblEventCount: TLabel
-      Left = 355
-      Top = 360
+      Left = 283
+      Top = 288
       Width = 36
       Height = 21
       Caption = '0000'
+      Enabled = False
+    end
+    object lblWeekCount: TLabel
+      Left = 390
+      Top = 288
+      Width = 27
+      Height = 21
+      Caption = '000'
       Enabled = False
     end
     object btnToday: TButton
@@ -240,10 +153,12 @@ object EditSession: TEditSession
       Top = 47
       Width = 93
       Height = 32
-      Hint = 'Clear the house name.'
+      Hint = 'Assign todays date to session.'
       Caption = 'Today'
       ImageIndex = 4
       ImageName = 'today'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 0
       OnClick = btnTodayClick
     end
@@ -253,10 +168,12 @@ object EditSession: TEditSession
       Top = 47
       Width = 121
       Height = 32
-      Hint = 'Clear the house name.'
+      Hint = 'Calendar style date picker.'
       Caption = 'Date Picker '
       ImageIndex = 1
       ImageName = 'pick-date'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
       OnClick = btnDateClick
     end
@@ -292,10 +209,12 @@ object EditSession: TEditSession
       Top = 143
       Width = 101
       Height = 32
-      Hint = 'Clear the house name.'
+      Hint = 'Assign the current hour.'
       Caption = 'This Hour'
       ImageIndex = 5
       ImageName = 'clock'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 4
       OnClick = btnThisHourClick
     end
@@ -304,25 +223,27 @@ object EditSession: TEditSession
       Top = 232
       Width = 649
       Height = 32
+      Hint = 'Describe what this session is all about.'#13#10'(Used in search mode.)'
       AutoSize = False
       DataField = 'Caption'
       DataSource = CORE.dsSession
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 5
     end
   end
   object Panel2: TPanel
     Left = 0
-    Top = 487
+    Top = 394
     Width = 672
     Height = 49
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 361
-    ExplicitWidth = 590
+    ExplicitTop = 487
     object btnCancel: TButton
-      Left = 213
-      Top = 6
+      Left = 236
+      Top = 5
       Width = 90
       Height = 39
       Cancel = True
@@ -334,8 +255,8 @@ object EditSession: TEditSession
       OnClick = btnCancelClick
     end
     object btnPost: TButton
-      Left = 322
-      Top = 6
+      Left = 345
+      Top = 5
       Width = 90
       Height = 39
       Caption = 'Post'
@@ -357,16 +278,15 @@ object EditSession: TEditSession
     Align = alTop
     BevelEdges = [beBottom]
     BevelKind = bkFlat
-    BevelOuter = bvSpace
+    BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = -6
-    ExplicitWidth = 590
     object lblWeekNumber: TLabel
       Left = 8
       Top = 9
       Width = 105
       Height = 32
       Caption = 'SESSION :'
+      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -24
@@ -383,6 +303,8 @@ object EditSession: TEditSession
       ImageIndex = 11
       ImageName = 'build'
       Images = IMG.imglstMiscButtons
+      ParentShowHint = False
+      ShowHint = True
       OnClick = spbtnAutoDTClick
     end
     object spbtnLockState: TSpeedButton
@@ -394,6 +316,8 @@ object EditSession: TEditSession
       ImageIndex = 14
       ImageName = 'lock-open'
       Images = IMG.imglstMiscButtons
+      ParentShowHint = False
+      ShowHint = True
       OnClick = spbtnLockStateClick
     end
     object spbtnSchedule: TSpeedButton
@@ -405,6 +329,8 @@ object EditSession: TEditSession
       ImageIndex = 12
       ImageName = 'schedule'
       Images = IMG.imglstMiscButtons
+      ParentShowHint = False
+      ShowHint = True
       OnClick = spbtnScheduleClick
     end
     object spbtnSeasonStart: TSpeedButton
@@ -416,6 +342,8 @@ object EditSession: TEditSession
       ImageIndex = 1
       ImageName = 'pick-date'
       Images = IMG.imglstMiscButtons
+      ParentShowHint = False
+      ShowHint = True
       OnClick = spbtnSeasonStartClick
     end
     object lblLongDate: TLabel

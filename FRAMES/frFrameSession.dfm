@@ -37,12 +37,14 @@ object FrameSession: TFrameSession
       Font.Style = []
       Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
       ParentFont = False
+      PopupMenu = pumenuSession
       ScrollBars = ssBoth
       TabOrder = 0
       GridLineColor = 15987699
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
       OnGetCellColor = gSessionGetCellColor
+      OnDblClickCell = gSessionDblClickCell
       HTMLKeepLineBreak = False
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
@@ -540,6 +542,8 @@ object FrameSession: TFrameSession
       Flat = True
       Layout = blGlyphTop
       Margin = 0
+      ParentShowHint = False
+      ShowHint = True
       ExplicitTop = 192
       ExplicitWidth = 89
     end
@@ -554,6 +558,8 @@ object FrameSession: TFrameSession
       Flat = True
       Layout = blGlyphTop
       Margin = 0
+      ParentShowHint = False
+      ShowHint = True
       ExplicitTop = 144
       ExplicitWidth = 89
     end
@@ -568,6 +574,8 @@ object FrameSession: TFrameSession
       Flat = True
       Layout = blGlyphTop
       Margin = 0
+      ParentShowHint = False
+      ShowHint = True
       ExplicitTop = 40
       ExplicitWidth = 89
     end
@@ -582,6 +590,8 @@ object FrameSession: TFrameSession
       Flat = True
       Layout = blGlyphTop
       Margin = 0
+      ParentShowHint = False
+      ShowHint = True
       ExplicitTop = 128
       ExplicitWidth = 89
     end
@@ -596,6 +606,8 @@ object FrameSession: TFrameSession
       Flat = True
       Layout = blGlyphTop
       Margin = 0
+      ParentShowHint = False
+      ShowHint = True
       ExplicitTop = 374
       ExplicitWidth = 89
     end
@@ -611,7 +623,7 @@ object FrameSession: TFrameSession
       Layout = blGlyphTop
       Margin = 0
       ParentShowHint = False
-      ShowHint = False
+      ShowHint = True
       ExplicitLeft = 8
       ExplicitTop = 1
       ExplicitWidth = 48
@@ -627,6 +639,8 @@ object FrameSession: TFrameSession
       Flat = True
       Layout = blGlyphTop
       Margin = 0
+      ParentShowHint = False
+      ShowHint = True
       ExplicitLeft = -3
       ExplicitTop = 154
     end
@@ -637,6 +651,7 @@ object FrameSession: TFrameSession
     Top = 56
     object actnSessFr_Visible: TAction
       Category = 'Session_Frame'
+      Caption = 'Toggle Visibility'
       Hint = 'Toggle the visibility of locked sessions.'
       ImageIndex = 1
       ImageName = 'visible_on'
@@ -645,6 +660,7 @@ object FrameSession: TFrameSession
     end
     object actnSessFr_Lock: TAction
       Category = 'Session_Frame'
+      Caption = 'Lock/Unlock'
       Hint = 'Toggle the lock state of a session.'
       ImageIndex = 7
       ImageName = 'lock-open-2'
@@ -653,6 +669,7 @@ object FrameSession: TFrameSession
     end
     object actnSessFr_Edit: TAction
       Category = 'Session_Frame'
+      Caption = 'Edit Session'
       Hint = 'Edit the current selected session.'
       ImageIndex = 8
       ImageName = 'edit'
@@ -661,6 +678,7 @@ object FrameSession: TFrameSession
     end
     object actnSessFr_New: TAction
       Category = 'Session_Frame'
+      Caption = 'New Session'
       Hint = 'Create a new session.'
       ImageIndex = 3
       ImageName = 'new'
@@ -669,6 +687,7 @@ object FrameSession: TFrameSession
     end
     object actnSessFr_Clone: TAction
       Category = 'Session_Frame'
+      Caption = 'Clone Session'
       Hint = 'Duplicate the selected session.'
       ImageIndex = 11
       ImageName = 'clone'
@@ -676,6 +695,7 @@ object FrameSession: TFrameSession
     end
     object actnSessFr_Delete: TAction
       Category = 'Session_Frame'
+      Caption = 'Delete Session'
       Hint = 'Delete the selected session.'
       ImageIndex = 4
       ImageName = 'delete'
@@ -684,10 +704,43 @@ object FrameSession: TFrameSession
     end
     object actnSessFr_Report: TAction
       Category = 'Session_Frame'
+      Caption = 'Session Report'
       Hint = 'Create a Session report.'
       ImageIndex = 5
       ImageName = 'report'
       OnUpdate = actnSessFr_DefaultUpdate
+    end
+  end
+  object pumenuSession: TPopupMenu
+    Images = IMG.imglstSessPopupMenu
+    Left = 208
+    Top = 336
+    object pumToggleVisibility: TMenuItem
+      Action = actnSessFr_Visible
+    end
+    object LockUnlock1: TMenuItem
+      Action = actnSessFr_Lock
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object EditSession1: TMenuItem
+      Action = actnSessFr_Edit
+    end
+    object NewSession1: TMenuItem
+      Action = actnSessFr_New
+    end
+    object CloneSession1: TMenuItem
+      Action = actnSessFr_Clone
+    end
+    object DeleteSession1: TMenuItem
+      Action = actnSessFr_Delete
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object SessionReport1: TMenuItem
+      Action = actnSessFr_Report
     end
   end
 end

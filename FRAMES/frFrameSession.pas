@@ -16,7 +16,7 @@ uses
 
   AdvUtil, AdvObj, AdvGrid, DBAdvGrid,
 
-  dmSCM2, dmIMG, dmCORE, uSettings, uSession, uDefines;
+  dmSCM2, dmIMG, dmCORE, uSettings, uSession, uDefines, Vcl.Menus;
 
 type
   TFrameSession = class(TFrame)
@@ -40,6 +40,16 @@ type
     actnSessFr_Report: TAction;
     pnlCntrl: TPanel;
     spbtnEdit: TSpeedButton;
+    pumenuSession: TPopupMenu;
+    pumToggleVisibility: TMenuItem;
+    LockUnlock1: TMenuItem;
+    EditSession1: TMenuItem;
+    NewSession1: TMenuItem;
+    SessionReport1: TMenuItem;
+    N1: TMenuItem;
+    N2: TMenuItem;
+    CloneSession1: TMenuItem;
+    DeleteSession1: TMenuItem;
     procedure actnSessFr_DeleteExecute(Sender: TObject);
     procedure actnSessFr_EditExecute(Sender: TObject);
     procedure actnSessFr_VisibleExecute(Sender: TObject);
@@ -48,6 +58,7 @@ type
     procedure actnSessFr_LockExecute(Sender: TObject);
     procedure actnSessFr_NewExecute(Sender: TObject);
     procedure actnSessFr_NewUpdate(Sender: TObject);
+    procedure gSessionDblClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure gSessionGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
     procedure gSessionGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
@@ -180,7 +191,8 @@ end;
 
 procedure TFrameSession.actnSessFr_NewExecute(Sender: TObject);
 begin
-  // open the session DLG editing INSERT MODE.
+  gSession.PageMode := true;
+
 end;
 
 procedure TFrameSession.actnSessFr_NewUpdate(Sender: TObject);
@@ -192,24 +204,38 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
+procedure TFrameSession.gSessionDblClickCell(Sender: TObject; ARow, ACol:
+    Integer);
+begin
+  // edit the session....
+  if (ARow >= gSession.FixedRows) and (ACol = 1)then
+    actnSessFr_Edit.Execute;
+end;
+
 procedure TFrameSession.gSessionGetCellColor(Sender: TObject; ARow, ACol:
     Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
 begin
-  //gSession.FontColors[Acol, ARow]; // clWhite;  //
 
   if (ARow >= gSession.FixedRows) then   // (ARow >= gSession.FixedCols)
   begin
-//    if (gdFocused in AState) then
-//      AFont.Color := clWebGoldenRod
-//    else
-//    begin
-
-      if (gSession.Cells[2, ARow] = '2') then
-          AFont.Color := gSession.DisabledFontColor
-      else AFont.Color :=  $00FFE4D8;
-
-//    end;
+    if (gSession.Cells[2, ARow] = '2') then
+      AFont.Color := gSession.DisabledFontColor
+    else
+      AFont.Color :=  $00FFE4D8;
   end;
+
+  { C E L L   C O L O R S  .
+    if StyleElements seFont = false then grids selection color param
+    is activated ..
+          eg. gSession.SelectionTextColor := clWebGoldenRod;
+
+    OR DISABLE the grids selectionn text color ..
+          eg. gSession.UseSelectionTextColor := false;
+
+    AND then assign in this procedure...
+
+    if (gdSelected in AState) then AFont.Color := ???
+  }
 end;
 
 procedure TFrameSession.gSessionGetHTMLTemplate(Sender: TObject; ACol, ARow:
@@ -269,25 +295,40 @@ var
   HideLockedSessions: boolean;
 begin
   HideLockedSessions := false;
-  if Assigned(Settings) then
-    HideLockedSessions := Settings.HideLockedSessions;
 
-  if (HideLockedSessions) then
+  if SCM2.scmConnection.Connected and CORE.IsActive then
   begin
-    actnSessFr_Visible.Checked := true; // hide locked sessions.
-    SetVisibilityIcons;
+    if CORE.qrySession.IsEmpty then
+    begin
+      // setting pagemode to false clears gSession of text. (it appears empty)
+      gSession.PageMode := false;
+      exit;
+    end
+    else
+    begin
+      // Set pagemode to the default 'editable' fetch records mode.
+      gSession.PageMode := true;
+
+      if Assigned(Settings) then
+        HideLockedSessions := Settings.HideLockedSessions;
+
+      // progrmmatically set state of check.
+      if (HideLockedSessions) then
+        actnSessFr_Visible.Checked := true  // hide locked.
+      else
+        actnSessFr_Visible.Checked := false;  // Show all .
+
+      SetVisibilityIcons; // uses actnSessFr_Visible.Checked state.
+
+      gSession.BeginUpdate;
+      // true - indxShowAll , false indxHideLocked. (NOTE: INVERTED LOGIC)
+      uSession.SetVisibilityOfLocked(not actnSessFr_Visible.Checked);
+      gSession.EndUpdate;
+    end;
   end
   else
-  begin
-    actnSessFr_Visible.Checked := false;  // Show all .
-    SetVisibilityIcons;
-  end;
-
-  gSession.BeginUpdate;
-  // true - indxShowAll , false indxHideLocked. (INVERTED LOGIC)
-  uSession.SetVisibilityOfLocked(not actnSessFr_Visible.Checked);
-  gSession.EndUpdate;
-
+    gSession.PageMode := false;
+//
 end;
 
 procedure TFrameSession.Msg_SCM_Scroll_Session(var Msg: TMessage);

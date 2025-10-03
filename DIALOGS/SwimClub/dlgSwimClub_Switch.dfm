@@ -2,9 +2,9 @@ object SwimClubSwitch: TSwimClubSwitch
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Switch to another swimming club ...'
+  Caption = 'Switch to another swimming club ... (RTN or LMB-DBLClick)'
   ClientHeight = 517
-  ClientWidth = 433
+  ClientWidth = 505
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -2682,16 +2682,16 @@ object SwimClubSwitch: TSwimClubSwitch
     AlignWithMargins = True
     Left = 3
     Top = 3
-    Width = 427
-    Height = 470
+    Width = 499
+    Height = 511
     Cursor = crDefault
     Align = alClient
     Color = clWhite
-    ColCount = 3
+    ColCount = 4
     DefaultRowHeight = 50
     DrawingStyle = gdsClassic
     FixedColor = clWhite
-    RowCount = 2
+    RowCount = 3
     FixedRows = 1
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
@@ -2702,6 +2702,7 @@ object SwimClubSwitch: TSwimClubSwitch
     ParentFont = False
     ScrollBars = ssBoth
     TabOrder = 0
+    OnDblClick = gSwitchSwimClubDblClick
     GridLineColor = 15987699
     GridFixedLineColor = 15987699
     HoverRowCells = [hcNormal, hcSelected]
@@ -2898,6 +2899,34 @@ object SwimClubSwitch: TSwimClubSwitch
         PrintFont.Name = 'Segoe UI'
         PrintFont.Style = []
         Width = 350
+      end
+      item
+        Borders = []
+        BorderPen.Color = clSilver
+        ButtonHeight = 18
+        CheckFalse = 'N'
+        CheckTrue = 'Y'
+        Color = clWhite
+        DataImageField = True
+        FieldName = 'imgIndGroup'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        HeaderFont.Charset = DEFAULT_CHARSET
+        HeaderFont.Color = clBlack
+        HeaderFont.Height = -16
+        HeaderFont.Name = 'Segoe UI'
+        HeaderFont.Style = []
+        Images = IMG.imglstSwimClubGroup
+        PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+        PrintFont.Charset = DEFAULT_CHARSET
+        PrintFont.Color = clBlack
+        PrintFont.Height = -16
+        PrintFont.Name = 'Segoe UI'
+        PrintFont.Style = []
+        Width = 64
       end>
     DataSource = CORE.dsSwimClub
     InvalidPicture.Data = {
@@ -3038,32 +3067,16 @@ object SwimClubSwitch: TSwimClubSwitch
       FFC003FF}
     ShowPictureFields = True
     ShowUnicode = False
+    ExplicitWidth = 530
+    ExplicitHeight = 470
     ColWidths = (
       20
       50
-      350)
+      350
+      64)
     RowHeights = (
       0
+      50
       50)
-  end
-  object pnlFooter: TPanel
-    Left = 0
-    Top = 476
-    Width = 433
-    Height = 41
-    Align = alBottom
-    BevelEdges = [beTop]
-    BevelKind = bkFlat
-    BevelOuter = bvNone
-    TabOrder = 1
-    object btnOk: TButton
-      Left = 179
-      Top = 6
-      Width = 75
-      Height = 33
-      Caption = 'Close'
-      TabOrder = 0
-      OnClick = btnOkClick
-    end
   end
 end

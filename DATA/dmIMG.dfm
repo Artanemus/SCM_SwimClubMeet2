@@ -1582,7 +1582,7 @@ object IMG: TIMG
           '6 9-6.45 9-12V5z"/></svg>'
       end
       item
-        IconName = 'timer'
+        IconName = 'stopwatch'
         SVGText = 
           '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
           ' viewBox="0 0 24 24"><path fill="currentColor" d="M15 1H9v2h6zm-' +
@@ -1614,27 +1614,49 @@ object IMG: TIMG
           '588T20 4v16q0 .825-.587 1.413T18 22M6 20V4zm0-4v-2z"/></svg>'
       end
       item
-        IconName = 'lock'
+        IconName = 'cog'
         SVGText = 
           '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" d="M18 8h-1V6c0-2' +
-          '.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h1' +
-          '2c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2M9 6c0-1.66 1.34-3 3-3s3 1.34 ' +
-          '3 3v2H9zm9 14H6V10h12zm-6-3c1.1 0 2-.9 2-2s-.9-2-2-2s-2 .9-2 2s.' +
-          '9 2 2 2"/></svg>'
+          ' viewBox="0 0 24 24">'#13#10'  <path fill="currentColor" d="M20 12c0-.' +
+          '568-.061-1.122-.174-1.656l1.834-1.612l-2-3.464l-2.322.786a8 8 0 ' +
+          '0 0-2.859-1.657L14 2h-4l-.479 2.396a8 8 0 0 0-2.859 1.657L4.34 5' +
+          '.268l-2 3.464l1.834 1.612a8 8 0 0 0 0 3.312L2.34 15.268l2 3.464l' +
+          '2.322-.786a8 8 0 0 0 2.859 1.657L10 22h4l.479-2.396a8 8 0 0 0 2.' +
+          '859-1.657l2.322.786l2-3.464l-1.834-1.612A8 8 0 0 0 20 12m-8 4a4 ' +
+          '4 0 1 1 0-8a4 4 0 0 1 0 8"/>'#13#10'</svg>'#13#10
       end
       item
-        IconName = 'lock-open'
         SVGText = 
-          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" d="M12 17c1.1 0 2' +
-          '-.9 2-2s-.9-2-2-2s-2 .9-2 2s.9 2 2 2m6-9h-1V6c0-2.76-2.24-5-5-5S' +
-          '7 3.24 7 6h1.9c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2H6c-1.1' +
-          ' 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2' +
-          'm0 12H6V10h12z"/></svg>'
+          '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'#13#10'<svg'#13#10'  ' +
+          ' height="48"'#13#10'   width="48"'#13#10'   version="1.1"'#13#10'   id="svg4"'#13#10'   ' +
+          'sodipodi:docname="EmptyFrame.svg"'#13#10'   xml:space="preserve"'#13#10'   i' +
+          'nkscape:version="1.4 (86a8ad7, 2024-10-11)"'#13#10'   inkscape:export-' +
+          'batch-path="Export"'#13#10'   inkscape:export-batch-name="TabSheetHeat' +
+          'sImages"'#13#10'   xmlns:inkscape="http://www.inkscape.org/namespaces/' +
+          'inkscape"'#13#10'   xmlns:sodipodi="http://sodipodi.sourceforge.net/DT' +
+          'D/sodipodi-0.dtd"'#13#10'   xmlns="http://www.w3.org/2000/svg"'#13#10'   xml' +
+          'ns:svg="http://www.w3.org/2000/svg"><defs'#13#10'     id="defs8" /><so' +
+          'dipodi:namedview'#13#10'     id="namedview6"'#13#10'     pagecolor="#ffffff"' +
+          #13#10'     bordercolor="#666666"'#13#10'     borderopacity="1.0"'#13#10'     ink' +
+          'scape:showpageshadow="2"'#13#10'     inkscape:pageopacity="0.0"'#13#10'     ' +
+          'inkscape:pagecheckerboard="0"'#13#10'     inkscape:deskcolor="#d1d1d1"' +
+          #13#10'     showgrid="false"'#13#10'     inkscape:zoom="22.627417"'#13#10'     in' +
+          'kscape:cx="27.378291"'#13#10'     inkscape:cy="27.577165"'#13#10'     inksca' +
+          'pe:window-width="2560"'#13#10'     inkscape:window-height="1377"'#13#10'    ' +
+          ' inkscape:window-x="-8"'#13#10'     inkscape:window-y="-8"'#13#10'     inksc' +
+          'ape:window-maximized="1"'#13#10'     inkscape:current-layer="svg4"'#13#10'  ' +
+          '   showguides="true"><inkscape:page'#13#10'       x="0"'#13#10'       y="0"'#13 +
+          #10'       width="48"'#13#10'       height="48"'#13#10'       id="page535"'#13#10'   ' +
+          '    inkscape:label="EmptyFrame"'#13#10'       inkscape:export-filename' +
+          '="..\HeatNavigator\EmptyFrame.png"'#13#10'       inkscape:export-xdpi=' +
+          '"96"'#13#10'       inkscape:export-ydpi="96"'#13#10'       margin="0"'#13#10'     ' +
+          '  bleed="0" /></sodipodi:namedview><circle'#13#10'     style="opacity:' +
+          '1;fill:#ff7f2a;fill-opacity:1;stroke:none;stroke-width:1.0214;st' +
+          'roke-linecap:round"'#13#10'     id="path1"'#13#10'     cx="2.3113837"'#13#10'     ' +
+          'cy="45.925831"'#13#10'     r="0.86167479" /></svg>'#13#10
       end
       item
-        IconName = 'lock-2'
+        IconName = 'lock2'
         SVGText = 
           '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'#10'<svg'#10'   w' +
           'idth="24"'#10'   height="24"'#10'   viewBox="0 0 24 24"'#10'   version="1.1"' +
@@ -1702,7 +1724,7 @@ object IMG: TIMG
           '"'#10'       inkscape:label="pathRotate" /></g></svg>'#10
       end
       item
-        IconName = 'lock-open-2'
+        IconName = 'lock2-open'
         SVGText = 
           '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'#10'<svg'#10'   w' +
           'idth="24"'#10'   height="24"'#10'   viewBox="0 0 24 24"'#10'   version="1.1"' +
@@ -13555,12 +13577,12 @@ object IMG: TIMG
       item
         CollectionIndex = 39
         CollectionName = 'lock-2'
-        Name = 'lock-2'
+        Name = 'lock2'
       end
       item
         CollectionIndex = 40
         CollectionName = 'lock-open-2'
-        Name = 'lock-open-2'
+        Name = 'lock2-open'
       end
       item
         CollectionIndex = 48
@@ -14143,73 +14165,6 @@ object IMG: TIMG
     Left = 40
     Top = 368
   end
-  object CollectionMenuBar: TSVGIconImageCollection
-    SVGIconItems = <
-      item
-        IconName = 'search'
-        SVGText = 
-          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" d="M9.5 3A6.5 6.5' +
-          ' 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5l-1.5 1.5l' +
-          '-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16A6.5 6.5 0 0 1 3 9.5A6.' +
-          '5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14S14 12 14 9.5S12 ' +
-          '5 9.5 5"/></svg>'
-      end
-      item
-        IconName = 'refresh'
-        SVGText = 
-          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" d="M12 6v3l4-4l-4' +
-          '-4v3c-4.42 0-8 3.58-8 8c0 1.57.46 3.03 1.24 4.26L6.7 14.8A5.9 5.' +
-          '9 0 0 1 6 12c0-3.31 2.69-6 6-6m6.76 1.74L17.3 9.2c.44.84.7 1.79.' +
-          '7 2.8c0 3.31-2.69 6-6 6v-3l-4 4l4 4v-3c4.42 0 8-3.58 8-8c0-1.57-' +
-          '.46-3.03-1.24-4.26"/></svg>'
-      end
-      item
-        IconName = 'members'
-        SVGText = 
-          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenod' +
-          'd" d="M16.67 13.13C18.04 14.06 19 15.32 19 17v3h4v-3c0-2.18-3.57' +
-          '-3.47-6.33-3.87"/><circle cx="9" cy="8" r="4" fill="currentColor' +
-          '" fill-rule="evenodd"/><path fill="currentColor" fill-rule="even' +
-          'odd" d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4c-.47 0-.91.1-1.33.2' +
-          '4a5.98 5.98 0 0 1 0 7.52c.42.14.86.24 1.33.24m-6 1c-2.67 0-8 1.3' +
-          '4-8 4v3h16v-3c0-2.66-5.33-4-8-4"/></svg>'
-      end
-      item
-        IconName = 'marshall'
-        SVGText = 
-          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" d="m14.5 12.59l.9' +
-          ' 3.88l-3.4-2.05l-3.4 2.05l.9-3.87l-3-2.59l3.96-.34L12 6.02l1.54 ' +
-          '3.64l3.96.34zM12 3.19l7 3.11V11c0 4.52-2.98 8.69-7 9.93c-4.02-1.' +
-          '24-7-5.41-7-9.93V6.3zM12 1L3 5v6c0 5.55 3.84 10.74 9 12c5.16-1.2' +
-          '6 9-6.45 9-12V5z"/></svg>'
-      end
-      item
-        IconName = 'print'
-        SVGText = 
-          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" d="M19 8h-1V3H6v5' +
-          'H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3M8 5h8v3' +
-          'H8zm8 12v2H8v-4h8zm2-2v-2H6v2H4v-4c0-.55.45-1 1-1h14c.55 0 1 .45' +
-          ' 1 1v4z"/><circle cx="18" cy="11.5" r="1" fill="currentColor"/><' +
-          '/svg>'
-      end
-      item
-        IconName = 'timer'
-        SVGText = 
-          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" d="M15 1H9v2h6zm-' +
-          '4 13h2V8h-2zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42' +
-          ' 1.42A8.96 8.96 0 0 0 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9a8.994 8' +
-          '.994 0 0 0 7.03-14.61M12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7s7 3.13' +
-          ' 7 7s-3.13 7-7 7"/></svg>'
-      end>
-    Left = 152
-    Top = 368
-  end
   object imglstSwimClubCntrl: TSVGIconVirtualImageList
     Images = <
       item
@@ -14423,5 +14378,198 @@ object IMG: TIMG
     Size = 24
     Left = 472
     Top = 232
+  end
+  object imglstStatusPanel: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 73
+        CollectionName = 'user'
+        Name = 'user'
+      end
+      item
+        CollectionIndex = 74
+        CollectionName = 'user-check'
+        Name = 'user-check'
+      end
+      item
+        CollectionIndex = 46
+        CollectionName = 'award-sash'
+        Name = 'award-sash'
+      end>
+    ImageCollection = CollectionCore
+    Width = 24
+    Height = 24
+    Size = 24
+    Left = 1072
+    Top = 80
+  end
+  object imglstMenuBar: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 0
+        CollectionName = 'EmptyFrame'
+        Name = 'empty'
+      end
+      item
+        CollectionIndex = 21
+        CollectionName = 'grid-on'
+        Name = 'grid-on'
+      end
+      item
+        CollectionIndex = 22
+        CollectionName = 'grid-off'
+        Name = 'grid-off'
+      end
+      item
+        CollectionIndex = 23
+        CollectionName = 'visible_on'
+        Name = 'locked-show'
+      end
+      item
+        CollectionIndex = 24
+        CollectionName = 'visible_off'
+        Name = 'locked-hide'
+      end
+      item
+        CollectionIndex = 25
+        CollectionName = 'refresh'
+        Name = 'refresh'
+      end
+      item
+        CollectionIndex = 26
+        CollectionName = 'up'
+        Name = 'up'
+      end
+      item
+        CollectionIndex = 27
+        CollectionName = 'down'
+        Name = 'down'
+      end
+      item
+        CollectionIndex = 29
+        CollectionName = 'new'
+        Name = 'new'
+      end
+      item
+        CollectionIndex = 30
+        CollectionName = 'delete'
+        Name = 'delete'
+      end
+      item
+        CollectionIndex = 31
+        CollectionName = 'delete-forever'
+        Name = 'delete-forever'
+      end
+      item
+        CollectionIndex = 32
+        CollectionName = 'build'
+        Name = 'tool'
+      end
+      item
+        CollectionIndex = 33
+        CollectionName = 'marshall'
+        Name = 'marshall'
+      end
+      item
+        CollectionIndex = 34
+        CollectionName = 'stopwatch'
+        Name = 'time-keeper'
+      end
+      item
+        CollectionIndex = 35
+        CollectionName = 'print'
+        Name = 'print'
+      end
+      item
+        CollectionIndex = 36
+        CollectionName = 'report'
+        Name = 'report'
+      end
+      item
+        CollectionIndex = 39
+        CollectionName = 'lock2'
+        Name = 'lock2'
+      end
+      item
+        CollectionIndex = 40
+        CollectionName = 'lock2-open'
+        Name = 'lock2-open'
+      end
+      item
+        CollectionIndex = 41
+        CollectionName = 'switch'
+        Name = 'switch'
+      end
+      item
+        CollectionIndex = 42
+        CollectionName = 'swap'
+        Name = 'swap'
+      end
+      item
+        CollectionIndex = 48
+        CollectionName = 'edit'
+        Name = 'edit'
+      end
+      item
+        CollectionIndex = 49
+        CollectionName = 'in'
+        Name = 'in'
+      end
+      item
+        CollectionIndex = 50
+        CollectionName = 'out'
+        Name = 'out'
+      end
+      item
+        CollectionIndex = 51
+        CollectionName = 'clone'
+        Name = 'clone'
+      end
+      item
+        CollectionIndex = 52
+        CollectionName = 'sort'
+        Name = 'sort'
+      end
+      item
+        CollectionIndex = 75
+        CollectionName = 'Data-Connect'
+        Name = 'Data-Connect'
+      end
+      item
+        CollectionIndex = 85
+        CollectionName = 'group'
+        Name = 'group'
+      end
+      item
+        CollectionIndex = 88
+        CollectionName = 'houses'
+        Name = 'houses'
+      end
+      item
+        CollectionIndex = 90
+        CollectionName = 'query-stats'
+        Name = 'query-stats'
+      end
+      item
+        CollectionIndex = 91
+        CollectionName = 'info'
+        Name = 'info'
+      end
+      item
+        CollectionIndex = 92
+        CollectionName = 'help'
+        Name = 'help'
+      end
+      item
+        CollectionIndex = 37
+        CollectionName = 'cog'
+        Name = 'cog'
+      end>
+    ImageCollection = CollectionCore
+    Width = 32
+    Height = 32
+    Size = 32
+    Left = 192
+    Top = 376
   end
 end

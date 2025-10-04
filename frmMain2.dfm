@@ -2796,11 +2796,13 @@ object Main2: TMain2
         Width = 148
       end
       item
-        Text = ' NOM: 000'
+        Style = psOwnerDraw
+        Text = '000'
         Width = 90
       end
       item
-        Text = ' ENT: 000'
+        Style = psOwnerDraw
+        Text = '000'
         Width = 90
       end
       item
@@ -2809,6 +2811,7 @@ object Main2: TMain2
       end>
     SimpleText = 'Information and stats will appear here...'
     UseSystemFont = False
+    OnDrawPanel = StatusBarDrawPanel
   end
   object PageControl: TPageControl
     AlignWithMargins = True
@@ -2856,27 +2859,6 @@ object Main2: TMain2
           inherited pnlCntrl: TPanel
             Height = 615
             ExplicitHeight = 615
-            inherited spbtnSessClone: TSpeedButton
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessDelete: TSpeedButton
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessLock: TSpeedButton
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessNew: TSpeedButton
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessReport: TSpeedButton
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessVisible: TSpeedButton
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnEdit: TSpeedButton
-              Glyph.Data = {00000000}
-            end
           end
         end
       end
@@ -2899,41 +2881,41 @@ object Main2: TMain2
               item
                 Action = Session_ToggleVisible
                 Caption = '&Toggle visibility.'
-                ImageIndex = 23
-                ImageName = 'VisibilityOn'
+                ImageIndex = 3
+                ImageName = 'locked-show'
               end
               item
                 Action = Session_ToggleLock
                 Caption = '&Lock/Unlock'
-                ImageIndex = 21
-                ImageName = 'Lock'
+                ImageIndex = 16
+                ImageName = 'lock2'
                 ShortCut = 16460
               end
               item
                 Action = Session_New
                 Caption = '&New Session...'
-                ImageIndex = 20
-                ImageName = 'New'
+                ImageIndex = 8
+                ImageName = 'new'
                 ShortCut = 16429
               end
               item
                 Action = Session_Edit
                 Caption = '&Edit Session ...'
-                ImageIndex = 45
-                ImageName = 'Edit'
+                ImageIndex = 20
+                ImageName = 'edit'
               end
               item
                 Action = Session_Delete
                 Caption = '&Delete Session...'
-                ImageIndex = 19
-                ImageName = 'Delete'
+                ImageIndex = 9
+                ImageName = 'delete'
                 ShortCut = 16430
               end
               item
                 Action = Session_Report
                 Caption = '&Session Report*'
-                ImageIndex = 17
-                ImageName = 'Report'
+                ImageIndex = 15
+                ImageName = 'report'
               end
               item
                 Caption = '-'
@@ -2941,26 +2923,26 @@ object Main2: TMain2
               item
                 Action = Session_Export
                 Caption = 'E&xport Session...'
-                ImageIndex = 46
-                ImageName = 'Export'
+                ImageIndex = 22
+                ImageName = 'out'
               end
               item
                 Action = Session_Import
                 Caption = '&Import Session...'
-                ImageIndex = 39
-                ImageName = 'import'
+                ImageIndex = 21
+                ImageName = 'in'
               end
               item
                 Action = Session_Clone
                 Caption = '&Clone Session...'
-                ImageIndex = 44
+                ImageIndex = 23
                 ImageName = 'clone'
               end
               item
                 Action = Session_Sort
                 Caption = 'S&ort'
-                ImageIndex = 8
-                ImageName = 'Sync'
+                ImageIndex = 24
+                ImageName = 'sort'
               end>
             Caption = '&Session'
           end
@@ -3413,41 +3395,41 @@ object Main2: TMain2
               item
                 Action = Session_ToggleVisible
                 Caption = '&Toggle visibility.'
-                ImageIndex = 23
-                ImageName = 'VisibilityOn'
+                ImageIndex = 3
+                ImageName = 'locked-show'
               end
               item
                 Action = Session_ToggleLock
                 Caption = '&Lock/Unlock'
-                ImageIndex = 21
-                ImageName = 'Lock'
+                ImageIndex = 16
+                ImageName = 'lock2'
                 ShortCut = 16460
               end
               item
                 Action = Session_New
                 Caption = '&New Session...'
-                ImageIndex = 20
-                ImageName = 'New'
+                ImageIndex = 8
+                ImageName = 'new'
                 ShortCut = 16429
               end
               item
                 Action = Session_Edit
                 Caption = '&Edit Session ...'
-                ImageIndex = 45
-                ImageName = 'Edit'
+                ImageIndex = 20
+                ImageName = 'edit'
               end
               item
                 Action = Session_Delete
                 Caption = '&Delete Session...'
-                ImageIndex = 19
-                ImageName = 'Delete'
+                ImageIndex = 9
+                ImageName = 'delete'
                 ShortCut = 16430
               end
               item
                 Action = Session_Report
                 Caption = '&Session Report*'
-                ImageIndex = 17
-                ImageName = 'Report'
+                ImageIndex = 15
+                ImageName = 'report'
               end
               item
                 Caption = '-'
@@ -3455,26 +3437,26 @@ object Main2: TMain2
               item
                 Action = Session_Export
                 Caption = 'E&xport Session...'
-                ImageIndex = 46
-                ImageName = 'Export'
+                ImageIndex = 22
+                ImageName = 'out'
               end
               item
                 Action = Session_Import
                 Caption = '&Import Session...'
-                ImageIndex = 39
-                ImageName = 'import'
+                ImageIndex = 21
+                ImageName = 'in'
               end
               item
                 Action = Session_Clone
                 Caption = '&Clone Session...'
-                ImageIndex = 44
+                ImageIndex = 23
                 ImageName = 'clone'
               end
               item
                 Action = Session_Sort
                 Caption = 'S&ort'
-                ImageIndex = 8
-                ImageName = 'Sync'
+                ImageIndex = 24
+                ImageName = 'sort'
               end>
             Caption = 'S&ession'
           end
@@ -3878,7 +3860,7 @@ object Main2: TMain2
         ActionList = frgSession.actnlstSession
         Caption = 'actnlstSession'
       end>
-    Images = IMG.imglstPNGMenuBar
+    Images = IMG.imglstMenuBar
     Left = 552
     Top = 136
     StyleName = 'Platform Default'
@@ -3907,52 +3889,52 @@ object Main2: TMain2
       Caption = 'Toggle visibility.'
       GroupIndex = 1
       Hint = 'Show, hide the visibility of locked sessions.'
-      ImageIndex = 23
-      ImageName = 'VisibilityOn'
+      ImageIndex = 3
+      ImageName = 'locked-show'
     end
     object Session_ToggleLock: TAction
       Category = 'Session'
       Caption = 'Lock/Unlock'
       Hint = 'Toggle the session status.'
-      ImageIndex = 21
-      ImageName = 'Lock'
+      ImageIndex = 16
+      ImageName = 'lock2'
       ShortCut = 16460
     end
     object Session_New: TAction
       Category = 'Session'
       Caption = 'New Session...'
       Hint = 'Create a new session.'
-      ImageIndex = 20
-      ImageName = 'New'
+      ImageIndex = 8
+      ImageName = 'new'
       ShortCut = 16429
     end
     object Session_Edit: TAction
       Category = 'Session'
       Caption = 'Edit Session ...'
-      ImageIndex = 45
-      ImageName = 'Edit'
+      ImageIndex = 20
+      ImageName = 'edit'
     end
     object Session_Delete: TAction
       Category = 'Session'
       Caption = 'Delete Session...'
       Hint = 'Delete the current selected session.'
-      ImageIndex = 19
-      ImageName = 'Delete'
+      ImageIndex = 9
+      ImageName = 'delete'
       ShortCut = 16430
     end
     object Session_Report: TAction
       Category = 'Session'
       Caption = 'Session Report*'
       Hint = 'Display the session report.'
-      ImageIndex = 17
-      ImageName = 'Report'
+      ImageIndex = 15
+      ImageName = 'report'
     end
     object Session_Export: TAction
       Category = 'Session'
       Caption = 'Export Session...'
       Enabled = False
-      ImageIndex = 46
-      ImageName = 'Export'
+      ImageIndex = 22
+      ImageName = 'out'
     end
     object Nominate_SortMembers: TAction
       Category = 'Nominate'
@@ -4238,20 +4220,20 @@ object Main2: TMain2
       Category = 'Session'
       Caption = 'Import Session...'
       Enabled = False
-      ImageIndex = 39
-      ImageName = 'import'
+      ImageIndex = 21
+      ImageName = 'in'
     end
     object Session_Clone: TAction
       Category = 'Session'
       Caption = 'Clone Session...'
-      ImageIndex = 44
+      ImageIndex = 23
       ImageName = 'clone'
     end
     object Session_Sort: TAction
       Category = 'Session'
       Caption = 'Sort'
-      ImageIndex = 8
-      ImageName = 'Sync'
+      ImageIndex = 24
+      ImageName = 'sort'
     end
     object Tools_Score: TAction
       Category = 'Tools'

@@ -46,7 +46,7 @@ function PK(): integer; // NO CHECKS. RTNS: Primary key.
 function Assert: Boolean;
 function IsLocked: Boolean;
 function HasClosedOrRacedHeats: Boolean;
-procedure SetVisibilityOfLocked(IsVisible: Boolean);
+procedure SetIndexName(IsLocked: Boolean);
 procedure SetSessionStatusID(const aSessionStatusID: Integer);
 procedure DetailTBLs_DisableCNTRLs;
 procedure DetailTBLs_ApplyMaster;
@@ -347,8 +347,8 @@ begin
   end;
 end;
 
-procedure SetVisibilityOfLocked(IsVisible: Boolean);
-/// <param name="IsVisible">
+procedure SetIndexName(IsLocked: Boolean);
+/// <param name="IsLocked">
 ///  true: show both locked and unlocked sessions.
 ///  false: hides locked sessions.
 /// </param>
@@ -357,10 +357,11 @@ begin
   CORE.qrySession.DisableControls;
   try
     try
-      if IsVisible then
-        CORE.qrySession.IndexName := 'indxShowAll'
+      if IsLocked then
+        CORE.qrySession.IndexName := 'indxHideLocked'
       else
-        CORE.qrySession.IndexName := 'indxHideLocked';
+        CORE.qrySession.IndexName := 'indxShowAll';
+
       if not CORE.qrySession.IndexesActive then
         CORE.qrySession.IndexesActive := true;
     except on E: Exception do

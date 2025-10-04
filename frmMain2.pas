@@ -15,7 +15,7 @@ uses
   Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan, Vcl.ToolWin, Vcl.ActnCtrls,
   Vcl.ActnMenus, Vcl.BaseImageCollection,
   Vcl.ImageCollection,  Vcl.ImgList, Vcl.VirtualImageList,
-  Vcl.Grids, Vcl.DBGrids,
+  Vcl.Grids, Vcl.DBGrids, Vcl.Themes,
 
   Data.DB,
 
@@ -130,6 +130,8 @@ type
     procedure pnlTitleBarCustomButtons1Click(Sender: TObject);
     procedure pnlTitleBarCustomButtons1Paint(Sender: TObject);
     procedure pnlTitleBarPaint(Sender: TObject; Canvas: TCanvas; var ARect: TRect);
+    procedure StatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const
+        Rect: TRect);
     procedure SwimClub_ManageExecute(Sender: TObject);
     procedure SwimClub_SwitchExecute(Sender: TObject);
   private
@@ -151,7 +153,7 @@ implementation
 {$R *.dfm}
 
 uses
-  dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin;
+  dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession;
 
 procedure TMain2.DetailTBLs_ApplyMaster;
 begin
@@ -233,11 +235,9 @@ begin
       then
     begin
       if Assigned(Settings) and (Settings.LastSwimClubPK <> 0) then
-      begin
-        {TODO -oBSA -cERROR : Can a locate be performed on an empty table?}
-        uSwimClub.Locate(Settings.LastSwimClubPK); // goto the last viewed swim club.
-        frgSession.Initialise;
-      end;
+        uSwimClub.Locate(Settings.LastSwimClubPK); // restore swim club.
+      // sets table indexname, icon imageindexes and gird pagemode
+      frgSession.Initialise;
     end;
 
     // UI changes needed to track connection state.
@@ -336,6 +336,7 @@ end;
 
 procedure TMain2.FormShow(Sender: TObject);
 begin
+
   if Assigned(Settings) and Settings.DoLoginOnBoot then
     PostMessage(Handle, SCM_CONNECT, 0, 0);
 end;
@@ -352,7 +353,7 @@ end;
 
 procedure TMain2.Msg_SCM_Connect(var Msg: TMessage);
 begin
-  // already connected..
+  // already connected.. NOTE: Use TMessage SCM_DISCONNECT to disconnect.
   if SCM2.scmConnection.Connected then exit;
   //  actnManager.ExecuteAction(File_Connection); // doesn't work
   File_Connection.Execute;
@@ -360,9 +361,26 @@ end;
 
 procedure TMain2.Msg_SCM_Scroll_Session(var Msg: TMessage);
 begin
-  // pass message forward to frames...
+  // pass message forward to session frame...
   SendMessage(frgSession.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
-  // update the status bar with nominee and entrant counts.
+  try // update the status bar with nominee and entrant counts.
+    if (uSession.IsLocked) then
+    begin // Fast.. gets the pre-calculated params from table.
+      StatusBar.Panels[1].Text := IntToStr(uSession.NomineeCount);
+      StatusBar.Panels[2].Text := IntToStr(uSession.EntrantCount);
+    end
+    else
+    begin // Calls ExecSQLScalar .. a little slower, real-time.
+      StatusBar.Panels[1].Text := IntToStr(uSession.CalcNomineeCount);
+      StatusBar.Panels[2].Text := IntToStr(uSession.CalcEntrantCount);
+    end;
+  except on E: Exception do
+    begin
+      StatusBar.Panels[1].Text := 'ERR';
+      StatusBar.Panels[2].Text := 'ERR';
+    end;
+  end;
+
 end;
 
 procedure TMain2.pnlTitleBarCustomButtons0Click(Sender: TObject);
@@ -412,6 +430,27 @@ begin
     CustomTitleBar.ShowIcon := true;
   end;
   inherited;
+end;
+
+procedure TMain2.StatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
+    const Rect: TRect);
+var
+  FontColor: TColor;
+begin
+  FontColor := StyleServices.GetStyleFontColor(sfStatusPanelTextNormal);
+
+  if (Panel.Index = 1) then
+  begin
+    IMG.imglstStatusPanel.Draw(StatusBar.Canvas, Rect.Left, Rect.Top  + 4, 0);
+    StatusBar.Canvas.Font.Color := FontColor;
+    StatusBar.Canvas.TextOut(Rect.Left + 30, Rect.Top + 6, Panel.Text );
+  end;
+  if (Panel.Index = 2) then
+  begin
+    IMG.imglstStatusPanel.Draw(StatusBar.Canvas, Rect.Left, Rect.Top  + 4, 1);
+    StatusBar.Canvas.Font.Color := FontColor;
+    StatusBar.Canvas.TextOut(Rect.Left + 30, Rect.Top + 6, Panel.Text );
+  end;
 end;
 
 procedure TMain2.SwimClub_ManageExecute(Sender: TObject);

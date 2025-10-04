@@ -13,6 +13,7 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls,Vcl.ActnList,
   Vcl.ExtCtrls, Vcl.WinXPanels, Vcl.Buttons, Vcl.Grids,
+  Vcl.Themes,
 
   AdvUtil, AdvObj, AdvGrid, DBAdvGrid,
 
@@ -21,8 +22,8 @@ uses
 type
   TFrameSession = class(TFrame)
     actnlstSession: TActionList;
-    actnSessFr_Visible: TAction;
-    spbtnSessVisible: TSpeedButton;
+    actnSessFr_LockedVisible: TAction;
+    spbtnSessLockedVisible: TSpeedButton;
     spbtnSessLock: TSpeedButton;
     ShapeSessBar1: TShape;
     spbtnSessNew: TSpeedButton;
@@ -52,7 +53,7 @@ type
     DeleteSession1: TMenuItem;
     procedure actnSessFr_DeleteExecute(Sender: TObject);
     procedure actnSessFr_EditExecute(Sender: TObject);
-    procedure actnSessFr_VisibleExecute(Sender: TObject);
+    procedure actnSessFr_LockedVisibleExecute(Sender: TObject);
     procedure actnSessFr_DefaultUpdate(Sender: TObject);
     procedure actnSessFr_CheckLockUpdate(Sender: TObject);
     procedure actnSessFr_LockExecute(Sender: TObject);
@@ -65,8 +66,8 @@ type
         HTMLTemplate: string; Fields: TFields);
   private
     { Private declarations }
-    procedure SetVisibilityIcons();
-    procedure SetLockIcons();
+    procedure SetLockedVisibleIcon;
+    procedure SetLockIcon;
 
   protected
 
@@ -132,15 +133,15 @@ begin
   dlg.Free;
 end;
 
-procedure TFrameSession.actnSessFr_VisibleExecute(Sender: TObject);
+procedure TFrameSession.actnSessFr_LockedVisibleExecute(Sender: TObject);
 begin
     gSession.BeginUpdate;
     TAction(Sender).Checked := not TAction(Sender).Checked;
     try
-      SetVisibilityIcons;
+      SetLockedVisibleIcon;
       // Assign index ... ApplyMaster.
       // true - indxShowAll , false indxHideLocked.
-      uSession.SetVisibilityOfLocked(not TAction(Sender).Checked);
+      uSession.SetIndexName(TAction(Sender).Checked);
     finally
       gSession.EndUpdate;
     end;
@@ -177,12 +178,15 @@ begin
     if TAction(Sender).Checked then
     begin
       uSession.SetSessionStatusID(2); // CLOSED ie.LOCKED.
-      SetLockIcons;
+      // good opertunity to re-calulate and store count values.
+      uSession.SetNomineeCount;
+      uSession.SetEntrantCount;
+      SetLockIcon;
     end
     else
     begin
       uSession.SetSessionStatusID(1); // OPEN ie.UN-LOCKED.
-      SetLockIcons;
+      SetLockIcon;
     end;
   finally
     gSession.endUpdate;
@@ -214,14 +218,18 @@ end;
 
 procedure TFrameSession.gSessionGetCellColor(Sender: TObject; ARow, ACol:
     Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
+var
+  FontColor: TColor;
 begin
+  // greenish-blue color..
+  FontColor := StyleServices.GetStyleFontColor(sfGridItemFixedPressed);
 
   if (ARow >= gSession.FixedRows) then   // (ARow >= gSession.FixedCols)
   begin
     if (gSession.Cells[2, ARow] = '2') then
       AFont.Color := gSession.DisabledFontColor
     else
-      AFont.Color :=  $00FFE4D8;
+      AFont.Color :=  FontColor; /// blueish-white..$00FFE4D8;
   end;
 
   { C E L L   C O L O R S  .
@@ -247,6 +255,7 @@ var
 begin
   if (not Assigned(CORE)) or (not CORE.IsActive) or
     CORE.qrySession.IsEmpty then exit;
+
 
   ShowSeasonIcon := false;
   if CORE.qrySession.FieldByName('SessionStatusID').AsInteger = 2 then
@@ -291,18 +300,13 @@ begin
 end;
 
 procedure TFrameSession.Initialise;
-var
-  HideLockedSessions: boolean;
 begin
-  HideLockedSessions := false;
-
   if SCM2.scmConnection.Connected and CORE.IsActive then
   begin
     if CORE.qrySession.IsEmpty then
     begin
       // setting pagemode to false clears gSession of text. (it appears empty)
       gSession.PageMode := false;
-      exit;
     end
     else
     begin
@@ -310,19 +314,15 @@ begin
       gSession.PageMode := true;
 
       if Assigned(Settings) then
-        HideLockedSessions := Settings.HideLockedSessions;
-
-      // progrmmatically set state of check.
-      if (HideLockedSessions) then
-        actnSessFr_Visible.Checked := true  // hide locked.
+        actnSessFr_LockedVisible.Checked := Settings.HideLockedSessions
       else
-        actnSessFr_Visible.Checked := false;  // Show all .
+        actnSessFr_LockedVisible.Checked := false;
 
-      SetVisibilityIcons; // uses actnSessFr_Visible.Checked state.
+      SetLockedVisibleIcon; // uses actnSessFr_Visible.Checked state.
 
       gSession.BeginUpdate;
-      // true - indxShowAll , false indxHideLocked. (NOTE: INVERTED LOGIC)
-      uSession.SetVisibilityOfLocked(not actnSessFr_Visible.Checked);
+      // false - indxShowAll , true indxHideLocked.
+      uSession.SetIndexName(actnSessFr_LockedVisible.Checked);
       gSession.EndUpdate;
     end;
   end
@@ -340,45 +340,44 @@ begin
   if (i=2) and not actnSessFr_Lock.Checked then
   begin
     actnSessFr_Lock.Checked := true; // syncronize to equal db state
-    SetLockIcons;
+    SetLockIcon;
   end;
-
   if (i=1) and actnSessFr_Lock.Checked then
   begin
     actnSessFr_Lock.Checked := false; // syncronize to equal db state
-    SetLockIcons;
+    SetLockIcon;
   end;
 end;
 
-procedure TFrameSession.SetLockIcons;
+procedure TFrameSession.SetLockIcon;
 begin
   if actnSessFr_Lock.Checked then
   begin
-    actnSessFr_Lock.ImageIndex := 6; // lock2 icon
+    actnSessFr_Lock.ImageIndex := 16; // lock2 icon
     if (spbtnSessLock.ImageIndex <> 6) then // saves a repaint..
       spbtnSessLock.ImageIndex := 6;
   end
   else
   begin
-    actnSessFr_Lock.ImageIndex := 7; // lock2-open icon
+    actnSessFr_Lock.ImageIndex := 17; // lock2-open icon
     if (spbtnSessLock.ImageIndex <> 7) then // saves a repaint..
       spbtnSessLock.ImageIndex := 7;
   end;
 end;
 
-procedure TFrameSession.SetVisibilityIcons;
+procedure TFrameSession.SetLockedVisibleIcon;
 begin
-    if actnSessFr_Visible.Checked then
+    if actnSessFr_LockedVisible.Checked then
     begin
-      actnSessFr_Visible.ImageIndex := 2; // Eye+line - HIDE locked sessions.
-      if (spbtnSessVisible.ImageIndex <> 2) then // saves a repaint..
-        spbtnSessVisible.ImageIndex := 2;
+      actnSessFr_LockedVisible.ImageIndex := 4; // Eye+line - HIDE locked sessions.
+      if (spbtnSessLockedVisible.ImageIndex <> 2) then // saves a repaint..
+        spbtnSessLockedVisible.ImageIndex := 2;
     end
     else
     begin
-      actnSessFr_Visible.ImageIndex := 1; // Eye - SHOW ALL sessions.
-      if (spbtnSessVisible.ImageIndex <> 1) then // saves a repaint..
-        spbtnSessVisible.ImageIndex := 1;
+      actnSessFr_LockedVisible.ImageIndex := 3; // Eye - SHOW ALL sessions.
+      if (spbtnSessLockedVisible.ImageIndex <> 1) then // saves a repaint..
+        spbtnSessLockedVisible.ImageIndex := 1;
     end;
 end;
 

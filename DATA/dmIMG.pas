@@ -32,13 +32,14 @@ type
     imglstSessGrid: TSVGIconVirtualImageList;
     imglstTitleBar: TSVGIconVirtualImageList;
     CollectionTitleBar: TSVGIconImageCollection;
-    CollectionMenuBar: TSVGIconImageCollection;
     imglstSwimClubCntrl: TSVGIconVirtualImageList;
     imglstSwimClubArchived: TSVGIconVirtualImageList;
     imglstSwimClubGroup: TSVGIconVirtualImageList;
     imglstSwimClubCell: TSVGIconVirtualImageList;
     imglstClubGroup: TSVGIconVirtualImageList;
     imglstHeatStrokeEx: TSVGIconVirtualImageList;
+    imglstStatusPanel: TSVGIconVirtualImageList;
+    imglstMenuBar: TSVGIconVirtualImageList;
   private
     { Private declarations }
 

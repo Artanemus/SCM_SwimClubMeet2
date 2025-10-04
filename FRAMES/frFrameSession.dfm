@@ -611,13 +611,14 @@ object FrameSession: TFrameSession
       ExplicitTop = 374
       ExplicitWidth = 89
     end
-    object spbtnSessVisible: TSpeedButton
+    object spbtnSessLockedVisible: TSpeedButton
       Left = 0
       Top = 0
       Width = 54
       Height = 48
-      Action = actnSessFr_Visible
+      Action = actnSessFr_LockedVisible
       Align = alTop
+      ImageName = 'visible_on'
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -642,28 +643,28 @@ object FrameSession: TFrameSession
       ParentShowHint = False
       ShowHint = True
       ExplicitLeft = -3
-      ExplicitTop = 154
+      ExplicitTop = 115
     end
   end
   object actnlstSession: TActionList
-    Images = IMG.imglstSessCntrl
+    Images = IMG.imglstMenuBar
     Left = 208
     Top = 56
-    object actnSessFr_Visible: TAction
+    object actnSessFr_LockedVisible: TAction
       Category = 'Session_Frame'
       Caption = 'Toggle Visibility'
       Hint = 'Toggle the visibility of locked sessions.'
-      ImageIndex = 1
-      ImageName = 'visible_on'
-      OnExecute = actnSessFr_VisibleExecute
+      ImageIndex = 3
+      ImageName = 'locked-show'
+      OnExecute = actnSessFr_LockedVisibleExecute
       OnUpdate = actnSessFr_DefaultUpdate
     end
     object actnSessFr_Lock: TAction
       Category = 'Session_Frame'
       Caption = 'Lock/Unlock'
       Hint = 'Toggle the lock state of a session.'
-      ImageIndex = 7
-      ImageName = 'lock-open-2'
+      ImageIndex = 16
+      ImageName = 'lock2'
       OnExecute = actnSessFr_LockExecute
       OnUpdate = actnSessFr_DefaultUpdate
     end
@@ -716,7 +717,8 @@ object FrameSession: TFrameSession
     Left = 208
     Top = 336
     object pumToggleVisibility: TMenuItem
-      Action = actnSessFr_Visible
+      Action = actnSessFr_LockedVisible
+      ImageName = 'new'
     end
     object LockUnlock1: TMenuItem
       Action = actnSessFr_Lock

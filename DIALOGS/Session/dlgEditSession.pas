@@ -277,9 +277,9 @@ var
   dt: TDateTime;
 begin
   msg := '''
-    The session will be locked, changes are saved, and the dialogue closes.
-    (Depending on the visibility settings, this session
-    may no longer appear in the main form.)
+    Answer yes...
+    Your changes will be saved, the session will be locked and the dialogue closes.
+    (Depending on the visibility settings, the session may no longer appear in the main form.)
     ''';
   id := MessageBox(0, PChar(msg), PChar('LOCK SESSION ...'),
   MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
@@ -289,7 +289,6 @@ begin
     if CORE.qrySession.State = dsEdit then
     begin
       try
-
         dt := datePickerSess.Date + timePickerSess.Time;
         if CORE.qrySession.FieldByName('SessionDT').AsDateTime <> dt then
           CORE.qrySession.FieldByName('SessionDT').AsDateTime := dt;
@@ -297,13 +296,7 @@ begin
         if CORE.qrySession.FieldByName('SessionStatusID').IsNull then
           CORE.qrySession.FieldByName('SessionStatusID').AsInteger := 2;
         CORE.qrySession.Post; // finalize the changes...
-
-        // ----------------------------------------------------
-        // u p d a t e   t a b l e .
-        uSession.SetVisibilityOfLocked(false);
-
         ModalResult := mrOk;
-
       except on E: Exception do
         begin
           // ShowMessage('Error saving session: ' + E.Message);

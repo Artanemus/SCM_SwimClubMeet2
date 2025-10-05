@@ -1626,34 +1626,17 @@ object IMG: TIMG
           '4 0 1 1 0-8a4 4 0 0 1 0 8"/>'#13#10'</svg>'#13#10
       end
       item
+        IconName = 'week'
         SVGText = 
-          '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'#13#10'<svg'#13#10'  ' +
-          ' height="48"'#13#10'   width="48"'#13#10'   version="1.1"'#13#10'   id="svg4"'#13#10'   ' +
-          'sodipodi:docname="EmptyFrame.svg"'#13#10'   xml:space="preserve"'#13#10'   i' +
-          'nkscape:version="1.4 (86a8ad7, 2024-10-11)"'#13#10'   inkscape:export-' +
-          'batch-path="Export"'#13#10'   inkscape:export-batch-name="TabSheetHeat' +
-          'sImages"'#13#10'   xmlns:inkscape="http://www.inkscape.org/namespaces/' +
-          'inkscape"'#13#10'   xmlns:sodipodi="http://sodipodi.sourceforge.net/DT' +
-          'D/sodipodi-0.dtd"'#13#10'   xmlns="http://www.w3.org/2000/svg"'#13#10'   xml' +
-          'ns:svg="http://www.w3.org/2000/svg"><defs'#13#10'     id="defs8" /><so' +
-          'dipodi:namedview'#13#10'     id="namedview6"'#13#10'     pagecolor="#ffffff"' +
-          #13#10'     bordercolor="#666666"'#13#10'     borderopacity="1.0"'#13#10'     ink' +
-          'scape:showpageshadow="2"'#13#10'     inkscape:pageopacity="0.0"'#13#10'     ' +
-          'inkscape:pagecheckerboard="0"'#13#10'     inkscape:deskcolor="#d1d1d1"' +
-          #13#10'     showgrid="false"'#13#10'     inkscape:zoom="22.627417"'#13#10'     in' +
-          'kscape:cx="27.378291"'#13#10'     inkscape:cy="27.577165"'#13#10'     inksca' +
-          'pe:window-width="2560"'#13#10'     inkscape:window-height="1377"'#13#10'    ' +
-          ' inkscape:window-x="-8"'#13#10'     inkscape:window-y="-8"'#13#10'     inksc' +
-          'ape:window-maximized="1"'#13#10'     inkscape:current-layer="svg4"'#13#10'  ' +
-          '   showguides="true"><inkscape:page'#13#10'       x="0"'#13#10'       y="0"'#13 +
-          #10'       width="48"'#13#10'       height="48"'#13#10'       id="page535"'#13#10'   ' +
-          '    inkscape:label="EmptyFrame"'#13#10'       inkscape:export-filename' +
-          '="..\HeatNavigator\EmptyFrame.png"'#13#10'       inkscape:export-xdpi=' +
-          '"96"'#13#10'       inkscape:export-ydpi="96"'#13#10'       margin="0"'#13#10'     ' +
-          '  bleed="0" /></sodipodi:namedview><circle'#13#10'     style="opacity:' +
-          '1;fill:#ff7f2a;fill-opacity:1;stroke:none;stroke-width:1.0214;st' +
-          'roke-linecap:round"'#13#10'     id="path1"'#13#10'     cx="2.3113837"'#13#10'     ' +
-          'cy="45.925831"'#13#10'     r="0.86167479" /></svg>'#13#10
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24">'#13#10'  <path fill="currentColor" d="M4 20q-.82' +
+          '5 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h1.325q.825 0 1.413.58' +
+          '8T7.325 6v12q0 .825-.587 1.413T5.325 20zm7.35 0q-.825 0-1.412-.5' +
+          '87T9.35 18V6q0-.825.588-1.412T11.35 4h1.325q.825 0 1.413.588T14.' +
+          '675 6v12q0 .825-.587 1.413T12.675 20zm7.325 0q-.825 0-1.412-.587' +
+          'T16.675 18V6q0-.825.588-1.412T18.675 4H20q.825 0 1.413.588T22 6v' +
+          '12q0 .825-.587 1.413T20 20z"/>'#13#10'</svg>'#13#10
+        FixedColor = clDarkgoldenrod
       end
       item
         IconName = 'lock2'
@@ -2433,6 +2416,26 @@ object IMG: TIMG
           '12S17.52 2 11.99 2M12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8s8 3.58 8 ' +
           '8s-3.58 8-8 8m.5-13H11v6l5.25 3.15l.75-1.23l-4.5-2.67z"/></svg>'
         FixedColor = clDarkgoldenrod
+      end
+      item
+        IconName = 'exit'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><g fill="none"><path d="m12.593 23.258l-.01' +
+          '1.002l-.071.035l-.02.004l-.014-.004l-.071-.035q-.016-.005-.024.0' +
+          '05l-.004.01l-.017.428l.005.02l.01.013l.104.074l.015.004l.012-.00' +
+          '4l.104-.074l.012-.016l.004-.017l-.017-.427q-.004-.016-.017-.018m' +
+          '.265-.113l-.013.002l-.185.093l-.01.01l-.003.011l.018.43l.005.012' +
+          'l.008.007l.201.093q.019.005.029-.008l.004-.014l-.034-.614q-.005-' +
+          '.018-.02-.022m-.715.002a.02.02 0 0 0-.027.006l-.006.014l-.034.61' +
+          '4q.001.018.017.024l.015-.002l.201-.093l.01-.008l.004-.011l.017-.' +
+          '43l-.003-.012l-.01-.01z"/><path fill="currentColor" d="M11.5 3a1' +
+          ' 1 0 0 1 .117 1.993L11.5 5H6v14h10v-6.5a1 1 0 0 1 1.993-.117L18 ' +
+          '12.5V19h2a1 1 0 0 1 .117 1.993L20 21H4a1 1 0 0 1-.117-1.993L4 19' +
+          'V5a2 2 0 0 1 1.85-1.995L6 3zm2 8a1.5 1.5 0 1 1 0 3a1.5 1.5 0 0 1' +
+          ' 0-3m5.087-6.828l2.12 2.12a1 1 0 0 1 0 1.413l-2.12 2.123a1 1 0 0' +
+          ' 1-1.415-1.413l.416-.417H14.38a1 1 0 1 1 0-2h3.205l-.412-.412a1 ' +
+          '1 0 0 1 1.414-1.414"/></g></svg>'
       end>
     Left = 320
     Top = 8
@@ -13522,7 +13525,7 @@ object IMG: TIMG
       end
       item
         CollectionIndex = 34
-        CollectionName = 'timer'
+        CollectionName = 'stopwatch'
         Name = 'timer'
       end
       item
@@ -13576,12 +13579,12 @@ object IMG: TIMG
       end
       item
         CollectionIndex = 39
-        CollectionName = 'lock-2'
+        CollectionName = 'lock2'
         Name = 'lock2'
       end
       item
         CollectionIndex = 40
-        CollectionName = 'lock-open-2'
+        CollectionName = 'lock2-open'
         Name = 'lock2-open'
       end
       item
@@ -13713,12 +13716,12 @@ object IMG: TIMG
       end
       item
         CollectionIndex = 39
-        CollectionName = 'lock-2'
+        CollectionName = 'lock2'
         Name = 'lock-2'
       end
       item
         CollectionIndex = 40
-        CollectionName = 'lock-open-2'
+        CollectionName = 'lock2-open'
         Name = 'lock-open-2'
       end
       item
@@ -13824,12 +13827,11 @@ object IMG: TIMG
       end
       item
         CollectionIndex = 37
-        CollectionName = 'lock'
+        CollectionName = 'cog'
         Name = 'lock'
       end
       item
         CollectionIndex = 38
-        CollectionName = 'lock-open'
         Name = 'lock-open'
       end>
     ImageCollection = CollectionCore
@@ -14034,12 +14036,12 @@ object IMG: TIMG
       end
       item
         CollectionIndex = 39
-        CollectionName = 'lock-2'
+        CollectionName = 'lock2'
         Name = 'lock-2'
       end
       item
         CollectionIndex = 40
-        CollectionName = 'lock-open-2'
+        CollectionName = 'lock2-open'
         Name = 'lock-open-2'
       end
       item
@@ -14111,8 +14113,8 @@ object IMG: TIMG
     Width = 30
     Height = 30
     Size = 30
-    Left = 40
-    Top = 432
+    Left = 48
+    Top = 440
   end
   object CollectionTitleBar: TSVGIconImageCollection
     SVGIconItems = <
@@ -14162,8 +14164,8 @@ object IMG: TIMG
           '.46-3.03-1.24-4.26"/></svg>'
         FixedColor = clBackground
       end>
-    Left = 40
-    Top = 368
+    Left = 48
+    Top = 376
   end
   object imglstSwimClubCntrl: TSVGIconVirtualImageList
     Images = <
@@ -14395,12 +14397,17 @@ object IMG: TIMG
         CollectionIndex = 46
         CollectionName = 'award-sash'
         Name = 'award-sash'
+      end
+      item
+        CollectionIndex = 38
+        CollectionName = 'week'
+        Name = 'week'
       end>
     ImageCollection = CollectionCore
     Width = 24
     Height = 24
     Size = 24
-    Left = 1072
+    Left = 1088
     Top = 80
   end
   object imglstMenuBar: TSVGIconVirtualImageList
@@ -14564,6 +14571,11 @@ object IMG: TIMG
         CollectionIndex = 37
         CollectionName = 'cog'
         Name = 'cog'
+      end
+      item
+        CollectionIndex = 99
+        CollectionName = 'exit'
+        Name = 'exit'
       end>
     ImageCollection = CollectionCore
     Width = 32

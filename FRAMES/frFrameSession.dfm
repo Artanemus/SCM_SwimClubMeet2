@@ -544,6 +544,7 @@ object FrameSession: TFrameSession
       Margin = 0
       ParentShowHint = False
       ShowHint = True
+      Spacing = 5
       ExplicitTop = 192
       ExplicitWidth = 89
     end
@@ -560,6 +561,7 @@ object FrameSession: TFrameSession
       Margin = 0
       ParentShowHint = False
       ShowHint = True
+      Spacing = 5
       ExplicitTop = 144
       ExplicitWidth = 89
     end
@@ -570,12 +572,14 @@ object FrameSession: TFrameSession
       Height = 48
       Action = actnSessFr_Lock
       Align = alTop
+      ImageName = 'lock2-open'
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
       Margin = 0
       ParentShowHint = False
       ShowHint = True
+      Spacing = 5
       ExplicitTop = 40
       ExplicitWidth = 89
     end
@@ -592,6 +596,7 @@ object FrameSession: TFrameSession
       Margin = 0
       ParentShowHint = False
       ShowHint = True
+      Spacing = 5
       ExplicitTop = 128
       ExplicitWidth = 89
     end
@@ -608,6 +613,7 @@ object FrameSession: TFrameSession
       Margin = 0
       ParentShowHint = False
       ShowHint = True
+      Spacing = 5
       ExplicitTop = 374
       ExplicitWidth = 89
     end
@@ -616,7 +622,7 @@ object FrameSession: TFrameSession
       Top = 0
       Width = 54
       Height = 48
-      Action = actnSessFr_LockedVisible
+      Action = actnSessFr_IsLocked
       Align = alTop
       ImageName = 'visible_on'
       Images = IMG.imglstSessCntrl
@@ -625,11 +631,12 @@ object FrameSession: TFrameSession
       Margin = 0
       ParentShowHint = False
       ShowHint = True
+      Spacing = 5
       ExplicitLeft = 8
       ExplicitTop = 1
       ExplicitWidth = 48
     end
-    object spbtnEdit: TSpeedButton
+    object spbtnSessEdit: TSpeedButton
       Left = 0
       Top = 112
       Width = 54
@@ -642,6 +649,7 @@ object FrameSession: TFrameSession
       Margin = 0
       ParentShowHint = False
       ShowHint = True
+      Spacing = 5
       ExplicitLeft = -3
       ExplicitTop = 115
     end
@@ -650,14 +658,14 @@ object FrameSession: TFrameSession
     Images = IMG.imglstMenuBar
     Left = 208
     Top = 56
-    object actnSessFr_LockedVisible: TAction
+    object actnSessFr_IsLocked: TAction
       Category = 'Session_Frame'
       Caption = 'Toggle Visibility'
       Hint = 'Toggle the visibility of locked sessions.'
       ImageIndex = 3
       ImageName = 'locked-show'
-      OnExecute = actnSessFr_LockedVisibleExecute
-      OnUpdate = actnSessFr_DefaultUpdate
+      OnExecute = actnSessFr_IsLockedExecute
+      OnUpdate = actnSessFr_IsLockedUpdate
     end
     object actnSessFr_Lock: TAction
       Category = 'Session_Frame'
@@ -666,22 +674,22 @@ object FrameSession: TFrameSession
       ImageIndex = 16
       ImageName = 'lock2'
       OnExecute = actnSessFr_LockExecute
-      OnUpdate = actnSessFr_DefaultUpdate
+      OnUpdate = actnSessFr_LockUpdate
     end
     object actnSessFr_Edit: TAction
       Category = 'Session_Frame'
       Caption = 'Edit Session'
       Hint = 'Edit the current selected session.'
-      ImageIndex = 8
+      ImageIndex = 20
       ImageName = 'edit'
       OnExecute = actnSessFr_EditExecute
-      OnUpdate = actnSessFr_CheckLockUpdate
+      OnUpdate = actnSessFr_EditUpdate
     end
     object actnSessFr_New: TAction
       Category = 'Session_Frame'
       Caption = 'New Session'
       Hint = 'Create a new session.'
-      ImageIndex = 3
+      ImageIndex = 8
       ImageName = 'new'
       OnExecute = actnSessFr_NewExecute
       OnUpdate = actnSessFr_NewUpdate
@@ -690,26 +698,26 @@ object FrameSession: TFrameSession
       Category = 'Session_Frame'
       Caption = 'Clone Session'
       Hint = 'Duplicate the selected session.'
-      ImageIndex = 11
+      ImageIndex = 23
       ImageName = 'clone'
-      OnUpdate = actnSessFr_DefaultUpdate
+      OnUpdate = actnSessFr_CloneUpdate
     end
     object actnSessFr_Delete: TAction
       Category = 'Session_Frame'
       Caption = 'Delete Session'
       Hint = 'Delete the selected session.'
-      ImageIndex = 4
+      ImageIndex = 9
       ImageName = 'delete'
       OnExecute = actnSessFr_DeleteExecute
-      OnUpdate = actnSessFr_CheckLockUpdate
+      OnUpdate = actnSessFr_DeleteUpdate
     end
     object actnSessFr_Report: TAction
       Category = 'Session_Frame'
       Caption = 'Session Report'
       Hint = 'Create a Session report.'
-      ImageIndex = 5
+      ImageIndex = 15
       ImageName = 'report'
-      OnUpdate = actnSessFr_DefaultUpdate
+      OnUpdate = actnSessFr_ReportUpdate
     end
   end
   object pumenuSession: TPopupMenu
@@ -717,7 +725,7 @@ object FrameSession: TFrameSession
     Left = 208
     Top = 336
     object pumToggleVisibility: TMenuItem
-      Action = actnSessFr_LockedVisible
+      Action = actnSessFr_IsLocked
       ImageName = 'new'
     end
     object LockUnlock1: TMenuItem
@@ -731,12 +739,14 @@ object FrameSession: TFrameSession
     end
     object NewSession1: TMenuItem
       Action = actnSessFr_New
+      ImageName = 'edit'
     end
     object CloneSession1: TMenuItem
       Action = actnSessFr_Clone
     end
     object DeleteSession1: TMenuItem
       Action = actnSessFr_Delete
+      ImageName = 'in'
     end
     object N2: TMenuItem
       Caption = '-'

@@ -136,7 +136,6 @@ type
     procedure SwimClub_SwitchExecute(Sender: TObject);
   private
     procedure DetailTBLs_ApplyMaster;
-    { Private declarations }
     procedure DetailTBLs_DisableCNTRLs;
     procedure DetailTBLs_EnableCNTRLs;
   protected
@@ -246,13 +245,13 @@ begin
       // Update the TitlePanel dbtext captions and enable custom buttons.
       pnlTitleBar.CustomButtons[0].Enabled := true;
       pnlTitleBar.CustomButtons[1].Enabled := true;
-      StatusBar.Panels[0].Text := ' CONNECTED';
+      StatusBar.Panels[0].Text := 'CONNECTED'; // psOwnerDraw
     end
     else
     begin
       pnlTitleBar.CustomButtons[0].Enabled := false;
       pnlTitleBar.CustomButtons[1].Enabled := false;
-      StatusBar.Panels[0].Text := ' NOT CONNECTED';
+      StatusBar.Panels[0].Text := 'NOT CONNECTED'; // psOwnerDraw
     end;
   finally
     frgSession.gSession.EndUpdate;
@@ -279,6 +278,7 @@ end;
 
 procedure TMain2.FormCreate(Sender: TObject);
 begin
+
   // Setting font size at design time is ignored.
   Screen.MenuFont.Name := 'Segoe UI Semibold';
   Screen.MenuFont.Size := 12;
@@ -312,7 +312,7 @@ begin
   pnlTitleBar.CustomButtons[1].Enabled := false; // title bar Refresh btn.
   Caption := 'SwimClubMeet2'; // with no connection... a basic caption.
 
-  StatusBar.Panels[0].Text := ' OFFLINE'; // connection state
+  StatusBar.Panels[0].Text := 'NOT CONNECTED'; // connection state
   StatusBar.Panels[1].Text := ''; // nominee count
   StatusBar.Panels[2].Text := ''; // entrant count
   StatusBar.Panels[2].Text := ''; // status messages
@@ -321,6 +321,8 @@ begin
 
   // Assign a handle to the CORE data module - for windows messages
   CORE.MSG_Handle := Self.Handle;
+
+  frgSession.Initialise;
 
 end;
 
@@ -336,6 +338,8 @@ end;
 
 procedure TMain2.FormShow(Sender: TObject);
 begin
+  frgSession.Repaint;
+  Application.ProcessMessages;
 
   if Assigned(Settings) and Settings.DoLoginOnBoot then
     PostMessage(Handle, SCM_CONNECT, 0, 0);
@@ -436,20 +440,50 @@ procedure TMain2.StatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel;
     const Rect: TRect);
 var
   FontColor: TColor;
+  connected: boolean;
 begin
   FontColor := StyleServices.GetStyleFontColor(sfStatusPanelTextNormal);
+  connected := SCM2.scmConnection.Connected;
+  case Panel.Index of
+    0: // CONNECTED/NOT CONNECTED
+    begin
+      if not connected then
+        StatusBar.Canvas.Font.Color := clWebTomato
+      else
+        StatusBar.Canvas.Font.Color := FontColor;
+      StatusBar.Canvas.TextOut(Rect.Left + 4, Rect.Top + 6, Panel.Text );
+    end;
+    1: // NOMINEE COUNT.
+    begin
+      IMG.imglstStatusPanel.Draw(StatusBar.Canvas, Rect.Left, Rect.Top  + 4, 0);
+      if connected then
+      begin
+        StatusBar.Canvas.Font.Color := FontColor;
+        StatusBar.Canvas.TextOut(Rect.Left + 30, Rect.Top + 6, Panel.Text );
+      end;
+    end;
+    2: // ENTRANT COUNT.
+    begin
+      IMG.imglstStatusPanel.Draw(StatusBar.Canvas, Rect.Left, Rect.Top  + 4, 1);
+      if connected then
+      begin
+        StatusBar.Canvas.Font.Color := FontColor;
+        StatusBar.Canvas.TextOut(Rect.Left + 30, Rect.Top + 6, Panel.Text );
+      end;
+    end;
+    3: // SWIMMING SEASON WEEK COUNT.
+    begin
+      IMG.imglstStatusPanel.Draw(StatusBar.Canvas, Rect.Left, Rect.Top  + 4, 3);
+      if connected then
+      begin
+        StatusBar.Canvas.Font.Color := FontColor;
+        StatusBar.Canvas.TextOut(Rect.Left + 30, Rect.Top + 6, Panel.Text );
+      end;
+    end;
+    4: // SYSTEM MESSAGE
+    begin
 
-  if (Panel.Index = 1) then
-  begin
-    IMG.imglstStatusPanel.Draw(StatusBar.Canvas, Rect.Left, Rect.Top  + 4, 0);
-    StatusBar.Canvas.Font.Color := FontColor;
-    StatusBar.Canvas.TextOut(Rect.Left + 30, Rect.Top + 6, Panel.Text );
-  end;
-  if (Panel.Index = 2) then
-  begin
-    IMG.imglstStatusPanel.Draw(StatusBar.Canvas, Rect.Left, Rect.Top  + 4, 1);
-    StatusBar.Canvas.Font.Color := FontColor;
-    StatusBar.Canvas.TextOut(Rect.Left + 30, Rect.Top + 6, Panel.Text );
+    end;
   end;
 end;
 

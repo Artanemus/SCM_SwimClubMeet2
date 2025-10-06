@@ -87,16 +87,6 @@ type
     SCM_ManageMembers: TAction;
     SCM_Refresh: TAction;
     SCM_StatusBar: TAction;
-    Session_Clone: TAction;
-    Session_Delete: TAction;
-    Session_Edit: TAction;
-    Session_Export: TAction;
-    Session_Import: TAction;
-    Session_New: TAction;
-    Session_Report: TAction;
-    Session_Sort: TAction;
-    Session_ToggleLock: TAction;
-    Session_ToggleVisible: TAction;
     StatusBar: TStatusBar;
     SwimClub_Houses: TAction;
     SwimClub_Manage: TAction;

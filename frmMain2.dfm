@@ -11,9 +11,10 @@ object Main2: TMain2
   CustomTitleBar.SystemHeight = False
   CustomTitleBar.ShowCaption = False
   CustomTitleBar.ShowIcon = False
+  CustomTitleBar.SystemColors = False
   CustomTitleBar.BackgroundColor = 4552068
   CustomTitleBar.ForegroundColor = clWhite
-  CustomTitleBar.InactiveBackgroundColor = clWhite
+  CustomTitleBar.InactiveBackgroundColor = clBackground
   CustomTitleBar.InactiveForegroundColor = 10066329
   CustomTitleBar.ButtonForegroundColor = clWhite
   CustomTitleBar.ButtonBackgroundColor = 4552068
@@ -2742,6 +2743,7 @@ object Main2: TMain2
       Font.Name = 'Segoe UI'
       Font.Style = []
       ParentFont = False
+      Transparent = True
     end
     object DBTextNickName: TDBText
       Left = 6
@@ -2763,7 +2765,7 @@ object Main2: TMain2
     Left = 0
     Top = 35
     Width = 1109
-    Height = 27
+    Height = 42
     UseSystemFont = False
     ActionManager = actnManager
     Caption = 'actnMainMenuBar'
@@ -2822,9 +2824,9 @@ object Main2: TMain2
   object PageControl: TPageControl
     AlignWithMargins = True
     Left = 3
-    Top = 72
+    Top = 87
     Width = 1103
-    Height = 679
+    Height = 664
     Margins.Top = 10
     ActivePage = tabSession
     Align = alClient
@@ -2836,7 +2838,7 @@ object Main2: TMain2
         Left = 3
         Top = 10
         Width = 440
-        Height = 630
+        Height = 615
         Margins.Top = 10
         Align = alLeft
         BevelOuter = bvNone
@@ -2845,57 +2847,28 @@ object Main2: TMain2
           Left = 0
           Top = 0
           Width = 440
-          Height = 630
+          Height = 615
           Align = alClient
           TabOrder = 0
           ExplicitWidth = 440
-          ExplicitHeight = 630
+          ExplicitHeight = 615
           inherited pnlBody: TPanel
             Width = 386
-            Height = 630
+            Height = 615
             ExplicitWidth = 386
-            ExplicitHeight = 630
+            ExplicitHeight = 615
             inherited gSession: TDBAdvGrid
               Width = 386
-              Height = 630
+              Height = 615
               ExplicitWidth = 386
-              ExplicitHeight = 630
+              ExplicitHeight = 615
             end
           end
           inherited pnlCntrl: TPanel
-            Height = 630
-            ExplicitHeight = 630
-            inherited spbtnSessClone: TSpeedButton
-              ImageName = ''
-            end
-            inherited spbtnSessDelete: TSpeedButton
-              ImageName = ''
-            end
-            inherited spbtnSessLock: TSpeedButton
-              ImageName = ''
-            end
-            inherited spbtnSessNew: TSpeedButton
-              ImageName = ''
-            end
-            inherited spbtnSessReport: TSpeedButton
-              ImageName = ''
-            end
+            Height = 615
+            ExplicitHeight = 615
             inherited spbtnSessLockedVisible: TSpeedButton
-              ImageName = ''
-            end
-            inherited spbtnSessEdit: TSpeedButton
-              ImageName = ''
-            end
-          end
-          inherited pumenuSession: TPopupMenu
-            inherited EditSession1: TMenuItem
-              ImageIndex = 8
-            end
-            inherited CloneSession1: TMenuItem
-              ImageIndex = 11
-            end
-            inherited SessionReport1: TMenuItem
-              ImageIndex = 5
+              ImageName = 'new'
             end
           end
         end
@@ -2917,70 +2890,7 @@ object Main2: TMain2
           item
             Items = <
               item
-                Action = Session_ToggleVisible
-                Caption = '&Toggle visibility.'
-                ImageIndex = 3
-                ImageName = 'locked-show'
-              end
-              item
-                Action = Session_ToggleLock
-                Caption = '&Lock/Unlock'
-                ImageIndex = 16
-                ImageName = 'lock2'
-                ShortCut = 16460
-              end
-              item
-                Action = Session_New
-                Caption = '&New Session...'
-                ImageIndex = 8
-                ImageName = 'new'
-                ShortCut = 16429
-              end
-              item
-                Action = Session_Edit
-                Caption = '&Edit Session ...'
-                ImageIndex = 20
-                ImageName = 'edit'
-              end
-              item
-                Action = Session_Delete
-                Caption = '&Delete Session...'
-                ImageIndex = 9
-                ImageName = 'delete'
-                ShortCut = 16430
-              end
-              item
-                Action = Session_Report
-                Caption = '&Session Report*'
-                ImageIndex = 15
-                ImageName = 'report'
-              end
-              item
                 Caption = '-'
-              end
-              item
-                Action = Session_Export
-                Caption = 'E&xport Session...'
-                ImageIndex = 22
-                ImageName = 'out'
-              end
-              item
-                Action = Session_Import
-                Caption = '&Import Session...'
-                ImageIndex = 21
-                ImageName = 'in'
-              end
-              item
-                Action = Session_Clone
-                Caption = '&Clone Session...'
-                ImageIndex = 23
-                ImageName = 'clone'
-              end
-              item
-                Action = Session_Sort
-                Caption = 'S&ort'
-                ImageIndex = 24
-                ImageName = 'sort'
               end>
             Caption = '&Session'
           end
@@ -2989,10 +2899,12 @@ object Main2: TMain2
               item
                 Action = File_ExportClub
                 Caption = 'E&xport Club...'
+                ImageName = 'Export'
               end
               item
                 Action = File_ImportClub
                 Caption = '&Import Club...'
+                ImageName = 'import'
               end
               item
                 Caption = '-'
@@ -3006,6 +2918,7 @@ object Main2: TMain2
               item
                 Action = SwimClub_Manage
                 Caption = '&Manage Swim Clubs ...'
+                ImageName = 'folder_managed'
               end
               item
                 Caption = '-'
@@ -3023,6 +2936,7 @@ object Main2: TMain2
               item
                 Action = Event_ToggleGridView
                 Caption = '&Toggle grid view.'
+                ImageName = 'GridOn'
               end
               item
                 Action = Event_MoveUp
@@ -3064,14 +2978,17 @@ object Main2: TMain2
               item
                 Action = Event_BuildFinals
                 Caption = '&Build event finals ...'
+                ImageName = 'AutoBuild'
               end
               item
                 Action = Event_BuildSemiFinals
                 Caption = 'B&uild event semi-finals ...'
+                ImageName = 'AutoBuild'
               end
               item
                 Action = Event_BuildQuarterFinals
                 Caption = 'Bu&ild event quarter-finals ...'
+                ImageName = 'AutoBuild'
               end
               item
                 Caption = '-'
@@ -3079,10 +2996,12 @@ object Main2: TMain2
               item
                 Action = Event_AutoSchedule
                 Caption = '&Auto Schedule...'
+                ImageName = 'TimeAuto'
               end
               item
                 Action = Event_Renumber
                 Caption = '&Renumber Lanes...'
+                ImageName = 'Cycle'
               end>
             Caption = '&Events'
           end
@@ -3106,6 +3025,7 @@ object Main2: TMain2
               item
                 Action = Nominate_MemberDetails
                 Caption = '&Member'#39's Details...'
+                ImageName = 'Members'
               end
               item
                 Visible = False
@@ -3142,6 +3062,7 @@ object Main2: TMain2
               item
                 Action = Heat_ToggleStatus
                 Caption = '&Toggle Heat Status'
+                ImageName = 'HeatStatusToggle'
                 ShortCut = 16468
               end
               item
@@ -3161,6 +3082,7 @@ object Main2: TMain2
               item
                 Action = Heat_AutoBuild
                 Caption = '&AutoBuild Heats...'
+                ImageName = 'AutoBuild'
               end
               item
                 Action = Heat_MarshallReport
@@ -3171,10 +3093,12 @@ object Main2: TMain2
               item
                 Action = Heat_TimeKeeperReport
                 Caption = 'T&ime Keeper sheet*'
+                ImageName = 'TimeKeeper'
               end
               item
                 Action = Heat_PrintSet
                 Caption = '&Print Set'
+                ImageName = 'BatchPrint'
               end
               item
                 Action = Heat_Report
@@ -3188,18 +3112,22 @@ object Main2: TMain2
               item
                 Action = Heat_BatchBuildHeats
                 Caption = '&Build ALL Heats...'
+                ImageName = 'AutoBuild'
               end
               item
                 Action = Heat_BatchMarshallReport
                 Caption = 'Print A&LL Marshall Reports...'
+                ImageName = 'AutoBuild'
               end
               item
                 Action = Heat_BatchTimeKeeperReport
                 Caption = 'Print ALL Tim&ekeeper Reports...'
+                ImageName = 'AutoBuild'
               end
               item
                 Visible = False
                 Action = Heat_Renumber
+                ImageName = 'Cycle'
               end>
             Caption = '&Heats'
           end
@@ -3222,6 +3150,7 @@ object Main2: TMain2
               item
                 Action = Lane_SwapLanes
                 Caption = '&Swap Lanes...'
+                ImageName = 'Shuffle'
               end
               item
                 Action = Lane_EmptyLane
@@ -3233,6 +3162,7 @@ object Main2: TMain2
               item
                 Action = Lane_Strike
                 Caption = 'S&trike Entrant'
+                ImageName = 'DeleteForever'
                 ShortCut = 16430
               end
               item
@@ -3244,6 +3174,7 @@ object Main2: TMain2
               item
                 Action = Nominate_GotoMemberDetails
                 Caption = 'Mem&ber'#39's Details...'
+                ImageName = 'Members'
               end>
             Caption = 'En&trants'
           end
@@ -3308,6 +3239,7 @@ object Main2: TMain2
               item
                 Action = Help_Website
                 Caption = '&SCM Homepage...'
+                ImageName = 'home'
               end>
             Caption = 'He&lp'
           end>
@@ -3354,8 +3286,7 @@ object Main2: TMain2
               item
                 Action = SwimClub_Stats
                 Caption = 'C&lub Statistics...'
-                ImageIndex = 28
-                ImageName = 'query-stats'
+                ImageName = 'Query-Stats'
               end
               item
                 Caption = '-'
@@ -3363,10 +3294,12 @@ object Main2: TMain2
               item
                 Action = File_ExportClub
                 Caption = '&Export Club...'
+                ImageName = 'Export'
               end
               item
                 Action = File_ImportClub
                 Caption = '&Import Club...'
+                ImageName = 'import'
               end
               item
                 Caption = '-'
@@ -3374,47 +3307,60 @@ object Main2: TMain2
               item
                 Action = SwimClub_Manage
                 Caption = '&Manage Swim Clubs ...'
+                ImageName = 'folder_managed'
               end>
             Caption = '&SwimClub'
           end
           item
             Items = <
               item
-                Action = Session_ToggleVisible
-                Caption = '&Toggle visibility.'
+                Action = frgSession.actnSessFr_IsLocked
+                Caption = '&Toggle Visibility'
                 ImageIndex = 3
                 ImageName = 'locked-show'
               end
               item
-                Action = Session_ToggleLock
+                Action = frgSession.actnSessFr_Lock
                 Caption = '&Lock/Unlock'
                 ImageIndex = 16
                 ImageName = 'lock2'
-                ShortCut = 16460
               end
               item
-                Action = Session_New
-                Caption = '&New Session...'
-                ImageIndex = 8
-                ImageName = 'new'
-                ShortCut = 16429
+                Action = frgSession.actnSessFr_Search
+                Caption = 'Se&arch...'
+                ImageIndex = 33
+                ImageName = 'search'
               end
               item
-                Action = Session_Edit
-                Caption = '&Edit Session ...'
+                Caption = '-'
+              end
+              item
+                Action = frgSession.actnSessFr_Edit
+                Caption = '&Edit Session...'
                 ImageIndex = 20
                 ImageName = 'edit'
               end
               item
-                Action = Session_Delete
+                Action = frgSession.actnSessFr_New
+                Caption = '&New Session...'
+                ImageIndex = 8
+                ImageName = 'new'
+              end
+              item
+                Action = frgSession.actnSessFr_Clone
+                Caption = '&Clone Session...'
+                ImageIndex = 23
+                ImageName = 'clone'
+              end
+              item
+                Action = frgSession.actnSessFr_Delete
                 Caption = '&Delete Session...'
                 ImageIndex = 9
                 ImageName = 'delete'
-                ShortCut = 16430
               end
               item
-                Action = Session_Report
-                Caption = '&Session Report*'
+                Action = frgSession.actnSessFr_Report
+                Caption = '&Session Report...'
                 ImageIndex = 15
                 ImageName = 'report'
               end
@@ -3422,28 +3368,16 @@ object Main2: TMain2
                 Caption = '-'
               end
               item
-                Action = Session_Export
-                Caption = 'E&xport Session...'
+                Action = frgSession.actnSessFr_Export
+                Caption = 'E&xport...'
                 ImageIndex = 22
                 ImageName = 'out'
               end
               item
-                Action = Session_Import
-                Caption = '&Import Session...'
+                Action = frgSession.actnSessFr_Import
+                Caption = '&Import...'
                 ImageIndex = 21
                 ImageName = 'in'
-              end
-              item
-                Action = Session_Clone
-                Caption = '&Clone Session...'
-                ImageIndex = 23
-                ImageName = 'clone'
-              end
-              item
-                Action = Session_Sort
-                Caption = 'S&ort'
-                ImageIndex = 24
-                ImageName = 'sort'
               end>
             Caption = 'S&ession'
           end
@@ -3452,6 +3386,7 @@ object Main2: TMain2
               item
                 Action = Event_ToggleGridView
                 Caption = '&Toggle grid view.'
+                ImageName = 'GridOn'
               end
               item
                 Action = Event_MoveUp
@@ -3490,22 +3425,27 @@ object Main2: TMain2
               item
                 Action = Event_BuildFinals
                 Caption = '&Build event finals ...'
+                ImageName = 'AutoBuild'
               end
               item
                 Action = Event_BuildSemiFinals
                 Caption = 'B&uild event semi-finals ...'
+                ImageName = 'AutoBuild'
               end
               item
                 Action = Event_BuildQuarterFinals
                 Caption = 'Bu&ild event quarter-finals ...'
+                ImageName = 'AutoBuild'
               end
               item
                 Action = Event_Renumber
                 Caption = '&Renumber Lanes...'
+                ImageName = 'Cycle'
               end
               item
                 Action = Event_AutoSchedule
                 Caption = '&Auto Schedule...'
+                ImageName = 'TimeAuto'
               end>
             Caption = 'E&vents'
           end
@@ -3526,10 +3466,12 @@ object Main2: TMain2
               item
                 Action = Nominate_GotoMemberDetails
                 Caption = '&Member'#39's Details...'
+                ImageName = 'Members'
               end
               item
                 Action = Nominate_MemberDetails
                 Caption = 'M&ember'#39's Details...'
+                ImageName = 'Members'
               end
               item
                 Visible = False
@@ -3564,6 +3506,7 @@ object Main2: TMain2
               item
                 Action = Heat_ToggleStatus
                 Caption = '&Toggle Heat Status'
+                ImageName = 'HeatStatusToggle'
                 ShortCut = 16468
               end
               item
@@ -3583,6 +3526,7 @@ object Main2: TMain2
               item
                 Action = Heat_AutoBuild
                 Caption = '&AutoBuild Heats...'
+                ImageName = 'AutoBuild'
               end
               item
                 Action = Heat_MarshallReport
@@ -3593,10 +3537,12 @@ object Main2: TMain2
               item
                 Action = Heat_TimeKeeperReport
                 Caption = 'T&ime Keeper sheet*'
+                ImageName = 'TimeKeeper'
               end
               item
                 Action = Heat_PrintSet
                 Caption = '&Print Set'
+                ImageName = 'BatchPrint'
               end
               item
                 Action = Heat_Report
@@ -3607,18 +3553,22 @@ object Main2: TMain2
               item
                 Action = Heat_BatchBuildHeats
                 Caption = '&Build ALL Heats...'
+                ImageName = 'AutoBuild'
               end
               item
                 Action = Heat_BatchMarshallReport
                 Caption = 'Print A&LL Marshall Reports...'
+                ImageName = 'AutoBuild'
               end
               item
                 Action = Heat_BatchTimeKeeperReport
                 Caption = 'Print ALL Tim&ekeeper Reports...'
+                ImageName = 'AutoBuild'
               end
               item
                 Visible = False
                 Action = Heat_Renumber
+                ImageName = 'Cycle'
               end>
             Caption = '&Heats'
           end
@@ -3641,6 +3591,7 @@ object Main2: TMain2
               item
                 Action = Lane_SwapLanes
                 Caption = '&Swap Lanes...'
+                ImageName = 'Shuffle'
               end
               item
                 Action = Lane_EmptyLane
@@ -3652,6 +3603,7 @@ object Main2: TMain2
               item
                 Action = Lane_Strike
                 Caption = 'S&trike Entrant'
+                ImageName = 'DeleteForever'
                 ShortCut = 16430
               end
               item
@@ -3673,14 +3625,17 @@ object Main2: TMain2
               item
                 Action = Team_StrikeSlot
                 Caption = '&Strike Slot'
+                ImageName = 'DeleteForever'
               end
               item
                 Action = Team_AddSlot
                 Caption = '&Add Slot'
+                ImageName = 'add'
               end
               item
                 Action = Team_RemoveSlot
                 Caption = '&Remove Slot'
+                ImageName = 'remove'
               end
               item
                 Action = Team_MoveUpSlot
@@ -3701,6 +3656,7 @@ object Main2: TMain2
               item
                 Action = Members_Manage
                 Caption = '&Manage Members...'
+                ImageName = 'Members'
               end
               item
                 Caption = '-'
@@ -3708,10 +3664,12 @@ object Main2: TMain2
               item
                 Action = Members_Export
                 Caption = '&Export Members...'
+                ImageName = 'Export'
               end
               item
                 Action = Members_Import
                 Caption = '&Import Members...'
+                ImageName = 'import'
               end>
             Caption = '&Members'
           end
@@ -3783,6 +3741,7 @@ object Main2: TMain2
               item
                 Action = Help_Website
                 Caption = '&SCM Homepage...'
+                ImageName = 'home'
               end>
             Caption = 'Hel&p'
             ImageIndex = 30
@@ -3818,58 +3777,6 @@ object Main2: TMain2
       Caption = 'Exit'
       ImageIndex = 32
       ImageName = 'Exit'
-    end
-    object Session_ToggleVisible: TAction
-      Category = 'Session'
-      Caption = 'Toggle visibility.'
-      GroupIndex = 1
-      Hint = 'Show, hide the visibility of locked sessions.'
-      ImageIndex = 3
-      ImageName = 'locked-show'
-    end
-    object Session_ToggleLock: TAction
-      Category = 'Session'
-      Caption = 'Lock/Unlock'
-      Hint = 'Toggle the session status.'
-      ImageIndex = 16
-      ImageName = 'lock2'
-      ShortCut = 16460
-    end
-    object Session_New: TAction
-      Category = 'Session'
-      Caption = 'New Session...'
-      Hint = 'Create a new session.'
-      ImageIndex = 8
-      ImageName = 'new'
-      ShortCut = 16429
-    end
-    object Session_Edit: TAction
-      Category = 'Session'
-      Caption = 'Edit Session ...'
-      ImageIndex = 20
-      ImageName = 'edit'
-    end
-    object Session_Delete: TAction
-      Category = 'Session'
-      Caption = 'Delete Session...'
-      Hint = 'Delete the current selected session.'
-      ImageIndex = 9
-      ImageName = 'delete'
-      ShortCut = 16430
-    end
-    object Session_Report: TAction
-      Category = 'Session'
-      Caption = 'Session Report*'
-      Hint = 'Display the session report.'
-      ImageIndex = 15
-      ImageName = 'report'
-    end
-    object Session_Export: TAction
-      Category = 'Session'
-      Caption = 'Export Session...'
-      Enabled = False
-      ImageIndex = 22
-      ImageName = 'out'
     end
     object Nominate_SortMembers: TAction
       Category = 'Nominate'
@@ -4134,25 +4041,6 @@ object Main2: TMain2
       ImageName = 'Cycle'
       Visible = False
     end
-    object Session_Import: TAction
-      Category = 'Session'
-      Caption = 'Import Session...'
-      Enabled = False
-      ImageIndex = 21
-      ImageName = 'in'
-    end
-    object Session_Clone: TAction
-      Category = 'Session'
-      Caption = 'Clone Session...'
-      ImageIndex = 23
-      ImageName = 'clone'
-    end
-    object Session_Sort: TAction
-      Category = 'Session'
-      Caption = 'Sort'
-      ImageIndex = 24
-      ImageName = 'sort'
-    end
     object Tools_Score: TAction
       Category = 'Tools'
       Caption = 'Score, Place, Points...'
@@ -4273,7 +4161,6 @@ object Main2: TMain2
     object SwimClub_Stats: TAction
       Category = 'SwimClub'
       Caption = 'Club Statistics...'
-      ImageIndex = 28
       ImageName = 'Query-Stats'
     end
     object File_ExportClub: TAction

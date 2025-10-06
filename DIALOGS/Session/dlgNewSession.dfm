@@ -3,7 +3,7 @@ object NewSession: TNewSession
   Top = 0
   BorderStyle = bsDialog
   Caption = 'New Session ...'
-  ClientHeight = 288
+  ClientHeight = 352
   ClientWidth = 590
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,37 +20,38 @@ object NewSession: TNewSession
   TextHeight = 21
   object Panel1: TPanel
     Left = 0
-    Top = 0
+    Top = 49
     Width = 590
-    Height = 239
+    Height = 254
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitHeight = 310
+    ExplicitTop = 0
+    ExplicitHeight = 239
     object Label1: TLabel
       Left = 0
-      Top = 164
+      Top = 172
       Width = 149
       Height = 21
       Caption = 'Session Description ...'
     end
     object Label2: TLabel
       Left = 0
-      Top = 11
+      Top = 19
       Width = 89
       Height = 21
       Caption = 'Session Date'
     end
     object Label3: TLabel
       Left = 0
-      Top = 89
+      Top = 97
       Width = 91
       Height = 21
       Caption = 'Session Time'
     end
     object spbtnPlus: TSpeedButton
       Left = 305
-      Top = 115
+      Top = 123
       Width = 36
       Height = 36
       ImageIndex = 7
@@ -62,7 +63,7 @@ object NewSession: TNewSession
     end
     object spbtnMinus: TSpeedButton
       Left = 263
-      Top = 115
+      Top = 123
       Width = 36
       Height = 36
       ImageIndex = 6
@@ -75,7 +76,7 @@ object NewSession: TNewSession
     object btnToday: TButton
       Tag = 1
       Left = 156
-      Top = 38
+      Top = 46
       Width = 93
       Height = 32
       Hint = 'Clear the house name.'
@@ -88,7 +89,7 @@ object NewSession: TNewSession
     object btnDate: TButton
       Tag = 1
       Left = 255
-      Top = 38
+      Top = 46
       Width = 121
       Height = 32
       Hint = 'Clear the house name.'
@@ -100,7 +101,7 @@ object NewSession: TNewSession
     end
     object datePickerSess: TDatePicker
       Left = 0
-      Top = 38
+      Top = 46
       Date = 45889.000000000000000000
       DateFormat = 'dd/mm/yyyy'
       Font.Charset = DEFAULT_CHARSET
@@ -112,7 +113,7 @@ object NewSession: TNewSession
     end
     object timePickerSess: TTimePicker
       Left = 0
-      Top = 116
+      Top = 124
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
@@ -125,7 +126,7 @@ object NewSession: TNewSession
     object btnNow: TButton
       Tag = 1
       Left = 156
-      Top = 118
+      Top = 126
       Width = 101
       Height = 32
       Hint = 'Clear the house name.'
@@ -137,7 +138,7 @@ object NewSession: TNewSession
     end
     object DBEdit1: TDBEdit
       Left = 0
-      Top = 191
+      Top = 199
       Width = 569
       Height = 32
       AutoSize = False
@@ -148,13 +149,13 @@ object NewSession: TNewSession
   end
   object Panel2: TPanel
     Left = 0
-    Top = 239
+    Top = 303
     Width = 590
     Height = 49
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 310
+    ExplicitTop = 239
     object btnCancel: TButton
       Left = 213
       Top = 6
@@ -182,6 +183,55 @@ object NewSession: TNewSession
       ModalResult = 1
       TabOrder = 1
       OnClick = btnPostClick
+    end
+  end
+  object pnlHeader: TPanel
+    Left = 0
+    Top = 0
+    Width = 590
+    Height = 49
+    Align = alTop
+    BevelOuter = bvNone
+    TabOrder = 2
+    object DBTextClubName: TDBText
+      Left = 56
+      Top = 0
+      Width = 257
+      Height = 25
+      AutoSize = True
+      DataField = 'Caption'
+      DataSource = CORE.dsSwimClub
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -19
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+    end
+    object DBTextNickName: TDBText
+      Left = 56
+      Top = 24
+      Width = 113
+      Height = 17
+      AutoSize = True
+      DataField = 'NickName'
+      DataSource = CORE.dsSwimClub
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+    end
+    object DBImageLogo: TDBImage
+      Left = 0
+      Top = 0
+      Width = 50
+      Height = 50
+      DataField = 'LogoImg'
+      DataSource = CORE.dsSwimClub
+      Stretch = True
+      TabOrder = 0
     end
   end
 end

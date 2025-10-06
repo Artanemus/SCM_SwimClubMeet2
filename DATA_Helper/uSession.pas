@@ -184,15 +184,16 @@ begin
 
   try
     CORE.qryEvent.ApplyMaster; // assert sync to master.
-    if CORE.qryEvent.IsEmpty then exit;
-
-    CORE.qryEvent.First;
-    while not CORE.qryEvent.Eof do
+    if not CORE.qryEvent.IsEmpty then
     begin
-      {
-      uEvent.DeleteEvent(DoExclude); // Event & all it's dependants
-      }
-      CORE.qryEvent.next;
+      CORE.qryEvent.First;
+      while not CORE.qryEvent.Eof do
+      begin
+        {
+        uEvent.DeleteEvent(DoExclude); // Event & all it's dependants
+        }
+        CORE.qryEvent.next;
+      end;
     end;
 
     // ASSERT that all events have been removed.
@@ -204,7 +205,7 @@ begin
       // DELETE dbo.SchedualeSession
       SQL := '''
         DELETE FROM [SwimClubMeet2].[dbo].[ScheduleSession]
-        WHERE [SessionID] = :ID';
+        WHERE [SessionID] = :ID;
         ''';
       SCM2.scmConnection.ExecSQL(SQL, [uSession.PK]);
       // F I N A L L Y  Delete THE SESSION.
@@ -243,7 +244,7 @@ begin
     SELECT Count(HeatID) FROM  [SwimClubMeet2].[dbo].[Session]
     INNER JOIN [Event] ON [Session].SessionID = [Event].SessionID
     INNER JOIN [Heat] ON [Event].EventID = [Heat].EventID
-    WHERE [Heat].HeatStatusID > 1 AND [Session].SessionID = :ID'
+    WHERE [Heat].HeatStatusID > 1 AND [Session].SessionID = :ID;
     ''';
   v := SCM2.scmConnection.ExecSQLScalar(SQL, [uSession.PK]);
   if (v > 0) then result := true;  // Count(..) never returns null or empty.

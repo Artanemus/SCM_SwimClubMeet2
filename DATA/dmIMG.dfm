@@ -2436,6 +2436,17 @@ object IMG: TIMG
           ' 0-3m5.087-6.828l2.12 2.12a1 1 0 0 1 0 1.413l-2.12 2.123a1 1 0 0' +
           ' 1-1.415-1.413l.416-.417H14.38a1 1 0 1 1 0-2h3.205l-.412-.412a1 ' +
           '1 0 0 1 1.414-1.414"/></g></svg>'
+      end
+      item
+        IconName = 'event-list'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M16 21q-.825 0' +
+          '-1.412-.587T14 19v-4q0-.825.588-1.412T16 13h4q.825 0 1.413.588T2' +
+          '2 15v4q0 .825-.587 1.413T20 21zm0-2h4v-4h-4zM2 18v-2h9v2zm14-7q-' +
+          '.825 0-1.412-.587T14 9V5q0-.825.588-1.412T16 3h4q.825 0 1.413.58' +
+          '8T22 5v4q0 .825-.587 1.413T20 11zm0-2h4V5h-4zM2 8V6h9v2zm16-1"/>' +
+          '</svg>'
       end>
     Left = 320
     Top = 8
@@ -13828,11 +13839,22 @@ object IMG: TIMG
       item
         CollectionIndex = 37
         CollectionName = 'cog'
-        Name = 'lock'
+        Name = 'cog'
       end
       item
         CollectionIndex = 38
-        Name = 'lock-open'
+        CollectionName = 'week'
+        Name = 'week'
+      end
+      item
+        CollectionIndex = 39
+        CollectionName = 'lock2'
+        Name = 'lock2'
+      end
+      item
+        CollectionIndex = 40
+        CollectionName = 'lock2-open'
+        Name = 'lock2-open'
       end>
     ImageCollection = CollectionCore
     Width = 36
@@ -14083,6 +14105,11 @@ object IMG: TIMG
         CollectionIndex = 74
         CollectionName = 'user-check'
         Name = 'user-check'
+      end
+      item
+        CollectionIndex = 100
+        CollectionName = 'event-list'
+        Name = 'event-list'
       end>
     ImageCollection = CollectionCore
     Left = 224
@@ -14407,8 +14434,8 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 1088
-    Top = 80
+    Left = 304
+    Top = 376
   end
   object imglstMenuBar: TSVGIconVirtualImageList
     Images = <
@@ -14555,7 +14582,7 @@ object IMG: TIMG
       item
         CollectionIndex = 90
         CollectionName = 'query-stats'
-        Name = 'query-stats'
+        Name = 'stats'
       end
       item
         CollectionIndex = 91
@@ -14576,6 +14603,11 @@ object IMG: TIMG
         CollectionIndex = 99
         CollectionName = 'exit'
         Name = 'exit'
+      end
+      item
+        CollectionIndex = 67
+        CollectionName = 'search'
+        Name = 'search'
       end>
     ImageCollection = CollectionCore
     Width = 32

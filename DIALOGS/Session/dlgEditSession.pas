@@ -21,7 +21,7 @@ uses
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client,
 
-  dmCORE, dmIMG,
+  dmCORE, dmIMG, dmSCM2,
 
   uDefines, uSwimClub, uSession, SVGIconImage;
 
@@ -47,18 +47,17 @@ type
     spbtnSchedule: TSpeedButton;
     timePickerSess: TTimePicker;
     spbtnLockState: TSpeedButton;
-    lblWeekNumber: TLabel;
+    lblHeader: TLabel;
     pnlHeader: TPanel;
     spbtnSeasonStart: TSpeedButton;
-    lblNominees: TLabel;
-    lblEntrants: TLabel;
-    lblEvents: TLabel;
-    lblWeek: TLabel;
     lblLongDate: TLabel;
     DBTextNominees: TDBText;
     DBTextEntrants: TDBText;
     lblEventCount: TLabel;
-    lblWeekCount: TLabel;
+    lblWeekNum: TLabel;
+    imgNom: TSVGIconImage;
+    imgENT: TSVGIconImage;
+    imgEVENT: TSVGIconImage;
     procedure btnCancelClick(Sender: TObject);
     procedure btnDateClick(Sender: TObject);
     procedure btnMinusClick(Sender: TObject);
@@ -75,6 +74,9 @@ type
     procedure spbtnScheduleClick(Sender: TObject);
     procedure spbtnSeasonStartClick(Sender: TObject);
     procedure DTPickerSessChange(Sender: TObject);
+  private
+    procedure AutoCalcDateTime;
+    procedure UpdateLabelWeeksBetween;
   end;
 
 var
@@ -86,6 +88,40 @@ implementation
 
 uses
   System.DateUtils, dlgDatePicker;
+
+procedure TEditSession.AutoCalcDateTime;
+var
+  lastDT: TDateTime;
+  v: variant;
+  SQL: string;
+  id1, id2: integer;
+begin
+  // get the Max DT, excluding the current session being editited.
+  SQL := '''
+    SELECT MAX([SessionDT]) FROM SWimClubMeet2.dbo.Session
+    WHERE ([SwimClubID] = :ID1) AND ([SessionID] <> :ID2);
+    ''';
+
+  if CORE.qrySession.RecordCount < 2 then // if 0 or 1 ...
+  begin
+    lastDT := RecodeTime(Now, HourOf(Now), 0, 0, 0);
+  end
+  else
+  begin
+    // master - detail.
+    id1 := CORE.qrySession.FieldByName('SwimClubID').AsInteger;
+    id2 := CORE.qrySession.FieldByName('SessionID').AsInteger;
+    v := SCM2.scmConnection.ExecSQLScalar(SQL, [id1, id2]);
+    if (not VarIsClear(v)) and (v > 0) then
+      lastDT := IncWeek(DateOf(v), 1) + RecodeTime(0, HourOf(v), 0, 0, 0)
+    else
+      lastDT := RecodeTime(Now, HourOf(Now), 0, 0, 0);
+  end;
+  datePickerSess.Date := DateOf(lastDT);
+  timePickerSess.Time := TimeOf(lastDT);
+
+  UpdateLabelWeeksBetween;
+end;
 
 procedure TEditSession.btnCancelClick(Sender: TObject);
 begin
@@ -168,6 +204,15 @@ begin
   datePickerSess.Date := Date.Today;
 end;
 
+procedure TEditSession.UpdateLabelWeeksBetween;
+var
+  WeeksBetween: integer;
+begin
+  // number of weeks since start of the swimmging season.
+  WeeksBetween := uSession.WeeksSinceSeasonStart(datePickerSess.Date);
+  lblWeekNum.Caption :=  IntToStr(WeeksBetween); // render to UI.
+end;
+
 procedure TEditSession.FormCreate(Sender: TObject);
 begin
   if (not Assigned(CORE)) or (not CORE.IsActive) then
@@ -211,7 +256,6 @@ end;
 procedure TEditSession.FormShow(Sender: TObject);
 var
   dt: TDateTime;
-  WeeksBetween: integer;
 begin
     try
       if CORE.qrySession.FieldByName('SessionDT').IsNull then
@@ -220,15 +264,8 @@ begin
         dt := CORE.qrySession.FieldByName('SessionDT').AsDateTime;
       datePickerSess.Date := DateOf(dt);
       timePickerSess.Time := TimeOf(dt);
-
-      if (CORE.qrySession.FieldByName('SessionStatusID').AsInteger = 2) then
-        spbtnLockState.ImageName := 'lock'
-      else
-        spbtnLockState.ImageName := 'lock-open';
-
-      WeeksBetween := uSession.WeeksSinceSeasonStart(datePickerSess.Date);
-      lblWeekCount.Caption :=  IntToStr(WeeksBetween);
-
+      // number of weeks since start of the swimmging season.
+      UpdateLabelWeeksBetween();
     finally
       if CanFocus then datePickerSess.SetFocus;
     end;
@@ -237,13 +274,16 @@ end;
 procedure TEditSession.spbtnAutoDTClick(Sender: TObject);
 var
   msg: string;
+  mr: integer;
 begin
   msg := '''
     Auto assign a date and time,
     based on the previous session.
     ''';
-  MessageBox(0, PChar(msg), PChar('Button ideas ...'),
+  mr := MessageBox(0, PChar(msg), PChar('Auto Calculate...'),
   MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
+
+  if mr = idYES then AutoCalcDateTime;
 end;
 
 procedure TEditSession.spbtnScheduleClick(Sender: TObject);
@@ -252,9 +292,9 @@ var
 begin
   msg := '''
     Schedule the session.
-    (Your changes will be saved.)
+    (Not available in this version.)
     ''';
-  MessageBox(0, PChar(msg), PChar('Button ideas ...'),
+  MessageBox(0, PChar(msg), PChar('Schedule Session...'),
   MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
 end;
 
@@ -263,10 +303,10 @@ var
   msg: string;
 begin
   msg := '''
-    Adjust the 'start of the swimming season' date.
+    Adjust the 'start of the swimming season'.
     (Helpful if the week count isn't correct.)
     ''';
-  MessageBox(0, PChar(msg), PChar('Button ideas ...'),
+  MessageBox(0, PChar(msg), PChar('Season Start...'),
   MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
 end;
 
@@ -277,12 +317,12 @@ var
   dt: TDateTime;
 begin
   msg := '''
-    Answer yes...
+    If you answer yes...
     Your changes will be saved, the session will be locked and the dialogue closes.
     (Depending on the visibility settings, the session may no longer appear in the main form.)
     ''';
   id := MessageBox(0, PChar(msg), PChar('LOCK SESSION ...'),
-  MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
+          MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
 
   if (id = IDYES) then
   begin
@@ -293,8 +333,7 @@ begin
         if CORE.qrySession.FieldByName('SessionDT').AsDateTime <> dt then
           CORE.qrySession.FieldByName('SessionDT').AsDateTime := dt;
         CORE.qrySession.FieldByName('ModifiedOn').AsDateTime := Now;
-        if CORE.qrySession.FieldByName('SessionStatusID').IsNull then
-          CORE.qrySession.FieldByName('SessionStatusID').AsInteger := 2;
+        CORE.qrySession.FieldByName('SessionStatusID').AsInteger := 2;
         CORE.qrySession.Post; // finalize the changes...
         ModalResult := mrOk;
       except on E: Exception do
@@ -318,7 +357,6 @@ procedure TEditSession.DTPickerSessChange(Sender: TObject);
 var
   fs: TFormatSettings;
   dt: TDateTime;
-  WeeksBetween: integer;
 begin
   fs := TFormatSettings.Create; // default local format;
   try
@@ -326,8 +364,7 @@ begin
     dt := DateOf(datePickerSess.Date) + TimeOf(timePickerSess.Time);
     lblLongDate.Caption := FormatDateTime('dddd mmmm yyyy hh:nn', dt, fs);
     // number of weeks since start of the swimmging season.
-    WeeksBetween := uSession.WeeksSinceSeasonStart(datePickerSess.Date);
-    lblWeekCount.Caption :=  IntToStr(WeeksBetween);
+    UpdateLabelWeeksBetween();
   except on E: Exception do
     lblLongDate.Caption := '';
   end;

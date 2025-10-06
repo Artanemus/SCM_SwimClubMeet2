@@ -3,7 +3,7 @@ object EditSession: TEditSession
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Edit Session ...'
-  ClientHeight = 443
+  ClientHeight = 425
   ClientWidth = 672
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,13 +20,14 @@ object EditSession: TEditSession
   TextHeight = 21
   object Panel1: TPanel
     Left = 0
-    Top = 57
+    Top = 85
     Width = 672
-    Height = 337
+    Height = 291
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitHeight = 430
+    ExplicitTop = 56
+    ExplicitHeight = 337
     object Label1: TLabel
       Left = 8
       Top = 205
@@ -80,72 +81,6 @@ object EditSession: TEditSession
       PressedImageName = 'minus-box_Disabled'
       ShowHint = True
       OnClick = btnMinusClick
-    end
-    object lblNominees: TLabel
-      Left = 8
-      Top = 288
-      Width = 78
-      Height = 21
-      Caption = 'Nominees: '
-      Enabled = False
-    end
-    object lblEntrants: TLabel
-      Left = 119
-      Top = 288
-      Width = 64
-      Height = 21
-      Caption = 'Entrants: '
-      Enabled = False
-    end
-    object lblEvents: TLabel
-      Left = 225
-      Top = 288
-      Width = 52
-      Height = 21
-      Caption = 'Events: '
-      Enabled = False
-    end
-    object lblWeek: TLabel
-      Left = 339
-      Top = 288
-      Width = 45
-      Height = 21
-      Caption = 'Week: '
-      Enabled = False
-    end
-    object DBTextNominees: TDBText
-      Left = 92
-      Top = 288
-      Width = 24
-      Height = 17
-      DataField = 'NomineeCount'
-      DataSource = CORE.dsSession
-      Enabled = False
-    end
-    object DBTextEntrants: TDBText
-      Left = 189
-      Top = 288
-      Width = 30
-      Height = 17
-      DataField = 'EntrantCount'
-      DataSource = CORE.dsSession
-      Enabled = False
-    end
-    object lblEventCount: TLabel
-      Left = 283
-      Top = 288
-      Width = 36
-      Height = 21
-      Caption = '0000'
-      Enabled = False
-    end
-    object lblWeekCount: TLabel
-      Left = 390
-      Top = 288
-      Width = 27
-      Height = 21
-      Caption = '000'
-      Enabled = False
     end
     object btnToday: TButton
       Tag = 1
@@ -234,13 +169,13 @@ object EditSession: TEditSession
   end
   object Panel2: TPanel
     Left = 0
-    Top = 394
+    Top = 376
     Width = 672
     Height = 49
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 487
+    ExplicitTop = 394
     object btnCancel: TButton
       Left = 236
       Top = 5
@@ -274,18 +209,18 @@ object EditSession: TEditSession
     Left = 0
     Top = 0
     Width = 672
-    Height = 57
+    Height = 85
     Align = alTop
     BevelEdges = [beBottom]
     BevelKind = bkFlat
     BevelOuter = bvNone
     TabOrder = 2
-    object lblWeekNumber: TLabel
+    object lblHeader: TLabel
       Left = 8
       Top = 9
-      Width = 105
+      Width = 72
       Height = 32
-      Caption = 'SESSION :'
+      Caption = 'WEEK :'
       Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -299,7 +234,7 @@ object EditSession: TEditSession
       Top = 9
       Width = 36
       Height = 36
-      Hint = 'Auto assign date and time.'
+      Hint = 'Auto-Assign date and time.'
       ImageIndex = 11
       ImageName = 'build'
       Images = IMG.imglstMiscButtons
@@ -309,12 +244,12 @@ object EditSession: TEditSession
     end
     object spbtnLockState: TSpeedButton
       Left = 503
-      Top = 9
+      Top = 6
       Width = 36
       Height = 36
-      Hint = 'Schedule the session.'
-      ImageIndex = 14
-      ImageName = 'lock-open'
+      Hint = 'Lock Session.'
+      ImageIndex = 16
+      ImageName = 'lock2-open'
       Images = IMG.imglstMiscButtons
       ParentShowHint = False
       ShowHint = True
@@ -338,7 +273,7 @@ object EditSession: TEditSession
       Top = 9
       Width = 36
       Height = 36
-      Hint = 'Schedule the session.'
+      Hint = 'Set Start of Season.'
       ImageIndex = 1
       ImageName = 'pick-date'
       Images = IMG.imglstMiscButtons
@@ -347,7 +282,7 @@ object EditSession: TEditSession
       OnClick = spbtnSeasonStartClick
     end
     object lblLongDate: TLabel
-      Left = 119
+      Left = 159
       Top = 9
       Width = 210
       Height = 32
@@ -359,6 +294,78 @@ object EditSession: TEditSession
       Font.Name = 'Segoe UI'
       Font.Style = []
       ParentFont = False
+    end
+    object lblWeekNum: TLabel
+      Left = 86
+      Top = 9
+      Width = 39
+      Height = 32
+      Caption = '000'
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -24
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+    end
+    object DBTextNominees: TDBText
+      Left = 39
+      Top = 49
+      Width = 9
+      Height = 21
+      AutoSize = True
+      DataField = 'NomineeCount'
+      DataSource = CORE.dsSession
+      Enabled = False
+    end
+    object imgNom: TSVGIconImage
+      Left = 8
+      Top = 47
+      Width = 25
+      Height = 25
+      AutoSize = False
+      ImageList = IMG.imglstSessGrid
+      ImageIndex = 14
+      ImageName = 'user'
+    end
+    object imgENT: TSVGIconImage
+      Left = 86
+      Top = 47
+      Width = 25
+      Height = 25
+      AutoSize = False
+      ImageList = IMG.imglstSessGrid
+      ImageIndex = 15
+      ImageName = 'user-check'
+    end
+    object DBTextEntrants: TDBText
+      Left = 117
+      Top = 49
+      Width = 9
+      Height = 21
+      AutoSize = True
+      DataField = 'EntrantCount'
+      DataSource = CORE.dsSession
+      Enabled = False
+    end
+    object lblEventCount: TLabel
+      Left = 190
+      Top = 49
+      Width = 36
+      Height = 21
+      Caption = '0000'
+      Enabled = False
+    end
+    object imgEVENT: TSVGIconImage
+      Left = 159
+      Top = 47
+      Width = 25
+      Height = 25
+      AutoSize = False
+      ImageList = IMG.imglstSessGrid
+      ImageIndex = 16
+      ImageName = 'event-list'
     end
   end
 end

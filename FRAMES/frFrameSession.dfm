@@ -676,9 +676,15 @@ object FrameSession: TFrameSession
       OnExecute = actnSessFr_LockExecute
       OnUpdate = actnSessFr_LockUpdate
     end
+    object actnSessFr_Search: TAction
+      Category = 'Session_Frame'
+      Caption = 'Search...'
+      ImageIndex = 33
+      ImageName = 'search'
+    end
     object actnSessFr_Edit: TAction
       Category = 'Session_Frame'
-      Caption = 'Edit Session'
+      Caption = 'Edit Session...'
       Hint = 'Edit the current selected session.'
       ImageIndex = 20
       ImageName = 'edit'
@@ -687,7 +693,7 @@ object FrameSession: TFrameSession
     end
     object actnSessFr_New: TAction
       Category = 'Session_Frame'
-      Caption = 'New Session'
+      Caption = 'New Session...'
       Hint = 'Create a new session.'
       ImageIndex = 8
       ImageName = 'new'
@@ -696,7 +702,7 @@ object FrameSession: TFrameSession
     end
     object actnSessFr_Clone: TAction
       Category = 'Session_Frame'
-      Caption = 'Clone Session'
+      Caption = 'Clone Session...'
       Hint = 'Duplicate the selected session.'
       ImageIndex = 23
       ImageName = 'clone'
@@ -704,7 +710,7 @@ object FrameSession: TFrameSession
     end
     object actnSessFr_Delete: TAction
       Category = 'Session_Frame'
-      Caption = 'Delete Session'
+      Caption = 'Delete Session...'
       Hint = 'Delete the selected session.'
       ImageIndex = 9
       ImageName = 'delete'
@@ -713,11 +719,37 @@ object FrameSession: TFrameSession
     end
     object actnSessFr_Report: TAction
       Category = 'Session_Frame'
-      Caption = 'Session Report'
+      Caption = 'Session Report...'
       Hint = 'Create a Session report.'
       ImageIndex = 15
       ImageName = 'report'
       OnUpdate = actnSessFr_ReportUpdate
+    end
+    object actnSessFr_Export: TAction
+      Category = 'Session_Frame'
+      Caption = 'Export...'
+      ImageIndex = 22
+      ImageName = 'out'
+    end
+    object actnSessFr_Import: TAction
+      Category = 'Session_Frame'
+      Caption = 'Import...'
+      ImageIndex = 21
+      ImageName = 'in'
+    end
+    object actnSessFr_Sort: TAction
+      Category = 'Session_Frame'
+      Caption = 'Sort...'
+      ImageIndex = 24
+      ImageName = 'sort'
+      OnExecute = actnSessFr_SortExecute
+      OnUpdate = actnSessFr_SortUpdate
+    end
+    object actnSessFr_Stats: TAction
+      Category = 'Session_Frame'
+      Caption = 'Statistics...'
+      ImageIndex = 28
+      ImageName = 'stats'
     end
   end
   object pumenuSession: TPopupMenu
@@ -736,6 +768,7 @@ object FrameSession: TFrameSession
     end
     object EditSession1: TMenuItem
       Action = actnSessFr_Edit
+      ImageIndex = 8
     end
     object NewSession1: TMenuItem
       Action = actnSessFr_New
@@ -743,6 +776,7 @@ object FrameSession: TFrameSession
     end
     object CloneSession1: TMenuItem
       Action = actnSessFr_Clone
+      ImageIndex = 11
     end
     object DeleteSession1: TMenuItem
       Action = actnSessFr_Delete
@@ -753,6 +787,7 @@ object FrameSession: TFrameSession
     end
     object SessionReport1: TMenuItem
       Action = actnSessFr_Report
+      ImageIndex = 5
     end
   end
 end

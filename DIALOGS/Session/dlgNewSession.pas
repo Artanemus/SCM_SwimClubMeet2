@@ -21,7 +21,7 @@ uses
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client,
 
-  dmCORE, dmIMG,
+  dmCORE, dmIMG, dmSCM2,
 
   uDefines, uSwimClub, uSession;
 
@@ -29,38 +29,39 @@ type
   scmSessionMode = (smEditSession, smNewSession, swNotGiven);
 
   TNewSession = class(TForm)
-    Panel1: TPanel;
+    btnCancel: TButton;
+    btnDate: TButton;
+    btnNow: TButton;
+    btnPost: TButton;
+    btnToday: TButton;
+    datePickerSess: TDatePicker;
+    DBEdit1: TDBEdit;
     Label1: TLabel;
     Label2: TLabel;
     Label3: TLabel;
+    Panel1: TPanel;
     Panel2: TPanel;
-    btnCancel: TButton;
-    btnPost: TButton;
-    timePickerSess: TTimePicker;
-    DBEdit1: TDBEdit;
-    btnToday: TButton;
-    btnDate: TButton;
-    datePickerSess: TDatePicker;
-    btnNow: TButton;
-    spbtnPlus: TSpeedButton;
     spbtnMinus: TSpeedButton;
-    procedure FormDestroy(Sender: TObject);
-    procedure btnPostClick(Sender: TObject);
-    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FormCreate(Sender: TObject);
-    procedure FormShow(Sender: TObject);
+    spbtnPlus: TSpeedButton;
+    timePickerSess: TTimePicker;
+    pnlHeader: TPanel;
+    DBTextClubName: TDBText;
+    DBImageLogo: TDBImage;
+    DBTextNickName: TDBText;
     procedure btnCancelClick(Sender: TObject);
     procedure btnDateClick(Sender: TObject);
     procedure btnMinusClick(Sender: TObject);
     procedure btnNowClick(Sender: TObject);
     procedure btnPlusClick(Sender: TObject);
+    procedure btnPostClick(Sender: TObject);
     procedure btnTodayClick(Sender: TObject);
-    procedure spbtnAutoDTClick(Sender: TObject);
-    procedure spbtnScheduleClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
-  public
-    { Public declarations }
+    procedure AutoCalcDateTime();
   end;
 
 var
@@ -73,9 +74,35 @@ implementation
 uses
   System.DateUtils, dlgDatePicker;
 
-procedure TNewSession.FormDestroy(Sender: TObject);
+procedure TNewSession.AutoCalcDateTime;
+var
+  lastDT: TDateTime;
+  v: variant;
+  SQL: string;
+  id: integer;
 begin
-  CORE.qrySession.CheckBrowseMode;
+  // get the Max DT
+  SQL := '''
+    SELECT MAX([SessionDT]) FROM SWimClubMeet2.dbo.Session
+    WHERE [SwimClubID] = :ID;
+    ''';
+
+  if CORE.qrySession.IsEmpty then
+  begin
+    lastDT := RecodeTime(Now, HourOf(Now), 0, 0, 0);
+  end
+  else
+  begin
+    // master - detail.
+    id := CORE.qrySession.FieldByName('SwimClubID').AsInteger;
+    v := SCM2.scmConnection.ExecSQLScalar(SQL, [id]);
+    if (not VarIsClear(v)) and (v > 0) then
+      lastDT := IncWeek(DateOf(v), 1) + RecodeTime(0, HourOf(v), 0, 0, 0)
+    else
+      lastDT := RecodeTime(Now, HourOf(Now), 0, 0, 0);
+  end;
+  datePickerSess.Date := DateOf(lastDT);
+  timePickerSess.Time := TimeOf(lastDT);
 end;
 
 procedure TNewSession.btnCancelClick(Sender: TObject);
@@ -127,8 +154,8 @@ begin
   begin
     try
       dt := datePickerSess.Date + timePickerSess.Time;
-      if CORE.qrySession.FieldByName('SessionStart').AsDateTime <> dt then
-        CORE.qrySession.FieldByName('SessionStart').AsDateTime := dt;
+      if CORE.qrySession.FieldByName('SessionDT').AsDateTime <> dt then
+        CORE.qrySession.FieldByName('SessionDT').AsDateTime := dt;
 
       if CORE.qrySession.FieldByName('SessionStatusID').IsNull then
         CORE.qrySession.FieldByName('SessionStatusID').AsInteger := 1;
@@ -165,9 +192,6 @@ procedure TNewSession.FormCreate(Sender: TObject);
 begin
   if (not Assigned(CORE)) or (not CORE.IsActive) then
     raise Exception.Create('DataBase (CORE) not active.');
-
-  if not CORE.qrySession.IsEmpty then Close;
-
   try
     CORE.qrySession.Insert;
   except on E: Exception do
@@ -176,7 +200,11 @@ begin
       Close;
     end;
   end;
+end;
 
+procedure TNewSession.FormDestroy(Sender: TObject);
+begin
+  CORE.qrySession.CheckBrowseMode;
 end;
 
 procedure TNewSession.FormKeyDown(Sender: TObject; var Key: Word;
@@ -196,40 +224,12 @@ var
   dt: TDateTime;
 begin
   try
-    if CORE.qrySession.FieldByName('StartDT').IsNull then
-      dt := Now
-    else
-      dt := CORE.qrySession.FieldByName('StartDT').AsDateTime;
+    // calculate a session date and time based on the previous session..
+    AutoCalcDateTime;
 
-    datePickerSess.Date := DateOf(dt);
-    timePickerSess.Time := TimeOf(dt);
-    
   finally
     if CanFocus then datePickerSess.SetFocus;
   end;
-end;
-
-procedure TNewSession.spbtnAutoDTClick(Sender: TObject);
-var
-  msg: string;
-begin
-  msg := '''
-    Auto assign date and time
-    based on the previous session.
-    ''';
-  MessageBox(0, PChar(msg), PChar('AutoBuild Session Details...'),
-  MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
-end;
-
-procedure TNewSession.spbtnScheduleClick(Sender: TObject);
-var
-  msg: string;
-begin
-  msg := '''
-    Save changes and run the schedule package.
-    ''';
-  MessageBox(0, PChar(msg), PChar('Schedule Session...'),
-  MB_ICONQUESTION or MB_YESNO or MB_DEFBUTTON2);
 end;
 
 end.

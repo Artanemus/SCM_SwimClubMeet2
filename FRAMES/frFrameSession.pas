@@ -51,6 +51,11 @@ type
     spbtnSessLockedVisible: TSpeedButton;
     spbtnSessNew: TSpeedButton;
     spbtnSessReport: TSpeedButton;
+    actnSessFr_Export: TAction;
+    actnSessFr_Import: TAction;
+    actnSessFr_Sort: TAction;
+    actnSessFr_Search: TAction;
+    actnSessFr_Stats: TAction;
     procedure actnSessFr_CheckLockUpdate(Sender: TObject);
     procedure actnSessFr_CloneUpdate(Sender: TObject);
     procedure actnSessFr_DeleteExecute(Sender: TObject);
@@ -64,6 +69,8 @@ type
     procedure actnSessFr_NewExecute(Sender: TObject);
     procedure actnSessFr_NewUpdate(Sender: TObject);
     procedure actnSessFr_ReportUpdate(Sender: TObject);
+    procedure actnSessFr_SortExecute(Sender: TObject);
+    procedure actnSessFr_SortUpdate(Sender: TObject);
     procedure gSessionDblClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure gSessionGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
@@ -78,12 +85,13 @@ type
     procedure Initialise();
     // will message seen by main tunnle through to frame?  CHECK...
     procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
+
   end;
 
 implementation
 
 uses
-  dlgEditSession;
+  dlgEditSession, dlgNewSession;
 
 {$R *.dfm}
 
@@ -257,9 +265,15 @@ begin
 end;
 
 procedure TFrameSession.actnSessFr_NewExecute(Sender: TObject);
+var
+  dlg: TNewSession;
+  mr: TModalResult;
 begin
-  gSession.PageMode := true;
-
+  dlg := TNewSession.Create(Self);
+  mr := dlg.ShowModal;
+  dlg.Free;
+  if mr = mrOk then
+    CORE.qrySession.Refresh;
 end;
 
 procedure TFrameSession.actnSessFr_NewUpdate(Sender: TObject);
@@ -282,6 +296,24 @@ begin
   // fix RAD STUDIO icon re-assignment issue.
   if (spbtnSessReport.imageindex <> 5) then
     spbtnSessReport.imageindex := 5;
+  if Assigned(CORE) and CORE.IsActive and
+    not CORE.qrySession.IsEmpty then DoEnable := true;
+  TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TFrameSession.actnSessFr_SortExecute(Sender: TObject);
+begin
+  gSession.BeginUpdate;
+  {TODO -oBSA -cGeneral : Check if detailed tables are in sync.}
+  CORE.qrySession.Refresh;
+  gSession.EndUpdate;
+end;
+
+procedure TFrameSession.actnSessFr_SortUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
   if Assigned(CORE) and CORE.IsActive and
     not CORE.qrySession.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
@@ -470,5 +502,6 @@ begin
       spbtnSessLock.ImageIndex := 7;
   end;
 end;
+
 
 end.

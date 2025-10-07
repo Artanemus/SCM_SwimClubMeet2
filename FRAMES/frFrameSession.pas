@@ -22,13 +22,13 @@ uses
 type
   TFrameSession = class(TFrame)
     actnlstSession: TActionList;
-    actnSessFr_Clone: TAction;
-    actnSessFr_Delete: TAction;
-    actnSessFr_Edit: TAction;
-    actnSessFr_Lock: TAction;
-    actnSessFr_IsLocked: TAction;
-    actnSessFr_New: TAction;
-    actnSessFr_Report: TAction;
+    actnSess_Clone: TAction;
+    actnSess_Delete: TAction;
+    actnSess_Edit: TAction;
+    actnSess_Lock: TAction;
+    actnSess_IsLocked: TAction;
+    actnSess_New: TAction;
+    actnSess_Report: TAction;
     CloneSession1: TMenuItem;
     DeleteSession1: TMenuItem;
     EditSession1: TMenuItem;
@@ -51,26 +51,27 @@ type
     spbtnSessLockedVisible: TSpeedButton;
     spbtnSessNew: TSpeedButton;
     spbtnSessReport: TSpeedButton;
-    actnSessFr_Export: TAction;
-    actnSessFr_Import: TAction;
-    actnSessFr_Sort: TAction;
-    actnSessFr_Search: TAction;
-    actnSessFr_Stats: TAction;
-    procedure actnSessFr_CheckLockUpdate(Sender: TObject);
-    procedure actnSessFr_CloneUpdate(Sender: TObject);
-    procedure actnSessFr_DeleteExecute(Sender: TObject);
-    procedure actnSessFr_DeleteUpdate(Sender: TObject);
-    procedure actnSessFr_EditExecute(Sender: TObject);
-    procedure actnSessFr_EditUpdate(Sender: TObject);
-    procedure actnSessFr_IsLockedExecute(Sender: TObject);
-    procedure actnSessFr_IsLockedUpdate(Sender: TObject);
-    procedure actnSessFr_LockExecute(Sender: TObject);
-    procedure actnSessFr_LockUpdate(Sender: TObject);
-    procedure actnSessFr_NewExecute(Sender: TObject);
-    procedure actnSessFr_NewUpdate(Sender: TObject);
-    procedure actnSessFr_ReportUpdate(Sender: TObject);
-    procedure actnSessFr_SortExecute(Sender: TObject);
-    procedure actnSessFr_SortUpdate(Sender: TObject);
+    actnSess_Export: TAction;
+    actnSess_Import: TAction;
+    actnSess_Sort: TAction;
+    actnSess_Search: TAction;
+    actnSess_Stats: TAction;
+    actnSess_Schedule: TAction;
+    procedure actnSess_CheckLockUpdate(Sender: TObject);
+    procedure actnSess_CloneUpdate(Sender: TObject);
+    procedure actnSess_DeleteExecute(Sender: TObject);
+    procedure actnSess_DeleteUpdate(Sender: TObject);
+    procedure actnSess_EditExecute(Sender: TObject);
+    procedure actnSess_EditUpdate(Sender: TObject);
+    procedure actnSess_IsLockedExecute(Sender: TObject);
+    procedure actnSess_IsLockedUpdate(Sender: TObject);
+    procedure actnSess_LockExecute(Sender: TObject);
+    procedure actnSess_LockUpdate(Sender: TObject);
+    procedure actnSess_NewExecute(Sender: TObject);
+    procedure actnSess_NewUpdate(Sender: TObject);
+    procedure actnSess_ReportUpdate(Sender: TObject);
+    procedure actnSess_SortExecute(Sender: TObject);
+    procedure actnSess_SortUpdate(Sender: TObject);
     procedure gSessionDblClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure gSessionGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
@@ -83,7 +84,7 @@ type
     procedure FixedSessCntrlIcons;
   public
     procedure Initialise();
-    // will message seen by main tunnle through to frame?  CHECK...
+    // messages must be forwarded by main form.
     procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
 
   end;
@@ -95,7 +96,7 @@ uses
 
 {$R *.dfm}
 
-procedure TFrameSession.actnSessFr_CheckLockUpdate(Sender: TObject);
+procedure TFrameSession.actnSess_CheckLockUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -108,7 +109,7 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameSession.actnSessFr_CloneUpdate(Sender: TObject);
+procedure TFrameSession.actnSess_CloneUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -121,7 +122,7 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameSession.actnSessFr_DeleteExecute(Sender: TObject);
+procedure TFrameSession.actnSess_DeleteExecute(Sender: TObject);
 var
   rtnValue: integer;
 begin
@@ -160,7 +161,7 @@ begin
   end;
 end;
 
-procedure TFrameSession.actnSessFr_DeleteUpdate(Sender: TObject);
+procedure TFrameSession.actnSess_DeleteUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -176,7 +177,7 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameSession.actnSessFr_EditExecute(Sender: TObject);
+procedure TFrameSession.actnSess_EditExecute(Sender: TObject);
 var
 dlg: TEditSession;
 begin
@@ -185,7 +186,7 @@ begin
   dlg.Free;
 end;
 
-procedure TFrameSession.actnSessFr_EditUpdate(Sender: TObject);
+procedure TFrameSession.actnSess_EditUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -201,7 +202,7 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameSession.actnSessFr_IsLockedExecute(Sender: TObject);
+procedure TFrameSession.actnSess_IsLockedExecute(Sender: TObject);
 begin
     gSession.BeginUpdate;
     TAction(Sender).Checked := not TAction(Sender).Checked;
@@ -215,7 +216,7 @@ begin
     end;
 end;
 
-procedure TFrameSession.actnSessFr_IsLockedUpdate(Sender: TObject);
+procedure TFrameSession.actnSess_IsLockedUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -228,7 +229,7 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameSession.actnSessFr_LockExecute(Sender: TObject);
+procedure TFrameSession.actnSess_LockExecute(Sender: TObject);
 begin
   gSession.BeginUpdate;
   try
@@ -251,7 +252,7 @@ begin
   end;
 end;
 
-procedure TFrameSession.actnSessFr_LockUpdate(Sender: TObject);
+procedure TFrameSession.actnSess_LockUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -264,7 +265,7 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameSession.actnSessFr_NewExecute(Sender: TObject);
+procedure TFrameSession.actnSess_NewExecute(Sender: TObject);
 var
   dlg: TNewSession;
   mr: TModalResult;
@@ -276,7 +277,7 @@ begin
     CORE.qrySession.Refresh;
 end;
 
-procedure TFrameSession.actnSessFr_NewUpdate(Sender: TObject);
+procedure TFrameSession.actnSess_NewUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -288,7 +289,7 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameSession.actnSessFr_ReportUpdate(Sender: TObject);
+procedure TFrameSession.actnSess_ReportUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -301,7 +302,7 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameSession.actnSessFr_SortExecute(Sender: TObject);
+procedure TFrameSession.actnSess_SortExecute(Sender: TObject);
 begin
   gSession.BeginUpdate;
   {TODO -oBSA -cGeneral : Check if detailed tables are in sync.}
@@ -309,7 +310,7 @@ begin
   gSession.EndUpdate;
 end;
 
-procedure TFrameSession.actnSessFr_SortUpdate(Sender: TObject);
+procedure TFrameSession.actnSess_SortUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -332,7 +333,7 @@ procedure TFrameSession.gSessionDblClickCell(Sender: TObject; ARow, ACol:
 begin
   // edit the session....
   if (ARow >= gSession.FixedRows) and (ACol = 1)then
-    actnSessFr_Edit.Execute;
+    actnSess_Edit.Execute;
 end;
 
 procedure TFrameSession.gSessionGetCellColor(Sender: TObject; ARow, ACol:
@@ -369,8 +370,8 @@ procedure TFrameSession.gSessionGetHTMLTemplate(Sender: TObject; ACol, ARow:
     Integer; var HTMLTemplate: string; Fields: TFields);
 var
   s, s2: string;
-  DT1, DT2: TDateTime;
   ShowSeasonIcon, Locked: boolean;
+  weeks: integer;
 begin
   if (not Assigned(CORE)) or (not CORE.IsActive) or
     CORE.qrySession.IsEmpty then exit;
@@ -379,9 +380,9 @@ begin
   ShowSeasonIcon := false;
   if CORE.qrySession.FieldByName('SessionStatusID').AsInteger = 2 then
     Locked := true else Locked := false;
-  DT1 := CORE.qrySession.FieldByName('SessionDT').AsDateTime;
-  DT2 := CORE.qrySwimClub.FieldByName('StartOfSwimSeason').AsDateTime;
-  if WithinPastMonths(Dt1,DT2,6) then ShowSeasonIcon := true;
+  // as typical swimming season is 6 months .. 25 weeks...
+  weeks := uSession.WeeksSinceSeasonStart;
+  if (weeks < 26) and (weeks > 0) then ShowSeasonIcon := true;
 
   if (ACol = 1) then     // and (ARow >= gSession.FixedRows)
   begin
@@ -389,11 +390,15 @@ begin
     begin
       // Session date and time. Caption. Status buttons. 2xlines
       s := '''
-        <IND x="2"><FONT Size="12"><B><#SessionDT></B></FONT><br>
-        <IND x="4"><FONT Size="12"><IMG src="idx:7" align="middle">
+        <FONT Size="12">
+        <IND x="2"><B><#SessionDT></B><br>
+        <IND x="4"><IMG src="idx:7" align="bottom">
         ''';
       if ShowSeasonIcon then
-        s := s + '<IND x="24"><IMG src="idx:13" align="middle">';
+      begin
+        s := s + '<IND x="24"><IMG src="idx:17" align="bottom">';
+        s := s + ' ' + IntToStr(weeks) + ' ';
+      end;
       s := s + '  <#Caption></FONT>';
     end
     else // The session is locked - 3xlines at reduced font size.
@@ -404,13 +409,14 @@ begin
         <IND x="4"><IMG src="idx:6" align="middle">
         ''';
       if ShowSeasonIcon then
-        s := s + '<IND x="24"><IMG src="idx:13" align="middle">';
-      // extended info shown only on locked sessions
-      s2 := '''
-        <IND x="44"><IMG src="idx:14" align="middle"> <#NomineeCount>
-        <IND x="104"><IMG src="idx:15" align="middle"> <#EntrantCount></FONT>
-        ''';
-      s := s + s2;
+      begin
+        s := s + '  <IMG src="idx:17" align="middle">'; // <IND x="24">
+        s := s + ' ' + IntToStr(weeks) + '  ';
+      end;
+      // extended info shown only on locked sessions <IND x="44">  <IND x="104">
+      s := s + '  <IMG src="idx:14" align="middle"> <#NomineeCount>';
+      s := s + '  <IMG src="idx:15" align="middle"> <#EntrantCount></FONT>';
+
     end;
     HTMLTemplate := s;
   end;
@@ -436,15 +442,15 @@ begin
       gSession.PageMode := true;
 
       if Assigned(Settings) then
-        actnSessFr_IsLocked.Checked := Settings.HideLockedSessions
+        actnSess_IsLocked.Checked := Settings.HideLockedSessions
       else
-        actnSessFr_IsLocked.Checked := false;
+        actnSess_IsLocked.Checked := false;
 
-      SetIsLockedIcon; // uses actnSessFr_Visible.Checked state.
+      SetIsLockedIcon; // uses actnSess_Visible.Checked state.
 
       gSession.BeginUpdate;
         // FILTER TABLE CONTENTS: false - indxShowAll , true indxHideLocked.
-        uSession.SetIndexName(actnSessFr_IsLocked.Checked);
+        uSession.SetIndexName(actnSess_IsLocked.Checked);
       gSession.EndUpdate;
     end;
   end
@@ -459,29 +465,29 @@ var
 begin
   // track the state of locked/unlocked.
   i := CORE.qrySession.FieldByName('SessionStatusID').AsInteger;
-  if (i=2) and not actnSessFr_Lock.Checked then
+  if (i=2) and not actnSess_Lock.Checked then
   begin
-    actnSessFr_Lock.Checked := true; // syncronize to equal db state
+    actnSess_Lock.Checked := true; // syncronize to equal db state
     SetLockIcon;
   end;
-  if (i=1) and actnSessFr_Lock.Checked then
+  if (i=1) and actnSess_Lock.Checked then
   begin
-    actnSessFr_Lock.Checked := false; // syncronize to equal db state
+    actnSess_Lock.Checked := false; // syncronize to equal db state
     SetLockIcon;
   end;
 end;
 
 procedure TFrameSession.SetIsLockedIcon;
 begin
-    if actnSessFr_IsLocked.Checked then
+    if actnSess_IsLocked.Checked then
     begin
-      actnSessFr_IsLocked.ImageIndex := 4; // Eye+line - HIDE locked sessions.
+      actnSess_IsLocked.ImageIndex := 4; // Eye+line - HIDE locked sessions.
       if (spbtnSessLockedVisible.ImageIndex <> 2) then // saves a repaint..
         spbtnSessLockedVisible.ImageIndex := 2;
     end
     else
     begin
-      actnSessFr_IsLocked.ImageIndex := 3; // Eye - SHOW ALL sessions.
+      actnSess_IsLocked.ImageIndex := 3; // Eye - SHOW ALL sessions.
       if (spbtnSessLockedVisible.ImageIndex <> 1) then // saves a repaint..
         spbtnSessLockedVisible.ImageIndex := 1;
     end;
@@ -489,15 +495,15 @@ end;
 
 procedure TFrameSession.SetLockIcon;
 begin
-  if actnSessFr_Lock.Checked then
+  if actnSess_Lock.Checked then
   begin
-    actnSessFr_Lock.ImageIndex := 16; // lock2 icon
+    actnSess_Lock.ImageIndex := 16; // lock2 icon
     if (spbtnSessLock.ImageIndex <> 6) then // saves a repaint..
       spbtnSessLock.ImageIndex := 6;
   end
   else
   begin
-    actnSessFr_Lock.ImageIndex := 17; // lock2-open icon
+    actnSess_Lock.ImageIndex := 17; // lock2-open icon
     if (spbtnSessLock.ImageIndex <> 7) then // saves a repaint..
       spbtnSessLock.ImageIndex := 7;
   end;

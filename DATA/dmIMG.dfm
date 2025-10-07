@@ -2447,6 +2447,7 @@ object IMG: TIMG
           '.825 0-1.412-.587T14 9V5q0-.825.588-1.412T16 3h4q.825 0 1.413.58' +
           '8T22 5v4q0 .825-.587 1.413T20 11zm0-2h4V5h-4zM2 8V6h9v2zm16-1"/>' +
           '</svg>'
+        FixedColor = clDarkkhaki
       end>
     Left = 320
     Top = 8
@@ -14110,6 +14111,11 @@ object IMG: TIMG
         CollectionIndex = 100
         CollectionName = 'event-list'
         Name = 'event-list'
+      end
+      item
+        CollectionIndex = 38
+        CollectionName = 'week'
+        Name = 'week'
       end>
     ImageCollection = CollectionCore
     Left = 224

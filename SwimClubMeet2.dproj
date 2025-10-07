@@ -193,6 +193,12 @@
             <Form>NewSession</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="FRAMES\frFrameEvent.pas">
+            <Form>FrameEvent</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="DATA_Helper\uEvent.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

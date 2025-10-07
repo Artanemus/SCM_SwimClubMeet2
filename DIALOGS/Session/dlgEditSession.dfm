@@ -26,8 +26,6 @@ object EditSession: TEditSession
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 56
-    ExplicitHeight = 337
     object Label1: TLabel
       Left = 8
       Top = 205
@@ -175,7 +173,6 @@ object EditSession: TEditSession
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 394
     object btnCancel: TButton
       Left = 236
       Top = 5
@@ -215,20 +212,7 @@ object EditSession: TEditSession
     BevelKind = bkFlat
     BevelOuter = bvNone
     TabOrder = 2
-    object lblHeader: TLabel
-      Left = 8
-      Top = 9
-      Width = 72
-      Height = 32
-      Caption = 'WEEK :'
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -24
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-    end
+    ExplicitTop = -6
     object spbtnAutoDT: TSpeedButton
       Left = 629
       Top = 9
@@ -282,7 +266,7 @@ object EditSession: TEditSession
       OnClick = spbtnSeasonStartClick
     end
     object lblLongDate: TLabel
-      Left = 159
+      Left = 8
       Top = 9
       Width = 210
       Height = 32
@@ -296,15 +280,15 @@ object EditSession: TEditSession
       ParentFont = False
     end
     object lblWeekNum: TLabel
-      Left = 86
-      Top = 9
-      Width = 39
-      Height = 32
-      Caption = '000'
+      Left = 279
+      Top = 49
+      Width = 36
+      Height = 21
+      Caption = '0000'
       Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
-      Font.Height = -24
+      Font.Height = -16
       Font.Name = 'Segoe UI'
       Font.Style = []
       ParentFont = False
@@ -324,20 +308,26 @@ object EditSession: TEditSession
       Top = 47
       Width = 25
       Height = 25
+      Hint = 'Nominees'
       AutoSize = False
       ImageList = IMG.imglstSessGrid
       ImageIndex = 14
       ImageName = 'user'
+      ParentShowHint = False
+      ShowHint = True
     end
     object imgENT: TSVGIconImage
       Left = 86
       Top = 47
       Width = 25
       Height = 25
+      Hint = 'Entrants'
       AutoSize = False
       ImageList = IMG.imglstSessGrid
       ImageIndex = 15
       ImageName = 'user-check'
+      ParentShowHint = False
+      ShowHint = True
     end
     object DBTextEntrants: TDBText
       Left = 117
@@ -357,15 +347,31 @@ object EditSession: TEditSession
       Caption = '0000'
       Enabled = False
     end
-    object imgEVENT: TSVGIconImage
+    object imgEventCount: TSVGIconImage
       Left = 159
       Top = 47
       Width = 25
       Height = 25
+      Hint = 'Events'
       AutoSize = False
       ImageList = IMG.imglstSessGrid
       ImageIndex = 16
       ImageName = 'event-list'
+      ParentShowHint = False
+      ShowHint = True
+    end
+    object imgWeek: TSVGIconImage
+      Left = 248
+      Top = 47
+      Width = 25
+      Height = 25
+      Hint = 'Week'
+      AutoSize = False
+      ImageList = IMG.imglstSessGrid
+      ImageIndex = 17
+      ImageName = 'week'
+      ParentShowHint = False
+      ShowHint = True
     end
   end
 end

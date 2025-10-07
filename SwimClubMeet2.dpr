@@ -24,7 +24,9 @@ uses
   frFrameSession in 'FRAMES\frFrameSession.pas' {FrameSession: TFrame},
   dlgEditSession in 'DIALOGS\Session\dlgEditSession.pas' {EditSession},
   dlgDatePicker in 'DIALOGS\Picker\dlgDatePicker.pas' {DatePicker},
-  dlgNewSession in 'DIALOGS\Session\dlgNewSession.pas' {NewSession};
+  dlgNewSession in 'DIALOGS\Session\dlgNewSession.pas' {NewSession},
+  frFrameEvent in 'FRAMES\frFrameEvent.pas' {FrameEvent: TFrame},
+  uEvent in 'DATA_Helper\uEvent.pas';
 
 {$R *.res}
 

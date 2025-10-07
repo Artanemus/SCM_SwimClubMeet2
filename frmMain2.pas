@@ -47,7 +47,7 @@ type
     File_Exit: TAction;
     File_ExportClub: TAction;
     File_ImportClub: TAction;
-    frgSession: TFrameSession;
+    frSession: TFrameSession;
     Heat_AutoBuild: TAction;
     Heat_BatchBuildHeats: TAction;
     Heat_BatchMarshallReport: TAction;
@@ -109,6 +109,7 @@ type
     Tools_QualifyTimes: TAction;
     Tools_Score: TAction;
     Tools_Swimmercategory: TAction;
+    pnlEvent: TPanel;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -213,7 +214,7 @@ begin
     gLane.BeginUpdate;
   *)
 
-  frgSession.gSession.BeginUpdate;
+  frSession.gSession.BeginUpdate;
   try
     dlg := TLogin.Create(Self); // dlg to connect to the SCM DB.
     dlg.ShowModal;
@@ -226,7 +227,7 @@ begin
       if Assigned(Settings) and (Settings.LastSwimClubPK <> 0) then
         uSwimClub.Locate(Settings.LastSwimClubPK); // restore swim club.
       // sets table indexname, icon imageindexes and gird pagemode
-      frgSession.Initialise;
+      frSession.Initialise;
     end;
 
     // UI changes needed to track connection state.
@@ -244,7 +245,7 @@ begin
       StatusBar.Panels[0].Text := 'NOT CONNECTED'; // psOwnerDraw
     end;
   finally
-    frgSession.gSession.EndUpdate;
+    frSession.gSession.EndUpdate;
   end;
 
   {TODO -oBSA -cUI : take grids online with endupdate }
@@ -312,7 +313,7 @@ begin
   // Assign a handle to the CORE data module - for windows messages
   CORE.MSG_Handle := Self.Handle;
 
-  frgSession.Initialise;
+  frSession.Initialise;
 
 end;
 
@@ -328,7 +329,7 @@ end;
 
 procedure TMain2.FormShow(Sender: TObject);
 begin
-  frgSession.Repaint;
+  frSession.Repaint;
   Application.ProcessMessages;
 
   if Assigned(Settings) and Settings.DoLoginOnBoot then
@@ -356,7 +357,7 @@ end;
 procedure TMain2.Msg_SCM_Scroll_Session(var Msg: TMessage);
 begin
   // pass message forward to session frame...
-  SendMessage(frgSession.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
+  SendMessage(frSession.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
   try // update the status bar with nominee and entrant counts.
     if (uSession.IsLocked) then
     begin // Fast.. gets the pre-calculated params from table.
@@ -368,10 +369,12 @@ begin
       StatusBar.Panels[1].Text := IntToStr(uSession.CalcNomineeCount);
       StatusBar.Panels[2].Text := IntToStr(uSession.CalcEntrantCount);
     end;
+    StatusBar.Panels[3].Text := IntToStr(uSession.WeeksSinceSeasonStart);
   except on E: Exception do
     begin
       StatusBar.Panels[1].Text := 'ERR';
       StatusBar.Panels[2].Text := 'ERR';
+      StatusBar.Panels[3].Text := 'ERR';
     end;
   end;
 
@@ -498,14 +501,14 @@ procedure TMain2.SwimClub_SwitchExecute(Sender: TObject);
 var
   dlg: TSwimClubSwitch;
 begin
-  frgSession.gSession.BeginUpdate;
+  frSession.gSession.BeginUpdate;
   try
   dlg :=  TSwimClubSwitch.Create(Self);
   dlg.ShowModal;
   dlg.Free;
-  frgSession.Initialise;
+  frSession.Initialise;
   finally
-    frgSession.gSession.EndUpdate;
+    frSession.gSession.EndUpdate;
   end;
 end;
 

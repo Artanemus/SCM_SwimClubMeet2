@@ -536,7 +536,7 @@ object FrameSession: TFrameSession
       Top = 208
       Width = 54
       Height = 48
-      Action = actnSessFr_Clone
+      Action = actnSess_Clone
       Align = alTop
       Images = IMG.imglstSessCntrl
       Flat = True
@@ -553,7 +553,7 @@ object FrameSession: TFrameSession
       Top = 256
       Width = 54
       Height = 48
-      Action = actnSessFr_Delete
+      Action = actnSess_Delete
       Align = alTop
       Images = IMG.imglstSessCntrl
       Flat = True
@@ -570,7 +570,7 @@ object FrameSession: TFrameSession
       Top = 48
       Width = 54
       Height = 48
-      Action = actnSessFr_Lock
+      Action = actnSess_Lock
       Align = alTop
       ImageName = 'lock2-open'
       Images = IMG.imglstSessCntrl
@@ -588,7 +588,7 @@ object FrameSession: TFrameSession
       Top = 160
       Width = 54
       Height = 48
-      Action = actnSessFr_New
+      Action = actnSess_New
       Align = alTop
       Images = IMG.imglstSessCntrl
       Flat = True
@@ -605,7 +605,7 @@ object FrameSession: TFrameSession
       Top = 320
       Width = 54
       Height = 48
-      Action = actnSessFr_Report
+      Action = actnSess_Report
       Align = alTop
       Images = IMG.imglstSessCntrl
       Flat = True
@@ -622,7 +622,7 @@ object FrameSession: TFrameSession
       Top = 0
       Width = 54
       Height = 48
-      Action = actnSessFr_IsLocked
+      Action = actnSess_IsLocked
       Align = alTop
       ImageName = 'visible_on'
       Images = IMG.imglstSessCntrl
@@ -641,7 +641,7 @@ object FrameSession: TFrameSession
       Top = 112
       Width = 54
       Height = 48
-      Action = actnSessFr_Edit
+      Action = actnSess_Edit
       Align = alTop
       Images = IMG.imglstSessCntrl
       Flat = True
@@ -658,98 +658,102 @@ object FrameSession: TFrameSession
     Images = IMG.imglstMenuBar
     Left = 208
     Top = 56
-    object actnSessFr_IsLocked: TAction
-      Category = 'Session_Frame'
+    object actnSess_IsLocked: TAction
+      Category = 'Session'
       Caption = 'Toggle Visibility'
       Hint = 'Toggle the visibility of locked sessions.'
       ImageIndex = 3
       ImageName = 'locked-show'
-      OnExecute = actnSessFr_IsLockedExecute
-      OnUpdate = actnSessFr_IsLockedUpdate
+      OnExecute = actnSess_IsLockedExecute
+      OnUpdate = actnSess_IsLockedUpdate
     end
-    object actnSessFr_Lock: TAction
-      Category = 'Session_Frame'
+    object actnSess_Lock: TAction
+      Category = 'Session'
       Caption = 'Lock/Unlock'
       Hint = 'Toggle the lock state of a session.'
       ImageIndex = 16
       ImageName = 'lock2'
-      OnExecute = actnSessFr_LockExecute
-      OnUpdate = actnSessFr_LockUpdate
+      OnExecute = actnSess_LockExecute
+      OnUpdate = actnSess_LockUpdate
     end
-    object actnSessFr_Search: TAction
-      Category = 'Session_Frame'
+    object actnSess_Search: TAction
+      Category = 'Session'
       Caption = 'Search...'
       ImageIndex = 33
       ImageName = 'search'
     end
-    object actnSessFr_Edit: TAction
-      Category = 'Session_Frame'
+    object actnSess_Edit: TAction
+      Category = 'Session'
       Caption = 'Edit Session...'
       Hint = 'Edit the current selected session.'
       ImageIndex = 20
       ImageName = 'edit'
-      OnExecute = actnSessFr_EditExecute
-      OnUpdate = actnSessFr_EditUpdate
+      OnExecute = actnSess_EditExecute
+      OnUpdate = actnSess_EditUpdate
     end
-    object actnSessFr_New: TAction
-      Category = 'Session_Frame'
+    object actnSess_New: TAction
+      Category = 'Session'
       Caption = 'New Session...'
       Hint = 'Create a new session.'
       ImageIndex = 8
       ImageName = 'new'
-      OnExecute = actnSessFr_NewExecute
-      OnUpdate = actnSessFr_NewUpdate
+      OnExecute = actnSess_NewExecute
+      OnUpdate = actnSess_NewUpdate
     end
-    object actnSessFr_Clone: TAction
-      Category = 'Session_Frame'
+    object actnSess_Clone: TAction
+      Category = 'Session'
       Caption = 'Clone Session...'
       Hint = 'Duplicate the selected session.'
       ImageIndex = 23
       ImageName = 'clone'
-      OnUpdate = actnSessFr_CloneUpdate
+      OnUpdate = actnSess_CloneUpdate
     end
-    object actnSessFr_Delete: TAction
-      Category = 'Session_Frame'
+    object actnSess_Delete: TAction
+      Category = 'Session'
       Caption = 'Delete Session...'
       Hint = 'Delete the selected session.'
       ImageIndex = 9
       ImageName = 'delete'
-      OnExecute = actnSessFr_DeleteExecute
-      OnUpdate = actnSessFr_DeleteUpdate
+      OnExecute = actnSess_DeleteExecute
+      OnUpdate = actnSess_DeleteUpdate
     end
-    object actnSessFr_Report: TAction
-      Category = 'Session_Frame'
+    object actnSess_Report: TAction
+      Category = 'Session'
       Caption = 'Session Report...'
       Hint = 'Create a Session report.'
       ImageIndex = 15
       ImageName = 'report'
-      OnUpdate = actnSessFr_ReportUpdate
+      OnUpdate = actnSess_ReportUpdate
     end
-    object actnSessFr_Export: TAction
-      Category = 'Session_Frame'
+    object actnSess_Export: TAction
+      Category = 'Session'
       Caption = 'Export...'
       ImageIndex = 22
       ImageName = 'out'
     end
-    object actnSessFr_Import: TAction
-      Category = 'Session_Frame'
+    object actnSess_Import: TAction
+      Category = 'Session'
       Caption = 'Import...'
       ImageIndex = 21
       ImageName = 'in'
     end
-    object actnSessFr_Sort: TAction
-      Category = 'Session_Frame'
+    object actnSess_Sort: TAction
+      Category = 'Session'
       Caption = 'Sort...'
       ImageIndex = 24
       ImageName = 'sort'
-      OnExecute = actnSessFr_SortExecute
-      OnUpdate = actnSessFr_SortUpdate
+      OnExecute = actnSess_SortExecute
+      OnUpdate = actnSess_SortUpdate
     end
-    object actnSessFr_Stats: TAction
-      Category = 'Session_Frame'
-      Caption = 'Statistics...'
+    object actnSess_Stats: TAction
+      Category = 'Session'
+      Caption = 'Session Statistics...'
       ImageIndex = 28
       ImageName = 'stats'
+    end
+    object actnSess_Schedule: TAction
+      Category = 'Session'
+      Caption = 'Schedule Session...'
     end
   end
   object pumenuSession: TPopupMenu
@@ -757,36 +761,36 @@ object FrameSession: TFrameSession
     Left = 208
     Top = 336
     object pumToggleVisibility: TMenuItem
-      Action = actnSessFr_IsLocked
+      Action = actnSess_IsLocked
       ImageName = 'new'
     end
     object LockUnlock1: TMenuItem
-      Action = actnSessFr_Lock
+      Action = actnSess_Lock
     end
     object N1: TMenuItem
       Caption = '-'
     end
     object EditSession1: TMenuItem
-      Action = actnSessFr_Edit
+      Action = actnSess_Edit
       ImageIndex = 8
     end
     object NewSession1: TMenuItem
-      Action = actnSessFr_New
+      Action = actnSess_New
       ImageName = 'edit'
     end
     object CloneSession1: TMenuItem
-      Action = actnSessFr_Clone
+      Action = actnSess_Clone
       ImageIndex = 11
     end
     object DeleteSession1: TMenuItem
-      Action = actnSessFr_Delete
+      Action = actnSess_Delete
       ImageName = 'in'
     end
     object N2: TMenuItem
       Caption = '-'
     end
     object SessionReport1: TMenuItem
-      Action = actnSessFr_Report
+      Action = actnSess_Report
       ImageIndex = 5
     end
   end

@@ -52,7 +52,7 @@ var
 implementation
 
 uses
-	uSession, uHeat, uLane;
+	uSession; // , uHeat, uLane;
 
 constructor T_Event.Create;
 begin
@@ -95,17 +95,23 @@ begin
   CORE.qryHeat.DisableControls;
   try
     if DoLocate then
-      aHeatID := uHeat.PK;
+    begin
+      ;//  aHeatID := uHeat.PK;
+    end;
+
     // BSA wip move into uEvent?
     (*
     SCM2.procRenumberHeats.Params[1].Value := uEvent.PK;
     SCM2.procRenumberHeats.Prepare;
     SCM2.procRenumberHeats.ExecProc;
     *)
+
   finally
     CORE.qryHeat.ApplyMaster;
     if DoLocate then
-      uHeat.Locate(aHeatID);
+    begin
+      ;// uHeat.Locate(aHeatID);
+    end;
     CORE.qryHeat.EnableControls;
     CORE.qryLane.EnableControls;
   end;
@@ -117,6 +123,7 @@ var
   done: boolean;
 begin
   result := false;
+  done := false;
   // Not permitted to delete anything if session is locked.
   if uSession.IsLocked() then exit;
   CORE.qryHeat.DisableControls;
@@ -126,7 +133,7 @@ begin
     while not eof do
     begin
       // Deletes watch-times and split-times and finally the lane.
-      done := uHeat.DeleteHeat(true); // retain raced or closed heats.
+      // done := uHeat.DeleteHeat(true); // retain raced or closed heats.
       if done then
       begin
         result := true;

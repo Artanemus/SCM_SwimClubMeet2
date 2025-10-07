@@ -23,7 +23,7 @@ object Main2: TMain2
   CustomTitleBar.ButtonPressedForegroundColor = 65793
   CustomTitleBar.ButtonPressedBackgroundColor = 8170169
   CustomTitleBar.ButtonInactiveForegroundColor = 10066329
-  CustomTitleBar.ButtonInactiveBackgroundColor = clWhite
+  CustomTitleBar.ButtonInactiveBackgroundColor = clBackground
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -16
@@ -2843,7 +2843,7 @@ object Main2: TMain2
         Align = alLeft
         BevelOuter = bvNone
         TabOrder = 0
-        inline frgSession: TFrameSession
+        inline frSession: TFrameSession
           Left = 0
           Top = 0
           Width = 440
@@ -2867,11 +2867,50 @@ object Main2: TMain2
           inherited pnlCntrl: TPanel
             Height = 615
             ExplicitHeight = 615
+            inherited spbtnSessClone: TSpeedButton
+              ImageIndex = 11
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessDelete: TSpeedButton
+              ImageName = 'in'
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessLock: TSpeedButton
+              ImageIndex = 6
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessNew: TSpeedButton
+              ImageName = 'edit'
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessReport: TSpeedButton
+              ImageIndex = 5
+              Glyph.Data = {00000000}
+            end
             inherited spbtnSessLockedVisible: TSpeedButton
               ImageName = 'new'
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessEdit: TSpeedButton
+              ImageIndex = 8
+              Glyph.Data = {00000000}
+            end
+          end
+          inherited pumenuSession: TPopupMenu
+            inherited LockUnlock1: TMenuItem
+              ImageIndex = -1
             end
           end
         end
+      end
+      object pnlEvent: TPanel
+        Left = 584
+        Top = 0
+        Width = 511
+        Height = 628
+        Align = alRight
+        BevelOuter = bvNone
+        TabOrder = 1
       end
     end
     object tabNominate: TTabSheet
@@ -3314,19 +3353,19 @@ object Main2: TMain2
           item
             Items = <
               item
-                Action = frgSession.actnSessFr_IsLocked
+                Action = frSession.actnSess_IsLocked
                 Caption = '&Toggle Visibility'
                 ImageIndex = 3
                 ImageName = 'locked-show'
               end
               item
-                Action = frgSession.actnSessFr_Lock
+                Action = frSession.actnSess_Lock
                 Caption = '&Lock/Unlock'
                 ImageIndex = 16
                 ImageName = 'lock2'
               end
               item
-                Action = frgSession.actnSessFr_Search
+                Action = frSession.actnSess_Search
                 Caption = 'Se&arch...'
                 ImageIndex = 33
                 ImageName = 'search'
@@ -3335,31 +3374,31 @@ object Main2: TMain2
                 Caption = '-'
               end
               item
-                Action = frgSession.actnSessFr_Edit
+                Action = frSession.actnSess_Edit
                 Caption = '&Edit Session...'
                 ImageIndex = 20
                 ImageName = 'edit'
               end
               item
-                Action = frgSession.actnSessFr_New
+                Action = frSession.actnSess_New
                 Caption = '&New Session...'
                 ImageIndex = 8
                 ImageName = 'new'
               end
               item
-                Action = frgSession.actnSessFr_Clone
+                Action = frSession.actnSess_Clone
                 Caption = '&Clone Session...'
                 ImageIndex = 23
                 ImageName = 'clone'
               end
               item
-                Action = frgSession.actnSessFr_Delete
+                Action = frSession.actnSess_Delete
                 Caption = '&Delete Session...'
                 ImageIndex = 9
                 ImageName = 'delete'
               end
               item
-                Action = frgSession.actnSessFr_Report
+                Action = frSession.actnSess_Report
                 Caption = '&Session Report...'
                 ImageIndex = 15
                 ImageName = 'report'
@@ -3368,13 +3407,13 @@ object Main2: TMain2
                 Caption = '-'
               end
               item
-                Action = frgSession.actnSessFr_Export
+                Action = frSession.actnSess_Export
                 Caption = 'E&xport...'
                 ImageIndex = 22
                 ImageName = 'out'
               end
               item
-                Action = frgSession.actnSessFr_Import
+                Action = frSession.actnSess_Import
                 Caption = '&Import...'
                 ImageIndex = 21
                 ImageName = 'in'
@@ -3751,12 +3790,12 @@ object Main2: TMain2
       end>
     LinkedActionLists = <
       item
-        ActionList = frgSession.actnlstSession
+        ActionList = frSession.actnlstSession
         Caption = 'actnlstSession'
       end>
     Images = IMG.imglstMenuBar
-    Left = 552
-    Top = 136
+    Left = 472
+    Top = 160
     StyleName = 'Platform Default'
     object Help_About: TAction
       Category = 'Help'
@@ -4002,6 +4041,7 @@ object Main2: TMain2
     object Event_BuildFinals: TAction
       Category = 'Events'
       Caption = 'Build event finals ...'
+      Hint = 'With the selected event, build a finals event.'
       ImageName = 'AutoBuild'
     end
     object Event_BuildSemiFinals: TAction

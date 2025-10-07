@@ -47,7 +47,6 @@ type
     spbtnSchedule: TSpeedButton;
     timePickerSess: TTimePicker;
     spbtnLockState: TSpeedButton;
-    lblHeader: TLabel;
     pnlHeader: TPanel;
     spbtnSeasonStart: TSpeedButton;
     lblLongDate: TLabel;
@@ -57,7 +56,8 @@ type
     lblWeekNum: TLabel;
     imgNom: TSVGIconImage;
     imgENT: TSVGIconImage;
-    imgEVENT: TSVGIconImage;
+    imgEventCount: TSVGIconImage;
+    imgWeek: TSVGIconImage;
     procedure btnCancelClick(Sender: TObject);
     procedure btnDateClick(Sender: TObject);
     procedure btnMinusClick(Sender: TObject);

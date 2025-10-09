@@ -14622,4 +14622,25 @@ object IMG: TIMG
     Left = 192
     Top = 376
   end
+  object imglstEventType: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 0
+        CollectionName = 'EmptyFrame'
+        Name = 'EmptyFrame'
+      end
+      item
+        CollectionIndex = 72
+        CollectionName = 'INDV'
+        Name = 'INDV'
+      end
+      item
+        CollectionIndex = 15
+        CollectionName = 'RELAY_DOT'
+        Name = 'RELAY_DOT'
+      end>
+    ImageCollection = CollectionCore
+    Left = 352
+    Top = 208
+  end
 end

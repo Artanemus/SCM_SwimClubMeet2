@@ -152,7 +152,7 @@ begin
     try
       // MASTER.
       qrySwimClub.Open;
-      qrySession.IndexName := 'indxHideArchived';
+//      qrySession.IndexName := 'indxHideArchived';
       qrySwimClub.First;
       // lookup tables.
       tblStroke.Open;

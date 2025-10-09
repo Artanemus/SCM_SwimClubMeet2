@@ -475,6 +475,7 @@ begin
     actnSess_Lock.Checked := false; // syncronize to equal db state
     SetLockIcon;
   end;
+
 end;
 
 procedure TFrameSession.SetIsLockedIcon;

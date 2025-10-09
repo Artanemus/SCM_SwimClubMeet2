@@ -22,7 +22,7 @@ uses
   FireDAC.Stan.Option,
 
   dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub, AdvUtil, AdvObj,
-  BaseGrid, AdvGrid, DBAdvGrid, frFrameSession
+  BaseGrid, AdvGrid, DBAdvGrid, frFrameSession, frFrameEvent
 
   ;
 
@@ -110,6 +110,7 @@ type
     Tools_Score: TAction;
     Tools_Swimmercategory: TAction;
     pnlEvent: TPanel;
+    frEvent: TFrameEvent;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -133,6 +134,7 @@ type
     // Note: don't name procedure same as winapi.message name.
     procedure Msg_SCM_Connect(var Msg: TMessage); message SCM_Connect;
     procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
+    procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
   end;
 
 var
@@ -200,6 +202,7 @@ procedure TMain2.File_ConnectionExecute(Sender: TObject);
 var
   dlg: TLogin;
   cState: boolean;
+  i: integer;
 begin
   // NOTE: strange title bar colouration.
 
@@ -208,12 +211,12 @@ begin
 
   {TODO -oBSA -cUI : take grids offline with beginupdate }
   (*
-    gEvent.BeginUpdate;
     gMember.BeginUpdate;
     gHeat.BeginUpdate;
     gLane.BeginUpdate;
   *)
 
+  frEvent.gEvent.BeginUpdate;
   frSession.gSession.BeginUpdate;
   try
     dlg := TLogin.Create(Self); // dlg to connect to the SCM DB.
@@ -228,6 +231,7 @@ begin
         uSwimClub.Locate(Settings.LastSwimClubPK); // restore swim club.
       // sets table indexname, icon imageindexes and gird pagemode
       frSession.Initialise;
+      frEvent.Initialise;
     end;
 
     // UI changes needed to track connection state.
@@ -246,18 +250,20 @@ begin
     end;
   finally
     frSession.gSession.EndUpdate;
+    frEvent.gEvent.EndUpdate;
   end;
 
   {TODO -oBSA -cUI : take grids online with endupdate }
   (*
-    gEvent.EndUpdate;
     gMember.EndUpdate;
     gHeat.EndUpdate;
     gLane.EndUpdate;
   *)
 
-
 end;
+
+
+
 
 procedure TMain2.File_ConnectionUpdate(Sender: TObject);
 begin
@@ -314,6 +320,7 @@ begin
   CORE.MSG_Handle := Self.Handle;
 
   frSession.Initialise;
+  frEvent.Initialise;
 
 end;
 
@@ -352,6 +359,12 @@ begin
   if SCM2.scmConnection.Connected then exit;
   //  actnManager.ExecuteAction(File_Connection); // doesn't work
   File_Connection.Execute;
+end;
+
+procedure TMain2.Msg_SCM_Scroll_Event(var Msg: TMessage);
+begin
+  // pass message forward to event frame...
+  SendMessage(frEvent.Handle, SCM_SCROLL_EVENT, Msg.WParam, Msg.LParam);
 end;
 
 procedure TMain2.Msg_SCM_Scroll_Session(var Msg: TMessage);

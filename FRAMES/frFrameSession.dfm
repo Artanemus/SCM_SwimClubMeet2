@@ -694,7 +694,7 @@ object FrameSession: TFrameSession
     object actnSess_New: TAction
       Category = 'Session'
       Caption = 'New Session...'
-      Hint = 'Create a new session.'
+      Hint = 'Create session. (Ctrl+Ins)'
       ImageIndex = 8
       ImageName = 'new'
       OnExecute = actnSess_NewExecute
@@ -711,7 +711,7 @@ object FrameSession: TFrameSession
     object actnSess_Delete: TAction
       Category = 'Session'
       Caption = 'Delete Session...'
-      Hint = 'Delete the selected session.'
+      Hint = 'Delete session. (Ctrl+Del)'
       ImageIndex = 9
       ImageName = 'delete'
       OnExecute = actnSess_DeleteExecute

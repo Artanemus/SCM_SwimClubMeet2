@@ -40,6 +40,7 @@ type
     imglstHeatStrokeEx: TSVGIconVirtualImageList;
     imglstStatusPanel: TSVGIconVirtualImageList;
     imglstMenuBar: TSVGIconVirtualImageList;
+    imglstEventType: TSVGIconVirtualImageList;
   private
     { Private declarations }
 

@@ -2860,6 +2860,91 @@ object Main2: TMain2
             inherited gSession: TDBAdvGrid
               Width = 386
               Height = 615
+              Columns = <
+                item
+                  Borders = []
+                  BorderPen.Color = clSilver
+                  ButtonHeight = 18
+                  CheckFalse = 'N'
+                  CheckTrue = 'Y'
+                  Color = clWindow
+                  FieldName = 'SessionID'
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clWindowText
+                  Font.Height = -12
+                  Font.Name = 'Segoe UI'
+                  Font.Style = []
+                  HeaderFont.Charset = DEFAULT_CHARSET
+                  HeaderFont.Color = 3881787
+                  HeaderFont.Height = -12
+                  HeaderFont.Name = 'Segoe UI'
+                  HeaderFont.Style = []
+                  PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+                  PrintFont.Charset = DEFAULT_CHARSET
+                  PrintFont.Color = clWindowText
+                  PrintFont.Height = -12
+                  PrintFont.Name = 'Segoe UI'
+                  PrintFont.Style = []
+                  Width = 0
+                end
+                item
+                  Borders = []
+                  BorderPen.Color = clSilver
+                  ButtonHeight = 18
+                  CheckFalse = 'N'
+                  CheckTrue = 'Y'
+                  Color = clWindow
+                  FieldName = 'SessionID'
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clWindowText
+                  Font.Height = -12
+                  Font.Name = 'Segoe UI'
+                  Font.Style = []
+                  Header = 'SESSIONS'
+                  HeaderFont.Charset = DEFAULT_CHARSET
+                  HeaderFont.Color = 3881787
+                  HeaderFont.Height = -12
+                  HeaderFont.Name = 'Segoe UI'
+                  HeaderFont.Style = []
+                  HTMLTemplate = 
+                    '<IND x="2"><FONT Size="9"<B><#SessionDT></B><br><IND x="2"><FONT' +
+                    ' Size="10"><#Caption><br><IND x="4"><FONT Size="9"><IMG src="idx' +
+                    ':6" align="middle">'
+                  Images = IMG.imglstSessGrid
+                  PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+                  PrintFont.Charset = DEFAULT_CHARSET
+                  PrintFont.Color = clWindowText
+                  PrintFont.Height = -12
+                  PrintFont.Name = 'Segoe UI'
+                  PrintFont.Style = []
+                  Width = 340
+                end
+                item
+                  Borders = []
+                  BorderPen.Color = clSilver
+                  ButtonHeight = 18
+                  CheckFalse = 'N'
+                  CheckTrue = 'Y'
+                  Color = clWhite
+                  FieldName = 'SessionStatusID'
+                  Font.Charset = DEFAULT_CHARSET
+                  Font.Color = clBlack
+                  Font.Height = -16
+                  Font.Name = 'Segoe UI'
+                  Font.Style = []
+                  HeaderFont.Charset = DEFAULT_CHARSET
+                  HeaderFont.Color = clBlack
+                  HeaderFont.Height = -16
+                  HeaderFont.Name = 'Segoe UI'
+                  HeaderFont.Style = []
+                  PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+                  PrintFont.Charset = DEFAULT_CHARSET
+                  PrintFont.Color = clBlack
+                  PrintFont.Height = -16
+                  PrintFont.Name = 'Segoe UI'
+                  PrintFont.Style = []
+                  Width = 0
+                end>
               ExplicitWidth = 386
               ExplicitHeight = 615
             end
@@ -2904,13 +2989,61 @@ object Main2: TMain2
         end
       end
       object pnlEvent: TPanel
-        Left = 584
+        Left = 464
         Top = 0
-        Width = 511
+        Width = 631
         Height = 628
         Align = alRight
         BevelOuter = bvNone
         TabOrder = 1
+        inline frEvent: TFrameEvent
+          Left = 0
+          Top = 0
+          Width = 631
+          Height = 628
+          Align = alClient
+          TabOrder = 0
+          ExplicitLeft = -165
+          ExplicitTop = -80
+          inherited pnlCntrl: TPanel
+            Height = 628
+            ExplicitHeight = 708
+            inherited spbtnEvGridView: TSpeedButton
+              ImageIndex = -1
+              ImageName = ''
+            end
+            inherited spbtnEvUp: TSpeedButton
+              ImageName = ''
+            end
+            inherited spbtnEvDown: TSpeedButton
+              ImageName = ''
+            end
+            inherited spbtnEvNew: TSpeedButton
+              ImageName = ''
+            end
+            inherited spbtnEvDelete: TSpeedButton
+              ImageName = ''
+            end
+            inherited spbtnEvReport: TSpeedButton
+              ImageName = ''
+            end
+          end
+          inherited pnlBody: TPanel
+            Width = 577
+            Height = 628
+            ExplicitWidth = 622
+            ExplicitHeight = 708
+            inherited gEvent: TDBAdvGrid
+              Width = 577
+              Height = 628
+              ExplicitWidth = 577
+              ExplicitHeight = 628
+            end
+          end
+          inherited actnlstEvent: TActionList
+            Left = 208
+          end
+        end
       end
     end
     object tabNominate: TTabSheet
@@ -3794,8 +3927,8 @@ object Main2: TMain2
         Caption = 'actnlstSession'
       end>
     Images = IMG.imglstMenuBar
-    Left = 472
-    Top = 160
+    Left = 688
+    Top = 48
     StyleName = 'Platform Default'
     object Help_About: TAction
       Category = 'Help'

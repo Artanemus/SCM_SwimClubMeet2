@@ -46,7 +46,7 @@ object CORE: TCORE
     MasterSource = dsSwimClub
     MasterFields = 'SwimClubID'
     DetailFields = 'SwimClubID'
-    Connection = SCM2.scmConnection
+    Connection = TestConnection
     FormatOptions.AssignedValues = [fvFmtDisplayDateTime]
     FormatOptions.FmtDisplayDateTime = 'YYYY-MM-DD hh:nn'
     UpdateOptions.AssignedValues = [uvEInsert]
@@ -161,11 +161,11 @@ object CORE: TCORE
         Fields = 'SessionID'
         DescFields = 'SessionID'
       end>
-    IndexName = 'indxSession_DESC'
+    IndexFieldNames = 'SessionID'
     MasterSource = dsSession
     MasterFields = 'SessionID'
     DetailFields = 'SessionID'
-    Connection = SCM2.scmConnection
+    Connection = TestConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'hh:nn'
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Event'
@@ -444,7 +444,7 @@ object CORE: TCORE
         Fields = 'SwimClubID'
       end>
     IndexName = 'indxHideArchived'
-    Connection = SCM2.scmConnection
+    Connection = TestConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..SwimClub'
     UpdateOptions.KeyFields = 'SwimClubID'
     SQL.Strings = (
@@ -558,7 +558,6 @@ object CORE: TCORE
     MasterSource = dsEvent
     MasterFields = 'EventID'
     DetailFields = 'EventID'
-    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn.ss.zzz'
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Nominee'
@@ -736,8 +735,9 @@ object CORE: TCORE
   end
   object tblStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'StrokeID'
-    Connection = SCM2.scmConnection
+    Connection = TestConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Stroke'
     UpdateOptions.KeyFields = 'StrokeID'
@@ -749,7 +749,7 @@ object CORE: TCORE
     ActiveStoredUsage = [auDesignTime]
     Active = True
     IndexFieldNames = 'DistanceID'
-    Connection = SCM2.scmConnection
+    Connection = TestConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Distance'
     UpdateOptions.KeyFields = 'DistanceID'
@@ -909,6 +909,7 @@ object CORE: TCORE
   object TestConnection: TFDConnection
     Params.Strings = (
       'ConnectionDef=MSSQL_SwimClubMeet2')
+    Connected = True
     LoginPrompt = False
     Left = 496
     Top = 40

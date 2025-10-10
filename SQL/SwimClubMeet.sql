@@ -3,11 +3,7 @@ go
 
 -- Standard Alter Table SQL
 
-ALTER TABLE dbo.ScoreDivision DROP CONSTRAINT FK_ScoreDivision
+ALTER TABLE dbo.Distance DROP CONSTRAINT EventTpeDistance
 go
-ALTER TABLE dbo.ScoreDivision DROP COLUMN SwimClubID
-go
-ALTER TABLE dbo.ScorePoints DROP CONSTRAINT FK_ScorePoints
-go
-ALTER TABLE dbo.ScorePoints DROP COLUMN SwimClubID
+ALTER TABLE dbo.Distance DROP COLUMN EventTypeID
 go

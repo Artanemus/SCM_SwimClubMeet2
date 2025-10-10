@@ -32,17 +32,6 @@ type
     actnManager: TActionManager;
     DBTextClubName: TDBText;
     DBTextNickName: TDBText;
-    Event_AutoSchedule: TAction;
-    Event_BuildFinals: TAction;
-    Event_BuildQuarterFinals: TAction;
-    Event_BuildSemiFinals: TAction;
-    Event_Delete: TAction;
-    Event_MoveDown: TAction;
-    Event_MoveUp: TAction;
-    Event_NewRecord: TAction;
-    Event_Renumber: TAction;
-    Event_Report: TAction;
-    Event_ToggleGridView: TAction;
     File_Connection: TAction;
     File_Exit: TAction;
     File_ExportClub: TAction;
@@ -202,7 +191,6 @@ procedure TMain2.File_ConnectionExecute(Sender: TObject);
 var
   dlg: TLogin;
   cState: boolean;
-  i: integer;
 begin
   // NOTE: strange title bar colouration.
 
@@ -216,8 +204,8 @@ begin
     gLane.BeginUpdate;
   *)
 
-  frEvent.gEvent.BeginUpdate;
-  frSession.gSession.BeginUpdate;
+  frEvent.grid.BeginUpdate;
+  frSession.grid.BeginUpdate;
   try
     dlg := TLogin.Create(Self); // dlg to connect to the SCM DB.
     dlg.ShowModal;
@@ -249,8 +237,8 @@ begin
       StatusBar.Panels[0].Text := 'NOT CONNECTED'; // psOwnerDraw
     end;
   finally
-    frSession.gSession.EndUpdate;
-    frEvent.gEvent.EndUpdate;
+    frSession.grid.EndUpdate;
+    frEvent.grid.EndUpdate;
   end;
 
   {TODO -oBSA -cUI : take grids online with endupdate }
@@ -336,11 +324,25 @@ end;
 
 procedure TMain2.FormShow(Sender: TObject);
 begin
-  frSession.Repaint;
-  Application.ProcessMessages;
 
   if Assigned(Settings) and Settings.DoLoginOnBoot then
-    PostMessage(Handle, SCM_CONNECT, 0, 0);
+  begin
+    // fix UI repaint issues with the TMS grids (held within frames).
+    // Use a thread to delay the connection dialog
+    TThread.CreateAnonymousThread(
+      procedure
+      begin
+        Sleep(250); // Wait 250ms for the form and grids to paint
+        TThread.Synchronize(nil,
+          procedure
+          begin
+            PostMessage(Handle, SCM_CONNECT, 0, 0);
+          end
+        );
+      end
+    ).Start;
+  end;
+
 end;
 
 procedure TMain2.GenericActionUpdate(Sender: TObject);
@@ -514,14 +516,14 @@ procedure TMain2.SwimClub_SwitchExecute(Sender: TObject);
 var
   dlg: TSwimClubSwitch;
 begin
-  frSession.gSession.BeginUpdate;
+  frSession.grid.BeginUpdate;
   try
   dlg :=  TSwimClubSwitch.Create(Self);
   dlg.ShowModal;
   dlg.Free;
   frSession.Initialise;
   finally
-    frSession.gSession.EndUpdate;
+    frSession.grid.EndUpdate;
   end;
 end;
 

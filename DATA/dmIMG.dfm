@@ -2068,35 +2068,43 @@ object IMG: TIMG
           '666"'#10'     borderopacity="1.0"'#10'     inkscape:showpageshadow="2"'#10' ' +
           '    inkscape:pageopacity="0.0"'#10'     inkscape:pagecheckerboard="0' +
           '"'#10'     inkscape:deskcolor="#d1d1d1"'#10'     showgrid="false"'#10'     i' +
-          'nkscape:zoom="7.9999999"'#10'     inkscape:cx="28.1875"'#10'     inkscap' +
-          'e:cy="11.125"'#10'     inkscape:window-width="2560"'#10'     inkscape:wi' +
-          'ndow-height="1377"'#10'     inkscape:window-x="-8"'#10'     inkscape:win' +
-          'dow-y="-8"'#10'     inkscape:window-maximized="1"'#10'     inkscape:curr' +
-          'ent-layer="svg4"'#10'     showguides="true"><inkscape:page'#10'       x=' +
-          '"0"'#10'       y="0"'#10'       width="48"'#10'       height="48"'#10'       id=' +
-          '"page535"'#10'       inkscape:label="EmptyFrame"'#10'       inkscape:exp' +
-          'ort-filename="..\HeatNavigator\EmptyFrame.png"'#10'       inkscape:e' +
-          'xport-xdpi="96"'#10'       inkscape:export-ydpi="96"'#10'       margin="' +
-          '0"'#10'       bleed="0" /></sodipodi:namedview><path'#10'     d="M 9.941' +
-          '5178,24.672985 H 7.4071132 V 3.0400312 h 2.5344046 z m 23.126442' +
-          '2,0 H 29.960297 L 18.82702,7.4299821 Q 18.404619,6.7812952 18.13' +
-          '3076,6.0722653 h -0.09051 q 0.120686,0.6939442 0.120686,2.971891' +
-          '2 V 24.672985 H 15.628842 V 3.0400312 h 3.288692 L 29.749097,20.' +
-          '011491 q 0.678858,1.056002 0.874973,1.448231 h 0.06034 Q 30.5335' +
-          '55,20.524406 30.533555,18.276631 V 3.0400312 h 2.534405 z m 5.67' +
-          '2239,0 V 3.0400312 h 5.973954 q 11.434992,0 11.434992,10.5449338' +
-          ' 0,5.008466 -3.183091,8.055786 -3.168006,3.032234 -8.493273,3.03' +
-          '2234 z M 41.274604,5.333064 v 17.046888 h 3.228349 q 4.254179,0 ' +
-          '6.62264,-2.277947 2.368462,-2.277947 2.368462,-6.456697 0,-8.312' +
-          '244 -8.840245,-8.312244 z M 75.730438,3.0400312 67.719909,24.672' +
-          '985 H 64.929047 L 57.084461,3.0400312 h 2.821034 l 5.98904,17.15' +
-          '24888 q 0.286629,0.829716 0.437486,1.915889 h 0.06034 q 0.120686' +
-          ',-0.905145 0.49783,-1.946061 L 72.999919,3.0400312 Z"'#10'     id="t' +
-          'ext1"'#10'     style="font-size:30.8956px;line-height:1.25;font-fami' +
-          'ly:'#39'Segoe UI'#39';-inkscape-font-specification:'#39'Segoe UI, Normal'#39';te' +
-          'xt-align:center;text-anchor:middle;stroke:#000000;stroke-width:2' +
-          '.593"'#10'     transform="scale(0.57735647,1.7320322)"'#10'     aria-lab' +
-          'el="INDV" /></svg>'#10
+          'nkscape:zoom="5.6568542"'#10'     inkscape:cx="-76.367533"'#10'     inks' +
+          'cape:cy="54.270446"'#10'     inkscape:window-width="2560"'#10'     inksc' +
+          'ape:window-height="1377"'#10'     inkscape:window-x="-8"'#10'     inksca' +
+          'pe:window-y="-8"'#10'     inkscape:window-maximized="1"'#10'     inkscap' +
+          'e:current-layer="layer1"'#10'     showguides="true"><inkscape:page'#10' ' +
+          '      x="0"'#10'       y="0"'#10'       width="48"'#10'       height="48"'#10'  ' +
+          '     id="page535"'#10'       inkscape:label="EmptyFrame"'#10'       inks' +
+          'cape:export-filename="..\HeatNavigator\EmptyFrame.png"'#10'       in' +
+          'kscape:export-xdpi="96"'#10'       inkscape:export-ydpi="96"'#10'       ' +
+          'margin="0"'#10'       bleed="0" /></sodipodi:namedview><path'#10'     d=' +
+          '"M 18.978968,24.781239 8.325662,24.763197 V 3.0400312 L 18.97896' +
+          '8,3.1482855 Z M 33.986509,24.672985 H 30.878846 L 19.745569,11.6' +
+          '86778 c -0.281601,-0.325696 -0.512915,-0.666542 -0.693944,-1.022' +
+          '536 h -0.09051 c 0.08046,0.34842 0.122533,1.094493 0.120686,2.23' +
+          '8218 l -0.01914,11.853451 -2.515274,-0.08293 V 8.3805786 l 6.044' +
+          '339,-2e-7 12.898297,12.7816996 c 0.651256,0.530204 -4.078151,0.8' +
+          '93773 -3.947408,1.090705 h 0.06034 C 31.502389,21.783374 31.4521' +
+          '04,20.984281 31.452104,19.855705 V 8.3805786 h 2.534405 z m 2.20' +
+          '8175,0 V 8.3827675 h 7.162662 c 11.769793,0 10.895796,2.6148215 ' +
+          '13.710348,7.9210115 1.316393,2.481755 -1.272156,4.547079 -3.8164' +
+          '68,6.080484 -2.532255,1.525815 -5.926682,2.288722 -10.183281,2.2' +
+          '88722 z M 39.233389,10.075268 V 22.94221 h 3.870732 c 3.400455,0' +
+          ' 6.047264,-0.573129 7.940425,-1.719387 1.893163,-1.146259 2.8397' +
+          '43,-2.770759 2.839743,-4.873496 0,-4.182706 -3.533097,-6.274059 ' +
+          '-10.599293,-6.274059 z M 76.648987,8.4166634 64.545901,24.672985' +
+          ' 58.326534,24.654943 52.400352,16.526782 46.474171,8.398621 52.7' +
+          '39125,8.4166634 61.787949,21.30609 c 0.288711,0.415666 0.509044,' +
+          '0.895572 0.660996,1.439716 l 0.09117,0 c 0.06564,-0.453454 0.372' +
+          '286,-0.940917 0.75217,-1.462389 L 67.93071,8.4166634 Z"'#10'     id=' +
+          '"text1"'#10'     style="font-size:30.8956px;line-height:1.25;font-fa' +
+          'mily:'#39'Segoe UI'#39';-inkscape-font-specification:'#39'Segoe UI, Normal'#39';' +
+          'text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1' +
+          ';stroke:#000000;stroke-width:2.593;stroke-opacity:1"'#10'     transf' +
+          'orm="scale(0.57735647,1.7320322)"'#10'     aria-label="INDV"'#10'     so' +
+          'dipodi:nodetypes="ccccccccccscccccccscccccsscscccssssccccccccccc' +
+          'cc" /><g'#10'     inkscape:groupmode="layer"'#10'     id="layer1"'#10'     i' +
+          'nkscape:label="Layer 1" /></svg>'#10
       end
       item
         IconName = 'user'
@@ -14614,6 +14622,11 @@ object IMG: TIMG
         CollectionIndex = 67
         CollectionName = 'search'
         Name = 'search'
+      end
+      item
+        CollectionIndex = 80
+        CollectionName = 'folder-managed'
+        Name = 'folder-managed'
       end>
     ImageCollection = CollectionCore
     Width = 32

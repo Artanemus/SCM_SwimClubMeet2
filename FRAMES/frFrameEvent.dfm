@@ -12,7 +12,6 @@ object FrameEvent: TFrameEvent
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitHeight = 698
     object spbtnEvGridView: TSpeedButton
       Left = 0
       Top = 0
@@ -50,7 +49,6 @@ object FrameEvent: TFrameEvent
       Height = 48
       Action = actnEv_MoveUp
       Align = alTop
-      ImageIndex = 2
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -67,7 +65,6 @@ object FrameEvent: TFrameEvent
       Height = 48
       Action = actnEv_MoveDown
       Align = alTop
-      ImageIndex = 3
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -85,7 +82,6 @@ object FrameEvent: TFrameEvent
       Height = 48
       Action = actnEv_New
       Align = alTop
-      ImageIndex = 4
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -102,7 +98,6 @@ object FrameEvent: TFrameEvent
       Height = 48
       Action = actnEv_Delete
       Align = alTop
-      ImageIndex = 5
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -134,7 +129,6 @@ object FrameEvent: TFrameEvent
       Height = 48
       Action = actnEv_Report
       Align = alTop
-      ImageIndex = 6
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -153,9 +147,7 @@ object FrameEvent: TFrameEvent
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 899
-    ExplicitHeight = 698
-    object gEvent: TDBAdvGrid
+    object grid: TDBAdvGrid
       Left = 0
       Top = 0
       Width = 578
@@ -174,14 +166,14 @@ object FrameEvent: TFrameEvent
       Font.Height = -16
       Font.Name = 'Segoe UI'
       Font.Style = []
-      Options = [goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
+      Options = [goVertLine, goHorzLine, goEditing, goTabs, goFixedRowDefAlign]
       ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
       GridLineColor = 15987699
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
-      OnCanEditCell = gEventCanEditCell
+      OnCanEditCell = gridCanEditCell
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
       ActiveCellFont.Height = -12
@@ -255,9 +247,8 @@ object FrameEvent: TFrameEvent
       Navigation.AllowInsertRow = True
       Navigation.AlwaysEdit = True
       Navigation.AdvanceOnEnter = True
-      Navigation.AdvanceOnEnterLoop = False
+      Navigation.AdvanceInsert = True
       Navigation.InsertPosition = pInsertAfter
-      Navigation.CursorWalkEditor = True
       Navigation.TabToNextAtEnd = True
       PrintSettings.DateFormat = 'dd/mm/yyyy'
       PrintSettings.Font.Charset = DEFAULT_CHARSET
@@ -444,6 +435,36 @@ object FrameEvent: TFrameEvent
           Width = 132
         end
         item
+          Alignment = taRightJustify
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWindow
+          DataImageField = True
+          FieldName = 'luEventType'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -19
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = ' '
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = 3881787
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          Images = IMG.imglstEventType
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clWindowText
+          PrintFont.Height = -12
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 38
+        end
+        item
           Borders = []
           BorderPen.Color = clSilver
           ButtonHeight = 18
@@ -556,36 +577,6 @@ object FrameEvent: TFrameEvent
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
           Width = 64
-        end
-        item
-          Alignment = taRightJustify
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWindow
-          DataImageField = True
-          FieldName = 'luEventTypeID'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -19
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          Header = ' '
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          Images = IMG.imglstEventType
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 38
         end>
       DataSource = CORE.dsEvent
       InvalidPicture.Data = {
@@ -725,18 +716,17 @@ object FrameEvent: TFrameEvent
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
-      ExplicitLeft = 3
       ColWidths = (
         20
         0
         43
         140
         132
+        38
         0
         64
         64
-        64
-        38)
+        64)
     end
   end
   object actnlstEvent: TActionList
@@ -755,31 +745,35 @@ object FrameEvent: TFrameEvent
     object actnEv_MoveUp: TAction
       Category = 'Events'
       Caption = 'Move Up'
-      Hint = 'Move the event up.'
+      Hint = 'Move event up.'
       ImageIndex = 6
       ImageName = 'up'
       ShortCut = 16422
+      OnExecute = actnEv_MoveUpDownExecute
+      OnUpdate = actnEv_MoveUpDownUpdate
     end
     object actnEv_MoveDown: TAction
       Category = 'Events'
       Caption = 'Move Down'
-      Hint = 'Move the event down.'
+      Hint = 'Move event down.'
       ImageIndex = 7
       ImageName = 'down'
       ShortCut = 16424
+      OnExecute = actnEv_MoveUpDownExecute
     end
     object actnEv_New: TAction
       Category = 'Events'
       Caption = 'New Event'
-      Hint = 'Creat event (Ctrl+Ins).'
+      Hint = 'Creat new event'
       ImageIndex = 8
       ImageName = 'new'
       ShortCut = 16429
+      OnExecute = actnEv_NewExecute
     end
     object actnEv_Delete: TAction
       Category = 'Events'
       Caption = 'Delete Event...'
-      Hint = 'Delete event (Ctrl+Del).'
+      Hint = 'Delete event'
       ImageIndex = 9
       ImageName = 'delete'
       ShortCut = 16430
@@ -793,8 +787,8 @@ object FrameEvent: TFrameEvent
     end
     object actnEv_Final: TAction
       Category = 'Events'
-      Caption = 'Build Event Final...'
-      Hint = 'With the selected event, build a finals event.'
+      Caption = 'Build Event Finals...'
+      Hint = 'Build an event finals.'
       ImageIndex = 11
       ImageName = 'tool'
     end
@@ -808,15 +802,27 @@ object FrameEvent: TFrameEvent
     end
     object actnEv_Renumber: TAction
       Category = 'Events'
-      Caption = 'Renumber Events'
+      Caption = 'Renumber...'
+    end
+    object actnEv_Stats: TAction
+      Category = 'Events'
+      Caption = 'Event Statistics...'
     end
     object actnEv_Schedule: TAction
       Category = 'Events'
       Caption = 'Schedule Event...'
     end
-    object actnEv_Stats: TAction
+    object actnEv_Export: TAction
       Category = 'Events'
-      Caption = 'Event Statistics...'
+      Caption = 'Export...'
+      ImageIndex = 22
+      ImageName = 'out'
+    end
+    object actnEv_Import: TAction
+      Category = 'Events'
+      Caption = 'Import...'
+      ImageIndex = 21
+      ImageName = 'in'
     end
   end
 end

@@ -39,40 +39,53 @@ procedure FNameEllipse(); // todo: move out of uEvent to frame.
 procedure NewEvent();
 
 
-type
-  T_Event = class
-  public
-    constructor Create;
-    destructor Destroy;
-  end;
-
-var
-  scmEvent: T_Event;
 
 implementation
 
 uses
 	uSession; // , uHeat, uLane;
 
-constructor T_Event.Create;
+
+
+procedure DetailTBLs_DisableCNTRLs;
 begin
-  inherited;
-  if not Assigned(SCM2) then
-    raise Exception.Create('Data module SCM2 not assigned.');
-  if not SCM2.scmConnection.Connected then
-    raise Exception.Create('Data module SCM2 tables are offline.');
-  if not Assigned(CORE) then
-    raise Exception.Create('Core data module not assigned.');
-  if not CORE.IsActive then
-    raise Exception.Create('Core data module tables are offline.');
+  CORE.qryTeamLink.DisableControls;
+  CORE.qryTeam.DisableControls;
+  CORE.qrySplitTime.DisableControls;
+  CORE.qryWatchTime.DisableControls;
+  CORE.qryLane.DisableControls;
+  CORE.qryHeat.DisableControls;
 end;
 
-destructor T_Event.Destroy;
+procedure DetailTBLs_ApplyMaster;
 begin
-  // do cleanup...
-  inherited;
+  // FireDAC throws exception error if Master is empty?
+  CORE.qryEvent.ApplyMaster;
+  if CORE.qryEvent.RecordCount <> 0 then
+  begin
+    CORE.qryHeat.ApplyMaster;
+    if CORE.qryHeat.RecordCount <> 0 then
+    begin
+      CORE.qryLane.ApplyMaster;
+      if CORE.qryLane.RecordCount <> 0 then
+      begin
+        CORE.qryWatchTime.ApplyMaster;
+        CORE.qrySplitTime.ApplyMaster;
+//          CORE.qryTeam.ApplyMaster;
+      end;
+    end;
+  end;
 end;
 
+procedure DetailTBLs_EnableCNTRLs;
+begin
+  CORE.qryHeat.EnableControls;
+  CORE.qryLane.EnableControls;
+  CORE.qryWatchTime.EnableControls;
+  CORE.qrySplitTime.EnableControls;
+  CORE.qryTeam.EnableControls;
+  CORE.qryTeamLink.DisableControls;
+end;
 // ----------------------------------------------------------------------
 
 function Assert(): boolean;
@@ -457,10 +470,7 @@ begin
   try
     aEventNum := uEvent.LastEventNum();
     Inc(aEventNum);
-    CORE.qrySplitTime.DisableControls;
-    CORE.qryWatchTime.DisableControls;
-    CORE.qryLane.DisableControls();
-    CORE.qryHeat.DisableControls();
+    DetailTBLs_DisableCNTRLs;
     CORE.qryEvent.DisableControls();
     fld := CORE.qryEvent.FindField('EventStatusID');
     if Assigned(fld) then fld.ReadOnly := false;
@@ -477,14 +487,8 @@ begin
   finally
     if Assigned(fld) then fld.ReadOnly := true;
     CORE.qryEvent.EnableControls();
-    CORE.qryHeat.ApplyMaster;
-    CORE.qryHeat.EnableControls();
-    CORE.qryLane.ApplyMaster;
-    CORE.qryLane.EnableControls();
-    CORE.qrySplitTime.ApplyMaster;
-    CORE.qryWatchTime.ApplyMaster;
-    CORE.qrySplitTime.EnableControls;
-    CORE.qryWatchTime.EnableControls;
+    DetailTBLs_ApplyMaster();
+    DetailTBLs_EnableCNTRLs;
   end;
 end;
 

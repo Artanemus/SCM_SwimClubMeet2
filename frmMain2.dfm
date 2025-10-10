@@ -2834,32 +2834,34 @@ object Main2: TMain2
     object tabSession: TTabSheet
       Caption = 'Session'
       object pnlSession: TPanel
-        AlignWithMargins = True
-        Left = 3
-        Top = 10
+        Left = 0
+        Top = 0
         Width = 440
-        Height = 615
+        Height = 628
         Margins.Top = 10
         Align = alLeft
         BevelOuter = bvNone
         TabOrder = 0
+        ExplicitLeft = 3
+        ExplicitTop = 10
+        ExplicitHeight = 615
         inline frSession: TFrameSession
           Left = 0
           Top = 0
           Width = 440
-          Height = 615
+          Height = 628
           Align = alClient
           TabOrder = 0
           ExplicitWidth = 440
           ExplicitHeight = 615
           inherited pnlBody: TPanel
             Width = 386
-            Height = 615
+            Height = 628
             ExplicitWidth = 386
             ExplicitHeight = 615
-            inherited gSession: TDBAdvGrid
+            inherited grid: TDBAdvGrid
               Width = 386
-              Height = 615
+              Height = 628
               Columns = <
                 item
                   Borders = []
@@ -2950,40 +2952,10 @@ object Main2: TMain2
             end
           end
           inherited pnlCntrl: TPanel
-            Height = 615
+            Height = 628
             ExplicitHeight = 615
-            inherited spbtnSessClone: TSpeedButton
-              ImageIndex = 11
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessDelete: TSpeedButton
-              ImageName = 'in'
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessLock: TSpeedButton
-              ImageIndex = 6
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessNew: TSpeedButton
-              ImageName = 'edit'
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessReport: TSpeedButton
-              ImageIndex = 5
-              Glyph.Data = {00000000}
-            end
             inherited spbtnSessLockedVisible: TSpeedButton
               ImageName = 'new'
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessEdit: TSpeedButton
-              ImageIndex = 8
-              Glyph.Data = {00000000}
-            end
-          end
-          inherited pumenuSession: TPopupMenu
-            inherited LockUnlock1: TMenuItem
-              ImageIndex = -1
             end
           end
         end
@@ -3003,37 +2975,17 @@ object Main2: TMain2
           Height = 628
           Align = alClient
           TabOrder = 0
-          ExplicitLeft = -165
-          ExplicitTop = -80
+          ExplicitWidth = 631
+          ExplicitHeight = 628
           inherited pnlCntrl: TPanel
             Height = 628
-            ExplicitHeight = 708
-            inherited spbtnEvGridView: TSpeedButton
-              ImageIndex = -1
-              ImageName = ''
-            end
-            inherited spbtnEvUp: TSpeedButton
-              ImageName = ''
-            end
-            inherited spbtnEvDown: TSpeedButton
-              ImageName = ''
-            end
-            inherited spbtnEvNew: TSpeedButton
-              ImageName = ''
-            end
-            inherited spbtnEvDelete: TSpeedButton
-              ImageName = ''
-            end
-            inherited spbtnEvReport: TSpeedButton
-              ImageName = ''
-            end
+            ExplicitHeight = 628
           end
           inherited pnlBody: TPanel
             Width = 577
             Height = 628
-            ExplicitWidth = 622
-            ExplicitHeight = 708
-            inherited gEvent: TDBAdvGrid
+            ExplicitWidth = 577
+            inherited grid: TDBAdvGrid
               Width = 577
               Height = 628
               ExplicitWidth = 577
@@ -3106,74 +3058,10 @@ object Main2: TMain2
           item
             Items = <
               item
-                Action = Event_ToggleGridView
-                Caption = '&Toggle grid view.'
-                ImageName = 'GridOn'
-              end
-              item
-                Action = Event_MoveUp
-                Caption = '&Move Up'
-                ImageIndex = 6
-                ImageName = 'up'
-                ShortCut = 16422
-              end
-              item
-                Action = Event_MoveDown
-                Caption = 'M&ove Down'
-                ImageIndex = 7
-                ImageName = 'down'
-                ShortCut = 16424
-              end
-              item
-                Action = Event_NewRecord
-                Caption = '&New Event'
-                ImageIndex = 8
-                ImageName = 'new'
-                ShortCut = 16429
-              end
-              item
-                Action = Event_Delete
-                Caption = '&Delete Event'
-                ImageIndex = 9
-                ImageName = 'delete'
-                ShortCut = 16430
-              end
-              item
-                Action = Event_Report
-                Caption = '&Event Report*'
-                ImageIndex = 15
-                ImageName = 'report'
-              end
-              item
                 Caption = '-'
               end
               item
-                Action = Event_BuildFinals
-                Caption = '&Build event finals ...'
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Event_BuildSemiFinals
-                Caption = 'B&uild event semi-finals ...'
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Event_BuildQuarterFinals
-                Caption = 'Bu&ild event quarter-finals ...'
-                ImageName = 'AutoBuild'
-              end
-              item
                 Caption = '-'
-              end
-              item
-                Action = Event_AutoSchedule
-                Caption = '&Auto Schedule...'
-                ImageName = 'TimeAuto'
-              end
-              item
-                Action = Event_Renumber
-                Caption = '&Renumber Lanes...'
-                ImageName = 'Cycle'
               end>
             Caption = '&Events'
           end
@@ -3436,7 +3324,8 @@ object Main2: TMain2
                 ImageName = 'exit'
               end>
             Caption = '&File'
-            ImageName = 'folder_managed'
+            ImageIndex = 34
+            ImageName = 'folder-managed'
           end
           item
             Items = <
@@ -3556,70 +3445,85 @@ object Main2: TMain2
           item
             Items = <
               item
-                Action = Event_ToggleGridView
-                Caption = '&Toggle grid view.'
-                ImageName = 'GridOn'
+                Action = frEvent.actnEv_GridView
+                Caption = '&Toogle Grid View'
+                ImageIndex = 1
+                ImageName = 'grid-on'
               end
               item
-                Action = Event_MoveUp
+                Action = frEvent.actnEv_MoveUp
                 Caption = '&Move Up'
                 ImageIndex = 6
                 ImageName = 'up'
                 ShortCut = 16422
               end
               item
-                Action = Event_MoveDown
+                Action = frEvent.actnEv_MoveDown
                 Caption = 'M&ove Down'
                 ImageIndex = 7
                 ImageName = 'down'
                 ShortCut = 16424
               end
               item
-                Action = Event_NewRecord
+                Action = frEvent.actnEv_New
                 Caption = '&New Event'
                 ImageIndex = 8
                 ImageName = 'new'
                 ShortCut = 16429
               end
               item
-                Action = Event_Delete
-                Caption = '&Delete Event'
+                Action = frEvent.actnEv_Delete
+                Caption = '&Delete Event...'
                 ImageIndex = 9
                 ImageName = 'delete'
                 ShortCut = 16430
               end
               item
-                Action = Event_Report
-                Caption = '&Event Report*'
+                Action = frEvent.actnEv_Report
+                Caption = '&Event Report...'
                 ImageIndex = 15
                 ImageName = 'report'
               end
               item
-                Action = Event_BuildFinals
-                Caption = '&Build event finals ...'
-                ImageName = 'AutoBuild'
+                Action = frEvent.actnEv_Final
+                Caption = '&Build Event Finals...'
+                ImageIndex = 11
+                ImageName = 'tool'
               end
               item
-                Action = Event_BuildSemiFinals
-                Caption = 'B&uild event semi-finals ...'
-                ImageName = 'AutoBuild'
+                Action = frEvent.actnEv_SemiFinals
+                Caption = 'B&uild Semi-Finals...'
               end
               item
-                Action = Event_BuildQuarterFinals
-                Caption = 'Bu&ild event quarter-finals ...'
-                ImageName = 'AutoBuild'
+                Action = frEvent.actnEv_QuartFinals
+                Caption = 'Bu&ild Quater Finals...'
               end
               item
-                Action = Event_Renumber
-                Caption = '&Renumber Lanes...'
-                ImageName = 'Cycle'
+                Action = frEvent.actnEv_Renumber
+                Caption = '&Renumber...'
               end
               item
-                Action = Event_AutoSchedule
-                Caption = '&Auto Schedule...'
-                ImageName = 'TimeAuto'
+                Action = frEvent.actnEv_Stats
+                Caption = 'E&vent Statistics...'
+              end
+              item
+                Action = frEvent.actnEv_Schedule
+                Caption = '&Schedule Event...'
+              end
+              item
+                Action = frEvent.actnEv_Export
+                Caption = 'E&xport...'
+                ImageIndex = 22
+                ImageName = 'out'
+              end
+              item
+                Action = frEvent.actnEv_Import
+                Caption = 'Im&port...'
+                ImageIndex = 21
+                ImageName = 'in'
               end>
             Caption = 'E&vents'
+            ImageName = 'empty'
           end
           item
             Items = <
@@ -3924,11 +3828,15 @@ object Main2: TMain2
     LinkedActionLists = <
       item
         ActionList = frSession.actnlstSession
-        Caption = 'actnlstSession'
+        Caption = 'Session'
+      end
+      item
+        ActionList = frEvent.actnlstEvent
+        Caption = 'Events'
       end>
     Images = IMG.imglstMenuBar
-    Left = 688
-    Top = 48
+    Left = 784
+    Top = 96
     StyleName = 'Platform Default'
     object Help_About: TAction
       Category = 'Help'
@@ -3964,28 +3872,6 @@ object Main2: TMain2
       ImageIndex = 15
       ImageName = 'Report'
     end
-    object Event_ToggleGridView: TAction
-      Category = 'Events'
-      Caption = 'Toggle grid view.'
-      Hint = 'Toggle grid. Expand or collapse it'#39's view.'
-      ImageName = 'GridOn'
-    end
-    object Event_MoveUp: TAction
-      Category = 'Events'
-      Caption = 'Move Up'
-      Hint = 'Move the event up.'
-      ImageIndex = 6
-      ImageName = 'Up'
-      ShortCut = 16422
-    end
-    object Event_MoveDown: TAction
-      Category = 'Events'
-      Caption = 'Move Down'
-      Hint = 'Move the event down.'
-      ImageIndex = 7
-      ImageName = 'Down'
-      ShortCut = 16424
-    end
     object Tools_Preferences: TAction
       Category = 'Tools'
       Caption = 'Preferences...'
@@ -3993,29 +3879,6 @@ object Main2: TMain2
     object Tools_QualifyTimes: TAction
       Category = 'Tools'
       Caption = 'Qualify Times...'
-    end
-    object Event_NewRecord: TAction
-      Category = 'Events'
-      Caption = 'New Event'
-      Hint = 'Create a new event.'
-      ImageIndex = 8
-      ImageName = 'New'
-      ShortCut = 16429
-    end
-    object Event_Delete: TAction
-      Category = 'Events'
-      Caption = 'Delete Event'
-      Hint = 'Delete the selected event.'
-      ImageIndex = 9
-      ImageName = 'Delete'
-      ShortCut = 16430
-    end
-    object Event_Report: TAction
-      Category = 'Events'
-      Caption = 'Event Report*'
-      Hint = 'Display the event report.'
-      ImageIndex = 15
-      ImageName = 'Report'
     end
     object Lane_MoveUp: TAction
       Category = 'Lanes'
@@ -4171,28 +4034,6 @@ object Main2: TMain2
       ImageName = 'Delete'
       Visible = False
     end
-    object Event_BuildFinals: TAction
-      Category = 'Events'
-      Caption = 'Build event finals ...'
-      Hint = 'With the selected event, build a finals event.'
-      ImageName = 'AutoBuild'
-    end
-    object Event_BuildSemiFinals: TAction
-      Category = 'Events'
-      Caption = 'Build event semi-finals ...'
-      ImageName = 'AutoBuild'
-    end
-    object Event_BuildQuarterFinals: TAction
-      Category = 'Events'
-      Caption = 'Build event quarter-finals ...'
-      ImageName = 'AutoBuild'
-    end
-    object Event_Renumber: TAction
-      Category = 'Events'
-      Caption = 'Renumber Lanes...'
-      Enabled = False
-      ImageName = 'Cycle'
-    end
     object Heat_BatchBuildHeats: TAction
       Category = 'Heats'
       Caption = 'Build ALL Heats...'
@@ -4252,12 +4093,6 @@ object Main2: TMain2
     object Tools_DisqualifyCodes: TAction
       Category = 'Tools'
       Caption = 'Disqualification Codes...'
-    end
-    object Event_AutoSchedule: TAction
-      Category = 'Events'
-      Caption = 'Auto Schedule...'
-      Hint = 'Auto schedule events. '
-      ImageName = 'TimeAuto'
     end
     object SCM_StatusBar: TAction
       Category = 'SCM'

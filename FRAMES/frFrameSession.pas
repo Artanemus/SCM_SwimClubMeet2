@@ -32,7 +32,7 @@ type
     CloneSession1: TMenuItem;
     DeleteSession1: TMenuItem;
     EditSession1: TMenuItem;
-    gSession: TDBAdvGrid;
+    grid: TDBAdvGrid;
     LockUnlock1: TMenuItem;
     N1: TMenuItem;
     N2: TMenuItem;
@@ -72,10 +72,10 @@ type
     procedure actnSess_ReportUpdate(Sender: TObject);
     procedure actnSess_SortExecute(Sender: TObject);
     procedure actnSess_SortUpdate(Sender: TObject);
-    procedure gSessionDblClickCell(Sender: TObject; ARow, ACol: Integer);
-    procedure gSessionGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
+    procedure gridDblClickCell(Sender: TObject; ARow, ACol: Integer);
+    procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
-    procedure gSessionGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
+    procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
   private
     { Private declarations }
@@ -151,13 +151,13 @@ begin
     // mrCancel=2 mrNo=7 mrYes=6
     if (rtnValue <> mrYes) then exit;
   end;
-  gSession.BeginUpdate;
+  grid.BeginUpdate;
   try
     { D E L E T E  S E S S I O N   D O   N O T   E X C L U D E ! }
     { uSession handles enable/disable and re-sync of Master-Detail}
     uSession.Delete_Session(false);
   finally
-    gSession.EndUpdate;
+    grid.EndUpdate;
   end;
 end;
 
@@ -204,7 +204,7 @@ end;
 
 procedure TFrameSession.actnSess_IsLockedExecute(Sender: TObject);
 begin
-    gSession.BeginUpdate;
+    grid.BeginUpdate;
     TAction(Sender).Checked := not TAction(Sender).Checked;
     try
       SetIsLockedIcon;
@@ -212,7 +212,7 @@ begin
       // true - indxShowAll , false indxHideLocked.
       uSession.SetIndexName(TAction(Sender).Checked);
     finally
-      gSession.EndUpdate;
+      grid.EndUpdate;
     end;
 end;
 
@@ -231,7 +231,7 @@ end;
 
 procedure TFrameSession.actnSess_LockExecute(Sender: TObject);
 begin
-  gSession.BeginUpdate;
+  grid.BeginUpdate;
   try
     TAction(Sender).Checked := not TAction(Sender).Checked;
     if TAction(Sender).Checked then
@@ -248,7 +248,7 @@ begin
       SetLockIcon;
     end;
   finally
-    gSession.endUpdate;
+    grid.endUpdate;
   end;
 end;
 
@@ -304,10 +304,10 @@ end;
 
 procedure TFrameSession.actnSess_SortExecute(Sender: TObject);
 begin
-  gSession.BeginUpdate;
+  grid.BeginUpdate;
   {TODO -oBSA -cGeneral : Check if detailed tables are in sync.}
   CORE.qrySession.Refresh;
-  gSession.EndUpdate;
+  grid.EndUpdate;
 end;
 
 procedure TFrameSession.actnSess_SortUpdate(Sender: TObject);
@@ -328,15 +328,15 @@ begin
     TAction(actnlstSession.Actions[i]).Update;
 end;
 
-procedure TFrameSession.gSessionDblClickCell(Sender: TObject; ARow, ACol:
+procedure TFrameSession.gridDblClickCell(Sender: TObject; ARow, ACol:
     Integer);
 begin
   // edit the session....
-  if (ARow >= gSession.FixedRows) and (ACol = 1)then
+  if (ARow >= grid.FixedRows) and (ACol = 1)then
     actnSess_Edit.Execute;
 end;
 
-procedure TFrameSession.gSessionGetCellColor(Sender: TObject; ARow, ACol:
+procedure TFrameSession.gridGetCellColor(Sender: TObject; ARow, ACol:
     Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
 var
   FontColor: TColor;
@@ -344,10 +344,10 @@ begin
   // greenish-blue color..
   FontColor := StyleServices.GetStyleFontColor(sfGridItemFixedPressed);
 
-  if (ARow >= gSession.FixedRows) then   // (ARow >= gSession.FixedCols)
+  if (ARow >= grid.FixedRows) then   // (ARow >= grid.FixedCols)
   begin
-    if (gSession.Cells[2, ARow] = '2') then
-      AFont.Color := gSession.DisabledFontColor
+    if (grid.Cells[2, ARow] = '2') then
+      AFont.Color := grid.DisabledFontColor
     else
       AFont.Color :=  FontColor; /// blueish-white..$00FFE4D8;
   end;
@@ -355,10 +355,10 @@ begin
   { C E L L   C O L O R S  .
     if StyleElements seFont = false then grids selection color param
     is activated ..
-          eg. gSession.SelectionTextColor := clWebGoldenRod;
+          eg. grid.SelectionTextColor := clWebGoldenRod;
 
     OR DISABLE the grids selectionn text color ..
-          eg. gSession.UseSelectionTextColor := false;
+          eg. grid.UseSelectionTextColor := false;
 
     AND then assign in this procedure...
 
@@ -366,7 +366,7 @@ begin
   }
 end;
 
-procedure TFrameSession.gSessionGetHTMLTemplate(Sender: TObject; ACol, ARow:
+procedure TFrameSession.gridGetHTMLTemplate(Sender: TObject; ACol, ARow:
     Integer; var HTMLTemplate: string; Fields: TFields);
 var
   s, s2: string;
@@ -384,7 +384,7 @@ begin
   weeks := uSession.WeeksSinceSeasonStart;
   if (weeks < 26) and (weeks > 0) then ShowSeasonIcon := true;
 
-  if (ACol = 1) then     // and (ARow >= gSession.FixedRows)
+  if (ACol = 1) then     // and (ARow >= grid.FixedRows)
   begin
     if not Locked then
     begin
@@ -427,19 +427,19 @@ end;
 procedure TFrameSession.Initialise;
 begin
   FixedSessCntrlIcons; // Fix RAD Studio erronous icon assignment.
-  gSession.RowCount := gSession.FixedRows + 1; // rule: row count > fixed row.
+  grid.RowCount := grid.FixedRows + 1; // rule: row count > fixed row.
 
   if SCM2.scmConnection.Connected and CORE.IsActive then
   begin
     if CORE.qrySession.IsEmpty then
     begin
-      // setting pagemode to false clears gSession of text. (it appears empty)
-      gSession.PageMode := false;
+      // setting pagemode to false clears grid of text. (it appears empty)
+      grid.PageMode := false;
     end
     else
     begin
       // Set pagemode to the default 'editable' fetch records mode.
-      gSession.PageMode := true;
+      grid.PageMode := true;
 
       if Assigned(Settings) then
         actnSess_IsLocked.Checked := Settings.HideLockedSessions
@@ -448,14 +448,14 @@ begin
 
       SetIsLockedIcon; // uses actnSess_Visible.Checked state.
 
-      gSession.BeginUpdate;
+      grid.BeginUpdate;
         // FILTER TABLE CONTENTS: false - indxShowAll , true indxHideLocked.
         uSession.SetIndexName(actnSess_IsLocked.Checked);
-      gSession.EndUpdate;
+      grid.EndUpdate;
     end;
   end
   else
-    gSession.PageMode := false; // read-only
+    grid.PageMode := false; // read-only
 
 end;
 

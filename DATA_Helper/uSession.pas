@@ -102,11 +102,14 @@ var
   v: variant;
 begin
   result := 0;
+  {TODO -oBSA -cURGENT : dbo.SessionEntrantCount}
+  {
   if not Assigned(SCM2) or not SCM2.scmConnection.Connected then exit;
   SQL := 'SELECT SwimClubMeet2.dbo.SessionEntrantCount(:ID);';
   v := SCM2.scmConnection.ExecSQLScalar(SQL, [uSession.PK]);
   if not VarIsClear(v) and (v > 0) then
     result := v;
+  }
 end;
 
 function CalcEventCount: integer;

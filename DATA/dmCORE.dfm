@@ -153,6 +153,7 @@ object CORE: TCORE
     ActiveStoredUsage = [auDesignTime]
     Active = True
     AfterScroll = qryEventAfterScroll
+    OnNewRecord = qryEventNewRecord
     Indexes = <
       item
         Active = True
@@ -191,7 +192,7 @@ object CORE: TCORE
       '      ,[Event].[GenderID]'
       '      ,[Event].[EventCategoryID]'
       '      ,[Event].[ParalympicTypeID]'
-      '      ,[Distance].[EventTypeID]  -- use LookUp value?'
+      '      ,[Event].[EventTypeID] '
       '      ,[Distance].[Caption] AS DistanceStr -- use LookUp value?'
       '      ,[Stroke].[Caption] AS StrokeStr -- use LookUp value?'
       '      , SUBSTRING('
@@ -319,13 +320,14 @@ object CORE: TCORE
       LookupCache = True
       Lookup = True
     end
-    object LookUpEventTypeID: TIntegerField
+    object LookUpEventType: TStringField
+      DisplayLabel = 'EventType'
       FieldKind = fkLookup
-      FieldName = 'luEventTypeID'
-      LookupDataSet = tblDistance
-      LookupKeyFields = 'DistanceID'
-      LookupResultField = 'EventTypeID'
-      KeyFields = 'DistanceID'
+      FieldName = 'luEventType'
+      LookupDataSet = tblEventType
+      LookupKeyFields = 'EventTypeID'
+      LookupResultField = 'ABREV'
+      KeyFields = 'EventTypeID'
       Lookup = True
     end
   end
@@ -348,6 +350,7 @@ object CORE: TCORE
     IndexName = 'indxEvent_DESC'
     MasterFields = 'EventID'
     DetailFields = 'EventID'
+    Connection = TestConnection
     UpdateOptions.AssignedValues = [uvCheckRequired]
     UpdateOptions.CheckRequired = False
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Heat'
@@ -492,6 +495,7 @@ object CORE: TCORE
     MasterSource = dsHeat
     MasterFields = 'HeatID'
     DetailFields = 'HeatID'
+    Connection = TestConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Lane'
     UpdateOptions.KeyFields = 'LaneID'
     SQL.Strings = (
@@ -558,6 +562,7 @@ object CORE: TCORE
     MasterSource = dsEvent
     MasterFields = 'EventID'
     DetailFields = 'EventID'
+    Connection = TestConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn.ss.zzz'
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Nominee'
@@ -607,6 +612,7 @@ object CORE: TCORE
     MasterSource = dsLane
     MasterFields = 'LaneID'
     DetailFields = 'LaneID'
+    Connection = TestConnection
     FormatOptions.AssignedValues = [fvFmtDisplayDateTime, fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
     UpdateOptions.AssignedValues = [uvEInsert, uvCheckRequired]
@@ -657,6 +663,7 @@ object CORE: TCORE
     MasterSource = dsLane
     MasterFields = 'LaneID'
     DetailFields = 'LaneID'
+    Connection = TestConnection
     SQL.Strings = (
       'SELECT [SplitTimeID]'
       '      ,[WatchNum]'
@@ -684,6 +691,7 @@ object CORE: TCORE
     MasterSource = dsLane
     MasterFields = 'LaneID'
     DetailFields = 'LaneID'
+    Connection = TestConnection
     SQL.Strings = (
       ''
       ''
@@ -711,6 +719,7 @@ object CORE: TCORE
         DescFields = 'TeamID'
       end>
     IndexName = 'mcTeam_DESC'
+    Connection = TestConnection
     SQL.Strings = (
       'DECLARE @TeamID AS INTEGER;'
       'SET @TeamID = :TEAMID;'
@@ -785,6 +794,7 @@ object CORE: TCORE
     MasterSource = dsMemberLink
     MasterFields = 'MemberID'
     DetailFields = 'MemberID'
+    Connection = TestConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Member'
     UpdateOptions.KeyFields = 'MemberID'
     SQL.Strings = (
@@ -896,6 +906,7 @@ object CORE: TCORE
     MasterSource = dsSwimClub
     MasterFields = 'SwimClubID'
     DetailFields = 'SwimClubID'
+    Connection = TestConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.MemberLink'
     UpdateOptions.KeyFields = 'SwimClubID;MemberID'
     SQL.Strings = (
@@ -913,5 +924,19 @@ object CORE: TCORE
     LoginPrompt = False
     Left = 496
     Top = 40
+  end
+  object tblEventType: TFDTable
+    Active = True
+    IndexFieldNames = 'EventTypeID'
+    Connection = TestConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    TableName = 'SwimClubMeet2.dbo.EventType'
+    Left = 88
+    Top = 688
+  end
+  object luEventType: TDataSource
+    DataSet = tblEventType
+    Left = 192
+    Top = 688
   end
 end

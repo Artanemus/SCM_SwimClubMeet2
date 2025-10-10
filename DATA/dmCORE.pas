@@ -69,7 +69,6 @@ type
 		qryWatchTime: TFDQuery;
 		tblDistance: TFDTable;
 		tblStroke: TFDTable;
-    LookUpEventTypeID: TIntegerField;
     qryHeatStrokeID: TIntegerField;
     dsTeamLink: TDataSource;
     qryMember: TFDQuery;
@@ -92,9 +91,13 @@ type
     qrySessionSwimClubID: TIntegerField;
     qrySessionSessionStatusID: TIntegerField;
     TestConnection: TFDConnection;
+    tblEventType: TFDTable;
+    luEventType: TDataSource;
+    LookUpEventType: TStringField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterScroll(DataSet: TDataSet);
+    procedure qryEventNewRecord(DataSet: TDataSet);
     procedure qryHeatAfterScroll(DataSet: TDataSet);
     procedure qrySessionAfterScroll(DataSet: TDataSet);
     procedure qrySessionBeforePost(DataSet: TDataSet);
@@ -137,6 +140,7 @@ begin
     qrySwimClub.Connection := SCM2.scmConnection;
     tblStroke.Connection := SCM2.scmConnection;
     tblDistance.Connection := SCM2.scmConnection;
+    tblEventType.Connection := SCM2.scmConnection;
     qryMemberLink.Connection := SCM2.scmConnection;
     qryMember.Connection := SCM2.scmConnection;
     qrySession.Connection := SCM2.scmConnection;
@@ -157,6 +161,7 @@ begin
       // lookup tables.
       tblStroke.Open;
       tblDistance.Open;
+      tblEventType.Open;
       // members
       qryMemberLink.Open;
       qryMember.Open;
@@ -221,6 +226,16 @@ begin
   begin
     PostMessage(msgHandle, SCM_SCROLL_EVENT, 0,0);
   end;
+end;
+
+procedure TCORE.qryEventNewRecord(DataSet: TDataSet);
+begin
+  DataSet.FieldByName('SessionID').AsInteger :=
+    qrySession.FieldByName('SessionID').AsInteger; // Master-Detail
+  DataSet.FieldByName('EventStatusID').AsInteger := 1; // Open.
+  DataSet.FieldByName('RoundID').AsInteger := 1; // Preliminary.
+  DataSet.FieldByName('NomineeCount').AsInteger := 0;
+  DataSet.FieldByName('EntrantCount').AsInteger := 0;
 end;
 
 procedure TCORE.qryHeatAfterScroll(DataSet: TDataSet);

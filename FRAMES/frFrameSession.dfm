@@ -12,7 +12,7 @@ object FrameSession: TFrameSession
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    object gSession: TDBAdvGrid
+    object grid: TDBAdvGrid
       Left = 0
       Top = 0
       Width = 392
@@ -43,8 +43,8 @@ object FrameSession: TFrameSession
       GridLineColor = 15987699
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
-      OnGetCellColor = gSessionGetCellColor
-      OnDblClickCell = gSessionDblClickCell
+      OnGetCellColor = gridGetCellColor
+      OnDblClickCell = gridDblClickCell
       HTMLKeepLineBreak = False
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
@@ -384,7 +384,7 @@ object FrameSession: TFrameSession
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
-      OnGetHTMLTemplate = gSessionGetHTMLTemplate
+      OnGetHTMLTemplate = gridGetHTMLTemplate
       ColWidths = (
         0
         340

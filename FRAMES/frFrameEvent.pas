@@ -14,7 +14,7 @@ uses
 
   AdvUtil, AdvObj, AdvGrid, DBAdvGrid,
 
-  dmSCM2, dmIMG, dmCORE, uDefines,
+  dmSCM2, dmIMG, dmCORE, uDefines, scmUtils,
 
   uSettings, uSession, uEvent, System.Actions, Vcl.ActnList, Vcl.Buttons;
 
@@ -22,7 +22,7 @@ type
   TFrameEvent = class(TFrame)
     pnlCntrl: TPanel;
     pnlBody: TPanel;
-    gEvent: TDBAdvGrid;
+    grid: TDBAdvGrid;
     actnlstEvent: TActionList;
     actnEv_GridView: TAction;
     actnEv_MoveUp: TAction;
@@ -44,9 +44,14 @@ type
     spbtnEvDelete: TSpeedButton;
     ShapeEvBar2: TShape;
     spbtnEvReport: TSpeedButton;
+    actnEv_Export: TAction;
+    actnEv_Import: TAction;
     procedure actnEv_GridViewExecute(Sender: TObject);
     procedure actnEv_GridViewUpdate(Sender: TObject);
-    procedure gEventCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
+    procedure actnEv_MoveUpDownExecute(Sender: TObject);
+    procedure actnEv_MoveUpDownUpdate(Sender: TObject);
+    procedure actnEv_NewExecute(Sender: TObject);
+    procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
   private
     { Private declarations }
@@ -68,7 +73,7 @@ procedure TFrameEvent.actnEv_GridViewExecute(Sender: TObject);
 begin
     TAction(Sender).Checked := not TAction(Sender).Checked; // T O G G L E .
 
-    gEvent.BeginUpdate;
+    grid.BeginUpdate;
     CORE.qryEvent.DisableControls;
 
     try
@@ -111,7 +116,7 @@ begin
     finally
       begin
         CORE.qryEvent.EnableControls;
-        gEvent.EndUpdate;
+        grid.EndUpdate;
       end;
     end;
 
@@ -131,6 +136,87 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
+procedure TFrameEvent.actnEv_MoveUpDownExecute(Sender: TObject);
+var
+  aEventID, recA, recB: integer;
+  fld: TField;
+  recPos: TRecordPos;
+begin
+//  if not CORE.IsActive then exit;
+  recPos := scmUtils.GetRecordPosition(CORE.qryEvent);
+  if recPos = rpMiddle then
+  begin
+    grid.BeginUpdate;
+    CORE.qryEvent.DisableControls();
+    CORE.qryEvent.CheckBrowseMode;
+    fld := CORE.qryEvent.FindField('EventNum');
+    if Assigned(fld) and fld.ReadOnly then fld.ReadOnly := false;
+    try
+      aEventID := uEvent.PK;
+      recA := CORE.qryEvent.FieldByName('EventNum').AsInteger;
+      recB := 0;
+      try
+        if TAction.UnitName.Contains('Down') then
+          CORE.qryEvent.Next()
+        else if TAction.UnitName.Contains('Up')  then
+          CORE.qryEvent.Prior()
+        else exit;
+
+        recB := CORE.qryEvent.FieldByName('EventNum').AsInteger;
+        CORE.qryEvent.Edit();
+        CORE.qryEvent.FieldByName('EventNum').AsInteger := recA;
+        CORE.qryEvent.Post();
+        recA := 0;
+        if uEvent.Locate(aEventID) then
+        begin
+          CORE.qryEvent.Edit();
+          CORE.qryEvent.FieldByName('EventNum').AsInteger := recB;
+          CORE.qryEvent.Post();
+        end;
+      except on E: Exception do
+        begin
+          CORE.qryEvent.Cancel;
+          { if recA = 0 then  uEvent.RenumberLanes(true); }
+          exit;
+        end;
+      end;
+    finally
+      if Assigned(fld) then fld.ReadOnly := true;
+      CORE.qryEvent.EnableControls();
+      grid.EndUpdate;
+    end;
+  end;
+end;
+
+procedure TFrameEvent.actnEv_MoveUpDownUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+  // fix RAD STUDIO icon re-assignment issue.
+  if TAction.UnitName.Contains('Down') then
+  begin
+    if (spbtnEvDown.imageindex <> 3) then
+      spbtnEvDown.imageindex := 3;
+  end
+  else if TAction.UnitName.Contains('Up')  then
+  begin
+    if (spbtnEvUp.imageindex <> 2) then
+      spbtnEvUp.imageindex := 2;
+  end;
+
+  if Assigned(CORE) and CORE.IsActive and
+    not CORE.qryEvent.IsEmpty then DoEnable := true;
+  TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TFrameEvent.actnEv_NewExecute(Sender: TObject);
+begin
+  grid.BeginUpdate;
+  uEvent.NewEvent;
+  grid.EndUpdate;
+end;
+
 procedure TFrameEvent.FixedEventCntrlIcons;
 var
   i: integer;
@@ -139,41 +225,41 @@ begin
     TAction(actnlstEvent.Actions[i]).Update;
 end;
 
-procedure TFrameEvent.gEventCanEditCell(Sender: TObject; ARow, ACol: Integer;
+procedure TFrameEvent.gridCanEditCell(Sender: TObject; ARow, ACol: Integer;
     var CanEdit: Boolean);
 begin
-  CanEdit := not (ACol in [2, 6, 7, 8, 9]);
+  CanEdit := not (ACol in [0, 1, 2, 6, 7, 8, 9]);
 end;
 
 procedure TFrameEvent.Initialise;
 begin
   FixedEventCntrlIcons; // Fix RAD Studio erronous icon assignment.
-  gEvent.RowCount := gEvent.FixedRows + 1; // rule: row count > fixed row.
+  grid.RowCount := grid.FixedRows + 1; // rule: row count > fixed row.
 
   if SCM2.scmConnection.Connected and CORE.IsActive then
   begin
     if CORE.qrySession.IsEmpty then
     begin
-      // setting pagemode to false clears gEvent of text. (it appears empty)
-      gEvent.PageMode := false;
+      // setting pagemode to false clears grid of text. (it appears empty)
+      grid.PageMode := false;
     end
     else
     begin
       // Set pagemode to the default 'editable' fetch records mode.
-      gEvent.PageMode := true;
+      grid.PageMode := true;
 
       actnEv_GridView.Checked := false;
       SetIconGridView; // uses actnEv_GridView.Checked state.
       SetColGridView; // uses actnEv_GridView.Checked state.
 
-//      gEvent.BeginUpdate;
+//      grid.BeginUpdate;
         // based actnEv_GridView.Checked state - prepare grid columns.
 
-//      gEvent.EndUpdate;
+//      grid.EndUpdate;
     end;
   end
   else
-    gEvent.PageMode := false; // read-only
+    grid.PageMode := false; // read-only
 
 end;
 
@@ -187,12 +273,12 @@ begin
   // EXPANDED or COLLAPSED grid views...
   if actnEv_GridView.Checked then
   begin  // EXPANDED...
-    gEvent.Columns[5].Width := 100;
+    grid.Columns[5].Width := 100;
     // modify other columns
   end
   else
   begin  // COLLAPSED...
-    gEvent.Columns[5].Width := 0; // description is Hidden.
+    grid.Columns[5].Width := 0; // description is Hidden.
   end;
 end;
 

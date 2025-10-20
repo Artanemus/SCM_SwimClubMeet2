@@ -41,6 +41,7 @@ type
     imglstStatusPanel: TSVGIconVirtualImageList;
     imglstMenuBar: TSVGIconVirtualImageList;
     imglstEventType: TSVGIconVirtualImageList;
+    imglstEventCell: TSVGIconVirtualImageList;
   private
     { Private declarations }
 

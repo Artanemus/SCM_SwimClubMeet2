@@ -1,7 +1,7 @@
 object CORE: TCORE
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Height = 874
+  Height = 719
   Width = 1135
   object dsSwimClub: TDataSource
     DataSet = qrySwimClub
@@ -151,7 +151,8 @@ object CORE: TCORE
   end
   object qryEvent: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
+    AfterInsert = qryEventAfterInsert
+    AfterEdit = qryEventAfterEdit
     AfterScroll = qryEventAfterScroll
     OnNewRecord = qryEventNewRecord
     Indexes = <
@@ -231,8 +232,6 @@ object CORE: TCORE
     object qryEventShortCaption: TWideStringField
       FieldName = 'ShortCaption'
       Origin = 'ShortCaption'
-      ReadOnly = True
-      Required = True
       Size = 273
     end
     object qryEventStartTime: TTimeField
@@ -243,12 +242,10 @@ object CORE: TCORE
     object qryEventNomineeCount: TIntegerField
       FieldName = 'NomineeCount'
       Origin = 'NomineeCount'
-      ReadOnly = True
     end
     object qryEventEntrantCount: TIntegerField
       FieldName = 'EntrantCount'
       Origin = 'EntrantCount'
-      ReadOnly = True
     end
     object qryEventSessionID: TIntegerField
       FieldName = 'SessionID'
@@ -330,9 +327,51 @@ object CORE: TCORE
       KeyFields = 'EventTypeID'
       Lookup = True
     end
+    object LookUpGender: TStringField
+      FieldKind = fkLookup
+      FieldName = 'luGender'
+      LookupDataSet = tblGender
+      LookupKeyFields = 'GenderID'
+      LookupResultField = 'ABREV'
+      KeyFields = 'GenderID'
+      Size = 4
+      Lookup = True
+    end
+    object LookUpRound: TStringField
+      DisplayLabel = 'Round'
+      FieldKind = fkLookup
+      FieldName = 'luRound'
+      LookupDataSet = tblRound
+      LookupKeyFields = 'RoundID'
+      LookupResultField = 'CaptionShort'
+      KeyFields = 'RoundID'
+      Size = 8
+      Lookup = True
+    end
+    object LookUpParalympicType: TStringField
+      FieldKind = fkLookup
+      FieldName = 'luParalympicType'
+      LookupDataSet = tblParalympicType
+      LookupKeyFields = 'ParalympicTypeID'
+      LookupResultField = 'Caption'
+      KeyFields = 'ParalympicTypeID'
+      Size = 24
+      Lookup = True
+    end
+    object LookUpEventCat: TStringField
+      FieldKind = fkLookup
+      FieldName = 'luEventCat'
+      LookupDataSet = tblEventCat
+      LookupKeyFields = 'EventCategoryID'
+      LookupResultField = 'ABREV'
+      KeyFields = 'EventCategoryID'
+      Size = 10
+      Lookup = True
+    end
   end
   object qryHeat: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     AfterScroll = qryHeatAfterScroll
     Indexes = <
       item
@@ -348,6 +387,7 @@ object CORE: TCORE
         Options = [soDescNullLast]
       end>
     IndexName = 'indxEvent_DESC'
+    MasterSource = dsEvent
     MasterFields = 'EventID'
     DetailFields = 'EventID'
     Connection = TestConnection
@@ -550,6 +590,7 @@ object CORE: TCORE
   end
   object qryNominee: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     Indexes = <
       item
         Active = True
@@ -579,7 +620,6 @@ object CORE: TCORE
       '      ,[AutoBuildFlag]'
       '      ,[EventID]'
       '      ,[Nominee].[MemberID]'
-      '      ,[SwimClubID]'
       '      ,SUBSTRING(CONCAT ('
       #9'[FirstName]'
       #9','#39', '#39
@@ -732,8 +772,8 @@ object CORE: TCORE
       ''
       'FROM TeamLink'
       'WHERE TeamID = @TeamID;')
-    Left = 352
-    Top = 592
+    Left = 616
+    Top = 544
     ParamData = <
       item
         Name = 'TEAMID'
@@ -751,8 +791,8 @@ object CORE: TCORE
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Stroke'
     UpdateOptions.KeyFields = 'StrokeID'
     TableName = 'SwimClubMeet2..Stroke'
-    Left = 88
-    Top = 592
+    Left = 72
+    Top = 264
   end
   object tblDistance: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -763,23 +803,23 @@ object CORE: TCORE
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Distance'
     UpdateOptions.KeyFields = 'DistanceID'
     TableName = 'SwimClubMeet2..Distance'
-    Left = 88
-    Top = 640
+    Left = 72
+    Top = 312
   end
   object luStroke: TDataSource
     DataSet = tblStroke
-    Left = 192
-    Top = 592
+    Left = 176
+    Top = 264
   end
   object luDistance: TDataSource
     DataSet = tblDistance
-    Left = 192
-    Top = 640
+    Left = 176
+    Top = 312
   end
   object dsTeamLink: TDataSource
     DataSet = qryTeamLink
-    Left = 440
-    Top = 592
+    Left = 704
+    Top = 544
   end
   object qryMember: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -926,17 +966,78 @@ object CORE: TCORE
     Top = 40
   end
   object tblEventType: TFDTable
+    ActiveStoredUsage = [auDesignTime]
     Active = True
     IndexFieldNames = 'EventTypeID'
     Connection = TestConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'SwimClubMeet2.dbo.EventType'
-    Left = 88
-    Top = 688
+    Left = 72
+    Top = 360
   end
   object luEventType: TDataSource
     DataSet = tblEventType
-    Left = 192
-    Top = 688
+    Left = 176
+    Top = 360
+  end
+  object tblGender: TFDTable
+    ActiveStoredUsage = [auDesignTime]
+    Active = True
+    IndexFieldNames = 'GenderID'
+    Connection = TestConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    TableName = 'SwimClubMeet2.dbo.Gender'
+    Left = 72
+    Top = 472
+  end
+  object tblRound: TFDTable
+    ActiveStoredUsage = [auDesignTime]
+    Active = True
+    IndexFieldNames = 'RoundID'
+    Connection = TestConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    TableName = 'SwimClubMeet2.dbo.Round'
+    Left = 72
+    Top = 528
+  end
+  object tblEventCat: TFDTable
+    ActiveStoredUsage = [auDesignTime]
+    Active = True
+    IndexFieldNames = 'EventCategoryID'
+    Connection = TestConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    TableName = 'SwimClubMeet2.dbo.EventCategory'
+    Left = 72
+    Top = 416
+  end
+  object tblParalympicType: TFDTable
+    ActiveStoredUsage = [auDesignTime]
+    Active = True
+    IndexFieldNames = 'ParalympicTypeID'
+    Connection = TestConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    TableName = 'SwimClubMeet2.dbo.ParalympicType'
+    Left = 72
+    Top = 584
+  end
+  object luEventCat: TDataSource
+    DataSet = tblEventCat
+    Left = 176
+    Top = 416
+  end
+  object luGender: TDataSource
+    DataSet = tblGender
+    Left = 176
+    Top = 472
+  end
+  object luRound: TDataSource
+    DataSet = tblRound
+    Left = 176
+    Top = 528
+  end
+  object luParalympicType: TDataSource
+    DataSet = tblParalympicType
+    Left = 176
+    Top = 584
   end
 end

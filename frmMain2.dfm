@@ -2836,31 +2836,28 @@ object Main2: TMain2
       object pnlSession: TPanel
         Left = 0
         Top = 0
-        Width = 440
+        Width = 417
         Height = 628
         Margins.Top = 10
         Align = alLeft
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitLeft = 3
-        ExplicitTop = 10
-        ExplicitHeight = 615
         inline frSession: TFrameSession
           Left = 0
           Top = 0
-          Width = 440
+          Width = 417
           Height = 628
           Align = alClient
           TabOrder = 0
-          ExplicitWidth = 440
-          ExplicitHeight = 615
+          ExplicitWidth = 417
+          ExplicitHeight = 628
           inherited pnlBody: TPanel
-            Width = 386
+            Width = 359
             Height = 628
-            ExplicitWidth = 386
-            ExplicitHeight = 615
+            ExplicitWidth = 359
+            ExplicitHeight = 628
             inherited grid: TDBAdvGrid
-              Width = 386
+              Width = 359
               Height = 628
               Columns = <
                 item
@@ -2947,53 +2944,180 @@ object Main2: TMain2
                   PrintFont.Style = []
                   Width = 0
                 end>
-              ExplicitWidth = 386
-              ExplicitHeight = 615
+              ExplicitWidth = 359
+              ExplicitHeight = 628
             end
           end
           inherited pnlCntrl: TPanel
             Height = 628
-            ExplicitHeight = 615
+            ExplicitHeight = 628
+            inherited spbtnSessClone: TSpeedButton
+              ImageIndex = 11
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessDelete: TSpeedButton
+              ImageName = 'in'
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessLock: TSpeedButton
+              ImageIndex = 6
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessNew: TSpeedButton
+              ImageName = 'edit'
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessReport: TSpeedButton
+              ImageIndex = 5
+              Glyph.Data = {00000000}
+            end
             inherited spbtnSessLockedVisible: TSpeedButton
               ImageName = 'new'
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessEdit: TSpeedButton
+              ImageIndex = 8
+              Glyph.Data = {00000000}
             end
           end
         end
       end
       object pnlEvent: TPanel
-        Left = 464
+        Left = 417
         Top = 0
-        Width = 631
+        Width = 678
         Height = 628
-        Align = alRight
+        Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
         inline frEvent: TFrameEvent
           Left = 0
           Top = 0
-          Width = 631
+          Width = 678
           Height = 628
           Align = alClient
           TabOrder = 0
-          ExplicitWidth = 631
+          ExplicitWidth = 678
           ExplicitHeight = 628
-          inherited pnlCntrl: TPanel
-            Height = 628
-            ExplicitHeight = 628
-          end
           inherited pnlBody: TPanel
-            Width = 577
+            Width = 620
             Height = 628
-            ExplicitWidth = 577
+            ExplicitWidth = 620
+            ExplicitHeight = 628
             inherited grid: TDBAdvGrid
-              Width = 577
+              Width = 620
               Height = 628
-              ExplicitWidth = 577
+              ExplicitLeft = 0
+              ExplicitWidth = 620
               ExplicitHeight = 628
+              RowHeights = (
+                32
+                32
+                32
+                32
+                32)
             end
+          end
+          inherited rpnlCntrl: TRelativePanel
+            Height = 628
+            ControlCollection = <
+              item
+                Control = frEvent.ShapeEvBar1
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frEvent.spbtnEvGridView
+              end
+              item
+                Control = frEvent.ShapeEvBar2
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frEvent.spbtnEvIndvTeam
+              end
+              item
+                Control = frEvent.spbtnEvDelete
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frEvent.spbtnEvNew
+              end
+              item
+                Control = frEvent.spbtnEvDown
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frEvent.spbtnEvUp
+              end
+              item
+                Control = frEvent.spbtnEvGridView
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = True
+                AlignVerticalCenterWithPanel = False
+              end
+              item
+                Control = frEvent.spbtnEvNew
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frEvent.spbtnEvDown
+              end
+              item
+                Control = frEvent.spbtnEvReport
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frEvent.ShapeEvBar2
+              end
+              item
+                Control = frEvent.spbtnEvUp
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frEvent.ShapeEvBar1
+              end
+              item
+                Control = frEvent.spbtnEvIndvTeam
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frEvent.spbtnEvDelete
+              end>
+            ExplicitLeft = 0
+            ExplicitHeight = 628
           end
           inherited actnlstEvent: TActionList
             Left = 208
+            inherited actnEv_GridView: TAction
+              OnExecute = frEventactnEv_GridViewExecute
+            end
           end
         end
       end
@@ -3479,6 +3603,12 @@ object Main2: TMain2
                 ShortCut = 16430
               end
               item
+                Action = frEvent.actnEv_EventType
+                Caption = 'Event T&ype'
+                ImageIndex = 35
+                ImageName = 'INDV_RELAY'
+              end
+              item
                 Action = frEvent.actnEv_Report
                 Caption = '&Event Report...'
                 ImageIndex = 15
@@ -3523,7 +3653,6 @@ object Main2: TMain2
                 ImageName = 'in'
               end>
             Caption = 'E&vents'
-            ImageName = 'empty'
           end
           item
             Items = <

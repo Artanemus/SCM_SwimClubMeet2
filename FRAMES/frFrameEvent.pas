@@ -14,13 +14,13 @@ uses
 
   AdvUtil, AdvObj, AdvGrid, DBAdvGrid,
 
-  dmSCM2, dmIMG, dmCORE, uDefines, scmUtils,
+  dmSCM2, dmIMG, dmCORE, uDefines, // scmUtils,
 
-  uSettings, uSession, uEvent, System.Actions, Vcl.ActnList, Vcl.Buttons;
+  uSettings, uSession, uEvent, System.Actions, Vcl.ActnList, Vcl.Buttons,
+  Vcl.WinXCtrls;
 
 type
   TFrameEvent = class(TFrame)
-    pnlCntrl: TPanel;
     pnlBody: TPanel;
     grid: TDBAdvGrid;
     actnlstEvent: TActionList;
@@ -46,6 +46,13 @@ type
     spbtnEvReport: TSpeedButton;
     actnEv_Export: TAction;
     actnEv_Import: TAction;
+    rpnlCntrl: TRelativePanel;
+    actnEv_EventType: TAction;
+    spbtnEvIndvTeam: TSpeedButton;
+    procedure actnEv_DeleteExecute(Sender: TObject);
+    procedure actnEv_DeleteUpdate(Sender: TObject);
+    procedure actnEv_EventTypeExecute(Sender: TObject);
+    procedure actnEv_EventTypeUpdate(Sender: TObject);
     procedure actnEv_GridViewExecute(Sender: TObject);
     procedure actnEv_GridViewUpdate(Sender: TObject);
     procedure actnEv_MoveUpDownExecute(Sender: TObject);
@@ -53,10 +60,12 @@ type
     procedure actnEv_NewExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
+    procedure gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
+        State: TGridDrawState);
   private
     { Private declarations }
-    procedure SetIconGridView();
-    procedure SetColGridView;
+    procedure SetGridView_IconIndex;
+    procedure SetGridView_ColVisibility;
     procedure FixedEventCntrlIcons();
   public
     procedure Initialise();
@@ -69,50 +78,57 @@ implementation
 
 {$R *.dfm}
 
+procedure TFrameEvent.actnEv_DeleteExecute(Sender: TObject);
+begin
+  grid.BeginUpdate;
+  try
+    uEvent.DeleteEvent(true);
+  finally
+  grid.EndUpdate;
+  end;
+end;
+
+procedure TFrameEvent.actnEv_DeleteUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+    // fix RAD STUDIO icon re-assignment issue.
+  if (spbtnEvDelete.imageindex <> 5) then spbtnEvDelete.imageindex := 5;
+
+  if Assigned(CORE) and CORE.IsActive and
+    not CORE.qryEvent.IsEmpty then DoEnable := true;
+  TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TFrameEvent.actnEv_EventTypeExecute(Sender: TObject);
+begin
+  grid.BeginUpdate;
+  uEvent.ToggleEventTypeID;
+  grid.EndUpdate;
+end;
+
+procedure TFrameEvent.actnEv_EventTypeUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+  // fix RAD STUDIO icon re-assignment issue.
+  if (spbtnEvIndvTeam.imageindex <> 7) then spbtnEvDelete.imageindex := 7;
+
+  if Assigned(CORE) and CORE.IsActive and
+    not CORE.qryEvent.IsEmpty then DoEnable := true;
+  TAction(Sender).Enabled := DoEnable;
+end;
+
 procedure TFrameEvent.actnEv_GridViewExecute(Sender: TObject);
 begin
     TAction(Sender).Checked := not TAction(Sender).Checked; // T O G G L E .
-
     grid.BeginUpdate;
     CORE.qryEvent.DisableControls;
-
     try
-      SetIconGridView;  // uses actnEv_GridView.Checked state.
-      SetColGridView;
-
-      {
-      var fld: TField;
-
-      // e v e n t   d e s c r i p t i o n ...
-      fld := CORE.qryEvent.FindField('Caption');
-      if Assigned(fld) then fld.Visible := TAction(Sender).Checked;
-
-      // e v e n t   s c h e d u l e  t i m e ...
-      fld := CORE.qryEvent.FindField('ScheduleDT');
-      if Assigned(fld) then fld.Visible := TAction(Sender).Checked;
-
-      // INDV or RELAY event type ....
-       fld := CORE.qryEvent.FindField('luEventType');
-       if Assigned(fld) then
-       fld.Visible := Checked;
-
-      // Fields that are always visible in either grid display mode.
-      // n o m i n a t i o n s  ...
-      fld := CORE.qryEvent.FindField('NomineeCount');
-      if Assigned(fld) then
-      begin
-        if TAction(Sender).Checked then fld.DisplayLabel := 'Nominees'
-        else fld.DisplayLabel := 'Nom#';
-      end;
-//      // e n t r a n t s ...
-      fld := CORE.qryEvent.FindField('EntrantCount');
-      if Assigned(fld) then
-      begin
-        if TAction(Sender).Checked then fld.DisplayLabel := 'Entrants'
-        else fld.DisplayLabel := ' Ent#';
-      end;
-      }
-
+      SetGridView_IconIndex;  // uses actnEv_GridView.Checked state.
+      SetGridView_ColVisibility;  // uses actnEv_GridView.Checked state.
     finally
       begin
         CORE.qryEvent.EnableControls;
@@ -128,9 +144,7 @@ var
 begin
   DoEnable := false;
   // fix RAD STUDIO icon re-assignment issue.
-  if (not spbtnEvGridView.imageindex in [1,2]) then
-    spbtnEvGridView.imageindex := 1; // Collapsed grid (SLASH).
-
+  SetGridView_IconIndex; // uses actnEv_GridView.Checked state.
   if Assigned(CORE) and CORE.IsActive and
     not CORE.qryEvent.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
@@ -138,54 +152,19 @@ end;
 
 procedure TFrameEvent.actnEv_MoveUpDownExecute(Sender: TObject);
 var
-  aEventID, recA, recB: integer;
-  fld: TField;
-  recPos: TRecordPos;
+cn: TComponentName;
 begin
-//  if not CORE.IsActive then exit;
-  recPos := scmUtils.GetRecordPosition(CORE.qryEvent);
-  if recPos = rpMiddle then
-  begin
     grid.BeginUpdate;
-    CORE.qryEvent.DisableControls();
-    CORE.qryEvent.CheckBrowseMode;
-    fld := CORE.qryEvent.FindField('EventNum');
-    if Assigned(fld) and fld.ReadOnly then fld.ReadOnly := false;
     try
-      aEventID := uEvent.PK;
-      recA := CORE.qryEvent.FieldByName('EventNum').AsInteger;
-      recB := 0;
-      try
-        if TAction.UnitName.Contains('Down') then
-          CORE.qryEvent.Next()
-        else if TAction.UnitName.Contains('Up')  then
-          CORE.qryEvent.Prior()
-        else exit;
-
-        recB := CORE.qryEvent.FieldByName('EventNum').AsInteger;
-        CORE.qryEvent.Edit();
-        CORE.qryEvent.FieldByName('EventNum').AsInteger := recA;
-        CORE.qryEvent.Post();
-        recA := 0;
-        if uEvent.Locate(aEventID) then
-        begin
-          CORE.qryEvent.Edit();
-          CORE.qryEvent.FieldByName('EventNum').AsInteger := recB;
-          CORE.qryEvent.Post();
-        end;
-      except on E: Exception do
-        begin
-          CORE.qryEvent.Cancel;
-          { if recA = 0 then  uEvent.RenumberLanes(true); }
-          exit;
-        end;
-      end;
+      cn := TComponent(Sender).Name;
+      if String(cn).Contains('Down') then
+        uEvent.MoveUpDown(scmMoveDirection.mdDown)
+      else if string(cn).Contains('Up')  then
+        uEvent.MoveUpDown(scmMoveDirection.mdUp)
+      else exit;
     finally
-      if Assigned(fld) then fld.ReadOnly := true;
-      CORE.qryEvent.EnableControls();
       grid.EndUpdate;
     end;
-  end;
 end;
 
 procedure TFrameEvent.actnEv_MoveUpDownUpdate(Sender: TObject);
@@ -194,16 +173,10 @@ var
 begin
   DoEnable := false;
   // fix RAD STUDIO icon re-assignment issue.
-  if TAction.UnitName.Contains('Down') then
-  begin
-    if (spbtnEvDown.imageindex <> 3) then
+  if (spbtnEvDown.imageindex <> 3) then
       spbtnEvDown.imageindex := 3;
-  end
-  else if TAction.UnitName.Contains('Up')  then
-  begin
-    if (spbtnEvUp.imageindex <> 2) then
+  if (spbtnEvUp.imageindex <> 2) then
       spbtnEvUp.imageindex := 2;
-  end;
 
   if Assigned(CORE) and CORE.IsActive and
     not CORE.qryEvent.IsEmpty then DoEnable := true;
@@ -228,35 +201,45 @@ end;
 procedure TFrameEvent.gridCanEditCell(Sender: TObject; ARow, ACol: Integer;
     var CanEdit: Boolean);
 begin
-  CanEdit := not (ACol in [0, 1, 2, 6, 7, 8, 9]);
+  // inhibit -  description, gender, round.
+  if actnEv_GridView.Checked then // Expanded.
+    CanEdit := not (ACol in [0, 1, 2, 5, 7, 8, 9])
+  else
+    CanEdit := not (ACol in [0, 1, 2, 5 ,6, 7, 8, 9, 10, 11]); // collapsed.
+end;
+
+procedure TFrameEvent.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
+  TRect; State: TGridDrawState);
+begin
+  if (ARow = 0) then
+  begin
+    case ACol of
+      8:
+        IMG.imglstEventCell.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 4,
+          Rect.top + 4, 1);
+      9:
+        IMG.imglstEventCell.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 4,
+          Rect.top + 4, 2);
+    end;
+  end;
 end;
 
 procedure TFrameEvent.Initialise;
 begin
-  FixedEventCntrlIcons; // Fix RAD Studio erronous icon assignment.
-  grid.RowCount := grid.FixedRows + 1; // rule: row count > fixed row.
+  // GridView button icon index is depenandt on checked state.
+  actnEv_GridView.Checked := false; // Collapsed grid view.
+  FixedEventCntrlIcons; // Fix RAD Studio erronous icon re-assignment.
+  SetGridView_ColVisibility;
+  grid.RowCount := grid.FixedRows + 1; // TMS rule: row count > fixed row.
 
   if SCM2.scmConnection.Connected and CORE.IsActive then
   begin
     if CORE.qrySession.IsEmpty then
-    begin
       // setting pagemode to false clears grid of text. (it appears empty)
-      grid.PageMode := false;
-    end
+      grid.PageMode := false
     else
-    begin
       // Set pagemode to the default 'editable' fetch records mode.
       grid.PageMode := true;
-
-      actnEv_GridView.Checked := false;
-      SetIconGridView; // uses actnEv_GridView.Checked state.
-      SetColGridView; // uses actnEv_GridView.Checked state.
-
-//      grid.BeginUpdate;
-        // based actnEv_GridView.Checked state - prepare grid columns.
-
-//      grid.EndUpdate;
-    end;
   end
   else
     grid.PageMode := false; // read-only
@@ -268,27 +251,36 @@ begin
   // ...
 end;
 
-procedure TFrameEvent.SetColGridView;
+procedure TFrameEvent.SetGridView_ColVisibility;
 begin
   // EXPANDED or COLLAPSED grid views...
   if actnEv_GridView.Checked then
   begin  // EXPANDED...
-    grid.Columns[5].Width := 100;
-    // modify other columns
+    grid.Columns[6].Width := 400;   // DESCRIPTION
+    grid.Columns[10].Width := 60;   // Gender
+    grid.Columns[11].Width := 80;   // Round
   end
   else
   begin  // COLLAPSED...
-    grid.Columns[5].Width := 0; // description is Hidden.
+    grid.Columns[6].Width := 0;
+    grid.Columns[10].Width := 0;
+    grid.Columns[11].Width := 0;
   end;
 end;
 
-procedure TFrameEvent.SetIconGridView;
+procedure TFrameEvent.SetGridView_IconIndex;
 begin
   // logic saves on unessesary repaints.
-  if (actnEv_GridView.Checked) and (spbtnEvGridView.ImageIndex <> 2) then
-    spbtnEvGridView.ImageIndex := 2; // GRID ICON. (EXPANDED).
-  if (not actnEv_GridView.Checked) and (spbtnEvGridView.ImageIndex <> 1) then
-     else spbtnEvGridView.ImageIndex := 1; // GRID ICON WITH SLASH. (COLLAPSED).
+  if (actnEv_GridView.Checked) then // Expanded view - icon has no slash.
+  begin
+    if (spbtnEvGridView.ImageIndex <> 1) then
+      spbtnEvGridView.ImageIndex := 1;
+  end
+  else // Collapsed view - icon contains a slash.
+  begin
+    if (spbtnEvGridView.ImageIndex <> 0) then
+       else spbtnEvGridView.ImageIndex := 0;
+  end;
 end;
 
 end.

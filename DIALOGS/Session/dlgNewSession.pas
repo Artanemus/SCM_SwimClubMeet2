@@ -220,8 +220,6 @@ begin
 end;
 
 procedure TNewSession.FormShow(Sender: TObject);
-var
-  dt: TDateTime;
 begin
   try
     // calculate a session date and time based on the previous session..

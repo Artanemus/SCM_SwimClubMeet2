@@ -5,9 +5,9 @@ object FrameSession: TFrameSession
   Height = 698
   TabOrder = 0
   object pnlBody: TPanel
-    Left = 54
+    Left = 58
     Top = 0
-    Width = 392
+    Width = 388
     Height = 698
     Align = alClient
     BevelOuter = bvNone
@@ -15,7 +15,7 @@ object FrameSession: TFrameSession
     object grid: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 392
+      Width = 388
       Height = 698
       Cursor = crDefault
       Margins.Left = 0
@@ -496,7 +496,7 @@ object FrameSession: TFrameSession
   object pnlCntrl: TPanel
     Left = 0
     Top = 0
-    Width = 54
+    Width = 58
     Height = 698
     Align = alLeft
     BevelOuter = bvNone
@@ -505,7 +505,7 @@ object FrameSession: TFrameSession
       AlignWithMargins = True
       Left = 0
       Top = 102
-      Width = 54
+      Width = 58
       Height = 4
       Margins.Left = 0
       Margins.Top = 6
@@ -520,7 +520,7 @@ object FrameSession: TFrameSession
       AlignWithMargins = True
       Left = 0
       Top = 310
-      Width = 54
+      Width = 58
       Height = 4
       Margins.Left = 0
       Margins.Top = 6
@@ -534,7 +534,7 @@ object FrameSession: TFrameSession
     object spbtnSessClone: TSpeedButton
       Left = 0
       Top = 208
-      Width = 54
+      Width = 58
       Height = 48
       Action = actnSess_Clone
       Align = alTop
@@ -551,7 +551,7 @@ object FrameSession: TFrameSession
     object spbtnSessDelete: TSpeedButton
       Left = 0
       Top = 256
-      Width = 54
+      Width = 58
       Height = 48
       Action = actnSess_Delete
       Align = alTop
@@ -568,7 +568,7 @@ object FrameSession: TFrameSession
     object spbtnSessLock: TSpeedButton
       Left = 0
       Top = 48
-      Width = 54
+      Width = 58
       Height = 48
       Action = actnSess_Lock
       Align = alTop
@@ -586,7 +586,7 @@ object FrameSession: TFrameSession
     object spbtnSessNew: TSpeedButton
       Left = 0
       Top = 160
-      Width = 54
+      Width = 58
       Height = 48
       Action = actnSess_New
       Align = alTop
@@ -603,7 +603,7 @@ object FrameSession: TFrameSession
     object spbtnSessReport: TSpeedButton
       Left = 0
       Top = 320
-      Width = 54
+      Width = 58
       Height = 48
       Action = actnSess_Report
       Align = alTop
@@ -620,7 +620,7 @@ object FrameSession: TFrameSession
     object spbtnSessLockedVisible: TSpeedButton
       Left = 0
       Top = 0
-      Width = 54
+      Width = 58
       Height = 48
       Action = actnSess_IsLocked
       Align = alTop
@@ -639,7 +639,7 @@ object FrameSession: TFrameSession
     object spbtnSessEdit: TSpeedButton
       Left = 0
       Top = 112
-      Width = 54
+      Width = 58
       Height = 48
       Action = actnSess_Edit
       Align = alTop
@@ -652,6 +652,7 @@ object FrameSession: TFrameSession
       Spacing = 5
       ExplicitLeft = -3
       ExplicitTop = 115
+      ExplicitWidth = 54
     end
   end
   object actnlstSession: TActionList
@@ -762,10 +763,13 @@ object FrameSession: TFrameSession
     Top = 336
     object pumToggleVisibility: TMenuItem
       Action = actnSess_IsLocked
-      ImageName = 'new'
+      ImageIndex = 1
+      ImageName = 'visible-on'
     end
     object LockUnlock1: TMenuItem
       Action = actnSess_Lock
+      ImageIndex = 6
+      ImageName = 'lock-2'
     end
     object N1: TMenuItem
       Caption = '-'
@@ -776,7 +780,7 @@ object FrameSession: TFrameSession
     end
     object NewSession1: TMenuItem
       Action = actnSess_New
-      ImageName = 'edit'
+      ImageIndex = 3
     end
     object CloneSession1: TMenuItem
       Action = actnSess_Clone

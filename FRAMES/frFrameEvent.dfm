@@ -4,158 +4,23 @@ object FrameEvent: TFrameEvent
   Width = 632
   Height = 708
   TabOrder = 0
-  object pnlCntrl: TPanel
-    Left = 0
-    Top = 0
-    Width = 54
-    Height = 708
-    Align = alLeft
-    BevelOuter = bvNone
-    TabOrder = 0
-    object spbtnEvGridView: TSpeedButton
-      Left = 0
-      Top = 0
-      Width = 54
-      Height = 48
-      Action = actnEv_GridView
-      Align = alTop
-      Images = IMG.imglstEventCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      ParentShowHint = False
-      ShowHint = True
-      Spacing = 5
-      ExplicitTop = 8
-    end
-    object ShapeEvBar1: TShape
-      AlignWithMargins = True
-      Left = 0
-      Top = 54
-      Width = 54
-      Height = 4
-      Margins.Left = 0
-      Margins.Top = 6
-      Margins.Right = 0
-      Margins.Bottom = 6
-      Align = alTop
-      Brush.Color = 8421631
-      ExplicitTop = 51
-    end
-    object spbtnEvUp: TSpeedButton
-      Left = 0
-      Top = 64
-      Width = 54
-      Height = 48
-      Action = actnEv_MoveUp
-      Align = alTop
-      Images = IMG.imglstEventCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      ParentShowHint = False
-      ShowHint = True
-      Spacing = 5
-      ExplicitTop = 115
-    end
-    object spbtnEvDown: TSpeedButton
-      Left = 0
-      Top = 112
-      Width = 54
-      Height = 48
-      Action = actnEv_MoveDown
-      Align = alTop
-      Images = IMG.imglstEventCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      ParentShowHint = False
-      ShowHint = True
-      Spacing = 5
-      ExplicitLeft = -6
-      ExplicitTop = 144
-    end
-    object spbtnEvNew: TSpeedButton
-      Left = 0
-      Top = 160
-      Width = 54
-      Height = 48
-      Action = actnEv_New
-      Align = alTop
-      Images = IMG.imglstEventCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      ParentShowHint = False
-      ShowHint = True
-      Spacing = 5
-      ExplicitTop = 214
-    end
-    object spbtnEvDelete: TSpeedButton
-      Left = 0
-      Top = 208
-      Width = 54
-      Height = 48
-      Action = actnEv_Delete
-      Align = alTop
-      Images = IMG.imglstEventCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      ParentShowHint = False
-      ShowHint = True
-      Spacing = 5
-      ExplicitTop = 262
-    end
-    object ShapeEvBar2: TShape
-      AlignWithMargins = True
-      Left = 0
-      Top = 262
-      Width = 54
-      Height = 4
-      Margins.Left = 0
-      Margins.Top = 6
-      Margins.Right = 0
-      Margins.Bottom = 6
-      Align = alTop
-      Brush.Color = 8421631
-      ExplicitLeft = -3
-      ExplicitTop = 281
-    end
-    object spbtnEvReport: TSpeedButton
-      Left = 0
-      Top = 272
-      Width = 54
-      Height = 48
-      Action = actnEv_Report
-      Align = alTop
-      Images = IMG.imglstEventCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      ParentShowHint = False
-      ShowHint = True
-      Spacing = 5
-      ExplicitTop = 323
-    end
-  end
   object pnlBody: TPanel
-    Left = 54
+    Left = 58
     Top = 0
-    Width = 578
+    Width = 574
     Height = 708
     Align = alClient
     BevelOuter = bvNone
-    TabOrder = 1
+    TabOrder = 0
     object grid: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 578
+      Width = 574
       Height = 708
       Cursor = crDefault
       Align = alClient
       Color = clWhite
-      ColCount = 10
+      ColCount = 12
       DefaultRowHeight = 32
       DrawingStyle = gdsClassic
       FixedColor = clWhite
@@ -170,6 +35,7 @@ object FrameEvent: TFrameEvent
       ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
+      OnDrawCell = gridDrawCell
       GridLineColor = 15987699
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
@@ -249,6 +115,7 @@ object FrameEvent: TFrameEvent
       Navigation.AdvanceOnEnter = True
       Navigation.AdvanceInsert = True
       Navigation.InsertPosition = pInsertAfter
+      Navigation.CursorMoveRows = True
       Navigation.TabToNextAtEnd = True
       PrintSettings.DateFormat = 'dd/mm/yyyy'
       PrintSettings.Font.Charset = DEFAULT_CHARSET
@@ -404,7 +271,7 @@ object FrameEvent: TFrameEvent
           PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 140
+          Width = 120
         end
         item
           Borders = []
@@ -435,34 +302,33 @@ object FrameEvent: TFrameEvent
           Width = 132
         end
         item
-          Alignment = taRightJustify
           Borders = []
           BorderPen.Color = clSilver
           ButtonHeight = 18
           CheckFalse = 'N'
           CheckTrue = 'Y'
-          Color = clWindow
+          Color = clWhite
           DataImageField = True
-          FieldName = 'luEventType'
+          FieldName = 'EventTypeID'
           Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -19
+          Font.Color = clBlack
+          Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
           Header = ' '
           HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
+          HeaderFont.Color = clBlack
           HeaderFont.Height = -16
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
           Images = IMG.imglstEventType
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 38
+          Width = 32
         end
         item
           Borders = []
@@ -507,7 +373,7 @@ object FrameEvent: TFrameEvent
           Font.Height = -19
           Font.Name = 'Segoe UI'
           Font.Style = []
-          Header = ' '
+          Header = '  '
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = 3881787
           HeaderFont.Height = -16
@@ -520,7 +386,7 @@ object FrameEvent: TFrameEvent
           PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 64
+          Width = 32
         end
         item
           Alignment = taRightJustify
@@ -536,7 +402,7 @@ object FrameEvent: TFrameEvent
           Font.Height = -19
           Font.Name = 'Segoe UI'
           Font.Style = []
-          Header = 'NOM#'
+          Header = ' '
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = 3881787
           HeaderFont.Height = -16
@@ -548,7 +414,7 @@ object FrameEvent: TFrameEvent
           PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 64
+          Width = 43
         end
         item
           Alignment = taRightJustify
@@ -564,7 +430,7 @@ object FrameEvent: TFrameEvent
           Font.Height = -19
           Font.Name = 'Segoe UI'
           Font.Style = []
-          Header = 'ENT#'
+          Header = ' '
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = 3881787
           HeaderFont.Height = -16
@@ -574,6 +440,62 @@ object FrameEvent: TFrameEvent
           PrintFont.Charset = DEFAULT_CHARSET
           PrintFont.Color = clWindowText
           PrintFont.Height = -12
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 43
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          FieldName = 'luGender'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = 'Gender'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          Name = 'Gender'
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 60
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          FieldName = 'luRound'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = 'Round'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          Name = 'Round'
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
           Width = 64
@@ -720,19 +642,268 @@ object FrameEvent: TFrameEvent
         20
         0
         43
-        140
+        120
         132
-        38
+        32
         0
-        64
-        64
+        32
+        43
+        43
+        60
         64)
+    end
+  end
+  object rpnlCntrl: TRelativePanel
+    Left = 0
+    Top = 0
+    Width = 58
+    Height = 708
+    ControlCollection = <
+      item
+        Control = ShapeEvBar1
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnEvGridView
+      end
+      item
+        Control = ShapeEvBar2
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnEvIndvTeam
+      end
+      item
+        Control = spbtnEvDelete
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnEvNew
+      end
+      item
+        Control = spbtnEvDown
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnEvUp
+      end
+      item
+        Control = spbtnEvGridView
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = True
+        AlignVerticalCenterWithPanel = False
+      end
+      item
+        Control = spbtnEvNew
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnEvDown
+      end
+      item
+        Control = spbtnEvReport
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = ShapeEvBar2
+      end
+      item
+        Control = spbtnEvUp
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = ShapeEvBar1
+      end
+      item
+        Control = spbtnEvIndvTeam
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnEvDelete
+      end>
+    Align = alLeft
+    BevelOuter = bvNone
+    TabOrder = 1
+    object ShapeEvBar1: TShape
+      AlignWithMargins = True
+      Left = 2
+      Top = 54
+      Width = 54
+      Height = 4
+      Margins.Left = 0
+      Margins.Top = 6
+      Margins.Right = 0
+      Margins.Bottom = 6
+      Align = alTop
+      Anchors = []
+      Brush.Color = 8421631
+    end
+    object ShapeEvBar2: TShape
+      AlignWithMargins = True
+      Left = 2
+      Top = 310
+      Width = 54
+      Height = 4
+      Margins.Left = 0
+      Margins.Top = 6
+      Margins.Right = 0
+      Margins.Bottom = 6
+      Align = alTop
+      Anchors = []
+      Brush.Color = 8421631
+    end
+    object spbtnEvDelete: TSpeedButton
+      Left = 2
+      Top = 208
+      Width = 54
+      Height = 48
+      Action = actnEv_Delete
+      Align = alTop
+      Anchors = []
+      ImageIndex = 5
+      Images = IMG.imglstEventCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
+    end
+    object spbtnEvDown: TSpeedButton
+      Left = 2
+      Top = 112
+      Width = 54
+      Height = 48
+      Action = actnEv_MoveDown
+      Align = alTop
+      Anchors = []
+      ImageName = 'INDV_RELAY'
+      Images = IMG.imglstEventCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
+    end
+    object spbtnEvGridView: TSpeedButton
+      Left = 2
+      Top = 0
+      Width = 54
+      Height = 48
+      Action = actnEv_GridView
+      Align = alTop
+      Anchors = []
+      Images = IMG.imglstEventCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
+    end
+    object spbtnEvNew: TSpeedButton
+      Left = 2
+      Top = 160
+      Width = 54
+      Height = 48
+      Action = actnEv_New
+      Align = alTop
+      Anchors = []
+      ImageIndex = 4
+      Images = IMG.imglstEventCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
+    end
+    object spbtnEvReport: TSpeedButton
+      Left = 2
+      Top = 320
+      Width = 54
+      Height = 48
+      Action = actnEv_Report
+      Align = alTop
+      Anchors = []
+      ImageIndex = 6
+      Images = IMG.imglstEventCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
+    end
+    object spbtnEvUp: TSpeedButton
+      Left = 2
+      Top = 64
+      Width = 54
+      Height = 48
+      Action = actnEv_MoveUp
+      Align = alTop
+      Anchors = []
+      ImageName = 'report'
+      Images = IMG.imglstEventCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
+    end
+    object spbtnEvIndvTeam: TSpeedButton
+      Left = 2
+      Top = 256
+      Width = 54
+      Height = 48
+      Hint = 'Toogle event type.'
+      Action = actnEv_EventType
+      Align = alTop
+      Anchors = []
+      Caption = ' '
+      ImageIndex = 7
+      Images = IMG.imglstEventCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
     end
   end
   object actnlstEvent: TActionList
     Images = IMG.imglstMenuBar
-    Left = 360
-    Top = 136
+    Left = 280
+    Top = 208
     object actnEv_GridView: TAction
       Category = 'Events'
       Caption = 'Toogle Grid View'
@@ -777,6 +948,17 @@ object FrameEvent: TFrameEvent
       ImageIndex = 9
       ImageName = 'delete'
       ShortCut = 16430
+      OnExecute = actnEv_DeleteExecute
+      OnUpdate = actnEv_DeleteUpdate
+    end
+    object actnEv_EventType: TAction
+      Category = 'Events'
+      Caption = 'Event Type'
+      Hint = 'Toggle Event Type'
+      ImageIndex = 35
+      ImageName = 'INDV_RELAY'
+      OnExecute = actnEv_EventTypeExecute
+      OnUpdate = actnEv_EventTypeUpdate
     end
     object actnEv_Report: TAction
       Category = 'Events'

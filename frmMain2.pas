@@ -105,6 +105,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure frEventactnEv_GridViewExecute(Sender: TObject);
     procedure GenericActionUpdate(Sender: TObject);
     procedure pnlTitleBarCustomButtons0Click(Sender: TObject);
     procedure pnlTitleBarCustomButtons0Paint(Sender: TObject);
@@ -345,6 +346,15 @@ begin
 
 end;
 
+procedure TMain2.frEventactnEv_GridViewExecute(Sender: TObject);
+begin
+  frEvent.actnEv_GridViewExecute(Sender); // toggle grid view.
+  if frEvent.actnEv_GridView.Checked  then // EXPAND.
+    pnlSession.Visible := false
+  else  // COLLAPSE.
+    pnlSession.Visible := true;
+end;
+
 procedure TMain2.GenericActionUpdate(Sender: TObject);
 var
   DoEnable: boolean;
@@ -376,13 +386,13 @@ begin
   try // update the status bar with nominee and entrant counts.
     if (uSession.IsLocked) then
     begin // Fast.. gets the pre-calculated params from table.
-      StatusBar.Panels[1].Text := IntToStr(uSession.NomineeCount);
-      StatusBar.Panels[2].Text := IntToStr(uSession.EntrantCount);
+      StatusBar.Panels[1].Text := IntToStr(uSession.GetSess_NomineeCount);
+      StatusBar.Panels[2].Text := IntToStr(uSession.GetSess_EntrantCount);
     end
     else
     begin // Calls ExecSQLScalar .. a little slower, real-time.
-      StatusBar.Panels[1].Text := IntToStr(uSession.CalcNomineeCount);
-      StatusBar.Panels[2].Text := IntToStr(uSession.CalcEntrantCount);
+      StatusBar.Panels[1].Text := IntToStr(uSession.CalcSess_NomineeCount);
+      StatusBar.Panels[2].Text := IntToStr(uSession.CalcSess_EntrantCount);
     end;
     StatusBar.Panels[3].Text := IntToStr(uSession.WeeksSinceSeasonStart);
   except on E: Exception do

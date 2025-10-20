@@ -20,8 +20,6 @@ function HasEvents: Boolean;  deprecated;
 function IsEmptyOrLocked: Boolean;
 function RenumberEvents(DoLocate: Boolean = true): integer;
 function SessionDT: TDateTime;
-procedure SetEntrantCount();
-procedure SetNomineeCount();
 //procedure SortSession();
 procedure NewSession();
 //procedure EditSession();
@@ -33,13 +31,19 @@ function WeeksSinceSeasonStart(const ANow: TDateTime): Integer; overload;
 function WeeksSinceSeasonStart: Integer; overload;
 
 function Locate(SessionID: integer): Boolean;
-function CalcEventCount: integer;
+function CalcSess_EventCount: integer;
 function GetSessionID: integer; // Assert - SAFE.
 function Delete_Session(DoExclude: Boolean = true): boolean;
-function CalcNomineeCount(): integer;
-function CalcEntrantCount: integer;
-function EntrantCount: integer;
-function NomineeCount: integer;
+
+
+function CalcSess_NomineeCount: integer;
+function CalcSess_EntrantCount: integer;
+procedure SetSess_EntrantCount; // performs Calculation
+procedure SetSess_NomineeCount; // performs Calculation
+function GetSess_EntrantCount: integer;
+function GetSess_NomineeCount: integer;
+
+procedure UpdateEvent_Stats;
 
 // LISTED BELOW ARE ROUTINES THAT ARE IN-USE AND DEBUGGED
 function PK(): integer; // NO CHECKS. RTNS: Primary key.
@@ -84,7 +88,7 @@ begin
         result := true;
 end;
 
-function CalcNomineeCount(): integer;
+function CalcSess_NomineeCount: integer;
 var
   SQL: string;
   v: variant;
@@ -96,23 +100,20 @@ begin
   if not VarIsClear(v) and (v > 0) then result := v;
 end;
 
-function CalcEntrantCount(): integer;
+function CalcSess_EntrantCount: integer;
 var
-  SQL: string;
-  v: variant;
+   SQL: string;
+   v: variant;
 begin
   result := 0;
-  {TODO -oBSA -cURGENT : dbo.SessionEntrantCount}
-  {
   if not Assigned(SCM2) or not SCM2.scmConnection.Connected then exit;
   SQL := 'SELECT SwimClubMeet2.dbo.SessionEntrantCount(:ID);';
   v := SCM2.scmConnection.ExecSQLScalar(SQL, [uSession.PK]);
   if not VarIsClear(v) and (v > 0) then
     result := v;
-  }
 end;
 
-function CalcEventCount: integer;
+function CalcSess_EventCount: integer;
 var
   SQL: string;
   v: variant;
@@ -226,7 +227,7 @@ begin
   end;
 end;
 
-function EntrantCount: integer;
+function GetSess_EntrantCount: integer;
 begin
   result := CORE.qrySession.FieldByName('EntrantCount').AsInteger;
 end;
@@ -235,6 +236,37 @@ function GetSessionID: integer;
 begin
   result := CORE.qrySession.FieldByName('SessionID').AsInteger;
 end;
+
+procedure UpdateEvent_Stats;
+var
+  SQL: string;
+begin
+  if not Assigned(SCM2) or not SCM2.scmConnection.Connected then exit;
+  CORE.qryEvent.DisableControls;
+  CORE.qrySession.DisableControls;
+  try
+    SQL := '''
+          UPDATE [SwimClubMeet2].[dbo].[Event]
+             SET [NomineeCount] = dbo.NomineeCount([EventID])
+                ,[EntrantCount] = dbo.EntrantCount([EventID])
+           WHERE [SessionID] = :ID;
+          ''';
+    SCM2.scmConnection.StartTransaction;
+    try
+      SCM2.scmConnection.ExecSQL(SQL, [uSession.PK]);
+      SCM2.scmConnection.Commit;
+    except
+      SCM2.scmConnection.Rollback;
+      raise;
+    end;
+  finally
+    CORE.qrySession.EnableControls;
+    CORE.qryEvent.Refresh;
+    CORE.qryEvent.EnableControls;
+  end;
+end;
+
+
 
 function HasClosedOrRacedHeats: Boolean;
 var
@@ -298,11 +330,13 @@ begin
   end;
 end;
 
-procedure SetEntrantCount;
+procedure SetSess_EntrantCount;
+var
+  i: integer;
 begin
-  var i := uSession.CalcEntrantCount;
+  CORE.qrySession.DisableControls;
   try
-    CORE.qrySession.DisableControls;
+    i := uSession.CalcSess_EntrantCount;
     if CORE.qrySession.FieldByName('EntrantCount').AsInteger <> i then
     begin
       try
@@ -318,11 +352,13 @@ begin
   end;
 end;
 
-procedure SetNomineeCount();
+procedure SetSess_NomineeCount;
+var
+  i: integer;
 begin
-  var i := uSession.CalcNomineeCount;
+  CORE.qrySession.DisableControls;
   try
-    CORE.qrySession.DisableControls;
+    i := uSession.CalcSess_NomineeCount;
     try
       CORE.qrySession.Edit;
       CORE.qrySession.FieldByName('NomineeCount').AsInteger := i;
@@ -432,7 +468,7 @@ begin
   end;
 end;
 
-function NomineeCount: integer;
+function GetSess_NomineeCount: integer;
 begin
   result := CORE.qrySession.FieldByName('NomineeCount').AsInteger;
 end;

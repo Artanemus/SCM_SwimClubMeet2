@@ -236,15 +236,24 @@ begin
     TAction(Sender).Checked := not TAction(Sender).Checked;
     if TAction(Sender).Checked then
     begin
-      uSession.SetSessionStatusID(2); // CLOSED ie.LOCKED.
-      // good opertunity to re-calulate and store count values.
-      uSession.SetNomineeCount;
-      uSession.SetEntrantCount;
-      SetLockIcon;
+      try
+        uSession.SetSessionStatusID(2); // CLOSED ie.LOCKED.
+        // good opertunity to re-calulate and store count values.
+        {-------------------------------------------------------}
+        // iterate over events in session - re-calculating counts.
+        uSession.UpdateEvent_Stats();
+        // uses database scalar functions.
+        uSession.SetSess_NomineeCount; // SwimClubMeet.dbo.SessionNomineeCount
+        uSession.SetSess_EntrantCount; // SwimClubMeet.dbo.SessionEntrantCount
+      finally
+        actnSess_Lock.Checked := true; // syncronize to equal db state
+        SetLockIcon;
+      end;
     end
     else
     begin
       uSession.SetSessionStatusID(1); // OPEN ie.UN-LOCKED.
+      actnSess_Lock.Checked := false; // syncronize to equal db state
       SetLockIcon;
     end;
   finally
@@ -369,7 +378,7 @@ end;
 procedure TFrameSession.gridGetHTMLTemplate(Sender: TObject; ACol, ARow:
     Integer; var HTMLTemplate: string; Fields: TFields);
 var
-  s, s2: string;
+  s: string;
   ShowSeasonIcon, Locked: boolean;
   weeks: integer;
 begin
@@ -390,8 +399,10 @@ begin
     begin
       // Session date and time. Caption. Status buttons. 2xlines
       s := '''
+        <FONT Size="14">
+        <IND x="2"><B><#SessionDT></B></FONT>
+        <br>
         <FONT Size="12">
-        <IND x="2"><B><#SessionDT></B><br>
         <IND x="4"><IMG src="idx:7" align="bottom">
         ''';
       if ShowSeasonIcon then
@@ -404,8 +415,10 @@ begin
     else // The session is locked - 3xlines at reduced font size.
     begin
       s := '''
-        <IND x="2"><FONT Size="10"><#SessionDT><br>
-        <IND x="4">'<#Caption><br>
+        <IND x="2"><FONT Size="10"><#SessionDT>
+        <br>
+        <IND x="4">'<#Caption>
+        <br>
         <IND x="4"><IMG src="idx:6" align="middle">
         ''';
       if ShowSeasonIcon then

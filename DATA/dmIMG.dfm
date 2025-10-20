@@ -4,19 +4,19 @@ object IMG: TIMG
   object imglstEventStatus: TSVGIconVirtualImageList
     Images = <
       item
-        CollectionIndex = 0
-        CollectionName = 'EmptyFrame'
-        Name = 'EmptyFrame'
-      end
-      item
         CollectionIndex = 2
         CollectionName = 'HeatOpen'
         Name = 'HeatOpen'
       end
       item
-        CollectionIndex = 4
-        CollectionName = 'HeatClosed'
-        Name = 'HeatClosed'
+        CollectionIndex = 0
+        CollectionName = 'EmptyFrame'
+        Name = 'EmptyFrame'
+      end
+      item
+        CollectionIndex = 55
+        CollectionName = 'post'
+        Name = 'post'
       end>
     ImageCollection = CollectionCore
     Width = 24
@@ -1905,6 +1905,7 @@ object IMG: TIMG
           '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
           ' viewBox="0 0 24 24"><path fill="currentColor" d="M21 7L9 19l-5.' +
           '5-5.5l1.41-1.41L9 16.17L19.59 5.59z"/></svg>'
+        FixedColor = clDarkseagreen
       end
       item
         IconName = 'cancel'
@@ -2055,56 +2056,43 @@ object IMG: TIMG
       item
         IconName = 'INDV'
         SVGText = 
-          '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'#10'<svg'#10'   h' +
-          'eight="48"'#10'   width="48"'#10'   version="1.1"'#10'   id="svg4"'#10'   sodipo' +
-          'di:docname="INDV.svg"'#10'   xml:space="preserve"'#10'   inkscape:versio' +
-          'n="1.4 (86a8ad7, 2024-10-11)"'#10'   inkscape:export-batch-path="Exp' +
-          'ort"'#10'   inkscape:export-batch-name="TabSheetHeatsImages"'#10'   xmln' +
-          's:inkscape="http://www.inkscape.org/namespaces/inkscape"'#10'   xmln' +
-          's:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"'#10 +
-          '   xmlns="http://www.w3.org/2000/svg"'#10'   xmlns:svg="http://www.w' +
-          '3.org/2000/svg"><defs'#10'     id="defs8" /><sodipodi:namedview'#10'    ' +
-          ' id="namedview6"'#10'     pagecolor="#ffffff"'#10'     bordercolor="#666' +
-          '666"'#10'     borderopacity="1.0"'#10'     inkscape:showpageshadow="2"'#10' ' +
-          '    inkscape:pageopacity="0.0"'#10'     inkscape:pagecheckerboard="0' +
-          '"'#10'     inkscape:deskcolor="#d1d1d1"'#10'     showgrid="false"'#10'     i' +
-          'nkscape:zoom="5.6568542"'#10'     inkscape:cx="-76.367533"'#10'     inks' +
-          'cape:cy="54.270446"'#10'     inkscape:window-width="2560"'#10'     inksc' +
-          'ape:window-height="1377"'#10'     inkscape:window-x="-8"'#10'     inksca' +
-          'pe:window-y="-8"'#10'     inkscape:window-maximized="1"'#10'     inkscap' +
-          'e:current-layer="layer1"'#10'     showguides="true"><inkscape:page'#10' ' +
-          '      x="0"'#10'       y="0"'#10'       width="48"'#10'       height="48"'#10'  ' +
-          '     id="page535"'#10'       inkscape:label="EmptyFrame"'#10'       inks' +
-          'cape:export-filename="..\HeatNavigator\EmptyFrame.png"'#10'       in' +
-          'kscape:export-xdpi="96"'#10'       inkscape:export-ydpi="96"'#10'       ' +
-          'margin="0"'#10'       bleed="0" /></sodipodi:namedview><path'#10'     d=' +
-          '"M 18.978968,24.781239 8.325662,24.763197 V 3.0400312 L 18.97896' +
-          '8,3.1482855 Z M 33.986509,24.672985 H 30.878846 L 19.745569,11.6' +
-          '86778 c -0.281601,-0.325696 -0.512915,-0.666542 -0.693944,-1.022' +
-          '536 h -0.09051 c 0.08046,0.34842 0.122533,1.094493 0.120686,2.23' +
-          '8218 l -0.01914,11.853451 -2.515274,-0.08293 V 8.3805786 l 6.044' +
-          '339,-2e-7 12.898297,12.7816996 c 0.651256,0.530204 -4.078151,0.8' +
-          '93773 -3.947408,1.090705 h 0.06034 C 31.502389,21.783374 31.4521' +
-          '04,20.984281 31.452104,19.855705 V 8.3805786 h 2.534405 z m 2.20' +
-          '8175,0 V 8.3827675 h 7.162662 c 11.769793,0 10.895796,2.6148215 ' +
-          '13.710348,7.9210115 1.316393,2.481755 -1.272156,4.547079 -3.8164' +
-          '68,6.080484 -2.532255,1.525815 -5.926682,2.288722 -10.183281,2.2' +
-          '88722 z M 39.233389,10.075268 V 22.94221 h 3.870732 c 3.400455,0' +
-          ' 6.047264,-0.573129 7.940425,-1.719387 1.893163,-1.146259 2.8397' +
-          '43,-2.770759 2.839743,-4.873496 0,-4.182706 -3.533097,-6.274059 ' +
-          '-10.599293,-6.274059 z M 76.648987,8.4166634 64.545901,24.672985' +
-          ' 58.326534,24.654943 52.400352,16.526782 46.474171,8.398621 52.7' +
-          '39125,8.4166634 61.787949,21.30609 c 0.288711,0.415666 0.509044,' +
-          '0.895572 0.660996,1.439716 l 0.09117,0 c 0.06564,-0.453454 0.372' +
-          '286,-0.940917 0.75217,-1.462389 L 67.93071,8.4166634 Z"'#10'     id=' +
-          '"text1"'#10'     style="font-size:30.8956px;line-height:1.25;font-fa' +
+          '<?xml version="1.0" standalone="no"?>'#13#10'<svg height="48" width="4' +
+          '8" version="1.1" id="svg4" sodipodi:docname="INDV.svg" xml:space' +
+          '="preserve" inkscape:version="1.4 (86a8ad7, 2024-10-11)" inkscap' +
+          'e:export-batch-path="Export" inkscape:export-batch-name="TabShee' +
+          'tHeatsImages" inkscape:export-filename="INDV.svg" inkscape:expor' +
+          't-xdpi="96" inkscape:export-ydpi="96" xmlns:inkscape="http://www' +
+          '.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipo' +
+          'di.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/' +
+          '2000/svg" xmlns:svg="http://www.w3.org/2000/svg">'#13#10'  <defs id="d' +
+          'efs8"/>'#13#10'  <sodipodi:namedview id="namedview6" pagecolor="#fffff' +
+          'f" bordercolor="#666666" borderopacity="1.0" inkscape:showpagesh' +
+          'adow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="0' +
+          '" inkscape:deskcolor="#d1d1d1" showgrid="false" inkscape:zoom="1' +
+          '6" inkscape:cx="50.5" inkscape:cy="34.0625" inkscape:window-widt' +
+          'h="2560" inkscape:window-height="1377" inkscape:window-x="-8" in' +
+          'kscape:window-y="-8" inkscape:window-maximized="1" inkscape:curr' +
+          'ent-layer="svg4" showguides="true">'#13#10'    <inkscape:page x="0" y=' +
+          '"0" width="48" height="48" id="page535" inkscape:label="EmptyFra' +
+          'me" inkscape:export-filename="..\HeatNavigator\EmptyFrame.png" i' +
+          'nkscape:export-xdpi="96" inkscape:export-ydpi="96" margin="0" bl' +
+          'eed="0"/>'#13#10'  </sodipodi:namedview>'#13#10'  <g inkscape:groupmode="lay' +
+          'er" id="layer1" inkscape:label="Layer 1" transform="translate(82' +
+          '.201164,-10.960155)"/>'#13#10'  <path d="M 5.3447453,44.049642 H 3.194' +
+          '386 V 3.9660138 h 2.1503593 z m 19.6220287,0 h -2.63675 l -9.446' +
+          '22,-31.949504 q -0.358394,-1.20195 -0.58879,-2.5157079 h -0.0768' +
+          ' q 0.102395,1.2858079 0.102395,5.5066069 V 44.049642 H 10.170254' +
+          ' V 3.9660138 h 2.790347 l 9.190227,31.4463592 q 0.57599,1.956663' +
+          ' 0.742387,2.683423 h 0.0512 Q 22.816418,36.362751 22.816418,32.1' +
+          '97857 V 3.9660138 h 2.150359 z m 4.812708,0 V 3.9660138 h 5.0687' +
+          '05 q 9.702218,0 9.702218,19.5386722 0,9.280169 -2.700751,14.9265' +
+          '39 -2.687948,5.618417 -7.206263,5.618417 z M 31.929841,8.2147664' +
+          ' V 39.800887 h 2.73915 q 3.609531,0 5.619093,-4.2208 2.009563,-4' +
+          '.220801 2.009563,-11.963591 0,-15.4017296 -7.50066,-15.4017296 z' +
+          '" id="text1" style="font-size:40.6354px;line-height:1.25;font-fa' +
           'mily:'#39'Segoe UI'#39';-inkscape-font-specification:'#39'Segoe UI, Normal'#39';' +
-          'text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1' +
-          ';stroke:#000000;stroke-width:2.593;stroke-opacity:1"'#10'     transf' +
-          'orm="scale(0.57735647,1.7320322)"'#10'     aria-label="INDV"'#10'     so' +
-          'dipodi:nodetypes="ccccccccccscccccccscccccsscscccssssccccccccccc' +
-          'cc" /><g'#10'     inkscape:groupmode="layer"'#10'     id="layer1"'#10'     i' +
-          'nkscape:label="Layer 1" /></svg>'#10
+          'text-align:center;text-anchor:middle;stroke:#000000;stroke-width' +
+          ':2.83266" aria-label="IND"/>'#13#10'</svg>'#13#10
       end
       item
         IconName = 'user'
@@ -2456,6 +2444,116 @@ object IMG: TIMG
           '8T22 5v4q0 .825-.587 1.413T20 11zm0-2h4V5h-4zM2 8V6h9v2zm16-1"/>' +
           '</svg>'
         FixedColor = clDarkkhaki
+      end
+      item
+        IconName = 'RELAY_DOT_intense'
+        SVGText = 
+          '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'#10'<svg'#10'   h' +
+          'eight="48"'#10'   width="48"'#10'   version="1.1"'#10'   id="svg4"'#10'   sodipo' +
+          'di:docname="RELAY_DOT_intense.svg"'#10'   xml:space="preserve"'#10'   in' +
+          'kscape:version="1.4 (86a8ad7, 2024-10-11)"'#10'   inkscape:export-ba' +
+          'tch-path="Export"'#10'   inkscape:export-batch-name="TabSheetHeatsIm' +
+          'ages"'#10'   xmlns:inkscape="http://www.inkscape.org/namespaces/inks' +
+          'cape"'#10'   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sod' +
+          'ipodi-0.dtd"'#10'   xmlns="http://www.w3.org/2000/svg"'#10'   xmlns:svg=' +
+          '"http://www.w3.org/2000/svg"><defs'#10'     id="defs8" /><sodipodi:n' +
+          'amedview'#10'     id="namedview6"'#10'     pagecolor="#ffffff"'#10'     bord' +
+          'ercolor="#666666"'#10'     borderopacity="1.0"'#10'     inkscape:showpag' +
+          'eshadow="2"'#10'     inkscape:pageopacity="0.0"'#10'     inkscape:pagech' +
+          'eckerboard="0"'#10'     inkscape:deskcolor="#d1d1d1"'#10'     showgrid="' +
+          'false"'#10'     inkscape:zoom="11.313708"'#10'     inkscape:cx="25.27906' +
+          '8"'#10'     inkscape:cy="13.435029"'#10'     inkscape:window-width="2560' +
+          '"'#10'     inkscape:window-height="1377"'#10'     inkscape:window-x="-8"' +
+          #10'     inkscape:window-y="-8"'#10'     inkscape:window-maximized="1"'#10 +
+          '     inkscape:current-layer="layer36"'#10'     showguides="true"><in' +
+          'kscape:page'#10'       x="0"'#10'       y="0"'#10'       width="48"'#10'       h' +
+          'eight="48"'#10'       id="page6"'#10'       margin="0"'#10'       bleed="0"'#10 +
+          '       inkscape:label="RELAY_DOT"'#10'       inkscape:export-filenam' +
+          'e="StrokeIMRelay.png"'#10'       inkscape:export-xdpi="96"'#10'       in' +
+          'kscape:export-ydpi="96" /></sodipodi:namedview><g'#10'     inkscape:' +
+          'groupmode="layer"'#10'     id="layer36"'#10'     inkscape:label="STROKES' +
+          ' UPDATED 1"'#10'     transform="translate(-701.65186,-107.37794)"><c' +
+          'ircle'#10'       style="display:inline;opacity:0.6;fill:#ff7f2a;fill' +
+          '-opacity:1;stroke-width:8.65996;stroke-miterlimit:0;stroke-dasho' +
+          'ffset:0.8406;paint-order:markers stroke fill"'#10'       id="path6-8' +
+          '9"'#10'       cx="725.65179"'#10'       cy="131.37793"'#10'       r="24"'#10'   ' +
+          '    inkscape:label="Circle-RELAY" /><path'#10'       d="m 756.93751,' +
+          '146.19522 h -9.06404 l -5.44821,-9.01518 q -0.61078,-1.02612 -1.' +
+          '1727,-1.83236 -0.56192,-0.80624 -1.14828,-1.36816 -0.56192,-0.58' +
+          '635 -1.19714,-0.87953 -0.61078,-0.31761 -1.34372,-0.31761 h -2.1' +
+          '2554 v 13.41284 h -7.89134 V 111.1606 h 12.50888 q 12.75319,0 12' +
+          '.75319,9.52824 0,1.83236 -0.56192,3.39597 -0.56193,1.53918 -1.58' +
+          '805,2.78518 -1.02611,1.246 -2.492,2.14996 -1.44145,0.90396 -3.22' +
+          '494,1.41702 v 0.0977 q 0.7818,0.24431 1.51474,0.80623 0.73295,0.' +
+          '53749 1.41703,1.27043 0.68407,0.73295 1.29486,1.58805 0.63522,0.' +
+          '83066 1.14828,1.6369 z M 735.43788,117.073 v 9.74812 h 3.4204 q ' +
+          '2.54087,0 4.08004,-1.46588 1.56361,-1.49032 1.56361,-3.68914 0,-' +
+          '4.5931 -5.49706,-4.5931 z"'#10'       id="text6"'#10'       style="font-' +
+          'weight:bold;font-size:50.0355px;line-height:1.25;font-family:'#39'Se' +
+          'goe UI'#39';-inkscape-font-specification:'#39'Segoe UI Bold'#39';fill:#993a1' +
+          'a;stroke-width:0.938167;fill-opacity:1"'#10'       transform="scale(' +
+          '0.98084826,1.0195257)"'#10'       aria-label="R"'#10'       inkscape:lab' +
+          'el="LetterR" /></g></svg>'#10
+      end
+      item
+        IconName = 'INDV_RELAY'
+        SVGText = 
+          '<?xml version="1.0" standalone="no"?>'#13#10'<!-- Created with Inkscap' +
+          'e (http://www.inkscape.org/) -->'#13#10'<svg width="23mm" height="23mm' +
+          '" viewBox="0 0 23 23" version="1.1" id="svg1" xml:space="preserv' +
+          'e" inkscape:version="1.4 (86a8ad7, 2024-10-11)" sodipodi:docname' +
+          '="INDV_RELAY.svg" xmlns:inkscape="http://www.inkscape.org/namesp' +
+          'aces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/D' +
+          'TD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg=' +
+          '"http://www.w3.org/2000/svg">'#13#10'  <sodipodi:namedview id="namedvi' +
+          'ew1" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.' +
+          '0" inkscape:showpageshadow="2" inkscape:pageopacity="0.0" inksca' +
+          'pe:pagecheckerboard="0" inkscape:deskcolor="#d1d1d1" inkscape:do' +
+          'cument-units="mm" inkscape:zoom="5.8658912" inkscape:cx="56.2574' +
+          '36" inkscape:cy="63.758428" inkscape:window-width="2560" inkscap' +
+          'e:window-height="1377" inkscape:window-x="-8" inkscape:window-y=' +
+          '"-8" inkscape:window-maximized="1" inkscape:current-layer="layer' +
+          '1"/>'#13#10'  <defs id="defs1"/>'#13#10'  <g inkscape:label="Layer 1" inksca' +
+          'pe:groupmode="layer" id="layer1" transform="translate(6.7834867,' +
+          '10.117303)">'#13#10'    <g id="g1" transform="matrix(0.26458333,0,0,0.' +
+          '26458333,-6.1926436,-9.801735)">'#13#10'      <g id="layer1-0" inkscap' +
+          'e:label="Layer 1" transform="translate(82.201164,-10.960155)"/>'#13 +
+          #10'      <path d="M 5.3447453,44.049642 H 3.194386 V 3.9660138 h 2' +
+          '.1503593 z m 19.6220287,0 h -2.63675 l -9.44622,-31.949504 q -0.' +
+          '358394,-1.20195 -0.58879,-2.5157079 h -0.0768 q 0.102395,1.28580' +
+          '79 0.102395,5.5066069 V 44.049642 H 10.170254 V 3.9660138 h 2.79' +
+          '0347 l 9.190227,31.4463592 q 0.57599,1.956663 0.742387,2.683423 ' +
+          'h 0.0512 Q 22.816418,36.362751 22.816418,32.197857 V 3.9660138 h' +
+          ' 2.150359 z m 4.812708,0 V 3.9660138 h 5.068705 q 9.702218,0 9.7' +
+          '02218,19.5386722 0,9.280169 -2.700751,14.926539 -2.687948,5.6184' +
+          '17 -7.206263,5.618417 z M 31.929841,8.2147664 V 39.800887 h 2.73' +
+          '915 q 3.609531,0 5.619093,-4.2208 2.009563,-4.220801 2.009563,-1' +
+          '1.963591 0,-15.4017296 -7.50066,-15.4017296 z" id="text1" style=' +
+          '"font-size:40.6354px;line-height:1.25;font-family:'#39'Segoe UI'#39';-in' +
+          'kscape-font-specification:'#39'Segoe UI, Normal'#39';text-align:center;t' +
+          'ext-anchor:middle;stroke:#000000;stroke-width:2.83266" aria-labe' +
+          'l="IND"/>'#13#10'    </g>'#13#10'    <g id="layer36" inkscape:label="STROKES' +
+          ' UPDATED 1" transform="matrix(0.26458333,0,0,0.26458333,-183.460' +
+          '42,-29.14562)">'#13#10'      <circle style="display:inline;opacity:0.6' +
+          ';fill:#ff7f2a;fill-opacity:1;stroke-width:8.65996;stroke-miterli' +
+          'mit:0;stroke-dashoffset:0.8406;paint-order:markers stroke fill" ' +
+          'id="path6-89" cx="725.65179" cy="131.37793" r="24" inkscape:labe' +
+          'l="Circle-RELAY"/>'#13#10'      <path d="m 756.93751,146.19522 h -9.06' +
+          '404 l -5.44821,-9.01518 q -0.61078,-1.02612 -1.1727,-1.83236 -0.' +
+          '56192,-0.80624 -1.14828,-1.36816 -0.56192,-0.58635 -1.19714,-0.8' +
+          '7953 -0.61078,-0.31761 -1.34372,-0.31761 h -2.12554 v 13.41284 h' +
+          ' -7.89134 V 111.1606 h 12.50888 q 12.75319,0 12.75319,9.52824 0,' +
+          '1.83236 -0.56192,3.39597 -0.56193,1.53918 -1.58805,2.78518 -1.02' +
+          '611,1.246 -2.492,2.14996 -1.44145,0.90396 -3.22494,1.41702 v 0.0' +
+          '977 q 0.7818,0.24431 1.51474,0.80623 0.73295,0.53749 1.41703,1.2' +
+          '7043 0.68407,0.73295 1.29486,1.58805 0.63522,0.83066 1.14828,1.6' +
+          '369 z M 735.43788,117.073 v 9.74812 h 3.4204 q 2.54087,0 4.08004' +
+          ',-1.46588 1.56361,-1.49032 1.56361,-3.68914 0,-4.5931 -5.49706,-' +
+          '4.5931 z" id="text6" style="font-weight:bold;font-size:50.0355px' +
+          ';line-height:1.25;font-family:'#39'Segoe UI'#39';-inkscape-font-specific' +
+          'ation:'#39'Segoe UI Bold'#39';fill:#5c1c06;stroke-width:0.938167" transf' +
+          'orm="scale(0.98084826,1.0195257)" aria-label="R" inkscape:label=' +
+          '"LetterR"/>'#13#10'    </g>'#13#10'  </g>'#13#10'</svg>'#13#10
       end>
     Left = 320
     Top = 8
@@ -13675,6 +13773,11 @@ object IMG: TIMG
         CollectionIndex = 36
         CollectionName = 'report'
         Name = 'report'
+      end
+      item
+        CollectionIndex = 102
+        CollectionName = 'INDV_RELAY'
+        Name = 'INDV_RELAY'
       end>
     ImageCollection = CollectionCore
     Width = 48
@@ -14627,6 +14730,11 @@ object IMG: TIMG
         CollectionIndex = 80
         CollectionName = 'folder-managed'
         Name = 'folder-managed'
+      end
+      item
+        CollectionIndex = 102
+        CollectionName = 'INDV_RELAY'
+        Name = 'INDV_RELAY'
       end>
     ImageCollection = CollectionCore
     Width = 32
@@ -14648,12 +14756,39 @@ object IMG: TIMG
         Name = 'INDV'
       end
       item
-        CollectionIndex = 15
-        CollectionName = 'RELAY_DOT'
-        Name = 'RELAY_DOT'
+        CollectionIndex = 101
+        CollectionName = 'RELAY_DOT_intense'
+        Name = 'RELAY_DOT_intense'
       end>
     ImageCollection = CollectionCore
+    Width = 24
+    Height = 24
+    Size = 24
     Left = 352
     Top = 208
+  end
+  object imglstEventCell: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 0
+        CollectionName = 'EmptyFrame'
+        Name = 'EmptyFrame'
+      end
+      item
+        CollectionIndex = 73
+        CollectionName = 'user'
+        Name = 'user'
+      end
+      item
+        CollectionIndex = 74
+        CollectionName = 'user-check'
+        Name = 'user-check'
+      end>
+    ImageCollection = CollectionCore
+    Width = 24
+    Height = 24
+    Size = 24
+    Left = 352
+    Top = 272
   end
 end

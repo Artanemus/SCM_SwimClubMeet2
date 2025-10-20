@@ -224,9 +224,9 @@ begin
     CORE.qrySession.Edit;
 
     // re-calculate the stats for this session...
-    CORE.qrySession.FieldByName('NomineeCount').AsInteger := uSession.CalcNomineeCount;
-    CORE.qrySession.FieldByName('EntrantCount').AsInteger := uSession.CalcEntrantCount;
-    lblEventCount.Caption := IntToStr(uSession.CalcEventCount);
+    CORE.qrySession.FieldByName('NomineeCount').AsInteger := uSession.CalcSess_NomineeCount;
+    CORE.qrySession.FieldByName('EntrantCount').AsInteger := uSession.CalcSess_EntrantCount;
+    lblEventCount.Caption := IntToStr(uSession.CalcSess_EventCount);
 
   except on E: Exception do
     begin

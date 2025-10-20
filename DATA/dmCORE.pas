@@ -94,8 +94,22 @@ type
     tblEventType: TFDTable;
     luEventType: TDataSource;
     LookUpEventType: TStringField;
+    tblGender: TFDTable;
+    tblRound: TFDTable;
+    tblEventCat: TFDTable;
+    tblParalympicType: TFDTable;
+    luEventCat: TDataSource;
+    luGender: TDataSource;
+    luRound: TDataSource;
+    luParalympicType: TDataSource;
+    LookUpRound: TStringField;
+    LookUpGender: TStringField;
+    LookUpParalympicType: TStringField;
+    LookUpEventCat: TStringField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
+    procedure qryEventAfterEdit(DataSet: TDataSet);
+    procedure qryEventAfterInsert(DataSet: TDataSet);
     procedure qryEventAfterScroll(DataSet: TDataSet);
     procedure qryEventNewRecord(DataSet: TDataSet);
     procedure qryHeatAfterScroll(DataSet: TDataSet);
@@ -138,9 +152,16 @@ begin
     // If the connection definition has changed, this reassignment updates
     // the table/query to use the current connection definition.
     qrySwimClub.Connection := SCM2.scmConnection;
+
+    // Look-up tables...
     tblStroke.Connection := SCM2.scmConnection;
     tblDistance.Connection := SCM2.scmConnection;
     tblEventType.Connection := SCM2.scmConnection;
+    tblEventCat.Connection := SCM2.scmConnection;
+    tblRound.Connection := SCM2.scmConnection;
+    tblGender.Connection := SCM2.scmConnection;
+    tblParalympicType.Connection := SCM2.scmConnection;
+
     qryMemberLink.Connection := SCM2.scmConnection;
     qryMember.Connection := SCM2.scmConnection;
     qrySession.Connection := SCM2.scmConnection;
@@ -158,10 +179,16 @@ begin
       qrySwimClub.Open;
 //      qrySession.IndexName := 'indxHideArchived';
       qrySwimClub.First;
+
       // lookup tables.
       tblStroke.Open;
       tblDistance.Open;
       tblEventType.Open;
+      tblEventCat.Open;
+      tblRound.Open;
+      tblGender.Open;
+      tblParalympicType.Open;
+
       // members
       qryMemberLink.Open;
       qryMember.Open;
@@ -220,6 +247,34 @@ begin
   end;
 end;
 
+procedure TCORE.qryEventAfterEdit(DataSet: TDataSet);
+begin
+  // manage and assign event number
+  if DataSet.FieldByName('EventNum').IsNull then
+  begin
+//    if DataSet.State <> dsEdit then DataSet.Edit;
+
+    if DataSet.State = dsEdit then
+    begin
+      DataSet.FieldByName('EventNum').AsInteger := DataSet.RecNo;
+    end;
+  end;
+end;
+
+procedure TCORE.qryEventAfterInsert(DataSet: TDataSet);
+begin
+  // manage and assign event number
+  if DataSet.FieldByName('EventNum').IsNull then
+  begin
+//    if DataSet.State <> dsEdit then DataSet.Edit;
+
+    if DataSet.State = dsEdit then
+    begin
+      DataSet.FieldByName('EventNum').AsInteger := DataSet.RecNo;
+    end;
+  end;
+end;
+
 procedure TCORE.qryEventAfterScroll(DataSet: TDataSet);
 begin
   if (msgHandle <> 0) then
@@ -233,9 +288,14 @@ begin
   DataSet.FieldByName('SessionID').AsInteger :=
     qrySession.FieldByName('SessionID').AsInteger; // Master-Detail
   DataSet.FieldByName('EventStatusID').AsInteger := 1; // Open.
+  DataSet.FieldByName('EventTypeID').AsInteger := 1; // INDV.
   DataSet.FieldByName('RoundID').AsInteger := 1; // Preliminary.
   DataSet.FieldByName('NomineeCount').AsInteger := 0;
   DataSet.FieldByName('EntrantCount').AsInteger := 0;
+  DataSet.FieldByName('DistanceID').AsInteger := 1; // 25M.
+  DataSet.FieldByName('StrokeID').AsInteger := 1; // Freestyle.
+  DataSet.FieldByName('GenderID').AsInteger := 3; // X - mixed.
+  DataSet.FieldByName('RoundID').AsInteger := 1; // PRELIM.
 end;
 
 procedure TCORE.qryHeatAfterScroll(DataSet: TDataSet);

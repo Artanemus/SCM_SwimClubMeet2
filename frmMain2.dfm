@@ -2696,6 +2696,7 @@ object Main2: TMain2
     000000000000000000000000000000000000000000000000000000000000}
   Position = poScreenCenter
   StyleElements = [seFont, seClient]
+  OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
@@ -2732,7 +2733,7 @@ object Main2: TMain2
     object DBTextClubName: TDBText
       Left = 6
       Top = 0
-      Width = 187
+      Width = 116
       Height = 20
       AutoSize = True
       DataField = 'Caption'
@@ -2748,7 +2749,7 @@ object Main2: TMain2
     object DBTextNickName: TDBText
       Left = 6
       Top = 18
-      Width = 102
+      Width = 91
       Height = 15
       AutoSize = True
       DataField = 'NickName'
@@ -2828,7 +2829,7 @@ object Main2: TMain2
     Width = 1103
     Height = 664
     Margins.Top = 10
-    ActivePage = tabSession
+    ActivePage = tabNominate
     Align = alClient
     TabOrder = 3
     object tabSession: TTabSheet
@@ -2980,6 +2981,13 @@ object Main2: TMain2
               Glyph.Data = {00000000}
             end
           end
+          inherited actnlstSession: TActionList
+            Left = 240
+            Top = 184
+          end
+          inherited pumenuSession: TPopupMenu
+            Top = 224
+          end
         end
       end
       object pnlEvent: TPanel
@@ -3007,13 +3015,9 @@ object Main2: TMain2
             inherited grid: TDBAdvGrid
               Width = 620
               Height = 628
-              ExplicitLeft = 0
               ExplicitWidth = 620
               ExplicitHeight = 628
               RowHeights = (
-                32
-                32
-                32
                 32
                 32)
             end
@@ -3110,14 +3114,18 @@ object Main2: TMain2
                 AlignVerticalCenterWithPanel = False
                 Below = frEvent.spbtnEvDelete
               end>
-            ExplicitLeft = 0
             ExplicitHeight = 628
           end
           inherited actnlstEvent: TActionList
-            Left = 208
+            Left = 232
+            Top = 184
             inherited actnEv_GridView: TAction
               OnExecute = frEventactnEv_GridViewExecute
             end
+          end
+          inherited pumenuEvent: TPopupMenu
+            Left = 194
+            Top = 224
           end
         end
       end
@@ -3125,6 +3133,15 @@ object Main2: TMain2
     object tabNominate: TTabSheet
       Caption = 'Nominate'
       ImageIndex = 1
+      object pnlMem: TPanel
+        Left = 0
+        Top = 0
+        Width = 361
+        Height = 628
+        Align = alLeft
+        BevelOuter = bvNone
+        TabOrder = 0
+      end
     end
     object tabHeats: TTabSheet
       Caption = 'Heats'
@@ -3553,6 +3570,16 @@ object Main2: TMain2
                 Caption = '-'
               end
               item
+                Action = frSession.actnSess_Stats
+                Caption = 'Sessi&on Statistics...'
+                ImageIndex = 28
+                ImageName = 'stats'
+              end
+              item
+                Action = frSession.actnSess_Schedule
+                Caption = 'Sc&hedule Session...'
+              end
+              item
                 Action = frSession.actnSess_Export
                 Caption = 'E&xport...'
                 ImageIndex = 22
@@ -3623,18 +3650,29 @@ object Main2: TMain2
               item
                 Action = frEvent.actnEv_SemiFinals
                 Caption = 'B&uild Semi-Finals...'
+                ImageIndex = 11
+                ImageName = 'tool'
               end
               item
                 Action = frEvent.actnEv_QuartFinals
                 Caption = 'Bu&ild Quater Finals...'
+                ImageIndex = 11
+                ImageName = 'tool'
               end
               item
                 Action = frEvent.actnEv_Renumber
                 Caption = '&Renumber...'
+                ImageIndex = 36
+                ImageName = 'renumber'
+              end
+              item
+                Caption = '-'
               end
               item
                 Action = frEvent.actnEv_Stats
                 Caption = 'E&vent Statistics...'
+                ImageIndex = 28
+                ImageName = 'stats'
               end
               item
                 Action = frEvent.actnEv_Schedule
@@ -3964,8 +4002,8 @@ object Main2: TMain2
         Caption = 'Events'
       end>
     Images = IMG.imglstMenuBar
-    Left = 784
-    Top = 96
+    Left = 664
+    Top = 152
     StyleName = 'Platform Default'
     object Help_About: TAction
       Category = 'Help'

@@ -199,6 +199,11 @@
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="DATA_Helper\uEvent.pas"/>
+        <DCCReference Include="FRAMES\frFrameMember.pas">
+            <Form>FrameMember</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

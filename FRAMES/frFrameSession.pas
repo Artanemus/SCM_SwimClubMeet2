@@ -25,10 +25,16 @@ type
     actnSess_Clone: TAction;
     actnSess_Delete: TAction;
     actnSess_Edit: TAction;
-    actnSess_Lock: TAction;
+    actnSess_Export: TAction;
+    actnSess_Import: TAction;
     actnSess_IsLocked: TAction;
+    actnSess_Lock: TAction;
     actnSess_New: TAction;
     actnSess_Report: TAction;
+    actnSess_Schedule: TAction;
+    actnSess_Search: TAction;
+    actnSess_Sort: TAction;
+    actnSess_Stats: TAction;
     CloneSession1: TMenuItem;
     DeleteSession1: TMenuItem;
     EditSession1: TMenuItem;
@@ -51,12 +57,6 @@ type
     spbtnSessLockedVisible: TSpeedButton;
     spbtnSessNew: TSpeedButton;
     spbtnSessReport: TSpeedButton;
-    actnSess_Export: TAction;
-    actnSess_Import: TAction;
-    actnSess_Sort: TAction;
-    actnSess_Search: TAction;
-    actnSess_Stats: TAction;
-    actnSess_Schedule: TAction;
     procedure actnSess_CheckLockUpdate(Sender: TObject);
     procedure actnSess_CloneUpdate(Sender: TObject);
     procedure actnSess_DeleteExecute(Sender: TObject);
@@ -78,15 +78,14 @@ type
     procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
   private
+    procedure FixedSessCntrlIcons;
     { Private declarations }
     procedure SetIsLockedIcon;
     procedure SetLockIcon;
-    procedure FixedSessCntrlIcons;
   public
     procedure Initialise();
     // messages must be forwarded by main form.
     procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
-
   end;
 
 implementation
@@ -117,7 +116,8 @@ begin
   // fix RAD STUDIO icon re-assignment issue.
   if (spbtnSessClone.imageindex <> 11) then
     spbtnSessClone.imageindex := 11;
-  if Assigned(CORE) and CORE.IsActive and
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and
     not CORE.qrySession.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
@@ -169,7 +169,8 @@ begin
   // fix RAD STUDIO icon re-assignment issue.
   if (spbtnSessDelete.imageindex <> 4) then
     spbtnSessDelete.imageindex := 4;
-  if Assigned(CORE) and CORE.IsActive and not CORE.qrySession.IsEmpty then
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and not CORE.qrySession.IsEmpty then
   begin
     if CORE.qrySession.FieldByName('SessionStatusID').AsInteger <> 2 then
       DoEnable := true;
@@ -194,7 +195,8 @@ begin
   // fix RAD STUDIO icon re-assignment issue.
   if (spbtnSessEdit.imageindex <> 8) then
     spbtnSessEdit.imageindex := 8;
-  if Assigned(CORE) and CORE.IsActive and not CORE.qrySession.IsEmpty then
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and not CORE.qrySession.IsEmpty then
   begin
     if CORE.qrySession.FieldByName('SessionStatusID').AsInteger <> 2 then
       DoEnable := true;
@@ -224,7 +226,8 @@ begin
   // fix RAD STUDIO icon re-assignment issue.
   if (not spbtnSessLockedVisible.imageindex in [1,2]) then
     spbtnSessLockedVisible.imageindex := 1; // eye icon - no slash.
-  if Assigned(CORE) and CORE.IsActive and
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and
     not CORE.qrySession.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
@@ -269,7 +272,8 @@ begin
   // fix RAD STUDIO icon re-assignment issue.
   if (not spbtnSessLock.imageindex in [6,7]) then
     spbtnSessLock.imageindex := 7; // lock icon is open.
-  if Assigned(CORE) and CORE.IsActive and
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and
     not CORE.qrySession.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
@@ -294,7 +298,8 @@ begin
   if (spbtnSessNew.imageindex <> 3) then
     spbtnSessNew.imageindex := 3;
   DoEnable := false;
-  if Assigned(CORE) and CORE.IsActive then DoEnable := true;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
 
@@ -306,7 +311,8 @@ begin
   // fix RAD STUDIO icon re-assignment issue.
   if (spbtnSessReport.imageindex <> 5) then
     spbtnSessReport.imageindex := 5;
-  if Assigned(CORE) and CORE.IsActive and
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and
     not CORE.qrySession.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
@@ -324,7 +330,8 @@ var
   DoEnable: boolean;
 begin
   DoEnable := false;
-  if Assigned(CORE) and CORE.IsActive and
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and
     not CORE.qrySession.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
@@ -522,6 +529,5 @@ begin
       spbtnSessLock.ImageIndex := 7;
   end;
 end;
-
 
 end.

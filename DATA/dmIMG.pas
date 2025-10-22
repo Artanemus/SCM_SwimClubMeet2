@@ -21,7 +21,7 @@ type
     imglstHeatCntrl: TSVGIconVirtualImageList;
     imglstSessCntrl: TSVGIconVirtualImageList;
     imglstEventCntrl: TSVGIconVirtualImageList;
-    imglstMemberCntrl: TSVGIconVirtualImageList;
+    imglstMemCntrl: TSVGIconVirtualImageList;
     imglstSessPopupMenu: TSVGIconVirtualImageList;
     imglstMiscButtons: TSVGIconVirtualImageList;
     imglstLaneCntrl: TSVGIconVirtualImageList;
@@ -42,6 +42,7 @@ type
     imglstMenuBar: TSVGIconVirtualImageList;
     imglstEventType: TSVGIconVirtualImageList;
     imglstEventCell: TSVGIconVirtualImageList;
+    imglstEventPopupMenu: TSVGIconVirtualImageList;
   private
     { Private declarations }
 

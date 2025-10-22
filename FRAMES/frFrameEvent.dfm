@@ -33,6 +33,7 @@ object FrameEvent: TFrameEvent
       Font.Style = []
       Options = [goVertLine, goHorzLine, goEditing, goTabs, goFixedRowDefAlign]
       ParentFont = False
+      PopupMenu = pumenuEvent
       ScrollBars = ssBoth
       TabOrder = 0
       OnDrawCell = gridDrawCell
@@ -445,6 +446,7 @@ object FrameEvent: TFrameEvent
           Width = 43
         end
         item
+          Alignment = taCenter
           Borders = []
           BorderPen.Color = clSilver
           ButtonHeight = 18
@@ -457,7 +459,7 @@ object FrameEvent: TFrameEvent
           Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
-          Header = 'Gender'
+          Header = ' '
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = clBlack
           HeaderFont.Height = -16
@@ -470,7 +472,7 @@ object FrameEvent: TFrameEvent
           PrintFont.Height = -16
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 60
+          Width = 38
         end
         item
           Borders = []
@@ -649,7 +651,7 @@ object FrameEvent: TFrameEvent
         32
         43
         43
-        60
+        38
         64)
     end
   end
@@ -902,8 +904,8 @@ object FrameEvent: TFrameEvent
   end
   object actnlstEvent: TActionList
     Images = IMG.imglstMenuBar
-    Left = 280
-    Top = 208
+    Left = 200
+    Top = 104
     object actnEv_GridView: TAction
       Category = 'Events'
       Caption = 'Toogle Grid View'
@@ -919,7 +921,6 @@ object FrameEvent: TFrameEvent
       Hint = 'Move event up.'
       ImageIndex = 6
       ImageName = 'up'
-      ShortCut = 16422
       OnExecute = actnEv_MoveUpDownExecute
       OnUpdate = actnEv_MoveUpDownUpdate
     end
@@ -929,8 +930,8 @@ object FrameEvent: TFrameEvent
       Hint = 'Move event down.'
       ImageIndex = 7
       ImageName = 'down'
-      ShortCut = 16424
       OnExecute = actnEv_MoveUpDownExecute
+      OnUpdate = actnEv_MoveUpDownUpdate
     end
     object actnEv_New: TAction
       Category = 'Events'
@@ -938,8 +939,8 @@ object FrameEvent: TFrameEvent
       Hint = 'Creat new event'
       ImageIndex = 8
       ImageName = 'new'
-      ShortCut = 16429
       OnExecute = actnEv_NewExecute
+      OnUpdate = actnEv_NewUpdate
     end
     object actnEv_Delete: TAction
       Category = 'Events'
@@ -947,7 +948,6 @@ object FrameEvent: TFrameEvent
       Hint = 'Delete event'
       ImageIndex = 9
       ImageName = 'delete'
-      ShortCut = 16430
       OnExecute = actnEv_DeleteExecute
       OnUpdate = actnEv_DeleteUpdate
     end
@@ -977,18 +977,28 @@ object FrameEvent: TFrameEvent
     object actnEv_SemiFinals: TAction
       Category = 'Events'
       Caption = 'Build Semi-Finals...'
+      ImageIndex = 11
+      ImageName = 'tool'
     end
     object actnEv_QuartFinals: TAction
       Category = 'Events'
       Caption = 'Build Quater Finals...'
+      ImageIndex = 11
+      ImageName = 'tool'
     end
     object actnEv_Renumber: TAction
       Category = 'Events'
       Caption = 'Renumber...'
+      ImageIndex = 36
+      ImageName = 'renumber'
+      OnExecute = actnEv_RenumberExecute
+      OnUpdate = actnEv_RenumberUpdate
     end
     object actnEv_Stats: TAction
       Category = 'Events'
       Caption = 'Event Statistics...'
+      ImageIndex = 28
+      ImageName = 'stats'
     end
     object actnEv_Schedule: TAction
       Category = 'Events'
@@ -1005,6 +1015,44 @@ object FrameEvent: TFrameEvent
       Caption = 'Import...'
       ImageIndex = 21
       ImageName = 'in'
+    end
+  end
+  object pumenuEvent: TPopupMenu
+    Images = IMG.imglstEventPopupMenu
+    Left = 202
+    Top = 168
+    object oogleGridView1: TMenuItem
+      Action = actnEv_GridView
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object MoveUp1: TMenuItem
+      Action = actnEv_MoveUp
+      ImageIndex = 3
+    end
+    object MoveDown1: TMenuItem
+      Action = actnEv_MoveDown
+      ImageIndex = 4
+    end
+    object NewEvent1: TMenuItem
+      Action = actnEv_New
+      ImageIndex = 5
+    end
+    object DeleteEvent1: TMenuItem
+      Action = actnEv_Delete
+      ImageIndex = 6
+    end
+    object EventType1: TMenuItem
+      Action = actnEv_EventType
+      ImageIndex = 7
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object EventReport1: TMenuItem
+      Action = actnEv_Report
+      ImageIndex = 8
     end
   end
 end

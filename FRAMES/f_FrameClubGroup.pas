@@ -233,7 +233,7 @@ begin
         ([ParentClubID], [ChildClubID])
       VALUES (:ID1, :ID2);
       ''';
-    SCM2.scmConnection.StartTransaction;
+//    SCM2.scmConnection.StartTransaction;
     try
       // clear all old records
       SCM2.scmConnection.ExecSQL(SQLDelete, [ParentClubID]);
@@ -244,9 +244,9 @@ begin
         // if trust FK constraints, just insert:
         SCM2.scmConnection.ExecSQL(SQLInsert, [ParentClubID, ChildClubID]);
       end;
-      SCM2.scmConnection.Commit;
+//      SCM2.scmConnection.Commit;
     except
-      SCM2.scmConnection.Rollback;
+//      SCM2.scmConnection.Rollback;
       raise;
     end;
   end;

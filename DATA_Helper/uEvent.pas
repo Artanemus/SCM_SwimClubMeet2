@@ -10,7 +10,7 @@ uses
 
   Data.DB,
 
-  FireDAC.Comp.Client,
+  FireDAC.Comp.Client, FireDAC.Stan.Param,
 
   dmCORE, dmSCM2, uDefines, Vcl.ActnList;
 
@@ -33,11 +33,10 @@ function HasClosedOrRacedHeats: Boolean;
 function HasNominee(MemberID: integer): Boolean;
 function HasNominees: Boolean;
 function HasRacedHeats: Boolean;
-function LastEventNum: integer;
 function Locate(aDistanceID, aStrokeID: integer): Boolean; overload;
 function Locate(aEventID: integer): Boolean; overload;
 function PK(): integer; // NO CHECKS. RTNS: Primary key.
-function RenumberHeats(DoLocate: Boolean = true): integer;
+procedure RenumberHeats;
 
 procedure SetEventStatusID(aEventStatusID: integer);
 procedure SetEvent_EntrantCount; // performs calculation
@@ -53,7 +52,6 @@ implementation
 
 uses
 	uSession, scmUtils; // , uHeat, uLane;
-
 
 
 procedure DetailTBLs_DisableCNTRLs;
@@ -106,32 +104,12 @@ begin
         result := true;
 end;
 
-function RenumberHeats(DoLocate: Boolean = true): integer;
-var
-  aHeatID: integer;
+procedure RenumberHeats;
 begin
-  result := 0;
-
-  if not Assigned(SCM2) or not SCM2.scmConnection.Connected then exit;
-  if CORE.dsHeat.DataSet.IsEmpty then exit;
-  if DoLocate then
-    aHeatID := CORE.qryHeat.FieldByName('HeatID').AsInteger; // uHeat.PK;
-
-  DetailTBLs_DisableCNTRLs;
-  try
-    (*
-    SCM2.procRenumberHeats.Params[1].Value := uEvent.PK;
-    SCM2.procRenumberHeats.Prepare;
-    results := SCM2.procRenumberHeats.ExecProc;
-    *)
-  finally
-    if DoLocate then
-    begin
-      // will also handle ApplyMaster for the heat's dependant tables.
-      ;// uHeat.Locate(aHeatID);
-    end;
-    DetailTBLs_EnableCNTRLs;
-  end;
+  if CORE.qryHeat.IsEmpty then exit;
+  SCM2.procRenumberHeats.Params[1].Value := uEvent.PK;
+  SCM2.procRenumberHeats.Prepare;
+  SCM2.procRenumberHeats.ExecProc;
 end;
 
 procedure DeleteHeats(DoExclude: boolean = true);
@@ -184,7 +162,8 @@ begin
   CORE.qryEvent.CheckBrowseMode;
   try
     // Delete heats. handles Disable/Enable and will renumber if needed.
-    uEvent.DeleteHeats(true); // exclude raced or closed heats
+    if (not CORE.qryHeat.IsEmpty) then
+      uEvent.DeleteHeats(DoExclude); // exclude raced or closed heats
 
     // Can't delete remaining dependants if heats are retained.
     if (CORE.qryHeat.IsEmpty) then
@@ -220,7 +199,7 @@ begin
   result := false;
   if uEvent.GetHeatCount() = 0 then exit; // NO HEATS.
   SQL := 'SELECT COUNT(HeatStatusID) FROM SwimClubMeet2.dbo.Heat ' +
-  'WHERE (EventID = :GetEventID ) AND (HeatStatusID < 3)';
+  'WHERE (EventID = :ID ) AND (HeatStatusID < 3)';
   v := SCM2.scmConnection.ExecSQLScalar(SQL, [uEvent.PK]);
   if not VarIsNull(v) and not VarIsEmpty(v) then
     if v = 0 then result := true;
@@ -460,21 +439,6 @@ begin
   if not VarIsNull(v) and not VarIsEmpty(v) and (v > 0) then result := true;
 end;
 
-function LastEventNum: integer;
-var
-  SQL: string;
-  v: variant;
-begin
-  result := 0;
-  if not Assigned(SCM2) and SCM2.scmConnection.Connected then exit;
-  SQL := '''
-    SELECT MAX(EventNum) FROM SwimClubMeet2.dbo.Event
-    WHERE Event.SessionID = :ID;
-    ''';
-  v := SCM2.scmConnection.ExecSQLScalar(SQL, [uSession.PK()]);
-  if not VarIsNull(v) and not VarIsEmpty(v) and (v > 0) then result := v;
-end;
-
 function Locate(aEventID: integer): Boolean;
 var
   SearchOptions: TLocateOptions;
@@ -488,37 +452,24 @@ end;
 
 procedure NewEvent();
 var
-  fld: TField;
   aEventNum: integer;
-  DoReadOnly: boolean;
 begin
-  fld := nil;
-  DoReadOnly := false;
   if CORE.qrySession.IsEmpty then exit;
   CORE.qryEvent.CheckBrowseMode;
   CORE.qryEvent.DisableControls();
   try
     DetailTBLs_DisableCNTRLs;
-    aEventNum := uEvent.LastEventNum();
+    aEventNum := uSession.MAXEventNum();
     Inc(aEventNum);
-    fld := CORE.qryEvent.FindField('EventStatusID');
-    if Assigned(fld) and fld.ReadOnly then
-    begin
-      fld.ReadOnly := false;
-      DoReadOnly := true;
-    end;
     try
       CORE.qryEvent.Insert;
-      CORE.qryEvent.FieldByName('SessionID').AsInteger := uSession.PK;
+      // assignment of default field values done in CORE: qryEventNewRecord.
       CORE.qryEvent.FieldByName('EventNum').AsInteger := aEventNum;
-      CORE.qryEvent.FieldByName('RoundID').AsInteger := 1; // Preliminary.
-      CORE.qryEvent.FieldByName('EventStatusID').AsInteger := 1; // Open.
       CORE.qryEvent.Post;
     except on E: Exception do
         CORE.qryHeat.Cancel;
     end;
   finally
-    if Assigned(fld) and DoReadOnly then fld.ReadOnly := true;
     CORE.qryEvent.EnableControls();
     DetailTBLs_ApplyMaster();
     DetailTBLs_EnableCNTRLs;
@@ -629,15 +580,24 @@ var
   aEventID, recA, recB: integer;
   fld: TField;
   recPos: TRecordPos;
-  DoReadOnly: boolean;
+  DoReadOnly, DoMove: boolean;
 begin
   // TODO -cMM: MoveUpDown default body inserted .
   DoReadOnly := false;
   fld := nil;
-  if not ORD(MoveDirection) in [1,2] then exit;
+  DoMove := false;
 
+  if not ORD(MoveDirection) in [1,2] then exit;
+  if CORE.qryEvent.RecordCount = 1 then exit;
   recPos := scmUtils.GetRecordPosition(CORE.qryEvent);
-  if recPos = rpMiddle then
+  // written this was to clearly state logic...
+  if (recPos = rpFirst) and (MoveDirection = mdDown) then
+    DoMove := true;
+  if (recPos = rpLast) and (MoveDirection = mdUp) then
+    DoMove := true;
+  if recPos = rpMiddle then DoMove := true;
+
+  if DoMove then
   begin
     CORE.qryEvent.CheckBrowseMode;
     CORE.qryEvent.DisableControls();

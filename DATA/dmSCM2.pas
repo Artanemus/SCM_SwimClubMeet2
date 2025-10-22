@@ -26,6 +26,8 @@ type
     procRenumberHeats: TFDStoredProc;
     procRenumberEvents: TFDStoredProc;
     procRenumberLanes: TFDStoredProc;
+    procedure DataModuleDestroy(Sender: TObject);
+    procedure DataModuleCreate(Sender: TObject);
     procedure scmConnectionAfterConnect(Sender: TObject);
     procedure scmConnectionAfterDisconnect(Sender: TObject);
   private
@@ -58,6 +60,18 @@ implementation
 uses
   dmCORE;
 
+
+procedure TSCM2.DataModuleDestroy(Sender: TObject);
+begin
+  // ASSERT connection state.
+  if scmConnection.Connected then scmConnection.Close;
+end;
+
+procedure TSCM2.DataModuleCreate(Sender: TObject);
+begin
+  // ASSERT connection state.
+  if scmConnection.Connected then scmConnection.Close;
+end;
 
 function TSCM2.GetDBVerInfo: string;
 begin

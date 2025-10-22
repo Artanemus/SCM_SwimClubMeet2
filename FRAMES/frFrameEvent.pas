@@ -5,50 +5,60 @@ interface
 uses
   Winapi.Windows, Winapi.Messages,
 
-  System.SysUtils, System.Variants, System.Classes,
+  System.SysUtils, System.Variants, System.Classes,  System.Actions,
 
   Data.DB, BaseGrid,
 
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
-  Vcl.Grids, Vcl.Menus,
+  Vcl.Grids, Vcl.Menus, Vcl.ActnList, Vcl.Buttons,
 
-  AdvUtil, AdvObj, AdvGrid, DBAdvGrid,
+  AdvUtil, AdvObj, AdvGrid, DBAdvGrid, Vcl.WinXCtrls,
 
-  dmSCM2, dmIMG, dmCORE, uDefines, // scmUtils,
+  dmSCM2, dmIMG, dmCORE, uDefines,
 
-  uSettings, uSession, uEvent, System.Actions, Vcl.ActnList, Vcl.Buttons,
-  Vcl.WinXCtrls;
+  uSettings, uSession, uEvent
+  ;
 
 type
   TFrameEvent = class(TFrame)
-    pnlBody: TPanel;
-    grid: TDBAdvGrid;
-    actnlstEvent: TActionList;
-    actnEv_GridView: TAction;
-    actnEv_MoveUp: TAction;
-    actnEv_MoveDown: TAction;
-    actnEv_New: TAction;
     actnEv_Delete: TAction;
-    actnEv_Report: TAction;
+    actnEv_EventType: TAction;
+    actnEv_Export: TAction;
     actnEv_Final: TAction;
-    actnEv_SemiFinals: TAction;
+    actnEv_GridView: TAction;
+    actnEv_Import: TAction;
+    actnEv_MoveDown: TAction;
+    actnEv_MoveUp: TAction;
+    actnEv_New: TAction;
     actnEv_QuartFinals: TAction;
     actnEv_Renumber: TAction;
+    actnEv_Report: TAction;
     actnEv_Schedule: TAction;
+    actnEv_SemiFinals: TAction;
     actnEv_Stats: TAction;
-    spbtnEvGridView: TSpeedButton;
-    ShapeEvBar1: TShape;
-    spbtnEvUp: TSpeedButton;
-    spbtnEvDown: TSpeedButton;
-    spbtnEvNew: TSpeedButton;
-    spbtnEvDelete: TSpeedButton;
-    ShapeEvBar2: TShape;
-    spbtnEvReport: TSpeedButton;
-    actnEv_Export: TAction;
-    actnEv_Import: TAction;
+    actnlstEvent: TActionList;
+    DeleteEvent1: TMenuItem;
+    EventReport1: TMenuItem;
+    EventType1: TMenuItem;
+    grid: TDBAdvGrid;
+    MoveDown1: TMenuItem;
+    MoveUp1: TMenuItem;
+    N1: TMenuItem;
+    N2: TMenuItem;
+    NewEvent1: TMenuItem;
+    oogleGridView1: TMenuItem;
+    pnlBody: TPanel;
+    pumenuEvent: TPopupMenu;
     rpnlCntrl: TRelativePanel;
-    actnEv_EventType: TAction;
+    ShapeEvBar1: TShape;
+    ShapeEvBar2: TShape;
+    spbtnEvDelete: TSpeedButton;
+    spbtnEvDown: TSpeedButton;
+    spbtnEvGridView: TSpeedButton;
     spbtnEvIndvTeam: TSpeedButton;
+    spbtnEvNew: TSpeedButton;
+    spbtnEvReport: TSpeedButton;
+    spbtnEvUp: TSpeedButton;
     procedure actnEv_DeleteExecute(Sender: TObject);
     procedure actnEv_DeleteUpdate(Sender: TObject);
     procedure actnEv_EventTypeExecute(Sender: TObject);
@@ -58,18 +68,19 @@ type
     procedure actnEv_MoveUpDownExecute(Sender: TObject);
     procedure actnEv_MoveUpDownUpdate(Sender: TObject);
     procedure actnEv_NewExecute(Sender: TObject);
+    procedure actnEv_NewUpdate(Sender: TObject);
+    procedure actnEv_RenumberExecute(Sender: TObject);
+    procedure actnEv_RenumberUpdate(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
     procedure gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
         State: TGridDrawState);
   private
-    { Private declarations }
-    procedure SetGridView_IconIndex;
-    procedure SetGridView_ColVisibility;
     procedure FixedEventCntrlIcons();
+    procedure SetGridView_ColVisibility;
+    procedure SetGridView_IconIndex;
   public
     procedure Initialise();
-
     // messages must be forwarded by main form.
     procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
   end;
@@ -82,9 +93,13 @@ procedure TFrameEvent.actnEv_DeleteExecute(Sender: TObject);
 begin
   grid.BeginUpdate;
   try
-    uEvent.DeleteEvent(true);
+    if uEvent.DeleteEvent(true) then
+    begin
+      uSession.RenumberEvents(); // runs SCM2.dbo.RenumberEvents...
+      CORE.qryEvent.Refresh;
+    end;
   finally
-  grid.EndUpdate;
+    grid.EndUpdate;
   end;
 end;
 
@@ -96,7 +111,8 @@ begin
     // fix RAD STUDIO icon re-assignment issue.
   if (spbtnEvDelete.imageindex <> 5) then spbtnEvDelete.imageindex := 5;
 
-  if Assigned(CORE) and CORE.IsActive and
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and
     not CORE.qryEvent.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
@@ -116,7 +132,8 @@ begin
   // fix RAD STUDIO icon re-assignment issue.
   if (spbtnEvIndvTeam.imageindex <> 7) then spbtnEvDelete.imageindex := 7;
 
-  if Assigned(CORE) and CORE.IsActive and
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and
     not CORE.qryEvent.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
@@ -135,7 +152,6 @@ begin
         grid.EndUpdate;
       end;
     end;
-
 end;
 
 procedure TFrameEvent.actnEv_GridViewUpdate(Sender: TObject);
@@ -145,16 +161,19 @@ begin
   DoEnable := false;
   // fix RAD STUDIO icon re-assignment issue.
   SetGridView_IconIndex; // uses actnEv_GridView.Checked state.
-  if Assigned(CORE) and CORE.IsActive and
-    not CORE.qryEvent.IsEmpty then DoEnable := true;
+  // grid view is enabled when events table is empty.
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
 
 procedure TFrameEvent.actnEv_MoveUpDownExecute(Sender: TObject);
 var
 cn: TComponentName;
+PK: integer;
 begin
     grid.BeginUpdate;
+    PK := uEvent.PK;
     try
       cn := TComponent(Sender).Name;
       if String(cn).Contains('Down') then
@@ -163,6 +182,8 @@ begin
         uEvent.MoveUpDown(scmMoveDirection.mdUp)
       else exit;
     finally
+      CORE.qryEvent.Refresh; // re-sort on indx - eventNum.
+      uEvent.Locate(PK); // track event just moved.
       grid.EndUpdate;
     end;
 end;
@@ -178,7 +199,8 @@ begin
   if (spbtnEvUp.imageindex <> 2) then
       spbtnEvUp.imageindex := 2;
 
-  if Assigned(CORE) and CORE.IsActive and
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and
     not CORE.qryEvent.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
@@ -187,7 +209,47 @@ procedure TFrameEvent.actnEv_NewExecute(Sender: TObject);
 begin
   grid.BeginUpdate;
   uEvent.NewEvent;
+  // uSession.RenumberEvents();
   grid.EndUpdate;
+end;
+
+procedure TFrameEvent.actnEv_NewUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+  // fix RAD STUDIO icon re-assignment issue.
+  if (spbtnEvNew.imageindex <> 4) then spbtnEvNew.imageindex := 4;
+  // new is enabled when events table is empty
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive then DoEnable := true;
+  TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TFrameEvent.actnEv_RenumberExecute(Sender: TObject);
+begin
+  // call DB Procedure
+  if Assigned(SCM2) and SCM2.scmConnection.Connected then
+  begin
+    grid.BeginUpdate;
+    try
+      uSession.RenumberEvents(); // runs SCM2.dbo.RenumberEvents...
+      CORE.qryEvent.Refresh;
+    finally
+      grid.EndUpdate;
+    end;
+  end;
+end;
+
+procedure TFrameEvent.actnEv_RenumberUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and
+    not CORE.qryEvent.IsEmpty then DoEnable := true;
+  TAction(Sender).Enabled := DoEnable;
 end;
 
 procedure TFrameEvent.FixedEventCntrlIcons;
@@ -220,6 +282,9 @@ begin
       9:
         IMG.imglstEventCell.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 4,
           Rect.top + 4, 2);
+      10: // centered gender icon...
+        IMG.imglstEventCell.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 6,
+          Rect.top + 4, 3);
     end;
   end;
 end;
@@ -257,7 +322,7 @@ begin
   if actnEv_GridView.Checked then
   begin  // EXPANDED...
     grid.Columns[6].Width := 400;   // DESCRIPTION
-    grid.Columns[10].Width := 60;   // Gender
+    grid.Columns[10].Width := 38;   // Gender
     grid.Columns[11].Width := 80;   // Round
   end
   else

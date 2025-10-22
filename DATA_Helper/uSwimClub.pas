@@ -110,7 +110,7 @@ begin
     // delete  ClubGroup records then delete the club.
     if CORE.qrySession.IsEmpty then
     begin
-      SCM2.scmConnection.StartTransaction;
+//      SCM2.scmConnection.StartTransaction;
       try
         // THIS CLUB IS A 'GROUP CLUB'
         if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
@@ -152,9 +152,9 @@ begin
         // F I N A L L Y  Delete THE SWIMMING CLUB.
         CORE.qrySwimClub.Delete;
         result := true;
-        SCM2.scmConnection.Commit;
+//        SCM2.scmConnection.Commit;
       except
-        SCM2.scmConnection.Rollback;
+//        SCM2.scmConnection.Rollback;
         raise;
       end;
     end;

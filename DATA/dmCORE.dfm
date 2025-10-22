@@ -25,7 +25,6 @@ object CORE: TCORE
   end
   object qrySession: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     BeforePost = qrySessionBeforePost
     AfterScroll = qrySessionAfterScroll
     OnNewRecord = qrySessionNewRecord
@@ -151,7 +150,6 @@ object CORE: TCORE
   end
   object qryEvent: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    AfterInsert = qryEventAfterInsert
     AfterEdit = qryEventAfterEdit
     AfterScroll = qryEventAfterScroll
     OnNewRecord = qryEventNewRecord
@@ -371,7 +369,6 @@ object CORE: TCORE
   end
   object qryHeat: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     AfterScroll = qryHeatAfterScroll
     Indexes = <
       item
@@ -469,7 +466,6 @@ object CORE: TCORE
   end
   object qrySwimClub: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     AfterScroll = qrySwimClubAfterScroll
     OnNewRecord = qrySwimClubNewRecord
     Filter = 'IsArchived <> 1'
@@ -590,7 +586,6 @@ object CORE: TCORE
   end
   object qryNominee: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     Indexes = <
       item
         Active = True
@@ -784,7 +779,6 @@ object CORE: TCORE
   end
   object tblStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'StrokeID'
     Connection = TestConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -796,7 +790,6 @@ object CORE: TCORE
   end
   object tblDistance: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'DistanceID'
     Connection = TestConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -960,14 +953,13 @@ object CORE: TCORE
   object TestConnection: TFDConnection
     Params.Strings = (
       'ConnectionDef=MSSQL_SwimClubMeet2')
-    Connected = True
+    ConnectedStoredUsage = [auDesignTime]
     LoginPrompt = False
     Left = 496
     Top = 40
   end
   object tblEventType: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'EventTypeID'
     Connection = TestConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -982,7 +974,6 @@ object CORE: TCORE
   end
   object tblGender: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'GenderID'
     Connection = TestConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -992,7 +983,6 @@ object CORE: TCORE
   end
   object tblRound: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'RoundID'
     Connection = TestConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -1002,7 +992,6 @@ object CORE: TCORE
   end
   object tblEventCat: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'EventCategoryID'
     Connection = TestConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -1012,7 +1001,6 @@ object CORE: TCORE
   end
   object tblParalympicType: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'ParalympicTypeID'
     Connection = TestConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]

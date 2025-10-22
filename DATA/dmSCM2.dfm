@@ -1,6 +1,8 @@
 object SCM2: TSCM2
-  Height = 381
-  Width = 376
+  OnCreate = DataModuleCreate
+  OnDestroy = DataModuleDestroy
+  Height = 383
+  Width = 414
   object scmConnection: TFDConnection
     Params.Strings = (
       'ApplicationName=SwimClubMeet2.exe'

@@ -18,7 +18,6 @@ uses
 function AllEventsAreClosed: Boolean;
 function HasEvents: Boolean;  deprecated;
 function IsEmptyOrLocked: Boolean;
-function RenumberEvents(DoLocate: Boolean = true): integer;
 function SessionDT: TDateTime;
 //procedure SortSession();
 procedure NewSession();
@@ -46,6 +45,9 @@ function GetSess_NomineeCount: integer;
 procedure UpdateEvent_Stats;
 
 // LISTED BELOW ARE ROUTINES THAT ARE IN-USE AND DEBUGGED
+procedure RenumberEvents;
+function MAXEventNum(): integer;
+
 function PK(): integer; // NO CHECKS. RTNS: Primary key.
 function Assert: Boolean;
 function IsLocked: Boolean;
@@ -61,6 +63,22 @@ implementation
 
 uses
   uSwimClub; //, uEvent, uHeat, uLane;
+
+
+function MAXEventNum: integer;
+var
+  SQL: string;
+  v: variant;
+begin
+  result := 0;
+  if not Assigned(SCM2) and SCM2.scmConnection.Connected then exit;
+  SQL := '''
+    SELECT MAX(EventNum) FROM SwimClubMeet2.dbo.Event
+    WHERE Event.SessionID = :ID;
+    ''';
+  v := SCM2.scmConnection.ExecSQLScalar(SQL, [uSession.PK()]);
+  if not VarIsNull(v) and not VarIsEmpty(v) and (v > 0) then result := v;
+end;
 
 
 function AllEventsAreClosed: Boolean;
@@ -203,7 +221,7 @@ begin
     // ASSERT that all events have been removed.
     // Can't delete session if events remain.
     if not CORE.qryEvent.IsEmpty then
-      RenumberEvents(False)
+      uSession.RenumberEvents
     else
     begin
       // DELETE dbo.SchedualeSession
@@ -212,7 +230,9 @@ begin
         WHERE [SessionID] = :ID;
         ''';
       SCM2.scmConnection.ExecSQL(SQL, [uSession.PK]);
+
       // F I N A L L Y  Delete THE SESSION.
+      // WAS WORKING - NOW ALL DELETE ON ALL TABLES HAVE RTL RUN-AWAY.
       CORE.qrySession.Delete;
     end;
 
@@ -251,12 +271,12 @@ begin
                 ,[EntrantCount] = dbo.EntrantCount([EventID])
            WHERE [SessionID] = :ID;
           ''';
-    SCM2.scmConnection.StartTransaction;
+//    SCM2.scmConnection.StartTransaction;
     try
       SCM2.scmConnection.ExecSQL(SQL, [uSession.PK]);
-      SCM2.scmConnection.Commit;
+//      SCM2.scmConnection.Commit;
     except
-      SCM2.scmConnection.Rollback;
+//      SCM2.scmConnection.Rollback;
       raise;
     end;
   finally
@@ -315,19 +335,12 @@ begin
     SearchOptions);
 end;
 
-function RenumberEvents(DoLocate: Boolean = true): integer;
+procedure RenumberEvents;
 begin
-  result := 0;
-  try
-//    if DoLocate then
-//      aEvent := uEvent.PK;
-    SCM2.procRenumberEvents.Params[1].Value := uSession.PK;
-    SCM2.procRenumberEvents.Prepare;
-    SCM2.procRenumberEvents.ExecProc;
-  finally
-//    if DoLocate then
-//      uEvent.Locate(aEvent);
-  end;
+  if CORE.qryEvent.IsEmpty then exit;
+  SCM2.procRenumberEvents.Params[1].Value := uSession.PK;
+  SCM2.procRenumberEvents.Prepare;
+  SCM2.procRenumberEvents.ExecProc;
 end;
 
 procedure SetSess_EntrantCount;

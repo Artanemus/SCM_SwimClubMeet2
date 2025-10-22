@@ -109,7 +109,6 @@ type
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterEdit(DataSet: TDataSet);
-    procedure qryEventAfterInsert(DataSet: TDataSet);
     procedure qryEventAfterScroll(DataSet: TDataSet);
     procedure qryEventNewRecord(DataSet: TDataSet);
     procedure qryHeatAfterScroll(DataSet: TDataSet);
@@ -215,6 +214,10 @@ end;
 procedure TCORE.DataModuleCreate(Sender: TObject);
 begin
 	FIsActive := false;
+  // SET ConnectionStoredUsage correctly : use only auDesignTime
+  // Problems with deleting records on the DB server - maybe
+  // this connection was still running?..
+  if TestConnection.Connected then TestConnection.Close;
 end;
 
 procedure TCORE.DataModuleDestroy(Sender: TObject);
@@ -248,20 +251,6 @@ begin
 end;
 
 procedure TCORE.qryEventAfterEdit(DataSet: TDataSet);
-begin
-  // manage and assign event number
-  if DataSet.FieldByName('EventNum').IsNull then
-  begin
-//    if DataSet.State <> dsEdit then DataSet.Edit;
-
-    if DataSet.State = dsEdit then
-    begin
-      DataSet.FieldByName('EventNum').AsInteger := DataSet.RecNo;
-    end;
-  end;
-end;
-
-procedure TCORE.qryEventAfterInsert(DataSet: TDataSet);
 begin
   // manage and assign event number
   if DataSet.FieldByName('EventNum').IsNull then

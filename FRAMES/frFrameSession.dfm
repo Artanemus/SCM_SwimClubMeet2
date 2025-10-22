@@ -28,7 +28,7 @@ object FrameSession: TFrameSession
       DefaultRowHeight = 58
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 101
+      RowCount = 2
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -391,105 +391,6 @@ object FrameSession: TFrameSession
         0)
       RowHeights = (
         24
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
         58)
     end
   end

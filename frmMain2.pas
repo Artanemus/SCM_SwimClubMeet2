@@ -100,8 +100,10 @@ type
     Tools_Swimmercategory: TAction;
     pnlEvent: TPanel;
     frEvent: TFrameEvent;
+    pnlMem: TPanel;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -223,6 +225,17 @@ begin
       frEvent.Initialise;
     end;
 
+    // connection state changed?
+    if (cState <> SCM2.scmConnection.Connected) then
+    begin
+      // move to tabsheet 1 and intialise UI.
+      if PageControl.ActivePageIndex <> 0 then
+        PageControl.ActivePageIndex := 0;
+      if frEvent.actnEv_GridView.Checked then
+        frEvent.actnEv_GridView.Checked := false; // Collapsed grid view.
+      pnlSession.Visible := true;
+    end;
+
     // UI changes needed to track connection state.
     if SCM2.scmConnection.Connected then
     begin
@@ -251,15 +264,19 @@ begin
 
 end;
 
-
-
-
 procedure TMain2.File_ConnectionUpdate(Sender: TObject);
 begin
   // a connection can be made any time during the app life
   // but the SCM2 and CORE datamodules MUST be assigned.
   If Assigned(SCM2) and Assigned(CORE) then TAction(Sender).Enabled := true
   else TAction(Sender).Enabled := false;
+end;
+
+procedure TMain2.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  // ASSERT: close connection on database
+  if Assigned(SCM2) and SCM2.scmConnection.Connected then
+    SCM2.scmConnection.Close;
 end;
 
 procedure TMain2.FormCreate(Sender: TObject);

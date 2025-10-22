@@ -2554,6 +2554,29 @@ object IMG: TIMG
           'ation:'#39'Segoe UI Bold'#39';fill:#5c1c06;stroke-width:0.938167" transf' +
           'orm="scale(0.98084826,1.0195257)" aria-label="R" inkscape:label=' +
           '"LetterR"/>'#13#10'    </g>'#13#10'  </g>'#13#10'</svg>'#13#10
+      end
+      item
+        IconName = 'renumber'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M3 22v-1.5h2.5' +
+          'v-.75H4v-1.5h1.5v-.75H3V16h3q.425 0 .713.288T7 17v1q0 .425-.288.' +
+          '713T6 19q.425 0 .713.288T7 20v1q0 .425-.288.713T6 22zm0-7v-2.75q' +
+          '0-.425.288-.712T4 11.25h1.5v-.75H3V9h3q.425 0 .713.288T7 10v1.75' +
+          'q0 .425-.288.713T6 12.75H4.5v.75H7V15zm1.5-7V3.5H3V2h3v6zM9 19v-' +
+          '2h12v2zm0-6v-2h12v2zm0-6V5h12v2z"/></svg>'
+      end
+      item
+        IconName = 'male-female'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 512 512"><path fill="currentColor" d="M330 16v44h4' +
+          '2.89l-37.1 37.09A157.67 157.67 0 0 0 216 42c-87.12 0-158 70.88-1' +
+          '58 158c0 79.66 59.26 145.72 136 156.46V394h-50v44h50v58h44v-58h5' +
+          '0v-44h-50v-37.54c76.74-10.74 136-76.8 136-156.46a157.2 157.2 0 0' +
+          ' 0-14-64.93l44-44V134h44V16ZM216 314a114 114 0 1 1 114-114a114.1' +
+          '3 114.13 0 0 1-114 114"/></svg>'
+        FixedColor = clCoral
       end>
     Left = 320
     Top = 8
@@ -13786,7 +13809,7 @@ object IMG: TIMG
     Left = 352
     Top = 80
   end
-  object imglstMemberCntrl: TSVGIconVirtualImageList
+  object imglstMemCntrl: TSVGIconVirtualImageList
     Images = <
       item
         CollectionIndex = 41
@@ -13802,7 +13825,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 736
+    Left = 576
     Top = 80
   end
   object imglstSessPopupMenu: TSVGIconVirtualImageList
@@ -13973,7 +13996,7 @@ object IMG: TIMG
     Height = 36
     ApplyFixedColorToRootOnly = True
     Size = 36
-    Left = 856
+    Left = 1000
     Top = 80
   end
   object imglstLaneCntrl: TSVGIconVirtualImageList
@@ -14032,7 +14055,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 608
+    Left = 752
     Top = 80
   end
   object imglstNomCheckBox: TSVGIconVirtualImageList
@@ -14458,7 +14481,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 976
+    Left = 1120
     Top = 80
   end
   object imglstHeatStrokeEx: TSVGIconVirtualImageList
@@ -14551,8 +14574,8 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 304
-    Top = 376
+    Left = 256
+    Top = 448
   end
   object imglstMenuBar: TSVGIconVirtualImageList
     Images = <
@@ -14735,13 +14758,18 @@ object IMG: TIMG
         CollectionIndex = 102
         CollectionName = 'INDV_RELAY'
         Name = 'INDV_RELAY'
+      end
+      item
+        CollectionIndex = 103
+        CollectionName = 'renumber'
+        Name = 'renumber'
       end>
     ImageCollection = CollectionCore
     Width = 32
     Height = 32
     Size = 32
-    Left = 192
-    Top = 376
+    Left = 144
+    Top = 448
   end
   object imglstEventType: TSVGIconVirtualImageList
     Images = <
@@ -14783,12 +14811,71 @@ object IMG: TIMG
         CollectionIndex = 74
         CollectionName = 'user-check'
         Name = 'user-check'
+      end
+      item
+        CollectionIndex = 104
+        CollectionName = 'male-female'
+        Name = 'male-female'
       end>
     ImageCollection = CollectionCore
     Width = 24
     Height = 24
     Size = 24
     Left = 352
-    Top = 272
+    Top = 264
+  end
+  object imglstEventPopupMenu: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 0
+        CollectionName = 'EmptyFrame'
+        Name = 'EmptyFrame'
+      end
+      item
+        CollectionIndex = 21
+        CollectionName = 'grid-on'
+        Name = 'grid-on'
+      end
+      item
+        CollectionIndex = 22
+        CollectionName = 'grid-off'
+        Name = 'grid-off'
+      end
+      item
+        CollectionIndex = 26
+        CollectionName = 'up'
+        Name = 'up'
+      end
+      item
+        CollectionIndex = 27
+        CollectionName = 'down'
+        Name = 'down'
+      end
+      item
+        CollectionIndex = 29
+        CollectionName = 'new'
+        Name = 'new'
+      end
+      item
+        CollectionIndex = 30
+        CollectionName = 'delete'
+        Name = 'delete'
+      end
+      item
+        CollectionIndex = 102
+        CollectionName = 'INDV_RELAY'
+        Name = 'INDV_RELAY'
+      end
+      item
+        CollectionIndex = 36
+        CollectionName = 'report'
+        Name = 'report'
+      end>
+    ImageCollection = CollectionCore
+    Width = 24
+    Height = 24
+    Size = 24
+    Left = 352
+    Top = 320
   end
 end

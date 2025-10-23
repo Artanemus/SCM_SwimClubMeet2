@@ -106,6 +106,7 @@ type
     LookUpGender: TStringField;
     LookUpParalympicType: TStringField;
     LookUpEventCat: TStringField;
+    qryFilterMember: TFDQuery;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterEdit(DataSet: TDataSet);
@@ -171,6 +172,10 @@ begin
     qrySplitTime.Connection := SCM2.scmConnection;
     qryTeam.Connection := SCM2.scmConnection;
     qryTeamLink.Connection := SCM2.scmConnection;
+
+    // Nomination tabsheet - object : FrameMember.
+    qryFilterMember.Connection := SCM2.scmConnection;
+
     {  if any table fails to open - a EFDDBEngineException occurs
       and FIsActive returns false.}
     try

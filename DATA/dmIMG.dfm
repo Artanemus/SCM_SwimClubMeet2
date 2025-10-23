@@ -2577,6 +2577,18 @@ object IMG: TIMG
           ' 0-14-64.93l44-44V134h44V16ZM216 314a114 114 0 1 1 114-114a114.1' +
           '3 114.13 0 0 1-114 114"/></svg>'
         FixedColor = clCoral
+      end
+      item
+        IconName = 'Member'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24">'#13#10'  <path fill="currentColor" d="M16 11c1.6' +
+          '6 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3s1.34 3 3 3m-8 0c1.' +
+          '66 0 2.99-1.34 2.99-3S9.66 5 8 5S5 6.34 5 8s1.34 3 3 3m0 2c-2.33' +
+          ' 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.' +
+          '02-.97.05c1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-' +
+          '7-3.5"/>'#13#10'</svg>'#13#10
+        FixedColor = clDarkorange
       end>
     Left = 320
     Top = 8
@@ -13809,7 +13821,7 @@ object IMG: TIMG
     Left = 352
     Top = 80
   end
-  object imglstMemCntrl: TSVGIconVirtualImageList
+  object imglstNomCntrl: TSVGIconVirtualImageList
     Images = <
       item
         CollectionIndex = 41
@@ -13820,6 +13832,11 @@ object IMG: TIMG
         CollectionIndex = 36
         CollectionName = 'report'
         Name = 'report'
+      end
+      item
+        CollectionIndex = 105
+        CollectionName = 'Member'
+        Name = 'Member'
       end>
     ImageCollection = CollectionCore
     Width = 48
@@ -14763,6 +14780,11 @@ object IMG: TIMG
         CollectionIndex = 103
         CollectionName = 'renumber'
         Name = 'renumber'
+      end
+      item
+        CollectionIndex = 105
+        CollectionName = 'Member'
+        Name = 'Member'
       end>
     ImageCollection = CollectionCore
     Width = 32

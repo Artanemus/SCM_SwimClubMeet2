@@ -2952,33 +2952,14 @@ object Main2: TMain2
           inherited pnlCntrl: TPanel
             Height = 628
             ExplicitHeight = 628
-            inherited spbtnSessClone: TSpeedButton
-              ImageIndex = 11
-              Glyph.Data = {00000000}
-            end
             inherited spbtnSessDelete: TSpeedButton
               ImageName = 'in'
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessLock: TSpeedButton
-              ImageIndex = 6
-              Glyph.Data = {00000000}
             end
             inherited spbtnSessNew: TSpeedButton
               ImageName = 'edit'
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessReport: TSpeedButton
-              ImageIndex = 5
-              Glyph.Data = {00000000}
             end
             inherited spbtnSessLockedVisible: TSpeedButton
               ImageName = 'new'
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessEdit: TSpeedButton
-              ImageIndex = 8
-              Glyph.Data = {00000000}
             end
           end
           inherited actnlstSession: TActionList

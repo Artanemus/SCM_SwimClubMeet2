@@ -908,8 +908,8 @@ object CORE: TCORE
       '  FROM [SwimClubMeet2].[dbo].[Member]'
       '  ORDER BY [LastName]'
       '*/ ')
-    Left = 840
-    Top = 128
+    Left = 904
+    Top = 176
     ParamData = <
       item
         Name = 'SESSIONSTART'
@@ -926,13 +926,13 @@ object CORE: TCORE
   end
   object dsMemberLink: TDataSource
     DataSet = qryMemberLink
-    Left = 840
-    Top = 72
+    Left = 904
+    Top = 120
   end
   object dsMember: TDataSource
     DataSet = qryMember
-    Left = 920
-    Top = 128
+    Left = 984
+    Top = 176
   end
   object qryMemberLink: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -947,13 +947,14 @@ object CORE: TCORE
       '      ,[SwimClubID]'
       '      ,[HouseID]'
       '  FROM [SwimClubMeet2].[dbo].[MemberLink]')
-    Left = 744
-    Top = 72
+    Left = 808
+    Top = 120
   end
   object TestConnection: TFDConnection
     Params.Strings = (
       'ConnectionDef=MSSQL_SwimClubMeet2')
     ConnectedStoredUsage = [auDesignTime]
+    Connected = True
     LoginPrompt = False
     Left = 496
     Top = 40
@@ -1027,5 +1028,96 @@ object CORE: TCORE
     DataSet = tblParalympicType
     Left = 176
     Top = 584
+  end
+  object qryFilterMember: TFDQuery
+    Connection = TestConnection
+    SQL.Strings = (
+      ''
+      '-- create temporary table to hold results'
+      'IF OBJECT_ID('#39'tempdb..#SwimClubMembers'#39') IS NOT NULL'
+      '    DROP TABLE #SwimClubMembers;    '
+      ''
+      'DECLARE @SwimClubID INT = :SWIMCLUBID;'
+      'DECLARE @SortOn INT = :SORTON;'
+      ''
+      'if @SortOn IS NULL SET @SortOn = 1; '
+      ''
+      'CREATE TABLE #SwimClubMembers'
+      '('
+      '    SwimClubID INT,'
+      '    MemberID   INT'
+      ');  '
+      ''
+      
+        '-- insert members from the parent club (distinct, skip if Member' +
+        'ID already in temp)'
+      'INSERT INTO #SwimClubMembers (SwimClubID, MemberID)'
+      'SELECT DISTINCT sc.SwimClubID, mm.MemberID'
+      'FROM dbo.SwimClub AS sc'
+      'INNER JOIN dbo.MemberLink AS ml ON sc.SwimClubID = ml.SwimClubID'
+      'INNER JOIN dbo.Member AS mm ON ml.MemberID = mm.MemberID'
+      'WHERE sc.SwimClubID = @SwimClubID'
+      
+        '  AND NOT EXISTS (SELECT 1 FROM #SwimClubMembers m WHERE m.Membe' +
+        'rID = mm.MemberID);'
+      ''
+      
+        '-- insert members from child clubs (distinct, skip if MemberID a' +
+        'lready in temp)'
+      'INSERT INTO #SwimClubMembers (SwimClubID, MemberID)'
+      'SELECT DISTINCT sg.ChildClubID, mm.MemberID'
+      'FROM dbo.SwimClubGroup AS sg'
+      
+        'INNER JOIN dbo.MemberLink AS ml ON sg.ChildClubID = ml.SwimClubI' +
+        'D'
+      'INNER JOIN dbo.Member AS mm ON ml.MemberID = mm.MemberID'
+      'WHERE sg.ParentClubID = @SwimClubID'
+      
+        '  AND NOT EXISTS (SELECT 1 FROM #SwimClubMembers m WHERE m.Membe' +
+        'rID = mm.MemberID);'
+      ''
+      '-- final result from the temp table (no duplicate MemberID rows)'
+      'SELECT'
+      '    mlist.SwimClubID,'
+      '    mlist.MemberID,'
+      '    mm.FirstName,'
+      '    mm.MiddleInitial,'
+      '    mm.LastName,'
+      '    scc.NickName,'
+      '    dbo.SwimmerAge(GETDATE(), mm.DOB) AS Age,'
+      #9'gender.ABREV,'
+      #9'CASE '
+      #9'WHEN (mm.MiddleInitial IS NULL) THEN'
+      #9#9'CONCAT(mm.FirstName, '#39' '#39', mm.LastName)'
+      #9'ELSE'
+      #9#9'CONCAT(mm.FirstName, '#39' '#39', mm.MiddleInitial, '#39'. '#39', mm.LastName)'
+      #9'END as FName '
+      'FROM #SwimClubMembers AS mlist'
+      'INNER JOIN dbo.Member AS mm ON mlist.MemberID = mm.MemberID'
+      
+        'INNER JOIN dbo.SwimClub AS scc ON mlist.SwimClubID = scc.SwimClu' +
+        'bID'
+      'INNER JOIN dbo.Gender ON mm.GenderID = Gender.GenderID'
+      'ORDER BY '
+      #9'CASE WHEN (@SortOn = 1) THEN mm.LastName ELSE mm.FirstName END '
+      ';'
+      ''
+      'DROP TABLE #SwimClubMembers;'
+      '-- ...existing code...')
+    Left = 800
+    Top = 48
+    ParamData = <
+      item
+        Name = 'SWIMCLUBID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = 1
+      end
+      item
+        Name = 'SORTON'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = Null
+      end>
   end
 end

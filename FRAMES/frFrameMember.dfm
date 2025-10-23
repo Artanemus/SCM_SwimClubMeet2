@@ -33,7 +33,7 @@ object FrameMember: TFrameMember
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
-        Below = spbtnMemSort
+        Below = spbtnMemDetails
       end
       item
         Control = spbtnMemReport
@@ -54,6 +54,16 @@ object FrameMember: TFrameMember
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
         Below = spbtnMemReport
+      end
+      item
+        Control = spbtnMemDetails
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnMemSort
       end>
     Align = alLeft
     TabOrder = 0
@@ -69,7 +79,7 @@ object FrameMember: TFrameMember
       Anchors = []
       ImageIndex = 0
       ImageName = 'switch'
-      Images = IMG.imglstMemCntrl
+      Images = IMG.imglstNomCntrl
       Flat = True
       Layout = blGlyphTop
       Margin = 0
@@ -77,7 +87,7 @@ object FrameMember: TFrameMember
     object ShapeMemBar1: TShape
       AlignWithMargins = True
       Left = 4
-      Top = 59
+      Top = 107
       Width = 48
       Height = 4
       Margins.Left = 0
@@ -89,14 +99,14 @@ object FrameMember: TFrameMember
     end
     object spbtnMemReport: TSpeedButton
       Left = 4
-      Top = 73
+      Top = 121
       Width = 48
       Height = 48
       Hint = 'Create and display a nominee'#39's report.'
       Anchors = []
       ImageIndex = 1
       ImageName = 'report'
-      Images = IMG.imglstMemCntrl
+      Images = IMG.imglstNomCntrl
       Flat = True
       Layout = blGlyphTop
       Margin = 0
@@ -105,7 +115,7 @@ object FrameMember: TFrameMember
     object lblNomWarning: TLabel
       AlignWithMargins = True
       Left = 5
-      Top = 141
+      Top = 189
       Width = 45
       Height = 187
       Margins.Left = 0
@@ -128,6 +138,21 @@ object FrameMember: TFrameMember
       WordWrap = True
       StyleElements = [seClient, seBorder]
     end
+    object spbtnMemDetails: TSpeedButton
+      Left = 4
+      Top = 49
+      Width = 48
+      Height = 48
+      Hint = 'Create and display a nominee'#39's report.'
+      Anchors = []
+      ImageIndex = 2
+      ImageName = 'Member'
+      Images = IMG.imglstNomCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      NumGlyphs = 2
+    end
   end
   object pnlBody: TPanel
     Left = 58
@@ -137,10 +162,6 @@ object FrameMember: TFrameMember
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 160
-    ExplicitTop = 352
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object pnlList: TPanel
       Left = 0
       Top = 0
@@ -149,10 +170,6 @@ object FrameMember: TFrameMember
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitLeft = 128
-      ExplicitTop = 352
-      ExplicitWidth = 185
-      ExplicitHeight = 41
       object rpnlSearch: TRelativePanel
         Left = 0
         Top = 0
@@ -188,7 +205,6 @@ object FrameMember: TFrameMember
           end>
         Align = alTop
         TabOrder = 0
-        ExplicitWidth = 443
         DesignSize = (
           370
           49)
@@ -223,6 +239,7 @@ object FrameMember: TFrameMember
           Margins.Bottom = 0
           Anchors = []
           TabOrder = 1
+          OnChange = edtSearchChange
         end
         object vimgSearch: TVirtualImage
           AlignWithMargins = True
@@ -249,15 +266,23 @@ object FrameMember: TFrameMember
         Height = 690
         Cursor = crDefault
         Align = alClient
+        Color = clWhite
         ColCount = 2
         DrawingStyle = gdsClassic
         FixedColor = clWhite
         RowCount = 2
         FixedRows = 1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
+        ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 1
-        GridLineColor = 13948116
-        GridFixedLineColor = 11250603
+        GridLineColor = 15987699
+        GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
@@ -271,6 +296,7 @@ object FrameMember: TFrameMember
         ControlLook.FixedGradientTo = clWhite
         ControlLook.FixedGradientMirrorFrom = clWhite
         ControlLook.FixedGradientMirrorTo = clWhite
+        ControlLook.FixedGradientHoverFrom = clGray
         ControlLook.FixedGradientHoverTo = clWhite
         ControlLook.FixedGradientHoverMirrorFrom = clWhite
         ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -316,7 +342,7 @@ object FrameMember: TFrameMember
         FixedColWidth = 20
         FixedRowHeight = 22
         FixedFont.Charset = DEFAULT_CHARSET
-        FixedFont.Color = 3881787
+        FixedFont.Color = clBlack
         FixedFont.Height = -16
         FixedFont.Name = 'Tahoma'
         FixedFont.Style = [fsBold]
@@ -560,14 +586,65 @@ object FrameMember: TFrameMember
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitLeft = 11
-        ExplicitTop = 160
-        ExplicitWidth = 400
-        ExplicitHeight = 250
         ColWidths = (
           20
           64)
       end
+    end
+  end
+  object actnlistMember: TActionList
+    Images = IMG.imglstMenuBar
+    Left = 186
+    Top = 169
+    object actnNom_SwitchName: TAction
+      Category = 'Nominate'
+      Caption = 'Switch Name'
+      Hint = 'Switch how the member'#39's name is displayed.'
+      ImageIndex = 18
+      ImageName = 'switch'
+      OnUpdate = actnNom_SwitchNameUpdate
+    end
+    object actnNom_Report: TAction
+      Category = 'Nominate'
+      Caption = 'Nominate Report'
+      ImageIndex = 15
+      ImageName = 'report'
+      OnUpdate = actnNom_ReportUpdate
+    end
+    object actnNom_MemberDetails: TAction
+      Category = 'Nominate'
+      Caption = 'Member'#39's Details...'
+      Hint = 'Locate the member in the Member'#39's Details dialogue...'
+      ImageIndex = 37
+      ImageName = 'Member'
+      OnUpdate = actnNom_MemberDetailsUpdate
+    end
+    object actnNom_MemberPB: TAction
+      Category = 'Nominate'
+      Caption = 'Quick view PBs...'
+      Hint = 'Quick view member'#39's PBs.'
+      ImageIndex = 37
+      ImageName = 'Member'
+    end
+    object actnNom_ClearEvent: TAction
+      Category = 'Nominate'
+      Caption = 'Clear event nominations...'
+      Hint = 'Clear event nominations...'
+      ImageIndex = 9
+      ImageName = 'delete'
+    end
+    object actnNom_ClearSession: TAction
+      Category = 'Nominate'
+      Caption = 'Clear session nominations...'
+      Hint = 'Clear session nominations...'
+      ImageIndex = 9
+      ImageName = 'delete'
+    end
+    object actnNom_ClearFilter: TAction
+      Category = 'Nominate'
+      Caption = 'Clear'
+      OnExecute = actnNom_ClearFilterExecute
+      OnUpdate = actnNom_ClearFilterUpdate
     end
   end
 end

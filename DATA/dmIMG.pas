@@ -21,7 +21,7 @@ type
     imglstHeatCntrl: TSVGIconVirtualImageList;
     imglstSessCntrl: TSVGIconVirtualImageList;
     imglstEventCntrl: TSVGIconVirtualImageList;
-    imglstMemCntrl: TSVGIconVirtualImageList;
+    imglstNomCntrl: TSVGIconVirtualImageList;
     imglstSessPopupMenu: TSVGIconVirtualImageList;
     imglstMiscButtons: TSVGIconVirtualImageList;
     imglstLaneCntrl: TSVGIconVirtualImageList;

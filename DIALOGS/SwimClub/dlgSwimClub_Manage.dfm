@@ -2711,7 +2711,7 @@ object SwimClubManage: TSwimClubManage
       DefaultRowHeight = 60
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 3
+      RowCount = 2
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -3167,7 +3167,6 @@ object SwimClubManage: TSwimClubManage
         0)
       RowHeights = (
         30
-        60
         60)
     end
   end
@@ -3495,7 +3494,7 @@ object SwimClubManage: TSwimClubManage
       object ts_LinkedClubs: TTabSheet
         Caption = 'Group Details'
         ImageIndex = 2
-        inline frSCG: TFrClubGroup
+        inline CGFrame: TFrameClubGroup
           Left = 0
           Top = 0
           Width = 622
@@ -3508,23 +3507,20 @@ object SwimClubManage: TSwimClubManage
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitWidth = 622
-          ExplicitHeight = 539
+          ExplicitLeft = 141
+          ExplicitTop = 111
           inherited pnlHeader: TPanel
             Width = 622
-            ExplicitWidth = 622
           end
           inherited pnlFooter: TPanel
             Top = 498
             Width = 622
-            ExplicitTop = 498
-            ExplicitWidth = 622
           end
           inherited rpnlBody: TRelativePanel
             Height = 459
             ControlCollection = <
               item
-                Control = frSCG.lbxL
+                Control = CGFrame.lbxL
                 AlignBottomWithPanel = True
                 AlignHorizontalCenterWithPanel = False
                 AlignLeftWithPanel = True
@@ -3533,26 +3529,25 @@ object SwimClubManage: TSwimClubManage
                 AlignVerticalCenterWithPanel = False
               end
               item
-                Control = frSCG.lbxR
+                Control = CGFrame.lbxR
                 AlignBottomWithPanel = True
                 AlignHorizontalCenterWithPanel = False
                 AlignLeftWithPanel = False
                 AlignRightWithPanel = True
                 AlignTopWithPanel = True
                 AlignVerticalCenterWithPanel = False
-                RightOf = frSCG.spnlBtns
+                RightOf = CGFrame.spnlBtns
               end
               item
-                Control = frSCG.spnlBtns
+                Control = CGFrame.spnlBtns
                 AlignBottomWithPanel = True
                 AlignHorizontalCenterWithPanel = False
                 AlignLeftWithPanel = False
                 AlignRightWithPanel = False
                 AlignTopWithPanel = True
                 AlignVerticalCenterWithPanel = False
-                RightOf = frSCG.lbxL
+                RightOf = CGFrame.lbxL
               end>
-            ExplicitHeight = 459
             inherited lbxL: TListBox
               Height = 459
               ExplicitHeight = 459
@@ -3565,16 +3560,16 @@ object SwimClubManage: TSwimClubManage
               Height = 459
               ControlCollection = <
                 item
-                  Control = frSCG.spbtnMoveR
+                  Control = CGFrame.spbtnMoveR
                 end
                 item
-                  Control = frSCG.spbtnMoveR2
+                  Control = CGFrame.spbtnMoveR2
                 end
                 item
-                  Control = frSCG.spbtnMoveL
+                  Control = CGFrame.spbtnMoveL
                 end
                 item
-                  Control = frSCG.spbtnMoveL2
+                  Control = CGFrame.spbtnMoveL2
                 end>
               ExplicitHeight = 459
             end
@@ -3698,6 +3693,7 @@ object SwimClubManage: TSwimClubManage
     Top = 544
   end
   object qrySwimClubGroup: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
     Connection = SCM2.scmConnection
     SQL.Strings = (
       'SELECT [SwimClubGroupID]'

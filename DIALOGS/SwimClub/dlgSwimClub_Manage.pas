@@ -15,14 +15,16 @@ uses
   Vcl.StdCtrls, Vcl.ComCtrls, Vcl.ExtDlgs, Vcl.DBCtrls, Vcl.Mask, Vcl.WinXCtrls,
   Vcl.Grids,
 
+  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
+  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+
   dmIMG, dmCORE, dmSCM2,
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid, SVGIconImage,
-  AdvDateTimePicker, AdvDBDateTimePicker, FireDAC.Stan.Intf,
-  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
-  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client, hintlist, f_FrameClubGroup
-  ;
+  AdvDateTimePicker, AdvDBDateTimePicker, FireDAC.Stan.Intf, frFrameClubGroup;
+
+  //, hintlist;
 
 type
   TSwimClubManage = class(TForm)
@@ -74,7 +76,7 @@ type
     qrySwimClubGroup: TFDQuery;
     actnInfo: TAction;
     hintInfo: TBalloonHint;
-    frSCG: TFrClubGroup;
+    CGFrame: TFrameClubGroup;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure actnArchiveExecute(Sender: TObject);
@@ -134,6 +136,8 @@ end;
 
 procedure TSwimClubManage.FormCreate(Sender: TObject);
 begin
+  if qrySwimClubGroup.Active then qrySwimClubGroup.Close;
+
   // reveal archived swimming clubs which are by default hidden.
   CORE.qrySwimClub.IndexName := 'indxShowAll';
   fGridIsUpdating := false;
@@ -142,7 +146,17 @@ begin
   splitvEdit.Opened := false;
   splitvEdit.UseAnimation := true;
   if pcntrlEdit.ActivePageIndex <> 0 then pcntrlEdit.ActivePageIndex := 0;
-  qrySwimClubGroup.Open;
+
+  // Assign current connection...
+  if Assigned(SCM2) then
+  begin
+    qrySwimClubGroup.Connection := SCM2.scmConnection;
+    if qrySwimClubGroup.Connection.Connected then
+      qrySwimClubGroup.Open;
+  end;
+
+  CGFrame.Initialize; // assigned connection but not active.
+
 end;
 
 procedure TSwimClubManage.actnArchiveExecute(Sender: TObject);
@@ -624,8 +638,8 @@ begin
 
   if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
   begin
-    if FrSCG.IsChanged then
-      FrSCG.UpdateData_SwimClubGroup(CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger);
+    if CGFrame.IsChanged then
+      CGFrame.UpdateData_SwimClubGroup(CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger);
   end;
 
 
@@ -671,10 +685,10 @@ begin
     tsLogo.TabVisible := true;
 
     // PREPARE FRAME.
-    FrSCG.IsChanged := false;
-    FrSCG.ParentClubID := PK;
-    FrSCG.LoadList_SwimClubGroup(PK);
-    FrSCG.LoadList_SwimClub(PK);
+    CGFrame.IsChanged := false;
+    CGFrame.ParentClubID := PK;
+    CGFrame.LoadList_SwimClubGroup(PK);
+    CGFrame.LoadList_SwimClub(PK);
 
   end
   else

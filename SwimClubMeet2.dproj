@@ -162,47 +162,39 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="TOOLS\SCMSimpleConnect.pas"/>
-        <DCCReference Include="DIALOGS\SwimClub\dlgSwimClub_Manage.pas">
-            <Form>SwimClubManage</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="DATA_Helper\uSession.pas"/>
         <DCCReference Include="DATA_Helper\uSwimClub.pas"/>
-        <DCCReference Include="FRAMES\f_FrameClubGroup.pas">
-            <Form>FrClubGroup</Form>
-            <FormType>dfm</FormType>
+        <DCCReference Include="DATA_Helper\uSession.pas"/>
+        <DCCReference Include="DATA_Helper\uEvent.pas"/>
+        <DCCReference Include="FRAMES\frFrameSession.pas">
+            <Form>FrameSession</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="FRAMES\frFrameEvent.pas">
+            <Form>FrameEvent</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="FRAMES\frFrameMember.pas">
+            <Form>FrameMember</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="FRAMES\frFrameClubGroup.pas">
+            <Form>FrameClubGroup</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="DIALOGS\SwimClub\dlgSwimClubGroup_View.pas">
             <Form>SwimClubGroup_View</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="FRAMES\frFrameSession.pas">
-            <Form>FrameSession</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TFrame</DesignClass>
         </DCCReference>
         <DCCReference Include="DIALOGS\Session\dlgEditSession.pas">
             <Form>EditSession</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="DIALOGS\Picker\dlgDatePicker.pas">
             <Form>DatePicker</Form>
         </DCCReference>
         <DCCReference Include="DIALOGS\Session\dlgNewSession.pas">
             <Form>NewSession</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="FRAMES\frFrameEvent.pas">
-            <Form>FrameEvent</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="DATA_Helper\uEvent.pas"/>
-        <DCCReference Include="FRAMES\frFrameMember.pas">
-            <Form>FrameMember</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TFrame</DesignClass>
+        <DCCReference Include="DIALOGS\SwimClub\dlgSwimClub_Manage.pas">
+            <Form>SwimClubManage</Form>
         </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

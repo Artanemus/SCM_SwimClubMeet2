@@ -22,7 +22,7 @@ uses
   FireDAC.Stan.Option,
 
   dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub, AdvUtil, AdvObj,
-  BaseGrid, AdvGrid, DBAdvGrid, frFrameSession, frFrameEvent
+  BaseGrid, AdvGrid, DBAdvGrid, frFrameSession, frFrameEvent, frFrameMember
 
   ;
 
@@ -101,6 +101,7 @@ type
     pnlEvent: TPanel;
     frEvent: TFrameEvent;
     pnlMem: TPanel;
+    frMember: TFrameMember;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -200,13 +201,8 @@ begin
   // store connection state..
   cState := SCM2.scmConnection.Connected;
 
-  {TODO -oBSA -cUI : take grids offline with beginupdate }
-  (*
-    gMember.BeginUpdate;
-    gHeat.BeginUpdate;
-    gLane.BeginUpdate;
-  *)
 
+  frMember.grid.BeginUpdate;
   frEvent.grid.BeginUpdate;
   frSession.grid.BeginUpdate;
   try
@@ -223,6 +219,7 @@ begin
       // sets table indexname, icon imageindexes and gird pagemode
       frSession.Initialise;
       frEvent.Initialise;
+      frMember.Initialise;
     end;
 
     // connection state changed?
@@ -253,14 +250,9 @@ begin
   finally
     frSession.grid.EndUpdate;
     frEvent.grid.EndUpdate;
+    frMember.grid.EndUpdate;
   end;
 
-  {TODO -oBSA -cUI : take grids online with endupdate }
-  (*
-    gMember.EndUpdate;
-    gHeat.EndUpdate;
-    gLane.EndUpdate;
-  *)
 
 end;
 
@@ -327,6 +319,7 @@ begin
 
   frSession.Initialise;
   frEvent.Initialise;
+  frMember.Initialise;
 
 end;
 
@@ -526,7 +519,7 @@ procedure TMain2.SwimClub_ManageExecute(Sender: TObject);
 var
   dlg: TSwimClubManage;
 begin
-  DetailTBLs_EnableCNTRLs;
+  DetailTBLs_DisableCNTRLs;
   try
     dlg := TSwimClubManage.Create(Self);
     try
@@ -535,7 +528,7 @@ begin
       dlg.Free;
     end;
   finally
-    DetailTBLs_DisableCNTRLs;
+    DetailTBLs_EnableCNTRLs;
   end;
 end;
 

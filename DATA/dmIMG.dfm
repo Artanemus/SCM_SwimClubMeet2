@@ -1,6 +1,6 @@
 object IMG: TIMG
   Height = 622
-  Width = 1193
+  Width = 1244
   object imglstEventStatus: TSVGIconVirtualImageList
     Images = <
       item
@@ -22,7 +22,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 352
+    Left = 496
     Top = 144
   end
   object CollectionCore: TSVGIconImageCollection
@@ -2579,7 +2579,7 @@ object IMG: TIMG
         FixedColor = clCoral
       end
       item
-        IconName = 'Member'
+        IconName = 'Members'
         SVGText = 
           '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
           ' viewBox="0 0 24 24">'#13#10'  <path fill="currentColor" d="M16 11c1.6' +
@@ -2588,7 +2588,41 @@ object IMG: TIMG
           ' 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.' +
           '02-.97.05c1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-' +
           '7-3.5"/>'#13#10'</svg>'#13#10
-        FixedColor = clDarkorange
+        FixedColor = clWhitesmoke
+      end
+      item
+        IconName = 'Members_Disabled'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24">'#13#10'  <path fill="currentColor" d="M16 11c1.6' +
+          '6 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3s1.34 3 3 3m-8 0c1.' +
+          '66 0 2.99-1.34 2.99-3S9.66 5 8 5S5 6.34 5 8s1.34 3 3 3m0 2c-2.33' +
+          ' 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.' +
+          '02-.97.05c1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-' +
+          '7-3.5"/>'#13#10'</svg>'#13#10
+        FixedColor = clBackground
+      end
+      item
+        IconName = 'Refresh'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24">'#13#10'  <path fill="currentColor" d="M12 6v3l4-' +
+          '4l-4-4v3c-4.42 0-8 3.58-8 8c0 1.57.46 3.03 1.24 4.26L6.7 14.8A5.' +
+          '9 5.9 0 0 1 6 12c0-3.31 2.69-6 6-6m6.76 1.74L17.3 9.2c.44.84.7 1' +
+          '.79.7 2.8c0 3.31-2.69 6-6 6v-3l-4 4l4 4v-3c4.42 0 8-3.58 8-8c0-1' +
+          '.57-.46-3.03-1.24-4.26"/>'#13#10'</svg>'#13#10
+        FixedColor = clWhitesmoke
+      end
+      item
+        IconName = 'Refresh_Disabled'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24">'#13#10'  <path fill="currentColor" d="M12 6v3l4-' +
+          '4l-4-4v3c-4.42 0-8 3.58-8 8c0 1.57.46 3.03 1.24 4.26L6.7 14.8A5.' +
+          '9 5.9 0 0 1 6 12c0-3.31 2.69-6 6-6m6.76 1.74L17.3 9.2c.44.84.7 1' +
+          '.79.7 2.8c0 3.31-2.69 6-6 6v-3l-4 4l4 4v-3c4.42 0 8-3.58 8-8c0-1' +
+          '.57-.46-3.03-1.24-4.26"/>'#13#10'</svg>'#13#10
+        FixedColor = clBackground
       end>
     Left = 320
     Top = 8
@@ -13016,560 +13050,8 @@ object IMG: TIMG
               B107F00DAA3CF3E36D761EEF0000000049454E44AE426082}
           end>
       end>
-    Left = 1000
-    Top = 376
-  end
-  object imglstPNGMenuBar: TVirtualImageList
-    Images = <
-      item
-        CollectionIndex = 0
-        CollectionName = 'Search'
-        Name = 'Search'
-      end
-      item
-        CollectionIndex = 1
-        CollectionName = 'Members'
-        Name = 'Members'
-      end
-      item
-        CollectionIndex = 2
-        CollectionName = 'Refresh'
-        Name = 'Refresh'
-      end
-      item
-        CollectionIndex = 3
-        CollectionName = 'BatchPrint'
-        Name = 'BatchPrint'
-      end
-      item
-        CollectionIndex = 4
-        CollectionName = 'Marshall'
-        Name = 'Marshall'
-      end
-      item
-        CollectionIndex = 5
-        CollectionName = 'TimeKeeper'
-        Name = 'TimeKeeper'
-      end
-      item
-        CollectionIndex = 6
-        CollectionName = 'AutoBuild'
-        Name = 'AutoBuild'
-      end
-      item
-        CollectionIndex = 7
-        CollectionName = 'Cycle'
-        Name = 'Cycle'
-      end
-      item
-        CollectionIndex = 8
-        CollectionName = 'Sync'
-        Name = 'Sync'
-      end
-      item
-        CollectionIndex = 9
-        CollectionName = 'Swap'
-        Name = 'Swap'
-      end
-      item
-        CollectionIndex = 10
-        CollectionName = 'Shuffle'
-        Name = 'Shuffle'
-      end
-      item
-        CollectionIndex = 11
-        CollectionName = 'Switch'
-        Name = 'Switch'
-      end
-      item
-        CollectionIndex = 12
-        CollectionName = 'Up'
-        Name = 'Up'
-      end
-      item
-        CollectionIndex = 13
-        CollectionName = 'Down'
-        Name = 'Down'
-      end
-      item
-        CollectionIndex = 14
-        CollectionName = 'ExpandContent'
-        Name = 'ExpandContent'
-      end
-      item
-        CollectionIndex = 15
-        CollectionName = 'GridOff'
-        Name = 'GridOff'
-      end
-      item
-        CollectionIndex = 16
-        CollectionName = 'GridOn'
-        Name = 'GridOn'
-      end
-      item
-        CollectionIndex = 17
-        CollectionName = 'Report'
-        Name = 'Report'
-      end
-      item
-        CollectionIndex = 18
-        CollectionName = 'DeleteForever'
-        Name = 'DeleteForever'
-      end
-      item
-        CollectionIndex = 19
-        CollectionName = 'Delete'
-        Name = 'Delete'
-      end
-      item
-        CollectionIndex = 20
-        CollectionName = 'New'
-        Name = 'New'
-      end
-      item
-        CollectionIndex = 21
-        CollectionName = 'Lock'
-        Name = 'Lock'
-      end
-      item
-        CollectionIndex = 22
-        CollectionName = 'VisibilityOff'
-        Name = 'VisibilityOff'
-      end
-      item
-        CollectionIndex = 23
-        CollectionName = 'VisibilityOn'
-        Name = 'VisibilityOn'
-      end
-      item
-        CollectionIndex = 24
-        CollectionName = 'Qualify'
-        Name = 'Qualify'
-      end
-      item
-        CollectionIndex = 25
-        CollectionName = 'UnChecked'
-        Name = 'UnChecked'
-      end
-      item
-        CollectionIndex = 26
-        CollectionName = 'Checked'
-        Name = 'Checked'
-      end
-      item
-        CollectionIndex = 82
-        CollectionName = 'flag'
-        Name = 'flag'
-      end
-      item
-        CollectionIndex = 81
-        CollectionName = 'file-map'
-        Name = 'file-map'
-      end
-      item
-        CollectionIndex = 50
-        CollectionName = 'Data-Connection'
-        Name = 'Data-Connection'
-      end
-      item
-        CollectionIndex = 83
-        CollectionName = 'group'
-        Name = 'group'
-      end
-      item
-        CollectionIndex = 84
-        CollectionName = 'houses'
-        Name = 'houses'
-      end
-      item
-        CollectionIndex = 53
-        CollectionName = 'HeatStatusClosedActive'
-        Name = 'HeatStatusClosedActive'
-      end
-      item
-        CollectionIndex = 56
-        CollectionName = 'HeatOpen'
-        Name = 'HeatOpen'
-      end
-      item
-        CollectionIndex = 57
-        CollectionName = 'HeatRaced'
-        Name = 'HeatRaced'
-      end
-      item
-        CollectionIndex = 58
-        CollectionName = 'HeatClosed'
-        Name = 'HeatClosed'
-      end
-      item
-        CollectionIndex = 59
-        CollectionName = 'HeatStatusToggle'
-        Name = 'HeatStatusToggle'
-      end
-      item
-        CollectionIndex = 61
-        CollectionName = 'Sort'
-        Name = 'Sort'
-      end
-      item
-        CollectionIndex = 62
-        CollectionName = 'Exit'
-        Name = 'Exit'
-      end
-      item
-        CollectionIndex = 63
-        CollectionName = 'import'
-        Name = 'import'
-      end
-      item
-        CollectionIndex = 64
-        CollectionName = 'settings'
-        Name = 'settings'
-      end
-      item
-        CollectionIndex = 65
-        CollectionName = 'home'
-        Name = 'home'
-      end
-      item
-        CollectionIndex = 66
-        CollectionName = 'Help'
-        Name = 'Help'
-      end
-      item
-        CollectionIndex = 67
-        CollectionName = 'info'
-        Name = 'info'
-      end
-      item
-        CollectionIndex = 68
-        CollectionName = 'clone'
-        Name = 'clone'
-      end
-      item
-        CollectionIndex = 69
-        CollectionName = 'Edit'
-        Name = 'Edit'
-      end
-      item
-        CollectionIndex = 70
-        CollectionName = 'Export'
-        Name = 'Export'
-      end
-      item
-        CollectionIndex = 71
-        CollectionName = 'TimeAuto'
-        Name = 'TimeAuto'
-      end
-      item
-        CollectionIndex = 77
-        CollectionName = 'add'
-        Name = 'add'
-      end
-      item
-        CollectionIndex = 78
-        CollectionName = 'remove'
-        Name = 'remove'
-      end
-      item
-        CollectionIndex = 79
-        CollectionName = 'folder_managed'
-        Name = 'folder_managed'
-      end
-      item
-        CollectionIndex = 80
-        CollectionName = 'hamburger'
-        Name = 'hamburger'
-      end
-      item
-        CollectionIndex = 51
-        CollectionName = 'Query-Stats'
-        Name = 'Query-Stats'
-      end>
-    ImageCollection = PNGCollection
-    Width = 32
-    Height = 32
-    Left = 1000
-    Top = 440
-  end
-  object imgList3: TVirtualImageList
-    Images = <
-      item
-        CollectionIndex = 60
-        CollectionName = 'ClearBackSpace'
-        Name = 'ClearBackSpace'
-      end>
-    ImageCollection = PNGCollection
-    Width = 24
-    Height = 24
-    Left = 1008
-    Top = 512
-  end
-  object imgNominate: TVirtualImageList
-    Images = <
-      item
-        CollectionIndex = 25
-        CollectionName = 'UnChecked'
-        Name = 'UnChecked'
-      end
-      item
-        CollectionIndex = 26
-        CollectionName = 'Checked'
-        Name = 'Checked'
-      end
-      item
-        CollectionIndex = 24
-        CollectionName = 'Qualify'
-        Name = 'Qualify'
-      end>
-    ImageCollection = PNGCollection
-    Width = 40
-    Height = 40
-    Left = 928
-    Top = 512
-  end
-  object imgForm: TVirtualImageList
-    Images = <
-      item
-        CollectionIndex = 0
-        CollectionName = 'Search'
-        Name = 'Search'
-      end
-      item
-        CollectionIndex = 1
-        CollectionName = 'Members'
-        Name = 'Members'
-      end
-      item
-        CollectionIndex = 2
-        CollectionName = 'Refresh'
-        Name = 'Refresh'
-      end
-      item
-        CollectionIndex = 3
-        CollectionName = 'BatchPrint'
-        Name = 'BatchPrint'
-      end
-      item
-        CollectionIndex = 4
-        CollectionName = 'Marshall'
-        Name = 'Marshall'
-      end
-      item
-        CollectionIndex = 5
-        CollectionName = 'TimeKeeper'
-        Name = 'TimeKeeper'
-      end
-      item
-        CollectionIndex = 6
-        CollectionName = 'AutoBuild'
-        Name = 'AutoBuild'
-      end
-      item
-        CollectionIndex = 7
-        CollectionName = 'Cycle'
-        Name = 'Cycle'
-      end
-      item
-        CollectionIndex = 8
-        CollectionName = 'Sync'
-        Name = 'Sync'
-      end
-      item
-        CollectionIndex = 9
-        CollectionName = 'Swap'
-        Name = 'Swap'
-      end
-      item
-        CollectionIndex = 10
-        CollectionName = 'Shuffle'
-        Name = 'Shuffle'
-      end
-      item
-        CollectionIndex = 11
-        CollectionName = 'Switch'
-        Name = 'Switch'
-      end
-      item
-        CollectionIndex = 12
-        CollectionName = 'Up'
-        Name = 'Up'
-      end
-      item
-        CollectionIndex = 13
-        CollectionName = 'Down'
-        Name = 'Down'
-      end
-      item
-        CollectionIndex = 14
-        CollectionName = 'ExpandContent'
-        Name = 'ExpandContent'
-      end
-      item
-        CollectionIndex = 15
-        CollectionName = 'GridOff'
-        Name = 'GridOff'
-      end
-      item
-        CollectionIndex = 16
-        CollectionName = 'GridOn'
-        Name = 'GridOn'
-      end
-      item
-        CollectionIndex = 17
-        CollectionName = 'Report'
-        Name = 'Report'
-      end
-      item
-        CollectionIndex = 18
-        CollectionName = 'DeleteForever'
-        Name = 'DeleteForever'
-      end
-      item
-        CollectionIndex = 19
-        CollectionName = 'Delete'
-        Name = 'Delete'
-      end
-      item
-        CollectionIndex = 20
-        CollectionName = 'New'
-        Name = 'New'
-      end
-      item
-        CollectionIndex = 21
-        CollectionName = 'Lock'
-        Name = 'Lock'
-      end
-      item
-        CollectionIndex = 22
-        CollectionName = 'VisibilityOff'
-        Name = 'VisibilityOff'
-      end
-      item
-        CollectionIndex = 23
-        CollectionName = 'VisibilityOn'
-        Name = 'VisibilityOn'
-      end
-      item
-        CollectionIndex = 24
-        CollectionName = 'Qualify'
-        Name = 'Qualify'
-      end
-      item
-        CollectionIndex = 25
-        CollectionName = 'UnChecked'
-        Name = 'UnChecked'
-      end
-      item
-        CollectionIndex = 26
-        CollectionName = 'Checked'
-        Name = 'Checked'
-      end
-      item
-        CollectionIndex = 52
-        CollectionName = 'HeatstatusOpen'
-        Name = 'HeatstatusOpen'
-      end
-      item
-        CollectionIndex = 51
-        CollectionName = 'Query-Stats'
-        Name = 'HeatStatusRaced'
-      end
-      item
-        CollectionIndex = 50
-        CollectionName = 'Data-Connection'
-        Name = 'HeatStatusClosed'
-      end
-      item
-        CollectionIndex = 55
-        CollectionName = 'HeatStatusOpenActive'
-        Name = 'HeatStatusOpenActive'
-      end
-      item
-        CollectionIndex = 54
-        CollectionName = 'HeatStatusRacedActive'
-        Name = 'HeatStatusRacedActive'
-      end
-      item
-        CollectionIndex = 53
-        CollectionName = 'HeatStatusClosedActive'
-        Name = 'HeatStatusClosedActive'
-      end
-      item
-        CollectionIndex = 56
-        CollectionName = 'HeatOpen'
-        Name = 'HeatOpen'
-      end
-      item
-        CollectionIndex = 57
-        CollectionName = 'HeatRaced'
-        Name = 'HeatRaced'
-      end
-      item
-        CollectionIndex = 58
-        CollectionName = 'HeatClosed'
-        Name = 'HeatClosed'
-      end
-      item
-        CollectionIndex = 59
-        CollectionName = 'HeatStatusToggle'
-        Name = 'HeatStatusToggle'
-      end
-      item
-        CollectionIndex = 61
-        CollectionName = 'Sort'
-        Name = 'Sort'
-      end
-      item
-        CollectionIndex = 62
-        CollectionName = 'Exit'
-        Name = 'Exit'
-      end
-      item
-        CollectionIndex = 63
-        CollectionName = 'import'
-        Name = 'import'
-      end
-      item
-        CollectionIndex = 64
-        CollectionName = 'settings'
-        Name = 'settings'
-      end
-      item
-        CollectionIndex = 65
-        CollectionName = 'home'
-        Name = 'home'
-      end
-      item
-        CollectionIndex = 66
-        CollectionName = 'Help'
-        Name = 'Help'
-      end
-      item
-        CollectionIndex = 67
-        CollectionName = 'info'
-        Name = 'info'
-      end
-      item
-        CollectionIndex = 68
-        CollectionName = 'clone'
-        Name = 'clone'
-      end
-      item
-        CollectionIndex = 69
-        CollectionName = 'Edit'
-        Name = 'Edit'
-      end
-      item
-        CollectionIndex = 70
-        CollectionName = 'Export'
-        Name = 'Export'
-      end>
-    ImageCollection = PNGCollection
-    Width = 48
-    Height = 48
-    Left = 1072
-    Top = 512
+    Left = 56
+    Top = 504
   end
   object imglstHeatStatus: TSVGIconVirtualImageList
     Images = <
@@ -13597,7 +13079,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 472
+    Left = 616
     Top = 128
   end
   object imglstHeatStroke: TSVGIconVirtualImageList
@@ -13636,7 +13118,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 472
+    Left = 616
     Top = 176
   end
   object imglstHeatCntrl: TSVGIconVirtualImageList
@@ -13695,7 +13177,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 472
+    Left = 616
     Top = 80
   end
   object imglstSessCntrl: TSVGIconVirtualImageList
@@ -13769,7 +13251,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 224
+    Left = 368
     Top = 80
   end
   object imglstEventCntrl: TSVGIconVirtualImageList
@@ -13818,7 +13300,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 352
+    Left = 496
     Top = 80
   end
   object imglstNomCntrl: TSVGIconVirtualImageList
@@ -13842,7 +13324,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 576
+    Left = 760
     Top = 80
   end
   object imglstSessPopupMenu: TSVGIconVirtualImageList
@@ -13916,7 +13398,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 224
+    Left = 368
     Top = 144
   end
   object imglstMiscButtons: TSVGIconVirtualImageList
@@ -14072,7 +13554,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 752
+    Left = 880
     Top = 80
   end
   object imglstNomCheckBox: TSVGIconVirtualImageList
@@ -14091,8 +13573,8 @@ object IMG: TIMG
     Width = 38
     Height = 38
     Size = 38
-    Left = 784
-    Top = 312
+    Left = 760
+    Top = 136
   end
   object imglstNomQualified: TSVGIconVirtualImageList
     Images = <
@@ -14110,8 +13592,8 @@ object IMG: TIMG
     Width = 38
     Height = 38
     Size = 38
-    Left = 784
-    Top = 376
+    Left = 760
+    Top = 192
   end
   object imglstNomStroke: TSVGIconVirtualImageList
     Images = <
@@ -14149,8 +13631,8 @@ object IMG: TIMG
     Width = 38
     Height = 38
     Size = 38
-    Left = 784
-    Top = 440
+    Left = 760
+    Top = 248
   end
   object imglstNomEventType: TSVGIconVirtualImageList
     Images = <
@@ -14173,8 +13655,8 @@ object IMG: TIMG
     Width = 38
     Height = 38
     Size = 38
-    Left = 784
-    Top = 504
+    Left = 760
+    Top = 304
   end
   object imglstSessGrid: TSVGIconVirtualImageList
     Images = <
@@ -14269,87 +13751,37 @@ object IMG: TIMG
         Name = 'week'
       end>
     ImageCollection = CollectionCore
-    Left = 224
+    Left = 368
     Top = 208
   end
   object imglstTitleBar: TSVGIconVirtualImageList
     Images = <
       item
-        CollectionIndex = 0
-        CollectionName = 'members'
-        Name = 'members'
+        CollectionIndex = 105
+        CollectionName = 'Members'
+        Name = 'Members'
       end
       item
-        CollectionIndex = 1
-        CollectionName = 'members_disabled'
-        Name = 'members_disabled'
+        CollectionIndex = 106
+        CollectionName = 'Members_Disabled'
+        Name = 'Members_Disabled'
       end
       item
-        CollectionIndex = 2
-        CollectionName = 'refresh'
-        Name = 'refresh'
+        CollectionIndex = 107
+        CollectionName = 'Refresh'
+        Name = 'Refresh'
       end
       item
-        CollectionIndex = 3
-        Name = 'refresh_disabled'
+        CollectionIndex = 108
+        CollectionName = 'Refresh_Disabled'
+        Name = 'Refresh_Disabled'
       end>
-    ImageCollection = CollectionTitleBar
+    ImageCollection = CollectionCore
     Width = 30
     Height = 30
     Size = 30
-    Left = 48
-    Top = 440
-  end
-  object CollectionTitleBar: TSVGIconImageCollection
-    SVGIconItems = <
-      item
-        IconName = 'members'
-        SVGText = 
-          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" d="M16 11c1.66 0 ' +
-          '2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3s1.34 3 3 3m-8 0c1.66 0' +
-          ' 2.99-1.34 2.99-3S9.66 5 8 5S5 6.34 5 8s1.34 3 3 3m0 2c-2.33 0-7' +
-          ' 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.02-.' +
-          '97.05c1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.' +
-          '5"/></svg>'
-        FixedColor = clMenuBar
-      end
-      item
-        IconName = 'members_disabled'
-        SVGText = 
-          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" d="M16 11c1.66 0 ' +
-          '2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3s1.34 3 3 3m-8 0c1.66 0' +
-          ' 2.99-1.34 2.99-3S9.66 5 8 5S5 6.34 5 8s1.34 3 3 3m0 2c-2.33 0-7' +
-          ' 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5m8 0c-.29 0-.62.02-.' +
-          '97.05c1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.' +
-          '5"/></svg>'
-        FixedColor = clBackground
-      end
-      item
-        IconName = 'refresh'
-        SVGText = 
-          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" d="M12 6v3l4-4l-4' +
-          '-4v3c-4.42 0-8 3.58-8 8c0 1.57.46 3.03 1.24 4.26L6.7 14.8A5.9 5.' +
-          '9 0 0 1 6 12c0-3.31 2.69-6 6-6m6.76 1.74L17.3 9.2c.44.84.7 1.79.' +
-          '7 2.8c0 3.31-2.69 6-6 6v-3l-4 4l4 4v-3c4.42 0 8-3.58 8-8c0-1.57-' +
-          '.46-3.03-1.24-4.26"/></svg>'
-        FixedColor = clMenuBar
-      end
-      item
-        IconName = 'refresh_disabled'
-        SVGText = 
-          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" d="M12 6v3l4-4l-4' +
-          '-4v3c-4.42 0-8 3.58-8 8c0 1.57.46 3.03 1.24 4.26L6.7 14.8A5.9 5.' +
-          '9 0 0 1 6 12c0-3.31 2.69-6 6-6m6.76 1.74L17.3 9.2c.44.84.7 1.79.' +
-          '7 2.8c0 3.31-2.69 6-6 6v-3l-4 4l4 4v-3c4.42 0 8-3.58 8-8c0-1.57-' +
-          '.46-3.03-1.24-4.26"/></svg>'
-        FixedColor = clBackground
-      end>
-    Left = 48
-    Top = 376
+    Left = 64
+    Top = 80
   end
   object imglstSwimClubCntrl: TSVGIconVirtualImageList
     Images = <
@@ -14402,7 +13834,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 80
+    Left = 224
     Top = 80
   end
   object imglstSwimClubArchived: TSVGIconVirtualImageList
@@ -14421,7 +13853,7 @@ object IMG: TIMG
     Width = 30
     Height = 30
     Size = 30
-    Left = 80
+    Left = 224
     Top = 144
   end
   object imglstSwimClubGroup: TSVGIconVirtualImageList
@@ -14440,7 +13872,7 @@ object IMG: TIMG
     Width = 30
     Height = 30
     Size = 30
-    Left = 80
+    Left = 224
     Top = 208
   end
   object imglstSwimClubCell: TSVGIconVirtualImageList
@@ -14464,7 +13896,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 80
+    Left = 224
     Top = 272
   end
   object imglstClubGroup: TSVGIconVirtualImageList
@@ -14562,7 +13994,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 472
+    Left = 616
     Top = 232
   end
   object imglstStatusPanel: TSVGIconVirtualImageList
@@ -14591,8 +14023,8 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 256
-    Top = 448
+    Left = 64
+    Top = 208
   end
   object imglstMenuBar: TSVGIconVirtualImageList
     Images = <
@@ -14790,8 +14222,8 @@ object IMG: TIMG
     Width = 32
     Height = 32
     Size = 32
-    Left = 144
-    Top = 448
+    Left = 64
+    Top = 144
   end
   object imglstEventType: TSVGIconVirtualImageList
     Images = <
@@ -14814,7 +14246,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 352
+    Left = 496
     Top = 208
   end
   object imglstEventCell: TSVGIconVirtualImageList
@@ -14843,7 +14275,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 352
+    Left = 496
     Top = 264
   end
   object imglstEventPopupMenu: TSVGIconVirtualImageList
@@ -14897,7 +14329,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 352
+    Left = 496
     Top = 320
   end
 end

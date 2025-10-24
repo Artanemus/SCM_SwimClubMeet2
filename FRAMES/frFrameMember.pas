@@ -3,15 +3,23 @@ unit frFrameMember;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Winapi.Windows, Winapi.Messages,
+
+  System.SysUtils, System.Variants, System.Classes, System.Actions,
+
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.WinXCtrls, Vcl.StdCtrls, Vcl.VirtualImage, Vcl.Buttons, Vcl.Grids,
+  Vcl.ActnList,
+
+  Data.DB,
+
+  FireDAC.Stan.Param,
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
   dmSCM2, dmIMG, dmCORE,
 
-  uDefines, uSwimClub, System.Actions, Vcl.ActnList
+  uDefines, uSwimClub, uSettings
   ;
 
 type
@@ -43,10 +51,16 @@ type
     procedure actnNom_ReportUpdate(Sender: TObject);
     procedure actnNom_SwitchNameUpdate(Sender: TObject);
     procedure edtSearchChange(Sender: TObject);
+    procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
+        HTMLTemplate: string; Fields: TFields);
   private
     { Private declarations }
   public
     procedure Initialise();
+
+    // messages must be forwarded by main form.
+    // procedure Msg_SCM_SwimClub_Change(var Msg: TMessage); message SCM_SWIMCLUB_CHANGED;
+
   end;
 
 implementation
@@ -140,20 +154,73 @@ begin
   end;
 end;
 
+procedure TFrameMember.gridGetHTMLTemplate(Sender: TObject; ACol, ARow:
+    Integer; var HTMLTemplate: string; Fields: TFields);
+var
+  s: string;
+begin
+  if (not Assigned(CORE)) or (not CORE.IsActive) or
+    CORE.qryFilterMember.IsEmpty then exit;
+
+  s := '';
+
+  if (ACol = 1) then
+  begin
+    s := '''
+      <FONT size="12"><#FName></FONT><BR>
+      <FONT size="10">Age: <#Age> Gender: <#ABREV> Club: <#NickName></FONT>
+      ''';
+  end;
+  HTMLTemplate := s;
+
+end;
+
 { TFrameMember }
 
 procedure TFrameMember.Initialise;
+var
+  SortOn: integer;
 begin
   // prepare the SQL Query
-  if Assigned(CORE) and CORE.IsActive then
-  begin
-    CORE.qryFilterMember.Close;
-    CORE.qryFilterMember.ParamByName('SWIMCLUBID').AsInteger :=
-      uSwimClub.PK;
-    // 0 = firstname, 1 = lastname.
-    CORE.qryFilterMember.ParamByName('SORTON').AsInteger := 1;
-    CORE.qryFilterMember.Prepare;
+  grid.RowCount := grid.FixedRows + 1; // rule: row count > fixed row.
+  edtSearch.Text := '';
+  CORE.qryFilterMember.Filtered := false;
+  CORE.qryFilterMember.Filter := '';
+
+  grid.BeginUpdate;
+  try
+    begin
+      if SCM2.scmConnection.Connected and CORE.IsActive then
+      begin
+        CORE.qryFilterMember.Close;
+        CORE.qryFilterMember.ParamByName('SWIMCLUBID').AsInteger := uSwimClub.PK;
+        // 0 = firstname, 1 = lastname.
+        if Assigned(Settings) then
+          SortOn := Settings.MemberSortOn else SortOn := 0;
+
+        CORE.qryFilterMember.ParamByName('SORTON').AsInteger := SortOn;
+        CORE.qryFilterMember.Prepare;
+        CORE.qryFilterMember.Open;
+
+        if CORE.qryFilterMember.IsEmpty then
+        begin
+          // setting pagemode to false clears grid of text. (it appears empty)
+          grid.PageMode := false;
+        end
+        else
+        begin
+          // Set pagemode to the default 'editable' fetch records mode.
+          grid.PageMode := true;
+        end;
+      end
+      else
+        grid.PageMode := false; // read-only
+    end;
+  finally
+    grid.EndUpdate;
   end;
 end;
+
+
 
 end.

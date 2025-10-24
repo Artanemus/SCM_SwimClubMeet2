@@ -268,9 +268,10 @@ object FrameMember: TFrameMember
         Align = alClient
         Color = clWhite
         ColCount = 2
+        DefaultRowHeight = 48
         DrawingStyle = gdsClassic
         FixedColor = clWhite
-        RowCount = 2
+        RowCount = 101
         FixedRows = 1
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -284,6 +285,7 @@ object FrameMember: TFrameMember
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
+        HTMLKeepLineBreak = False
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
         ActiveCellFont.Height = -12
@@ -339,8 +341,8 @@ object FrameMember: TFrameMember
           'Larger than'
           'Smaller than'
           'Clear')
-        FixedColWidth = 20
-        FixedRowHeight = 22
+        FixedColWidth = 0
+        FixedRowHeight = 0
         FixedFont.Charset = DEFAULT_CHARSET
         FixedFont.Color = clBlack
         FixedFont.Height = -16
@@ -406,6 +408,7 @@ object FrameMember: TFrameMember
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWindow
+            FieldName = 'MemberID'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
@@ -422,15 +425,17 @@ object FrameMember: TFrameMember
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 20
+            Width = 0
           end
           item
+            Alignment = taRightJustify
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWindow
+            FieldName = 'MemberID'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
@@ -441,14 +446,18 @@ object FrameMember: TFrameMember
             HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
+            HTMLTemplate = 
+              '<FONT size="12"><#FName></FONT><BR><FONT size="10">Age: <#Age> G' +
+              'ender: <#ABREV> Club: <#NickName></FONT>'
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clWindowText
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
+            Width = 300
           end>
+        DataSource = CORE.dsFilterMember
         InvalidPicture.Data = {
           055449636F6E0000010001002020200000000000A81000001600000028000000
           2000000040000000010020000000000000100000000000000000000000000000
@@ -586,16 +595,119 @@ object FrameMember: TFrameMember
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
+        OnGetHTMLTemplate = gridGetHTMLTemplate
         ColWidths = (
-          20
-          64)
+          0
+          300)
+        RowHeights = (
+          0
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48
+          48)
       end
     end
   end
   object actnlistMember: TActionList
     Images = IMG.imglstMenuBar
-    Left = 186
-    Top = 169
+    Left = 178
+    Top = 369
     object actnNom_SwitchName: TAction
       Category = 'Nominate'
       Caption = 'Switch Name'

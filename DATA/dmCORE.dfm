@@ -1030,6 +1030,7 @@ object CORE: TCORE
     Top = 584
   end
   object qryFilterMember: TFDQuery
+    Active = True
     Connection = TestConnection
     SQL.Strings = (
       ''
@@ -1119,5 +1120,55 @@ object CORE: TCORE
         ParamType = ptInput
         Value = Null
       end>
+    object qryFilterMemberSwimClubID: TIntegerField
+      FieldName = 'SwimClubID'
+      Origin = 'SwimClubID'
+    end
+    object qryFilterMemberMemberID: TIntegerField
+      FieldName = 'MemberID'
+      Origin = 'MemberID'
+    end
+    object qryFilterMemberFirstName: TWideStringField
+      FieldName = 'FirstName'
+      Origin = 'FirstName'
+      Size = 128
+    end
+    object qryFilterMemberMiddleInitial: TWideStringField
+      FieldName = 'MiddleInitial'
+      Origin = 'MiddleInitial'
+      Size = 4
+    end
+    object qryFilterMemberLastName: TWideStringField
+      FieldName = 'LastName'
+      Origin = 'LastName'
+      Size = 128
+    end
+    object qryFilterMemberNickName: TWideStringField
+      FieldName = 'NickName'
+      Origin = 'NickName'
+      Size = 128
+    end
+    object qryFilterMemberAge: TIntegerField
+      FieldName = 'Age'
+      Origin = 'Age'
+      ReadOnly = True
+    end
+    object qryFilterMemberABREV: TWideStringField
+      FieldName = 'ABREV'
+      Origin = 'ABREV'
+      Size = 16
+    end
+    object qryFilterMemberFName: TWideStringField
+      FieldName = 'FName'
+      Origin = 'FName'
+      ReadOnly = True
+      Required = True
+      Size = 263
+    end
+  end
+  object dsFilterMember: TDataSource
+    DataSet = qryFilterMember
+    Left = 904
+    Top = 48
   end
 end

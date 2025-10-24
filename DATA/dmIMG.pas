@@ -12,10 +12,6 @@ type
     imglstEventStatus: TSVGIconVirtualImageList;
     CollectionCore: TSVGIconImageCollection;
     PNGCollection: TImageCollection;
-    imglstPNGMenuBar: TVirtualImageList;
-    imgList3: TVirtualImageList;
-    imgNominate: TVirtualImageList;
-    imgForm: TVirtualImageList;
     imglstHeatStatus: TSVGIconVirtualImageList;
     imglstHeatStroke: TSVGIconVirtualImageList;
     imglstHeatCntrl: TSVGIconVirtualImageList;
@@ -31,7 +27,6 @@ type
     imglstNomEventType: TSVGIconVirtualImageList;
     imglstSessGrid: TSVGIconVirtualImageList;
     imglstTitleBar: TSVGIconVirtualImageList;
-    CollectionTitleBar: TSVGIconImageCollection;
     imglstSwimClubCntrl: TSVGIconVirtualImageList;
     imglstSwimClubArchived: TSVGIconVirtualImageList;
     imglstSwimClubGroup: TSVGIconVirtualImageList;

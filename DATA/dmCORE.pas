@@ -107,6 +107,16 @@ type
     LookUpParalympicType: TStringField;
     LookUpEventCat: TStringField;
     qryFilterMember: TFDQuery;
+    dsFilterMember: TDataSource;
+    qryFilterMemberSwimClubID: TIntegerField;
+    qryFilterMemberMemberID: TIntegerField;
+    qryFilterMemberFirstName: TWideStringField;
+    qryFilterMemberMiddleInitial: TWideStringField;
+    qryFilterMemberLastName: TWideStringField;
+    qryFilterMemberNickName: TWideStringField;
+    qryFilterMemberAge: TIntegerField;
+    qryFilterMemberABREV: TWideStringField;
+    qryFilterMemberFName: TWideStringField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterEdit(DataSet: TDataSet);

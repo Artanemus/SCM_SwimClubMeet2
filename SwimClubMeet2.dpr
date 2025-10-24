@@ -16,18 +16,18 @@ uses
   dlgSwimClub_Switch in 'DIALOGS\SwimClub\dlgSwimClub_Switch.pas' {SwimClubSwitch},
   dlgLogin in 'DIALOGS\dlgLogin.pas' {Login},
   SCMSimpleConnect in 'TOOLS\SCMSimpleConnect.pas',
-  dlgSwimClub_Manage in 'DIALOGS\SwimClub\dlgSwimClub_Manage.pas' {SwimClubManage},
-  uSession in 'DATA_Helper\uSession.pas',
   uSwimClub in 'DATA_Helper\uSwimClub.pas',
-  f_FrameClubGroup in 'FRAMES\f_FrameClubGroup.pas' {FrClubGroup: TFrame},
-  dlgSwimClubGroup_View in 'DIALOGS\SwimClub\dlgSwimClubGroup_View.pas' {SwimClubGroup_View},
+  uSession in 'DATA_Helper\uSession.pas',
+  uEvent in 'DATA_Helper\uEvent.pas',
   frFrameSession in 'FRAMES\frFrameSession.pas' {FrameSession: TFrame},
+  frFrameEvent in 'FRAMES\frFrameEvent.pas' {FrameEvent: TFrame},
+  frFrameMember in 'FRAMES\frFrameMember.pas' {FrameMember: TFrame},
+  frFrameClubGroup in 'FRAMES\frFrameClubGroup.pas' {FrameClubGroup: TFrame},
+  dlgSwimClubGroup_View in 'DIALOGS\SwimClub\dlgSwimClubGroup_View.pas' {SwimClubGroup_View},
   dlgEditSession in 'DIALOGS\Session\dlgEditSession.pas' {EditSession},
   dlgDatePicker in 'DIALOGS\Picker\dlgDatePicker.pas' {DatePicker},
   dlgNewSession in 'DIALOGS\Session\dlgNewSession.pas' {NewSession},
-  frFrameEvent in 'FRAMES\frFrameEvent.pas' {FrameEvent: TFrame},
-  uEvent in 'DATA_Helper\uEvent.pas',
-  frFrameMember in 'FRAMES\frFrameMember.pas' {FrameMember: TFrame};
+  dlgSwimClub_Manage in 'DIALOGS\SwimClub\dlgSwimClub_Manage.pas' {SwimClubManage};
 
 {$R *.res}
 

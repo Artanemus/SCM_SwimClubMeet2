@@ -1,4 +1,4 @@
-object FrClubGroup: TFrClubGroup
+object FrameClubGroup: TFrameClubGroup
   Left = 0
   Top = 0
   Width = 613
@@ -199,6 +199,7 @@ object FrClubGroup: TFrClubGroup
     end
   end
   object qryLstSwimClub: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
     Connection = CORE.TestConnection
     SQL.Strings = (
       ''
@@ -236,6 +237,7 @@ object FrClubGroup: TFrClubGroup
       end>
   end
   object qryLstSwimClubGroup: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
     Connection = CORE.TestConnection
     SQL.Strings = (
       'DECLARE @ParentClubID AS INTEGER;'

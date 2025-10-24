@@ -21,6 +21,8 @@ type
     LastSwimClubPK: integer;
     HideLockedSessions: boolean;
 
+    // FrameMember - grid sorton members name.
+    MemberSortOn: integer; // 0 firstname-lastname 1 lastname-firstname;
 
     constructor Create(); overload;
     constructor Create(AutoLoad: boolean); overload;
@@ -72,6 +74,7 @@ begin
   DoAutoLoad := false;
   LastSwimClubPK := 0;
   HideLockedSessions := false;
+  MemberSortOn := 0;
   ForceDirectories(GetDefPath());
   if not FileExists(GetDefPathFileName()) then
     SaveToFile();

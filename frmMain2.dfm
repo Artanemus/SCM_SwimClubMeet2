@@ -2952,14 +2952,33 @@ object Main2: TMain2
           inherited pnlCntrl: TPanel
             Height = 628
             ExplicitHeight = 628
+            inherited spbtnSessClone: TSpeedButton
+              ImageIndex = 11
+              Glyph.Data = {00000000}
+            end
             inherited spbtnSessDelete: TSpeedButton
               ImageName = 'in'
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessLock: TSpeedButton
+              ImageIndex = 6
+              Glyph.Data = {00000000}
             end
             inherited spbtnSessNew: TSpeedButton
               ImageName = 'edit'
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessReport: TSpeedButton
+              ImageIndex = 5
+              Glyph.Data = {00000000}
             end
             inherited spbtnSessLockedVisible: TSpeedButton
               ImageName = 'new'
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessEdit: TSpeedButton
+              ImageIndex = 8
+              Glyph.Data = {00000000}
             end
           end
           inherited actnlstSession: TActionList
@@ -3117,11 +3136,132 @@ object Main2: TMain2
       object pnlMem: TPanel
         Left = 0
         Top = 0
-        Width = 361
+        Width = 433
         Height = 628
         Align = alLeft
         BevelOuter = bvNone
         TabOrder = 0
+        ExplicitTop = 4
+        inline frMember: TFrameMember
+          Left = 0
+          Top = 0
+          Width = 433
+          Height = 628
+          Align = alClient
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          ExplicitLeft = 155
+          ExplicitTop = 198
+          inherited rpnlCntrl: TRelativePanel
+            Height = 628
+            ControlCollection = <
+              item
+                Control = frMember.spbtnMemSort
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = True
+                AlignVerticalCenterWithPanel = False
+              end
+              item
+                Control = frMember.ShapeMemBar1
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frMember.spbtnMemDetails
+              end
+              item
+                Control = frMember.spbtnMemReport
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frMember.ShapeMemBar1
+              end
+              item
+                Control = frMember.lblNomWarning
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frMember.spbtnMemReport
+              end
+              item
+                Control = frMember.spbtnMemDetails
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frMember.spbtnMemSort
+              end>
+          end
+          inherited pnlBody: TPanel
+            Width = 375
+            Height = 628
+            inherited pnlList: TPanel
+              Width = 375
+              Height = 628
+              inherited rpnlSearch: TRelativePanel
+                Width = 375
+                ControlCollection = <
+                  item
+                    Control = frMember.btnClearSearch
+                    AlignBottomWithPanel = False
+                    AlignHorizontalCenterWithPanel = False
+                    AlignLeftWithPanel = False
+                    AlignRightWithPanel = True
+                    AlignTopWithPanel = False
+                    AlignVerticalCenterWithPanel = True
+                  end
+                  item
+                    Control = frMember.edtSearch
+                    AlignBottomWithPanel = False
+                    AlignHorizontalCenterWithPanel = False
+                    AlignLeftWithPanel = True
+                    AlignRightWithPanel = True
+                    AlignTopWithPanel = False
+                    AlignVerticalCenterWithPanel = True
+                  end
+                  item
+                    Control = frMember.vimgSearch
+                    AlignBottomWithPanel = False
+                    AlignHorizontalCenterWithPanel = False
+                    AlignLeftWithPanel = True
+                    AlignRightWithPanel = False
+                    AlignTopWithPanel = False
+                    AlignVerticalCenterWithPanel = True
+                  end>
+                inherited btnClearSearch: TButton
+                  Left = 275
+                  ExplicitLeft = 275
+                end
+                inherited edtSearch: TEdit
+                  Width = 213
+                  ExplicitWidth = 213
+                end
+              end
+              inherited grid: TDBAdvGrid
+                Width = 375
+                Height = 579
+              end
+            end
+          end
+        end
       end
     end
     object tabHeats: TTabSheet

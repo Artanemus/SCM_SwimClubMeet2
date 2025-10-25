@@ -357,28 +357,31 @@ procedure TFrameSession.gridGetCellColor(Sender: TObject; ARow, ACol:
 var
   FontColor: TColor;
 begin
-  // greenish-blue color..
+  // method to obtain the 'StyleElements' font color for grid items.
   FontColor := StyleServices.GetStyleFontColor(sfGridItemFixedPressed);
+  // blueish-white..$00FFE4D8;
 
   if (ARow >= grid.FixedRows) then   // (ARow >= grid.FixedCols)
   begin
     if (grid.Cells[2, ARow] = '2') then
       AFont.Color := grid.DisabledFontColor
     else
-      AFont.Color :=  FontColor; /// blueish-white..$00FFE4D8;
+    begin
+      if (gdSelected in AState) then
+        AFont.Color := RGB(255, 254, 254) // slightly dimmed white.
+      else
+        AFont.Color :=  RGB(215, 215, 215); // even dimmer.
+      // clWebGhostWhite;
+    end;
   end;
 
   { C E L L   C O L O R S  .
-    if StyleElements seFont = false then grids selection color param
-    is activated ..
-          eg. grid.SelectionTextColor := clWebGoldenRod;
+    1. the StyleElements seFont has been disabled for the session grid.
+    2. the propert UseSelectionColor has been disabled.
+    3. the property SelectionTextColor has been set but will be ignored.
 
-    OR DISABLE the grids selectionn text color ..
-          eg. grid.UseSelectionTextColor := false;
+    - results : all assignments of font color are handles here.
 
-    AND then assign in this procedure...
-
-    if (gdSelected in AState) then AFont.Color := ???
   }
 end;
 

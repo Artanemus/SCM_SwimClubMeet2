@@ -75,6 +75,7 @@ type
         Boolean);
     procedure gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
         State: TGridDrawState);
+    procedure gridKeyPress(Sender: TObject; var Key: Char);
   private
     procedure FixedEventCntrlIcons();
     procedure SetGridView_ColVisibility;
@@ -267,7 +268,7 @@ begin
   if actnEv_GridView.Checked then // Expanded.
     CanEdit := not (ACol in [0, 1, 2, 5, 7, 8, 9])
   else
-    CanEdit := not (ACol in [0, 1, 2, 5 ,6, 7, 8, 9, 10, 11]); // collapsed.
+    CanEdit := not (ACol in [0, 1, 2, 5 ,6, 7, 8, 9, 10, 11, 12, 13]); // collapsed.
 end;
 
 procedure TFrameEvent.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
@@ -285,6 +286,48 @@ begin
       10: // centered gender icon...
         IMG.imglstEventCell.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 6,
           Rect.top + 4, 3);
+    end;
+  end;
+end;
+
+procedure TFrameEvent.gridKeyPress(Sender: TObject; var Key: Char);
+begin
+  {TODO -oBSA -cGeneral :
+    Clear lookup cells, whether in edit state of not, using the BACKSPACE key.
+    make it optional to use CNTRL+BACKSPACE to clear cell}
+
+//      if ((GetKeyState(VK_CONTROL) and 128) = 128) then
+//      begin
+//      end;
+
+  if (grid.row >= grid.FixedRows) and
+      (grid.RealColIndex(grid.Col) in [12, 13]) then
+  begin
+    if (Key = char(VK_BACK)) or (Key = #$7F) then
+    begin
+      grid.BeginUpdate;
+      try
+        begin
+          try
+            begin
+              if (CORE.qryEvent.State <> dsEdit) then
+                CORE.qryEvent.Edit;
+              case (grid.RealColIndex(grid.Col)) of
+                12:
+                CORE.qryEvent.FieldByName('EventCategoryID').Clear;
+                13:
+                CORE.qryEvent.FieldByName('ParalympicTypeID').Clear;
+              end;
+              CORE.qryEvent.Post;
+              Key := char(0);
+            end;
+          except
+            on E: Exception do ShowMessage(E.Message);
+          end;
+        end;
+      finally
+        grid.EndUpdate;
+      end;
     end;
   end;
 end;
@@ -321,15 +364,19 @@ begin
   // EXPANDED or COLLAPSED grid views...
   if actnEv_GridView.Checked then
   begin  // EXPANDED...
-    grid.Columns[6].Width := 400;   // DESCRIPTION
-    grid.Columns[10].Width := 38;   // Gender
-    grid.Columns[11].Width := 80;   // Round
+    grid.Columns[6].Width := 400;   // DESCRIPTION.
+    grid.Columns[10].Width := 38;   // Gender (ABREV)
+    grid.Columns[11].Width := 80;   // Round (ABREV)
+    grid.Columns[12].Width := 100;   // Event Category (ABREV)
+    grid.Columns[13].Width := 140;   // ParaOlympic (Caption)
   end
   else
   begin  // COLLAPSED...
     grid.Columns[6].Width := 0;
     grid.Columns[10].Width := 0;
     grid.Columns[11].Width := 0;
+    grid.Columns[12].Width := 0;
+    grid.Columns[13].Width := 0;
   end;
 end;
 

@@ -1,26 +1,27 @@
 object FrameEvent: TFrameEvent
   Left = 0
   Top = 0
-  Width = 632
+  Width = 768
   Height = 708
   TabOrder = 0
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 574
+    Width = 710
     Height = 708
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 574
     object grid: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 574
+      Width = 710
       Height = 708
       Cursor = crDefault
       Align = alClient
       Color = clWhite
-      ColCount = 12
+      ColCount = 14
       DefaultRowHeight = 32
       DrawingStyle = gdsClassic
       FixedColor = clWhite
@@ -37,6 +38,7 @@ object FrameEvent: TFrameEvent
       ScrollBars = ssBoth
       TabOrder = 0
       OnDrawCell = gridDrawCell
+      OnKeyPress = gridKeyPress
       GridLineColor = 15987699
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
@@ -501,6 +503,60 @@ object FrameEvent: TFrameEvent
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
           Width = 64
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          FieldName = 'luEventCat'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = 'Category'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 64
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          FieldName = 'luParalympicType'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = 'Paralympic'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 64
         end>
       DataSource = CORE.dsEvent
       InvalidPicture.Data = {
@@ -640,6 +696,7 @@ object FrameEvent: TFrameEvent
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
+      ExplicitLeft = 1
       ColWidths = (
         20
         0
@@ -652,6 +709,8 @@ object FrameEvent: TFrameEvent
         43
         43
         38
+        64
+        64
         64)
     end
   end

@@ -40,6 +40,7 @@ object FrameSession: TFrameSession
       PopupMenu = pumenuSession
       ScrollBars = ssBoth
       TabOrder = 0
+      StyleElements = [seClient, seBorder]
       GridLineColor = 15987699
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
@@ -153,11 +154,13 @@ object FrameSession: TFrameSession
       SearchFooter.MatchCaseCaption = 'Match case'
       SearchFooter.ResultFormat = '(%d of %d)'
       SelectionColor = 13744549
+      SelectionTextColor = 15395562
       SortSettings.DefaultFormat = ssAutomatic
       SortSettings.HeaderColor = clWhite
       SortSettings.HeaderColorTo = clWhite
       SortSettings.HeaderMirrorColor = clWhite
       SortSettings.HeaderMirrorColorTo = clWhite
+      UseSelectionTextColor = False
       Version = '2.5.1.3'
       AutoCreateColumns = True
       AutoRemoveColumns = True

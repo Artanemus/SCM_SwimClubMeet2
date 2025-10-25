@@ -954,7 +954,6 @@ object CORE: TCORE
     Params.Strings = (
       'ConnectionDef=MSSQL_SwimClubMeet2')
     ConnectedStoredUsage = [auDesignTime]
-    Connected = True
     LoginPrompt = False
     Left = 496
     Top = 40
@@ -1030,7 +1029,6 @@ object CORE: TCORE
     Top = 584
   end
   object qryFilterMember: TFDQuery
-    Active = True
     Connection = TestConnection
     SQL.Strings = (
       ''

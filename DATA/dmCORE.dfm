@@ -1029,6 +1029,7 @@ object CORE: TCORE
     Top = 584
   end
   object qryFilterMember: TFDQuery
+    FilterOptions = [foCaseInsensitive]
     Connection = TestConnection
     SQL.Strings = (
       ''
@@ -1039,7 +1040,7 @@ object CORE: TCORE
       'DECLARE @SwimClubID INT = :SWIMCLUBID;'
       'DECLARE @SortOn INT = :SORTON;'
       ''
-      'if @SortOn IS NULL SET @SortOn = 1; '
+      'if @SortOn IS NULL SET @SortOn = 0; '
       ''
       'CREATE TABLE #SwimClubMembers'
       '('
@@ -1085,12 +1086,25 @@ object CORE: TCORE
       '    scc.NickName,'
       '    dbo.SwimmerAge(GETDATE(), mm.DOB) AS Age,'
       #9'gender.ABREV,'
-      #9'CASE '
-      #9'WHEN (mm.MiddleInitial IS NULL) THEN'
-      #9#9'CONCAT(mm.FirstName, '#39' '#39', mm.LastName)'
-      #9'ELSE'
-      #9#9'CONCAT(mm.FirstName, '#39' '#39', mm.MiddleInitial, '#39'. '#39', mm.LastName)'
-      #9'END as FName '
+      #9'CASE WHEN @SortOn = 0 then'
+      #9#9'CASE '
+      #9#9'WHEN (mm.MiddleInitial IS NULL) THEN'
+      #9#9#9'CONCAT(mm.FirstName, '#39' '#39', UPPER(mm.LastName))'
+      #9#9'ELSE'
+      
+        #9#9#9'CONCAT(mm.FirstName, '#39' '#39', mm.MiddleInitial, '#39'. '#39', UPPER(mm.La' +
+        'stName))'
+      #9#9'END '
+      #9'ELSE'#9
+      #9#9'CASE '
+      #9#9'WHEN (mm.MiddleInitial IS NULL) THEN'
+      #9#9#9'CONCAT(UPPER(mm.LastName), '#39', '#39', mm.FirstName)'
+      #9#9'ELSE'
+      
+        #9#9#9'CONCAT(UPPER(mm.LastName), '#39', '#39', mm.FirstName, '#39' .'#39', mm.Middl' +
+        'eInitial)'
+      #9#9'END '#9
+      #9'END'#9'as FName '
       'FROM #SwimClubMembers AS mlist'
       'INNER JOIN dbo.Member AS mm ON mlist.MemberID = mm.MemberID'
       

@@ -3015,6 +3015,7 @@ object Main2: TMain2
             inherited grid: TDBAdvGrid
               Width = 620
               Height = 628
+              ExplicitLeft = 0
               ExplicitWidth = 620
               ExplicitHeight = 628
               RowHeights = (
@@ -3141,7 +3142,6 @@ object Main2: TMain2
         Align = alLeft
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitTop = 4
         inline frMember: TFrameMember
           Left = 0
           Top = 0
@@ -3155,8 +3155,8 @@ object Main2: TMain2
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitLeft = 155
-          ExplicitTop = 198
+          ExplicitWidth = 433
+          ExplicitHeight = 628
           inherited rpnlCntrl: TRelativePanel
             Height = 628
             ControlCollection = <
@@ -3209,13 +3209,18 @@ object Main2: TMain2
                 AlignVerticalCenterWithPanel = False
                 Below = frMember.spbtnMemSort
               end>
+            ExplicitHeight = 628
           end
           inherited pnlBody: TPanel
             Width = 375
             Height = 628
+            ExplicitWidth = 375
+            ExplicitHeight = 628
             inherited pnlList: TPanel
               Width = 375
               Height = 628
+              ExplicitWidth = 375
+              ExplicitHeight = 628
               inherited rpnlSearch: TRelativePanel
                 Width = 375
                 ControlCollection = <
@@ -3246,6 +3251,7 @@ object Main2: TMain2
                     AlignTopWithPanel = False
                     AlignVerticalCenterWithPanel = True
                   end>
+                ExplicitWidth = 375
                 inherited btnClearSearch: TButton
                   Left = 275
                   ExplicitLeft = 275
@@ -3258,8 +3264,14 @@ object Main2: TMain2
               inherited grid: TDBAdvGrid
                 Width = 375
                 Height = 579
+                ExplicitWidth = 375
+                ExplicitHeight = 579
               end
             end
+          end
+          inherited actnlistNomMember: TActionList
+            Left = 186
+            Top = 169
           end
         end
       end
@@ -3330,38 +3342,7 @@ object Main2: TMain2
           item
             Items = <
               item
-                Action = Nominate_SortMembers
-                Caption = '&Sort on Name'
-                ImageIndex = 18
-                ImageName = 'switch'
-              end
-              item
-                Action = Nominate_Report
-                Caption = '&Nominate Report*'
-                ImageIndex = 15
-                ImageName = 'report'
-              end
-              item
                 Caption = '-'
-              end
-              item
-                Action = Nominate_MemberDetails
-                Caption = '&Member'#39's Details...'
-                ImageName = 'Members'
-              end
-              item
-                Visible = False
-                Action = Nominate_ClearEventNominations
-                Caption = '&Clear event nominations... '
-                ImageIndex = 9
-                ImageName = 'delete'
-              end
-              item
-                Visible = False
-                Action = Nominate_ClearSessionNominations
-                Caption = 'C&lear session nominations...'
-                ImageIndex = 9
-                ImageName = 'delete'
               end>
             Caption = '&Nominate'
           end
@@ -3492,11 +3473,6 @@ object Main2: TMain2
                 Caption = '&Renumber Lanes'
                 ImageIndex = 24
                 ImageName = 'sort'
-              end
-              item
-                Action = Nominate_GotoMemberDetails
-                Caption = 'Mem&ber'#39's Details...'
-                ImageName = 'Members'
               end>
             Caption = 'En&trants'
           end
@@ -3816,40 +3792,48 @@ object Main2: TMain2
           item
             Items = <
               item
-                Action = Nominate_SortMembers
-                Caption = '&Sort on Name'
+                Action = frMember.actnNom_SwitchName
+                Caption = '&Switch Name'
                 ImageIndex = 18
                 ImageName = 'switch'
               end
               item
-                Action = Nominate_Report
-                Caption = '&Nominate Report*'
+                Caption = '-'
+              end
+              item
+                Action = frMember.actnNom_Report
                 ImageIndex = 15
                 ImageName = 'report'
               end
               item
-                Action = Nominate_GotoMemberDetails
+                Action = frMember.actnNom_MemberDetails
                 Caption = '&Member'#39's Details...'
-                ImageName = 'Members'
+                ImageIndex = 37
+                ImageName = 'Member'
               end
               item
-                Action = Nominate_MemberDetails
-                Caption = 'M&ember'#39's Details...'
-                ImageName = 'Members'
+                Action = frMember.actnNom_MemberPB
+                Caption = '&Quick view PBs...'
+                ImageIndex = 37
+                ImageName = 'Member'
               end
               item
-                Visible = False
-                Action = Nominate_ClearEventNominations
+                Caption = '-'
+              end
+              item
+                Action = frMember.actnNom_ClearEvent
+                Caption = '&Clear event nominations...'
                 ImageIndex = 9
                 ImageName = 'delete'
               end
               item
-                Visible = False
-                Action = Nominate_ClearSessionNominations
+                Action = frMember.actnNom_ClearSession
+                Caption = 'C&lear session nominations...'
                 ImageIndex = 9
                 ImageName = 'delete'
               end>
-            Caption = '&Nominate'
+            Caption = 'Nom&inate'
+            ImageName = 'empty'
           end
           item
             Items = <
@@ -4121,6 +4105,10 @@ object Main2: TMain2
       item
         ActionList = frEvent.actnlstEvent
         Caption = 'Events'
+      end
+      item
+        ActionList = frMember.actnlistNomMember
+        Caption = 'NomMember'
       end>
     Images = IMG.imglstMenuBar
     Left = 664
@@ -4145,20 +4133,6 @@ object Main2: TMain2
       Caption = 'Exit'
       ImageIndex = 32
       ImageName = 'Exit'
-    end
-    object Nominate_SortMembers: TAction
-      Category = 'Nominate'
-      Caption = 'Sort on Name'
-      Hint = 'Sort on member'#39's name.'
-      ImageIndex = 18
-      ImageName = 'Switch'
-    end
-    object Nominate_Report: TAction
-      Category = 'Nominate'
-      Caption = 'Nominate Report*'
-      Hint = 'Display a nominee'#39's report.'
-      ImageIndex = 15
-      ImageName = 'Report'
     end
     object Tools_Preferences: TAction
       Category = 'Tools'
@@ -4204,12 +4178,6 @@ object Main2: TMain2
       Hint = 'Remove nomination and empty the lane.'
       ImageName = 'DeleteForever'
       ShortCut = 16430
-    end
-    object Nominate_GotoMemberDetails: TAction
-      Category = 'Nominate'
-      Caption = 'Member'#39's Details...'
-      Hint = 'Show the selected member'#39's details.'
-      ImageName = 'Members'
     end
     object Lane_Renumber: TAction
       Category = 'Lanes'
@@ -4299,28 +4267,6 @@ object Main2: TMain2
       Hint = 'Display a heat report.'
       ImageIndex = 15
       ImageName = 'Report'
-    end
-    object Nominate_MemberDetails: TAction
-      Category = 'Nominate'
-      Caption = 'Member'#39's Details...'
-      Hint = 'Show the selected member'#39's details.'
-      ImageName = 'Members'
-    end
-    object Nominate_ClearEventNominations: TAction
-      Category = 'Nominate'
-      Caption = 'Clear event nominations... '
-      Enabled = False
-      ImageIndex = 9
-      ImageName = 'Delete'
-      Visible = False
-    end
-    object Nominate_ClearSessionNominations: TAction
-      Category = 'Nominate'
-      Caption = 'Clear session nominations...'
-      Enabled = False
-      ImageIndex = 9
-      ImageName = 'Delete'
-      Visible = False
     end
     object Heat_BatchBuildHeats: TAction
       Category = 'Heats'

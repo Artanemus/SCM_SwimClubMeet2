@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="1em"
+   height="1em"
+   viewBox="0 0 24 24"
+   version="1.1"
+   id="svg1"
+   sodipodi:docname="PB.svg"
+   inkscape:version="1.4 (86a8ad7, 2024-10-11)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1" />
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="34.294679"
+     inkscape:cx="8.1353729"
+     inkscape:cy="11.634458"
+     inkscape:window-width="2560"
+     inkscape:window-height="1377"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer1"
+     inkscape:label="PB">
+    <path
+       style="font-weight:bold;font-size:23.3403px;line-height:1.25;font-family:'Segoe UI';-inkscape-font-specification:'Segoe UI Bold';text-align:center;text-anchor:middle;display:inline;stroke-width:4.37632"
+       d="m 5.9000927,11.826472 v 5.629936 H 2.218981 V 1.1136392 h 5.7666951 q 6.1769739,0 6.1769739,5.2082602 0,2.4616722 -1.777874,3.9888206 -1.766478,1.515752 -4.7296022,1.515752 z m 0,-7.8864684 v 5.0942939 h 1.4473721 q 2.9403312,0 2.9403312,-2.5756385 0,-2.5186554 -2.9403312,-2.5186554 z M 16.555943,17.456408 V 1.1136392 h 5.949041 q 2.735191,0 4.205357,1.0029035 1.470165,1.0029035 1.470165,2.8263644 0,1.3220091 -0.900334,2.313516 -0.888937,0.9915069 -2.279326,1.3789923 v 0.045587 q 1.743685,0.216536 2.780778,1.2878193 1.04849,1.0712833 1.04849,2.6098283 0,2.245136 -1.606925,3.567145 -1.606925,1.310613 -4.387703,1.310613 z M 20.237054,3.8260373 v 3.8748544 h 1.618322 q 1.139663,0 1.789271,-0.5470383 0.661005,-0.5584349 0.661005,-1.5271485 0,-1.8006676 -2.689605,-1.8006676 z m 0,6.6100457 v 4.307926 h 1.994411 q 1.276422,0 1.99441,-0.592624 0.729385,-0.592625 0.729385,-1.618322 0,-0.98011 -0.717988,-1.538545 -0.706591,-0.558435 -1.983014,-0.558435 z"
+       id="text1"
+       transform="scale(0.78052385,1.2811908)"
+       aria-label="PB" />
+  </g>
+</svg>

@@ -27,7 +27,8 @@ uses
   dlgEditSession in 'DIALOGS\Session\dlgEditSession.pas' {EditSession},
   dlgDatePicker in 'DIALOGS\Picker\dlgDatePicker.pas' {DatePicker},
   dlgNewSession in 'DIALOGS\Session\dlgNewSession.pas' {NewSession},
-  dlgSwimClub_Manage in 'DIALOGS\SwimClub\dlgSwimClub_Manage.pas' {SwimClubManage};
+  dlgSwimClub_Manage in 'DIALOGS\SwimClub\dlgSwimClub_Manage.pas' {SwimClubManage},
+  frFrameNominate in 'FRAMES\frFrameNominate.pas' {FrameNominate: TFrame};
 
 {$R *.res}
 

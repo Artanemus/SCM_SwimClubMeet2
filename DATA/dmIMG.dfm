@@ -2623,6 +2623,45 @@ object IMG: TIMG
           '.79.7 2.8c0 3.31-2.69 6-6 6v-3l-4 4l4 4v-3c4.42 0 8-3.58 8-8c0-1' +
           '.57-.46-3.03-1.24-4.26"/>'#13#10'</svg>'#13#10
         FixedColor = clBackground
+      end
+      item
+        IconName = 'PB'
+        SVGText = 
+          '<?xml version="1.0" standalone="no"?>'#13#10'<svg width="1em" height="' +
+          '1em" viewBox="0 0 24 24" version="1.1" id="svg1" sodipodi:docnam' +
+          'e="PB.svg" inkscape:version="1.4 (86a8ad7, 2024-10-11)" xmlns:in' +
+          'kscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodip' +
+          'odi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="' +
+          'http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/sv' +
+          'g">'#13#10'  <defs id="defs1"/>'#13#10'  <sodipodi:namedview id="namedview1"' +
+          ' pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" i' +
+          'nkscape:showpageshadow="2" inkscape:pageopacity="0.0" inkscape:p' +
+          'agecheckerboard="0" inkscape:deskcolor="#d1d1d1" inkscape:zoom="' +
+          '34.294679" inkscape:cx="8.1353729" inkscape:cy="11.634458" inksc' +
+          'ape:window-width="2560" inkscape:window-height="1377" inkscape:w' +
+          'indow-x="-8" inkscape:window-y="-8" inkscape:window-maximized="1' +
+          '" inkscape:current-layer="layer1"/>'#13#10'  <g inkscape:groupmode="la' +
+          'yer" id="layer1" inkscape:label="PB">'#13#10'    <path style="font-wei' +
+          'ght:bold;font-size:23.3403px;line-height:1.25;font-family:'#39'Segoe' +
+          ' UI'#39';-inkscape-font-specification:'#39'Segoe UI Bold'#39';text-align:cen' +
+          'ter;text-anchor:middle;display:inline;stroke-width:4.37632" d="m' +
+          ' 5.9000927,11.826472 v 5.629936 H 2.218981 V 1.1136392 h 5.76669' +
+          '51 q 6.1769739,0 6.1769739,5.2082602 0,2.4616722 -1.777874,3.988' +
+          '8206 -1.766478,1.515752 -4.7296022,1.515752 z m 0,-7.8864684 v 5' +
+          '.0942939 h 1.4473721 q 2.9403312,0 2.9403312,-2.5756385 0,-2.518' +
+          '6554 -2.9403312,-2.5186554 z M 16.555943,17.456408 V 1.1136392 h' +
+          ' 5.949041 q 2.735191,0 4.205357,1.0029035 1.470165,1.0029035 1.4' +
+          '70165,2.8263644 0,1.3220091 -0.900334,2.313516 -0.888937,0.99150' +
+          '69 -2.279326,1.3789923 v 0.045587 q 1.743685,0.216536 2.780778,1' +
+          '.2878193 1.04849,1.0712833 1.04849,2.6098283 0,2.245136 -1.60692' +
+          '5,3.567145 -1.606925,1.310613 -4.387703,1.310613 z M 20.237054,3' +
+          '.8260373 v 3.8748544 h 1.618322 q 1.139663,0 1.789271,-0.5470383' +
+          ' 0.661005,-0.5584349 0.661005,-1.5271485 0,-1.8006676 -2.689605,' +
+          '-1.8006676 z m 0,6.6100457 v 4.307926 h 1.994411 q 1.276422,0 1.' +
+          '99441,-0.592624 0.729385,-0.592625 0.729385,-1.618322 0,-0.98011' +
+          ' -0.717988,-1.538545 -0.706591,-0.558435 -1.983014,-0.558435 z" ' +
+          'id="text1" transform="scale(0.78052385,1.2811908)" aria-label="P' +
+          'B"/>'#13#10'  </g>'#13#10'</svg>'#13#10
       end>
     Left = 320
     Top = 8
@@ -13317,8 +13356,13 @@ object IMG: TIMG
       end
       item
         CollectionIndex = 105
-        CollectionName = 'Member'
+        CollectionName = 'Members'
         Name = 'Member'
+      end
+      item
+        CollectionIndex = 109
+        CollectionName = 'PB'
+        Name = 'PB'
       end>
     ImageCollection = CollectionCore
     Width = 48
@@ -14215,7 +14259,7 @@ object IMG: TIMG
       end
       item
         CollectionIndex = 105
-        CollectionName = 'Member'
+        CollectionName = 'Members'
         Name = 'Member'
       end>
     ImageCollection = CollectionCore

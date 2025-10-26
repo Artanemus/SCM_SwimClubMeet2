@@ -64,12 +64,6 @@ type
     Members_Export: TAction;
     Members_Import: TAction;
     Members_Manage: TAction;
-    Nominate_ClearEventNominations: TAction;
-    Nominate_ClearSessionNominations: TAction;
-    Nominate_GotoMemberDetails: TAction;
-    Nominate_MemberDetails: TAction;
-    Nominate_Report: TAction;
-    Nominate_SortMembers: TAction;
     PageControl: TPageControl;
     pnlSession: TPanel;
     pnlTitleBar: TTitleBarPanel;

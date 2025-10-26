@@ -33,7 +33,7 @@ object FrameMember: TFrameMember
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
-        Below = spbtnMemDetails
+        Below = spbtnMemPB
       end
       item
         Control = spbtnMemReport
@@ -64,9 +64,20 @@ object FrameMember: TFrameMember
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
         Below = spbtnMemSort
+      end
+      item
+        Control = spbtnMemPB
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnMemDetails
       end>
     Align = alLeft
     TabOrder = 0
+    ExplicitLeft = -2
     DesignSize = (
       58
       739)
@@ -75,10 +86,10 @@ object FrameMember: TFrameMember
       Top = 1
       Width = 48
       Height = 48
+      Action = actnNom_SwitchName
       AllowAllUp = True
       Anchors = []
       ImageIndex = 0
-      ImageName = 'switch'
       Images = IMG.imglstNomCntrl
       Flat = True
       Layout = blGlyphTop
@@ -87,7 +98,7 @@ object FrameMember: TFrameMember
     object ShapeMemBar1: TShape
       AlignWithMargins = True
       Left = 4
-      Top = 107
+      Top = 155
       Width = 48
       Height = 4
       Margins.Left = 0
@@ -99,7 +110,7 @@ object FrameMember: TFrameMember
     end
     object spbtnMemReport: TSpeedButton
       Left = 4
-      Top = 121
+      Top = 169
       Width = 48
       Height = 48
       Hint = 'Create and display a nominee'#39's report.'
@@ -115,7 +126,7 @@ object FrameMember: TFrameMember
     object lblNomWarning: TLabel
       AlignWithMargins = True
       Left = 5
-      Top = 189
+      Top = 237
       Width = 45
       Height = 187
       Margins.Left = 0
@@ -147,6 +158,22 @@ object FrameMember: TFrameMember
       Anchors = []
       ImageIndex = 2
       ImageName = 'Member'
+      Images = IMG.imglstNomCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      NumGlyphs = 2
+    end
+    object spbtnMemPB: TSpeedButton
+      Left = 4
+      Top = 97
+      Width = 48
+      Height = 48
+      Hint = 'Quick view member'#39's PBs'
+      Anchors = []
+      Caption = 'Personal Bests'
+      ImageIndex = 3
+      ImageName = 'PB'
       Images = IMG.imglstNomCntrl
       Flat = True
       Layout = blGlyphTop
@@ -215,11 +242,11 @@ object FrameMember: TFrameMember
           Top = 7
           Width = 89
           Height = 32
-          Hint = 'Clear the house name.'
           Margins.Left = 10
           Margins.Top = 0
           Margins.Right = 10
           Margins.Bottom = 0
+          Action = actnNom_ClearFilter
           Anchors = []
           Caption = 'Clear'
           ImageIndex = 0
@@ -268,10 +295,10 @@ object FrameMember: TFrameMember
         Align = alClient
         Color = clWhite
         ColCount = 2
-        DefaultRowHeight = 48
+        DefaultRowHeight = 32
         DrawingStyle = gdsClassic
         FixedColor = clWhite
-        RowCount = 101
+        RowCount = 2
         FixedRows = 1
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -280,6 +307,7 @@ object FrameMember: TFrameMember
         Font.Style = []
         Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
         ParentFont = False
+        PopupMenu = pumenuNomMember
         ScrollBars = ssBoth
         TabOrder = 1
         GridLineColor = 15987699
@@ -449,6 +477,7 @@ object FrameMember: TFrameMember
             HTMLTemplate = 
               '<FONT size="12"><#FName></FONT><BR><FONT size="10">Age: <#Age> G' +
               'ender: <#ABREV> Club: <#NickName></FONT>'
+            Images = IMG.imglstSessGrid
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clWindowText
@@ -601,110 +630,11 @@ object FrameMember: TFrameMember
           300)
         RowHeights = (
           0
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48
-          48)
+          32)
       end
     end
   end
-  object actnlistMember: TActionList
+  object actnlistNomMember: TActionList
     Images = IMG.imglstMenuBar
     Left = 178
     Top = 369
@@ -714,11 +644,12 @@ object FrameMember: TFrameMember
       Hint = 'Switch how the member'#39's name is displayed.'
       ImageIndex = 18
       ImageName = 'switch'
+      OnExecute = actnNom_SwitchNameExecute
       OnUpdate = actnNom_SwitchNameUpdate
     end
     object actnNom_Report: TAction
       Category = 'Nominate'
-      Caption = 'Nominate Report'
+      Caption = 'Member'#39's Nomination Report'
       ImageIndex = 15
       ImageName = 'report'
       OnUpdate = actnNom_ReportUpdate
@@ -737,6 +668,7 @@ object FrameMember: TFrameMember
       Hint = 'Quick view member'#39's PBs.'
       ImageIndex = 37
       ImageName = 'Member'
+      OnUpdate = actnNom_MemberPBUpdate
     end
     object actnNom_ClearEvent: TAction
       Category = 'Nominate'
@@ -754,9 +686,40 @@ object FrameMember: TFrameMember
     end
     object actnNom_ClearFilter: TAction
       Category = 'Nominate'
-      Caption = 'Clear'
+      Caption = 'Clear filtering'
       OnExecute = actnNom_ClearFilterExecute
       OnUpdate = actnNom_ClearFilterUpdate
+    end
+  end
+  object pumenuNomMember: TPopupMenu
+    Left = 178
+    Top = 465
+    object SwitchName1: TMenuItem
+      Action = actnNom_SwitchName
+    end
+    object Clear1: TMenuItem
+      Action = actnNom_ClearFilter
+    end
+    object MembersDetails1: TMenuItem
+      Action = actnNom_MemberDetails
+    end
+    object QuickviewPBs1: TMenuItem
+      Action = actnNom_MemberPB
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object NominateReport1: TMenuItem
+      Action = actnNom_Report
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object Cleareventnominations1: TMenuItem
+      Action = actnNom_ClearEvent
+    end
+    object Clearsessionnominations1: TMenuItem
+      Action = actnNom_ClearSession
     end
   end
 end

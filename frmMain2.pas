@@ -22,7 +22,8 @@ uses
   FireDAC.Stan.Option,
 
   dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub, AdvUtil, AdvObj,
-  BaseGrid, AdvGrid, DBAdvGrid, frFrameSession, frFrameEvent, frFrameMember
+  BaseGrid, AdvGrid, DBAdvGrid, frFrameSession, frFrameEvent, frFrameMember,
+  frFrameNominate
 
   ;
 
@@ -96,6 +97,8 @@ type
     frEvent: TFrameEvent;
     pnlMem: TPanel;
     frMember: TFrameMember;
+    pnlNominate: TPanel;
+    TFrameNominate1: TFrameNominate;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);

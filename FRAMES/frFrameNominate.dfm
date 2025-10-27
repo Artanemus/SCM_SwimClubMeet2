@@ -1,7 +1,7 @@
 object FrameNominate: TFrameNominate
   Left = 0
   Top = 0
-  Width = 479
+  Width = 590
   Height = 641
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,29 +15,30 @@ object FrameNominate: TFrameNominate
     Top = 0
     Width = 58
     Height = 641
-    ControlCollection = <>
+    ControlCollection = <
+      item
+        Control = dbtxtNominateFullName
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = True
+        AlignVerticalCenterWithPanel = False
+      end>
     Align = alLeft
     TabOrder = 0
-  end
-  object pnlBody: TPanel
-    Left = 58
-    Top = 0
-    Width = 421
-    Height = 641
-    Align = alClient
-    BevelOuter = bvNone
-    TabOrder = 1
-    ExplicitLeft = 64
-    ExplicitWidth = 328
     object dbtxtNominateFullName: TDBText
       AlignWithMargins = True
-      Left = 3
-      Top = 40
+      Left = 5
+      Top = 41
       Width = 45
-      Height = 598
+      Height = 351
+      Margins.Left = 0
       Margins.Top = 40
       Margins.Right = 0
+      Margins.Bottom = 0
       Align = alLeft
+      Anchors = []
       AutoSize = True
       DataField = 'FName'
       DataSource = CORE.dsFilterMember
@@ -48,25 +49,42 @@ object FrameNominate: TFrameNominate
       Font.Orientation = 900
       Font.Style = []
       ParentFont = False
-      ExplicitLeft = 320
-      ExplicitHeight = 351
     end
+  end
+  object pnlBody: TPanel
+    Left = 58
+    Top = 0
+    Width = 532
+    Height = 641
+    Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 1
+    ExplicitWidth = 421
     object grid: TDBAdvGrid
-      Left = 48
+      Left = 0
       Top = 0
-      Width = 373
+      Width = 532
       Height = 641
       Cursor = crDefault
       Align = alClient
-      ColCount = 2
+      Color = clWhite
+      ColCount = 6
+      DefaultRowHeight = 48
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 2
+      RowCount = 6
       FixedRows = 1
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
+      ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
-      GridLineColor = 13948116
-      GridFixedLineColor = 11250603
+      GridLineColor = 15987699
+      GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
@@ -80,6 +98,7 @@ object FrameNominate: TFrameNominate
       ControlLook.FixedGradientTo = clWhite
       ControlLook.FixedGradientMirrorFrom = clWhite
       ControlLook.FixedGradientMirrorTo = clWhite
+      ControlLook.FixedGradientHoverFrom = clGray
       ControlLook.FixedGradientHoverTo = clWhite
       ControlLook.FixedGradientHoverMirrorFrom = clWhite
       ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -123,9 +142,9 @@ object FrameNominate: TFrameNominate
         'Smaller than'
         'Clear')
       FixedColWidth = 20
-      FixedRowHeight = 22
+      FixedRowHeight = 0
       FixedFont.Charset = DEFAULT_CHARSET
-      FixedFont.Color = 3881787
+      FixedFont.Color = clBlack
       FixedFont.Height = -16
       FixedFont.Name = 'Tahoma'
       FixedFont.Style = [fsBold]
@@ -189,14 +208,15 @@ object FrameNominate: TFrameNominate
           CheckFalse = 'N'
           CheckTrue = 'Y'
           Color = clWindow
+          FieldName = 'EventID'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -12
+          Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = 3881787
-          HeaderFont.Height = -12
+          HeaderFont.Height = -16
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
@@ -208,20 +228,78 @@ object FrameNominate: TFrameNominate
           Width = 20
         end
         item
+          Alignment = taRightJustify
           Borders = []
           BorderPen.Color = clSilver
           ButtonHeight = 18
           CheckFalse = 'N'
           CheckTrue = 'Y'
-          Color = clWindow
+          Color = clWhite
+          DataImageField = True
+          FieldName = 'Nominated'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -12
+          Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = 3881787
-          HeaderFont.Height = -12
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          Images = IMG.imglstNomCheckBox
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clWindowText
+          PrintFont.Height = -12
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          DataImageField = True
+          FieldName = 'Qualified'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          Images = IMG.imglstNomQualified
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+        end
+        item
+          Alignment = taRightJustify
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          FieldName = 'EventNum'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -27
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          Header = 'Ev#'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = 3881787
+          HeaderFont.Height = -16
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
@@ -230,8 +308,69 @@ object FrameNominate: TFrameNominate
           PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 64
+          Width = 48
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          EditLength = 100
+          FieldName = 'Caption'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = 3881787
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          HTMLTemplate = 
+            '<FONT size="12"><#SubText></FONT><BR><FONT size="10"><#Caption><' +
+            '/FONT>'
+          Name = 'IMG.imglstNomQualified'
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clWindowText
+          PrintFont.Height = -12
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 290
+        end
+        item
+          Alignment = taRightJustify
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          DataImageField = True
+          FieldName = 'EventTypeID'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = ' '
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = 3881787
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          Images = IMG.imglstEventType
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clWindowText
+          PrintFont.Height = -12
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
         end>
+      DataSource = CORE.dsNominate
       InvalidPicture.Data = {
         055449636F6E0000010001002020200000000000A81000001600000028000000
         2000000040000000010020000000000000100000000000000000000000000000
@@ -369,9 +508,29 @@ object FrameNominate: TFrameNominate
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
+      ExplicitWidth = 481
       ColWidths = (
         20
-        64)
+        50
+        50
+        48
+        290
+        50)
+      RowHeights = (
+        0
+        48
+        48
+        48
+        48
+        48)
     end
+  end
+  object actnlistNominate: TActionList
+    Left = 258
+    Top = 312
+  end
+  object pumenuNominate: TPopupMenu
+    Left = 242
+    Top = 400
   end
 end

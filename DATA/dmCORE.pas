@@ -117,6 +117,16 @@ type
     qryFilterMemberAge: TIntegerField;
     qryFilterMemberABREV: TWideStringField;
     qryFilterMemberFName: TWideStringField;
+    qryNominate: TFDQuery;
+    dsNominate: TDataSource;
+    qryNominateEventID: TIntegerField;
+    qryNominateCaption: TWideStringField;
+    qryNominateEventNum: TIntegerField;
+    qryNominateEventTypeID: TIntegerField;
+    qryNominateSubText: TWideStringField;
+    qryNominateSessionID: TIntegerField;
+    qryNominateNominated: TIntegerField;
+    qryNominateQualified: TIntegerField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterEdit(DataSet: TDataSet);
@@ -185,6 +195,7 @@ begin
 
     // Nomination tabsheet - object : FrameMember.
     qryFilterMember.Connection := SCM2.scmConnection;
+    qryNominate.Connection := SCM2.scmConnection;
 
     {  if any table fails to open - a EFDDBEngineException occurs
       and FIsActive returns false.}

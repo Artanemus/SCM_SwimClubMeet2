@@ -908,8 +908,8 @@ object CORE: TCORE
       '  FROM [SwimClubMeet2].[dbo].[Member]'
       '  ORDER BY [LastName]'
       '*/ ')
-    Left = 904
-    Top = 176
+    Left = 944
+    Top = 184
     ParamData = <
       item
         Name = 'SESSIONSTART'
@@ -926,13 +926,13 @@ object CORE: TCORE
   end
   object dsMemberLink: TDataSource
     DataSet = qryMemberLink
-    Left = 904
-    Top = 120
+    Left = 944
+    Top = 128
   end
   object dsMember: TDataSource
     DataSet = qryMember
-    Left = 984
-    Top = 176
+    Left = 1024
+    Top = 184
   end
   object qryMemberLink: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -947,13 +947,14 @@ object CORE: TCORE
       '      ,[SwimClubID]'
       '      ,[HouseID]'
       '  FROM [SwimClubMeet2].[dbo].[MemberLink]')
-    Left = 808
-    Top = 120
+    Left = 848
+    Top = 128
   end
   object TestConnection: TFDConnection
     Params.Strings = (
       'ConnectionDef=MSSQL_SwimClubMeet2')
     ConnectedStoredUsage = [auDesignTime]
+    Connected = True
     LoginPrompt = False
     Left = 496
     Top = 40
@@ -1039,8 +1040,10 @@ object CORE: TCORE
       ''
       'DECLARE @SwimClubID INT = :SWIMCLUBID;'
       'DECLARE @SortOn INT = :SORTON;'
+      'DECLARE @SeedDate DATETIME = :SEEDDATE;'
       ''
       'if @SortOn IS NULL SET @SortOn = 0; '
+      'if @SeedDate IS NULL SET @SeedDate = GETDATE(); '
       ''
       'CREATE TABLE #SwimClubMembers'
       '('
@@ -1084,7 +1087,7 @@ object CORE: TCORE
       '    mm.MiddleInitial,'
       '    mm.LastName,'
       '    scc.NickName,'
-      '    dbo.SwimmerAge(GETDATE(), mm.DOB) AS Age,'
+      '    dbo.SwimmerAge(@SeedDate, mm.DOB) AS Age,'
       #9'gender.ABREV,'
       #9'CASE WHEN @SortOn = 0 then'
       #9#9'CASE '
@@ -1117,8 +1120,8 @@ object CORE: TCORE
       ''
       'DROP TABLE #SwimClubMembers;'
       '-- ...existing code...')
-    Left = 800
-    Top = 48
+    Left = 848
+    Top = 72
     ParamData = <
       item
         Name = 'SWIMCLUBID'
@@ -1129,6 +1132,12 @@ object CORE: TCORE
       item
         Name = 'SORTON'
         DataType = ftInteger
+        ParamType = ptInput
+        Value = Null
+      end
+      item
+        Name = 'SEEDDATE'
+        DataType = ftDate
         ParamType = ptInput
         Value = Null
       end>
@@ -1180,7 +1189,130 @@ object CORE: TCORE
   end
   object dsFilterMember: TDataSource
     DataSet = qryFilterMember
-    Left = 904
-    Top = 48
+    Left = 944
+    Top = 72
+  end
+  object qryNominate: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
+    Connection = TestConnection
+    SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
+      
+        'SET NOCOUNT ON;  -- Prevents extra result sets from interfering ' +
+        'with SELECT statements'
+      ''
+      'DECLARE @MemberID integer = :MEMBERID; --108;'
+      'DECLARE @SessionID integer = :SESSIONID; --144;'
+      'DECLARE @SeedDate DateTime = :SEEDDATE;'
+      ''
+      'IF @SeedDate IS NULL SET @SeedDate = GETDATE();'
+      ''
+      '--  check if temporary table exists and drop it'
+      'IF OBJECT_ID('#39'tempdb..#ev'#39') IS NOT NULL'
+      '    DROP TABLE #ev;'
+      ''
+      'CREATE TABLE #ev ('
+      '    EventID integer,    '
+      '    Caption nvarchar(100),'
+      '    EventNum integer,'
+      '    EventTypeID integer,'
+      '    SubText nvarchar(200),'
+      '    SessionID integer,'
+      '    Nominated integer,'
+      '    Qualified integer'
+      ');  '
+      ''
+      'INSERT INTO #ev '
+      
+        '   (EventID, Caption, EventNum, EventTypeID, SubText, SessionID,' +
+        ' Nominated, Qualified)'
+      'SELECT ee.EventID,  '
+      '    ee.Caption,'
+      '    ee.EventNum,'
+      '    ee.EventTypeID,'
+      '    CONCAT(d.Caption, '#39' '#39', s.Caption) as SubText,'
+      '    ee.SessionID,'
+      '    CASE WHEN n.MemberID = @MemberID then 1 else 0 end,'
+      
+        #9'dbo.IsMemberQualified(n.MemberID, @SeedDate, ee.DistanceID, ee.' +
+        'StrokeID)'
+      ''
+      'FROM [dbo].[EVENT] ee '
+      'INNER JOIN [dbo].[Distance] d ON ee.DistanceID = d.DistanceID'
+      'INNER JOIN [dbo].[Stroke] s on ee.StrokeID = s.StrokeID'
+      
+        'LEFT JOIN [dbo].[Nominee] n ON ee.EventID = n.EventID and n.Memb' +
+        'erID = @Memberid'
+      'WHERE ee.SessionID = @SessionID;'
+      ''
+      'SELECT * FROM #ev'
+      'ORDER BY EventNum ASC;'
+      ''
+      'DROP TABLE #ev;'
+      ''
+      ''
+      ''
+      '')
+    Left = 848
+    Top = 24
+    ParamData = <
+      item
+        Name = 'MEMBERID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = 108
+      end
+      item
+        Name = 'SESSIONID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = 144
+      end
+      item
+        Name = 'SEEDDATE'
+        DataType = ftDate
+        ParamType = ptInput
+        Value = Null
+      end>
+    object qryNominateEventID: TIntegerField
+      FieldName = 'EventID'
+      Origin = 'EventID'
+    end
+    object qryNominateCaption: TWideStringField
+      FieldName = 'Caption'
+      Origin = 'Caption'
+      Size = 100
+    end
+    object qryNominateEventNum: TIntegerField
+      FieldName = 'EventNum'
+      Origin = 'EventNum'
+    end
+    object qryNominateEventTypeID: TIntegerField
+      FieldName = 'EventTypeID'
+      Origin = 'EventTypeID'
+    end
+    object qryNominateSubText: TWideStringField
+      FieldName = 'SubText'
+      Origin = 'SubText'
+      Size = 200
+    end
+    object qryNominateSessionID: TIntegerField
+      FieldName = 'SessionID'
+      Origin = 'SessionID'
+    end
+    object qryNominateNominated: TIntegerField
+      FieldName = 'Nominated'
+      Origin = 'Nominated'
+    end
+    object qryNominateQualified: TIntegerField
+      FieldName = 'Qualified'
+      Origin = 'Qualified'
+    end
+  end
+  object dsNominate: TDataSource
+    DataSet = qryNominate
+    Left = 944
+    Top = 24
   end
 end

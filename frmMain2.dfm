@@ -3210,6 +3210,18 @@ object Main2: TMain2
                 Below = frMember.spbtnMemSort
               end>
             ExplicitHeight = 628
+            inherited ShapeMemBar1: TShape
+              Top = 107
+              ExplicitTop = 107
+            end
+            inherited spbtnMemReport: TSpeedButton
+              Top = 121
+              ExplicitTop = 121
+            end
+            inherited lblNomWarning: TLabel
+              Top = 189
+              ExplicitTop = 189
+            end
           end
           inherited pnlBody: TPanel
             Width = 375
@@ -3272,6 +3284,58 @@ object Main2: TMain2
           inherited actnlistNomMember: TActionList
             Left = 186
             Top = 169
+          end
+        end
+      end
+      object pnlNominate: TPanel
+        Left = 433
+        Top = 0
+        Width = 662
+        Height = 628
+        Align = alClient
+        BevelOuter = bvNone
+        TabOrder = 1
+        ExplicitLeft = 648
+        ExplicitTop = 216
+        ExplicitWidth = 185
+        ExplicitHeight = 41
+        inline TFrameNominate1: TFrameNominate
+          Left = 0
+          Top = 0
+          Width = 662
+          Height = 628
+          Align = alClient
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 0
+          ExplicitLeft = 181
+          ExplicitTop = 174
+          inherited rpnlCntrl: TRelativePanel
+            Height = 628
+            ControlCollection = <
+              item
+                Control = TFrameNominate1.dbtxtNominateFullName
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = True
+                AlignVerticalCenterWithPanel = False
+              end>
+          end
+          inherited pnlBody: TPanel
+            Width = 604
+            Height = 628
+            ExplicitWidth = 532
+            inherited grid: TDBAdvGrid
+              Width = 604
+              Height = 628
+              ExplicitWidth = 532
+            end
           end
         end
       end
@@ -3802,6 +3866,7 @@ object Main2: TMain2
               end
               item
                 Action = frMember.actnNom_Report
+                Caption = 'M&ember'#39's Nomination Report'
                 ImageIndex = 15
                 ImageName = 'report'
               end
@@ -4111,8 +4176,8 @@ object Main2: TMain2
         Caption = 'NomMember'
       end>
     Images = IMG.imglstMenuBar
-    Left = 664
-    Top = 152
+    Left = 400
+    Top = 232
     StyleName = 'Platform Default'
     object Help_About: TAction
       Category = 'Help'

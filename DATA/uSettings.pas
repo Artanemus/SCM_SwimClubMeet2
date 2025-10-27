@@ -21,6 +21,9 @@ type
     LastSwimClubPK: integer;
     HideLockedSessions: boolean;
 
+    // sdaTodaysDate = 0, sdaSessionDate, sdaStartOfSeason
+    SeedDateAuto: integer;
+
     // FrameMember - grid sorton members name.
     MemberSortOn: integer; // 0 firstname-lastname 1 lastname-firstname;
 
@@ -75,6 +78,7 @@ begin
   LastSwimClubPK := 0;
   HideLockedSessions := false;
   MemberSortOn := 0;
+  SeedDateAuto := 0;
   ForceDirectories(GetDefPath());
   if not FileExists(GetDefPathFileName()) then
     SaveToFile();

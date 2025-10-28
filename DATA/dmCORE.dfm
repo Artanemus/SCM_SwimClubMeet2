@@ -1030,6 +1030,7 @@ object CORE: TCORE
     Top = 584
   end
   object qryFilterMember: TFDQuery
+    AfterScroll = qryFilterMemberAfterScroll
     FilterOptions = [foCaseInsensitive]
     Connection = TestConnection
     SQL.Strings = (

@@ -1,4 +1,4 @@
-unit frFrameMember;
+unit frFrameFilterMember;
 
 interface
 
@@ -9,7 +9,7 @@ uses
 
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.WinXCtrls, Vcl.StdCtrls, Vcl.VirtualImage, Vcl.Buttons, Vcl.Grids,
-  Vcl.ActnList,
+  Vcl.ActnList, Vcl.Menus,
 
   Data.DB,
 
@@ -19,43 +19,43 @@ uses
 
   dmSCM2, dmIMG, dmCORE,
 
-  uDefines, uSwimClub, uSettings, Vcl.Menus
+  uDefines, uSwimClub, uSettings
   ;
 
 type
-  TFrameMember = class(TFrame)
-    rpnlCntrl: TRelativePanel;
-    pnlBody: TPanel;
-    pnlList: TPanel;
-    vimgSearch: TVirtualImage;
-    edtSearch: TEdit;
-    btnClearSearch: TButton;
-    rpnlSearch: TRelativePanel;
-    spbtnMemSort: TSpeedButton;
-    ShapeMemBar1: TShape;
-    spbtnMemReport: TSpeedButton;
-    lblNomWarning: TLabel;
-    grid: TDBAdvGrid;
+  TFrameFilterMember = class(TFrame)
     actnlistNomMember: TActionList;
-    actnNom_SwitchName: TAction;
-    actnNom_Report: TAction;
-    actnNom_MemberDetails: TAction;
     actnNom_ClearEvent: TAction;
-    actnNom_ClearSession: TAction;
-    actnNom_MemberPB: TAction;
-    spbtnMemDetails: TSpeedButton;
     actnNom_ClearFilter: TAction;
-    pumenuNomMember: TPopupMenu;
-    SwitchName1: TMenuItem;
-    MembersDetails1: TMenuItem;
-    QuickviewPBs1: TMenuItem;
+    actnNom_ClearSession: TAction;
+    actnNom_MemberDetails: TAction;
+    actnNom_MemberPB: TAction;
+    actnNom_Report: TAction;
+    actnNom_SwitchName: TAction;
+    btnClearSearch: TButton;
     Clear1: TMenuItem;
-    NominateReport1: TMenuItem;
     Cleareventnominations1: TMenuItem;
     Clearsessionnominations1: TMenuItem;
+    edtSearch: TEdit;
+    grid: TDBAdvGrid;
+    lblNomWarning: TLabel;
+    MembersDetails1: TMenuItem;
     N1: TMenuItem;
     N2: TMenuItem;
-    spbtnMemPB: TSpeedButton;
+    NominateReport1: TMenuItem;
+    pnlBody: TPanel;
+    pnlList: TPanel;
+    pumenuNomMember: TPopupMenu;
+    QuickviewPBs1: TMenuItem;
+    rpnlCntrl: TRelativePanel;
+    rpnlSearch: TRelativePanel;
+    ShapeMemBar1: TShape;
+    spbtnMemDetails: TSpeedButton;
+    spbtnPB: TSpeedButton;
+    SwitchName1: TMenuItem;
+    vimgSearch: TVirtualImage;
+    spbtnReport: TSpeedButton;
+    spbtnSort: TSpeedButton;
     procedure actnNom_ClearFilterExecute(Sender: TObject);
     procedure actnNom_ClearFilterUpdate(Sender: TObject);
     procedure actnNom_MemberDetailsUpdate(Sender: TObject);
@@ -66,39 +66,26 @@ type
     procedure edtSearchChange(Sender: TObject);
     procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
-  private
-    { Private declarations }
   public
     procedure Initialise();
-
-    // messages must be forwarded by main form.
-    // procedure Msg_SCM_SwimClub_Change(var Msg: TMessage); message SCM_SWIMCLUB_CHANGED;
-
   end;
 
 implementation
 
 {$R *.dfm}
 
-function Locate(aMemberID: integer): Boolean;
-var
-  SearchOptions: TLocateOptions;
-begin
-  result := false;
-  if CORE.qryFilterMember.IsEmpty then exit;
-  if (aMemberID = 0) then exit;
-  SearchOptions := [];
-  result := CORE.qryFilterMember.Locate('MemberID', aMemberID,  SearchOptions);
-end;
+uses
+
+uNominate;
 
 
-procedure TFrameMember.actnNom_ClearFilterExecute(Sender: TObject);
+procedure TFrameFilterMember.actnNom_ClearFilterExecute(Sender: TObject);
 begin
   // changing text generates edtSearchChanged event.
   edtSearch.Text := '';
 end;
 
-procedure TFrameMember.actnNom_ClearFilterUpdate(Sender: TObject);
+procedure TFrameFilterMember.actnNom_ClearFilterUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -111,7 +98,7 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameMember.actnNom_MemberDetailsUpdate(Sender: TObject);
+procedure TFrameFilterMember.actnNom_MemberDetailsUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
@@ -124,33 +111,33 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameMember.actnNom_MemberPBUpdate(Sender: TObject);
+procedure TFrameFilterMember.actnNom_MemberPBUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
   DoEnable := false;
     // fix RAD STUDIO icon re-assignment issue.
-  if (spbtnMemPB.imageindex <> 3) then spbtnMemPB.imageindex := 3;
+  if (spbtnPB.imageindex <> 3) then spbtnPB.imageindex := 3;
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive and
     not CORE.qryEvent.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameMember.actnNom_ReportUpdate(Sender: TObject);
+procedure TFrameFilterMember.actnNom_ReportUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
   DoEnable := false;
     // fix RAD STUDIO icon re-assignment issue.
-  if (spbtnMemReport.imageindex <> 1) then spbtnMemReport.imageindex := 1;
+  if (spbtnReport.imageindex <> 1) then spbtnReport.imageindex := 1;
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive and
     not CORE.qryEvent.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameMember.actnNom_SwitchNameExecute(Sender: TObject);
+procedure TFrameFilterMember.actnNom_SwitchNameExecute(Sender: TObject);
 var
   SortOn, PK: integer;
 begin
@@ -176,7 +163,7 @@ begin
     CORE.qryFilterMember.Prepare;
     CORE.qryFilterMember.Open;
 
-    Locate(PK); // re-locate to last member selected.
+    uNominate.Locate_FilterMember(PK); // re-locate to last member selected.
 
   finally
     CORE.qryFilterMember.EnableControls;
@@ -184,20 +171,20 @@ begin
   end;
 end;
 
-procedure TFrameMember.actnNom_SwitchNameUpdate(Sender: TObject);
+procedure TFrameFilterMember.actnNom_SwitchNameUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
   DoEnable := false;
     // fix RAD STUDIO icon re-assignment issue.
-  if (spbtnMemSort.imageindex <> 0) then spbtnMemSort.imageindex := 0;
+  if (spbtnSort.imageindex <> 0) then spbtnSort.imageindex := 0;
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive and
     not CORE.qryEvent.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameMember.edtSearchChange(Sender: TObject);
+procedure TFrameFilterMember.edtSearchChange(Sender: TObject);
 var
   fs: String;
 begin
@@ -230,12 +217,13 @@ begin
   end;
 end;
 
-procedure TFrameMember.gridGetHTMLTemplate(Sender: TObject; ACol, ARow:
+procedure TFrameFilterMember.gridGetHTMLTemplate(Sender: TObject; ACol, ARow:
     Integer; var HTMLTemplate: string; Fields: TFields);
 var
-  s, SQL: string;
-  v: variant;
-  id1, id2: integer;
+  s: string;
+  // SQL: String;
+//  v: variant;
+//  id1, id2: integer;
 begin
   if (not Assigned(CORE)) or (not CORE.IsActive) or
     CORE.qryFilterMember.IsEmpty then exit;
@@ -271,7 +259,7 @@ end;
 
 { TFrameMember }
 
-procedure TFrameMember.Initialise;
+procedure TFrameFilterMember.Initialise;
 var
   SortOn: integer;
 begin
@@ -320,7 +308,6 @@ begin
     grid.EndUpdate;
   end;
 end;
-
 
 
 end.

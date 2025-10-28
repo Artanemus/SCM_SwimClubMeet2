@@ -173,10 +173,6 @@
             <Form>FrameEvent</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="FRAMES\frFrameMember.pas">
-            <Form>FrameMember</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
         <DCCReference Include="FRAMES\frFrameClubGroup.pas">
             <Form>FrameClubGroup</Form>
             <DesignClass>TFrame</DesignClass>
@@ -201,6 +197,12 @@
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="FRAMES\frFrameFilterMember.pas">
+            <Form>FrameFilterMember</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="DATA_Helper\uNominate.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

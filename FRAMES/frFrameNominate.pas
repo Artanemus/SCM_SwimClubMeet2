@@ -5,10 +5,11 @@ interface
 uses
   Winapi.Windows, Winapi.Messages,
 
-  System.SysUtils, System.Variants, System.Classes,
+  System.SysUtils, System.Variants, System.Classes, System.Actions,
 
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.WinXCtrls, Vcl.StdCtrls, Vcl.DBCtrls,  Vcl.Grids, Vcl.Menus,
+  Vcl.ActnList,
 
   Data.DB,
 
@@ -16,9 +17,8 @@ uses
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
-  dmSCM2, dmIMG, dmCORE,
+  uDefines, uSettings
 
-  uDefines, uSwimClub, uSession, uSettings, System.Actions, Vcl.ActnList
   ;
 
 
@@ -34,6 +34,11 @@ type
     { Private declarations }
   public
     procedure Initialise();
+
+    // messages must be forwarded by main form.
+    procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
+      message SCM_SCROLL_FILTERMEMBER;
+
   end;
 
 implementation
@@ -42,14 +47,14 @@ implementation
 
 { TFrameNominate }
 
+
+uses
+  dmSCM2, dmCORE, uSwimClub, uSession, uNominate;
+
 procedure TFrameNominate.Initialise;
-var
-  SeedDateAuto: scmSeedDateAuto;
-  DT: TDate;
 begin
   // prepare the SQL Query
   grid.RowCount := grid.FixedRows + 1; // rule: row count > fixed row.
-  SeedDateAuto := scmSeeddateAuto.sdaTodaysDate;
   grid.BeginUpdate;
   try
     begin
@@ -58,21 +63,7 @@ begin
         CORE.qryNominate.Close;
         CORE.qryNominate.ParamByName('MEMBERID').AsInteger := 0;
         CORE.qryNominate.ParamByName('SESSIONID').AsInteger := uSession.PK;
-        // 0 = firstname, 1 = lastname.
-        if Assigned(Settings) then
-          if Settings.SeedDateAuto in [1..2] then
-            SeedDateAuto := scmSeedDateAuto(Settings.SeedDateAuto);
-        case SeedDateAuto of
-          sdaTodaysDate:
-            DT := Date();
-          sdaSessionDate:
-            DT := uSession.SessionDT;
-          sdaStartOfSeason:
-            DT := uSwimClub.StartOfSwimSeason;
-        else
-          DT := Date();
-        end;
-        CORE.qryNominate.ParamByName('SEEDATE').AsDateTime := DT;
+        CORE.qryNominate.ParamByName('SEEDATE').AsDateTime := uNominate.GetSeedDate();
         CORE.qryNominate.Prepare;
         CORE.qryNominate.Open;
 
@@ -93,5 +84,28 @@ begin
   finally
     grid.EndUpdate;
   end;end;
+
+procedure TFrameNominate.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
+begin
+  { the member (on the nominate tabsheet) has been scrolled ...
+    qryNominate must be reloaded.}
+  grid.BeginUpdate;
+  CORE.qryNominate.DisableControls;
+  try
+    begin
+      CORE.qryNominate.Close;
+      CORE.qryNominate.ParamByName('MEMBERID').AsInteger := Msg.WParam;
+      CORE.qryNominate.ParamByName('SESSIONID').AsInteger := uSession.PK;
+      CORE.qryNominate.ParamByName('SEEDDATE').AsDateTime := uNominate.GetSeedDate();
+      CORE.qryNominate.Prepare;
+      CORE.qryNominate.Open;
+    end;
+  finally
+    grid.EndUpdate;
+    CORE.qryNominate.EnableControls;
+  end;
+
+
+end;
 
 end.

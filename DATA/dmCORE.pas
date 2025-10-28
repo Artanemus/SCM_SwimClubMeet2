@@ -132,6 +132,7 @@ type
     procedure qryEventAfterEdit(DataSet: TDataSet);
     procedure qryEventAfterScroll(DataSet: TDataSet);
     procedure qryEventNewRecord(DataSet: TDataSet);
+    procedure qryFilterMemberAfterScroll(DataSet: TDataSet);
     procedure qryHeatAfterScroll(DataSet: TDataSet);
     procedure qrySessionAfterScroll(DataSet: TDataSet);
     procedure qrySessionBeforePost(DataSet: TDataSet);
@@ -311,6 +312,18 @@ begin
   DataSet.FieldByName('StrokeID').AsInteger := 1; // Freestyle.
   DataSet.FieldByName('GenderID').AsInteger := 3; // X - mixed.
   DataSet.FieldByName('RoundID').AsInteger := 1; // PRELIM.
+end;
+
+procedure TCORE.qryFilterMemberAfterScroll(DataSet: TDataSet);
+var
+  WP, LP: integer;
+begin
+  if (msgHandle <> 0) then
+  begin
+    WP := qryFilterMember.FieldByName('MemberID').AsInteger;
+    LP := qrySession.FieldByName('SessionID').AsInteger;
+    PostMessage(msgHandle, SCM_SCROLL_FILTERMEMBER, WP, LP);
+  end;
 end;
 
 procedure TCORE.qryHeatAfterScroll(DataSet: TDataSet);

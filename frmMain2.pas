@@ -22,8 +22,8 @@ uses
   FireDAC.Stan.Option,
 
   dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub, AdvUtil, AdvObj,
-  BaseGrid, AdvGrid, DBAdvGrid, frFrameSession, frFrameEvent, frFrameMember,
-  frFrameNominate
+  BaseGrid, AdvGrid, DBAdvGrid, frFrameSession, frFrameEvent,
+  frFrameNominate, frFrameFilterMember
 
   ;
 
@@ -96,9 +96,9 @@ type
     pnlEvent: TPanel;
     frEvent: TFrameEvent;
     pnlMem: TPanel;
-    frMember: TFrameMember;
     pnlNominate: TPanel;
-    TFrameNominate1: TFrameNominate;
+    frNominate: TFrameNominate;
+    frFilterMember: TFrameFilterMember;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -125,6 +125,9 @@ type
     procedure Msg_SCM_Connect(var Msg: TMessage); message SCM_Connect;
     procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
     procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
+    procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
+      message SCM_SCROLL_FILTERMEMBER;
+
   end;
 
 var
@@ -199,7 +202,7 @@ begin
   cState := SCM2.scmConnection.Connected;
 
 
-  frMember.grid.BeginUpdate;
+  frFilterMember.grid.BeginUpdate;
   frEvent.grid.BeginUpdate;
   frSession.grid.BeginUpdate;
   try
@@ -216,7 +219,7 @@ begin
       // sets table indexname, icon imageindexes and gird pagemode
       frSession.Initialise;
       frEvent.Initialise;
-      frMember.Initialise;
+      frFilterMember.Initialise;
     end;
 
     // connection state changed?
@@ -247,7 +250,7 @@ begin
   finally
     frSession.grid.EndUpdate;
     frEvent.grid.EndUpdate;
-    frMember.grid.EndUpdate;
+    frFilterMember.grid.EndUpdate;
   end;
 
 
@@ -316,7 +319,7 @@ begin
 
   frSession.Initialise;
   frEvent.Initialise;
-  frMember.Initialise;
+  frFilterMember.Initialise;
 
 end;
 
@@ -384,6 +387,12 @@ procedure TMain2.Msg_SCM_Scroll_Event(var Msg: TMessage);
 begin
   // pass message forward to event frame...
   SendMessage(frEvent.Handle, SCM_SCROLL_EVENT, Msg.WParam, Msg.LParam);
+end;
+
+procedure TMain2.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
+begin
+  // forward message to nominate frame.
+  SendMessage(frNominate.Handle, SCM_SCROLL_FILTERMEMBER, Msg.WParam, Msg.LParam);
 end;
 
 procedure TMain2.Msg_SCM_Scroll_Session(var Msg: TMessage);

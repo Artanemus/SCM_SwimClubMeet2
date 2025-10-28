@@ -21,14 +21,15 @@ uses
   uEvent in 'DATA_Helper\uEvent.pas',
   frFrameSession in 'FRAMES\frFrameSession.pas' {FrameSession: TFrame},
   frFrameEvent in 'FRAMES\frFrameEvent.pas' {FrameEvent: TFrame},
-  frFrameMember in 'FRAMES\frFrameMember.pas' {FrameMember: TFrame},
   frFrameClubGroup in 'FRAMES\frFrameClubGroup.pas' {FrameClubGroup: TFrame},
   dlgSwimClubGroup_View in 'DIALOGS\SwimClub\dlgSwimClubGroup_View.pas' {SwimClubGroup_View},
   dlgEditSession in 'DIALOGS\Session\dlgEditSession.pas' {EditSession},
   dlgDatePicker in 'DIALOGS\Picker\dlgDatePicker.pas' {DatePicker},
   dlgNewSession in 'DIALOGS\Session\dlgNewSession.pas' {NewSession},
   dlgSwimClub_Manage in 'DIALOGS\SwimClub\dlgSwimClub_Manage.pas' {SwimClubManage},
-  frFrameNominate in 'FRAMES\frFrameNominate.pas' {FrameNominate: TFrame};
+  frFrameNominate in 'FRAMES\frFrameNominate.pas' {FrameNominate: TFrame},
+  frFrameFilterMember in 'FRAMES\frFrameFilterMember.pas' {FrameFilterMember: TFrame},
+  uNominate in 'DATA_Helper\uNominate.pas';
 
 {$R *.res}
 

@@ -3142,7 +3142,7 @@ object Main2: TMain2
         Align = alLeft
         BevelOuter = bvNone
         TabOrder = 0
-        inline frMember: TFrameMember
+        inline frFilterMember: TFrameFilterMember
           Left = 0
           Top = 0
           Width = 433
@@ -3155,89 +3155,82 @@ object Main2: TMain2
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitWidth = 433
-          ExplicitHeight = 628
+          ExplicitLeft = 68
+          ExplicitTop = 135
           inherited rpnlCntrl: TRelativePanel
             Height = 628
             ControlCollection = <
               item
-                Control = frMember.spbtnMemSort
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = True
-                AlignVerticalCenterWithPanel = False
-              end
-              item
-                Control = frMember.ShapeMemBar1
+                Control = frFilterMember.ShapeMemBar1
                 AlignBottomWithPanel = False
                 AlignHorizontalCenterWithPanel = True
                 AlignLeftWithPanel = False
                 AlignRightWithPanel = False
                 AlignTopWithPanel = False
                 AlignVerticalCenterWithPanel = False
-                Below = frMember.spbtnMemDetails
+                Below = frFilterMember.spbtnPB
               end
               item
-                Control = frMember.spbtnMemReport
+                Control = frFilterMember.lblNomWarning
                 AlignBottomWithPanel = False
                 AlignHorizontalCenterWithPanel = True
                 AlignLeftWithPanel = False
                 AlignRightWithPanel = False
                 AlignTopWithPanel = False
                 AlignVerticalCenterWithPanel = False
-                Below = frMember.ShapeMemBar1
               end
               item
-                Control = frMember.lblNomWarning
+                Control = frFilterMember.spbtnMemDetails
                 AlignBottomWithPanel = False
                 AlignHorizontalCenterWithPanel = True
                 AlignLeftWithPanel = False
                 AlignRightWithPanel = False
                 AlignTopWithPanel = False
                 AlignVerticalCenterWithPanel = False
-                Below = frMember.spbtnMemReport
               end
               item
-                Control = frMember.spbtnMemDetails
+                Control = frFilterMember.spbtnPB
                 AlignBottomWithPanel = False
                 AlignHorizontalCenterWithPanel = True
                 AlignLeftWithPanel = False
                 AlignRightWithPanel = False
                 AlignTopWithPanel = False
                 AlignVerticalCenterWithPanel = False
-                Below = frMember.spbtnMemSort
+                Below = frFilterMember.spbtnMemDetails
+              end
+              item
+                Control = frFilterMember.spbtnReport
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = False
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+              end
+              item
+                Control = frFilterMember.spbtnSort
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = False
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
               end>
-            ExplicitHeight = 628
-            inherited ShapeMemBar1: TShape
-              Top = 107
-              ExplicitTop = 107
-            end
-            inherited spbtnMemReport: TSpeedButton
-              Top = 121
-              ExplicitTop = 121
-            end
-            inherited lblNomWarning: TLabel
-              Top = 189
-              ExplicitTop = 189
+            inherited spbtnSort: TSpeedButton
+              ImageName = ''
             end
           end
           inherited pnlBody: TPanel
             Width = 375
             Height = 628
-            ExplicitWidth = 375
-            ExplicitHeight = 628
             inherited pnlList: TPanel
               Width = 375
               Height = 628
-              ExplicitWidth = 375
-              ExplicitHeight = 628
               inherited rpnlSearch: TRelativePanel
                 Width = 375
                 ControlCollection = <
                   item
-                    Control = frMember.btnClearSearch
+                    Control = frFilterMember.btnClearSearch
                     AlignBottomWithPanel = False
                     AlignHorizontalCenterWithPanel = False
                     AlignLeftWithPanel = False
@@ -3246,7 +3239,7 @@ object Main2: TMain2
                     AlignVerticalCenterWithPanel = True
                   end
                   item
-                    Control = frMember.edtSearch
+                    Control = frFilterMember.edtSearch
                     AlignBottomWithPanel = False
                     AlignHorizontalCenterWithPanel = False
                     AlignLeftWithPanel = True
@@ -3255,7 +3248,7 @@ object Main2: TMain2
                     AlignVerticalCenterWithPanel = True
                   end
                   item
-                    Control = frMember.vimgSearch
+                    Control = frFilterMember.vimgSearch
                     AlignBottomWithPanel = False
                     AlignHorizontalCenterWithPanel = False
                     AlignLeftWithPanel = True
@@ -3263,7 +3256,6 @@ object Main2: TMain2
                     AlignTopWithPanel = False
                     AlignVerticalCenterWithPanel = True
                   end>
-                ExplicitWidth = 375
                 inherited btnClearSearch: TButton
                   Left = 275
                   ExplicitLeft = 275
@@ -3276,14 +3268,8 @@ object Main2: TMain2
               inherited grid: TDBAdvGrid
                 Width = 375
                 Height = 579
-                ExplicitWidth = 375
-                ExplicitHeight = 579
               end
             end
-          end
-          inherited actnlistNomMember: TActionList
-            Left = 186
-            Top = 169
           end
         end
       end
@@ -3295,11 +3281,7 @@ object Main2: TMain2
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitLeft = 648
-        ExplicitTop = 216
-        ExplicitWidth = 185
-        ExplicitHeight = 41
-        inline TFrameNominate1: TFrameNominate
+        inline frNominate: TFrameNominate
           Left = 0
           Top = 0
           Width = 662
@@ -3312,13 +3294,13 @@ object Main2: TMain2
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitLeft = 181
-          ExplicitTop = 174
+          ExplicitWidth = 662
+          ExplicitHeight = 628
           inherited rpnlCntrl: TRelativePanel
             Height = 628
             ControlCollection = <
               item
-                Control = TFrameNominate1.dbtxtNominateFullName
+                Control = frNominate.dbtxtNominateFullName
                 AlignBottomWithPanel = False
                 AlignHorizontalCenterWithPanel = True
                 AlignLeftWithPanel = False
@@ -3326,15 +3308,22 @@ object Main2: TMain2
                 AlignTopWithPanel = True
                 AlignVerticalCenterWithPanel = False
               end>
+            ExplicitHeight = 628
           end
           inherited pnlBody: TPanel
             Width = 604
             Height = 628
-            ExplicitWidth = 532
+            ExplicitWidth = 604
+            ExplicitHeight = 628
             inherited grid: TDBAdvGrid
               Width = 604
               Height = 628
-              ExplicitWidth = 532
+              RowCount = 2
+              ExplicitWidth = 604
+              ExplicitHeight = 628
+              RowHeights = (
+                0
+                48)
             end
           end
         end
@@ -3856,7 +3845,6 @@ object Main2: TMain2
           item
             Items = <
               item
-                Action = frMember.actnNom_SwitchName
                 Caption = '&Switch Name'
                 ImageIndex = 18
                 ImageName = 'switch'
@@ -3865,19 +3853,16 @@ object Main2: TMain2
                 Caption = '-'
               end
               item
-                Action = frMember.actnNom_Report
                 Caption = 'M&ember'#39's Nomination Report'
                 ImageIndex = 15
                 ImageName = 'report'
               end
               item
-                Action = frMember.actnNom_MemberDetails
                 Caption = '&Member'#39's Details...'
                 ImageIndex = 37
                 ImageName = 'Member'
               end
               item
-                Action = frMember.actnNom_MemberPB
                 Caption = '&Quick view PBs...'
                 ImageIndex = 37
                 ImageName = 'Member'
@@ -3886,13 +3871,11 @@ object Main2: TMain2
                 Caption = '-'
               end
               item
-                Action = frMember.actnNom_ClearEvent
                 Caption = '&Clear event nominations...'
                 ImageIndex = 9
                 ImageName = 'delete'
               end
               item
-                Action = frMember.actnNom_ClearSession
                 Caption = 'C&lear session nominations...'
                 ImageIndex = 9
                 ImageName = 'delete'
@@ -4172,7 +4155,6 @@ object Main2: TMain2
         Caption = 'Events'
       end
       item
-        ActionList = frMember.actnlistNomMember
         Caption = 'NomMember'
       end>
     Images = IMG.imglstMenuBar

@@ -1,8 +1,8 @@
-object FrameMember: TFrameMember
+object FrameFilterMember: TFrameFilterMember
   Left = 0
   Top = 0
-  Width = 428
-  Height = 739
+  Width = 640
+  Height = 480
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -16
@@ -14,17 +14,8 @@ object FrameMember: TFrameMember
     Left = 0
     Top = 0
     Width = 58
-    Height = 739
+    Height = 480
     ControlCollection = <
-      item
-        Control = spbtnMemSort
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = True
-        AlignVerticalCenterWithPanel = False
-      end
       item
         Control = ShapeMemBar1
         AlignBottomWithPanel = False
@@ -33,17 +24,7 @@ object FrameMember: TFrameMember
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
-        Below = spbtnMemPB
-      end
-      item
-        Control = spbtnMemReport
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = False
-        Below = ShapeMemBar1
+        Below = spbtnPB
       end
       item
         Control = lblNomWarning
@@ -53,7 +34,6 @@ object FrameMember: TFrameMember
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
-        Below = spbtnMemReport
       end
       item
         Control = spbtnMemDetails
@@ -63,10 +43,9 @@ object FrameMember: TFrameMember
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
-        Below = spbtnMemSort
       end
       item
-        Control = spbtnMemPB
+        Control = spbtnPB
         AlignBottomWithPanel = False
         AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
@@ -74,27 +53,30 @@ object FrameMember: TFrameMember
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
         Below = spbtnMemDetails
+      end
+      item
+        Control = spbtnReport
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = False
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+      end
+      item
+        Control = spbtnSort
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = False
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
       end>
     Align = alLeft
     TabOrder = 0
-    ExplicitLeft = -2
     DesignSize = (
       58
-      739)
-    object spbtnMemSort: TSpeedButton
-      Left = 4
-      Top = 1
-      Width = 48
-      Height = 48
-      Action = actnNom_SwitchName
-      AllowAllUp = True
-      Anchors = []
-      ImageIndex = 0
-      Images = IMG.imglstNomCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-    end
+      480)
     object ShapeMemBar1: TShape
       AlignWithMargins = True
       Left = 4
@@ -107,21 +89,6 @@ object FrameMember: TFrameMember
       Margins.Bottom = 10
       Anchors = []
       Brush.Color = 8421631
-    end
-    object spbtnMemReport: TSpeedButton
-      Left = 4
-      Top = 169
-      Width = 48
-      Height = 48
-      Hint = 'Create and display a nominee'#39's report.'
-      Anchors = []
-      ImageIndex = 1
-      ImageName = 'report'
-      Images = IMG.imglstNomCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      NumGlyphs = 2
     end
     object lblNomWarning: TLabel
       AlignWithMargins = True
@@ -164,7 +131,7 @@ object FrameMember: TFrameMember
       Margin = 0
       NumGlyphs = 2
     end
-    object spbtnMemPB: TSpeedButton
+    object spbtnPB: TSpeedButton
       Left = 4
       Top = 97
       Width = 48
@@ -180,27 +147,56 @@ object FrameMember: TFrameMember
       Margin = 0
       NumGlyphs = 2
     end
+    object spbtnReport: TSpeedButton
+      Left = 4
+      Top = 169
+      Width = 48
+      Height = 48
+      Hint = 'Create and display a nominee'#39's report.'
+      Anchors = []
+      ImageIndex = 1
+      ImageName = 'report'
+      Images = IMG.imglstNomCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      NumGlyphs = 2
+    end
+    object spbtnSort: TSpeedButton
+      Left = 4
+      Top = 1
+      Width = 48
+      Height = 48
+      Action = actnNom_SwitchName
+      AllowAllUp = True
+      Anchors = []
+      ImageIndex = 0
+      Images = IMG.imglstNomCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+    end
   end
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 370
-    Height = 739
+    Width = 582
+    Height = 480
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
     object pnlList: TPanel
       Left = 0
       Top = 0
-      Width = 370
-      Height = 739
+      Width = 582
+      Height = 480
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
       object rpnlSearch: TRelativePanel
         Left = 0
         Top = 0
-        Width = 370
+        Width = 582
         Height = 49
         ControlCollection = <
           item
@@ -233,12 +229,12 @@ object FrameMember: TFrameMember
         Align = alTop
         TabOrder = 0
         DesignSize = (
-          370
+          582
           49)
         object btnClearSearch: TButton
           Tag = 1
           AlignWithMargins = True
-          Left = 270
+          Left = 482
           Top = 7
           Width = 89
           Height = 32
@@ -258,7 +254,7 @@ object FrameMember: TFrameMember
           AlignWithMargins = True
           Left = 51
           Top = 9
-          Width = 208
+          Width = 420
           Height = 29
           Margins.Left = 50
           Margins.Top = 0
@@ -289,8 +285,8 @@ object FrameMember: TFrameMember
       object grid: TDBAdvGrid
         Left = 0
         Top = 49
-        Width = 370
-        Height = 690
+        Width = 582
+        Height = 431
         Cursor = crDefault
         Align = alClient
         Color = clWhite

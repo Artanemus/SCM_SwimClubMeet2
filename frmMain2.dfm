@@ -3155,8 +3155,8 @@ object Main2: TMain2
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitLeft = 68
-          ExplicitTop = 135
+          ExplicitWidth = 433
+          ExplicitHeight = 628
           inherited rpnlCntrl: TRelativePanel
             Height = 628
             ControlCollection = <
@@ -3216,16 +3216,18 @@ object Main2: TMain2
                 AlignTopWithPanel = False
                 AlignVerticalCenterWithPanel = False
               end>
-            inherited spbtnSort: TSpeedButton
-              ImageName = ''
-            end
+            ExplicitHeight = 628
           end
           inherited pnlBody: TPanel
             Width = 375
             Height = 628
+            ExplicitWidth = 375
+            ExplicitHeight = 628
             inherited pnlList: TPanel
               Width = 375
               Height = 628
+              ExplicitWidth = 375
+              ExplicitHeight = 628
               inherited rpnlSearch: TRelativePanel
                 Width = 375
                 ControlCollection = <
@@ -3256,6 +3258,7 @@ object Main2: TMain2
                     AlignTopWithPanel = False
                     AlignVerticalCenterWithPanel = True
                   end>
+                ExplicitWidth = 375
                 inherited btnClearSearch: TButton
                   Left = 275
                   ExplicitLeft = 275
@@ -3268,6 +3271,8 @@ object Main2: TMain2
               inherited grid: TDBAdvGrid
                 Width = 375
                 Height = 579
+                ExplicitWidth = 375
+                ExplicitHeight = 579
               end
             end
           end
@@ -3318,12 +3323,8 @@ object Main2: TMain2
             inherited grid: TDBAdvGrid
               Width = 604
               Height = 628
-              RowCount = 2
               ExplicitWidth = 604
               ExplicitHeight = 628
-              RowHeights = (
-                0
-                48)
             end
           end
         end

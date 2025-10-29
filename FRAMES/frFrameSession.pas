@@ -486,17 +486,23 @@ procedure TFrameSession.Msg_SCM_Scroll_Session(var Msg: TMessage);
 var
   i: integer;
 begin
-  // track the state of locked/unlocked.
-  i := CORE.qrySession.FieldByName('SessionStatusID').AsInteger;
-  if (i=2) and not actnSess_Lock.Checked then
+  // avoid unnessary calls during boot-up.
+
+  if Assigned(SCM2) and SCM2.scmConnection.Connected
+    and Assigned(CORE) and  CORE.IsActive then
   begin
-    actnSess_Lock.Checked := true; // syncronize to equal db state
-    SetLockIcon;
-  end;
-  if (i=1) and actnSess_Lock.Checked then
-  begin
-    actnSess_Lock.Checked := false; // syncronize to equal db state
-    SetLockIcon;
+    // track the state of locked/unlocked.
+    i := CORE.qrySession.FieldByName('SessionStatusID').AsInteger;
+    if (i=2) and not actnSess_Lock.Checked then
+    begin
+      actnSess_Lock.Checked := true; // syncronize to equal db state
+      SetLockIcon;
+    end;
+    if (i=1) and actnSess_Lock.Checked then
+    begin
+      actnSess_Lock.Checked := false; // syncronize to equal db state
+      SetLockIcon;
+    end;
   end;
 
 end;

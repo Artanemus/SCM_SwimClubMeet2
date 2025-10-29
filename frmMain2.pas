@@ -117,6 +117,9 @@ type
     procedure SwimClub_ManageExecute(Sender: TObject);
     procedure SwimClub_SwitchExecute(Sender: TObject);
   private
+
+    fscmIsConnecting: boolean;
+
     procedure DetailTBLs_ApplyMaster;
     procedure DetailTBLs_DisableCNTRLs;
     procedure DetailTBLs_EnableCNTRLs;
@@ -200,7 +203,7 @@ begin
 
   // store connection state..
   cState := SCM2.scmConnection.Connected;
-
+  fscmIsConnecting := true;
 
   frFilterMember.grid.BeginUpdate;
   frEvent.grid.BeginUpdate;
@@ -220,6 +223,7 @@ begin
       frSession.Initialise;
       frEvent.Initialise;
       frFilterMember.Initialise;
+      frNominate.Initialise;
     end;
 
     // connection state changed?
@@ -251,8 +255,8 @@ begin
     frSession.grid.EndUpdate;
     frEvent.grid.EndUpdate;
     frFilterMember.grid.EndUpdate;
+    fscmIsConnecting := false;
   end;
-
 
 end;
 
@@ -320,6 +324,12 @@ begin
   frSession.Initialise;
   frEvent.Initialise;
   frFilterMember.Initialise;
+  frNominate.Initialise;
+
+  // initialize UI state tabsheet 0 and Collapsed grid view.
+  PageControl.ActivePageIndex := 0;
+  frEvent.actnEv_GridView.Checked := false;
+  pnlSession.Visible := true;
 
 end;
 
@@ -386,17 +396,20 @@ end;
 procedure TMain2.Msg_SCM_Scroll_Event(var Msg: TMessage);
 begin
   // pass message forward to event frame...
+  if fscmIsConnecting then exit;
   SendMessage(frEvent.Handle, SCM_SCROLL_EVENT, Msg.WParam, Msg.LParam);
 end;
 
 procedure TMain2.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
 begin
   // forward message to nominate frame.
+  if fscmIsConnecting then exit;
   SendMessage(frNominate.Handle, SCM_SCROLL_FILTERMEMBER, Msg.WParam, Msg.LParam);
 end;
 
 procedure TMain2.Msg_SCM_Scroll_Session(var Msg: TMessage);
 begin
+  if fscmIsConnecting then exit;
   // pass message forward to session frame...
   SendMessage(frSession.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
   try // update the status bar with nominee and entrant counts.
@@ -524,32 +537,81 @@ end;
 procedure TMain2.SwimClub_ManageExecute(Sender: TObject);
 var
   dlg: TSwimClubManage;
+  PK1, PK2: integer;
 begin
+  frNominate.grid.BeginUpdate;
+  frFilterMember.grid.BeginUpdate;
+  frEvent.grid.BeginUpdate;
+  frSession.grid.BeginUpdate;
   DetailTBLs_DisableCNTRLs;
   try
+    PK1 := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
     dlg := TSwimClubManage.Create(Self);
     try
       dlg.ShowModal;
     finally
       dlg.Free;
+      PK2 := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
     end;
+
+    if (PK1 <> PK2) then // switched to different club..
+    begin
+      frSession.Initialise;
+      frEvent.Initialise;
+      frFilterMember.Initialise;
+      frNominate.Initialise;
+
+      // initialize UI state tabsheet 0 and Collapsed grid view.
+      PageControl.ActivePageIndex := 0;
+      frEvent.actnEv_GridView.Checked := false;
+      pnlSession.Visible := true;
+
+    end;
+
   finally
     DetailTBLs_EnableCNTRLs;
+    frSession.grid.EndUpdate;
+    frEvent.grid.EndUpdate;
+    frFilterMember.grid.EndUpdate;
+    frNominate.grid.EndUpdate;
   end;
 end;
 
 procedure TMain2.SwimClub_SwitchExecute(Sender: TObject);
 var
   dlg: TSwimClubSwitch;
+  PK1, PK2: integer;
 begin
+  frNominate.grid.BeginUpdate;
+  frFilterMember.grid.BeginUpdate;
+  frEvent.grid.BeginUpdate;
   frSession.grid.BeginUpdate;
   try
-  dlg :=  TSwimClubSwitch.Create(Self);
-  dlg.ShowModal;
-  dlg.Free;
-  frSession.Initialise;
+    PK1 := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+    dlg :=  TSwimClubSwitch.Create(Self);
+    dlg.ShowModal;
+    dlg.Free;
+    PK2 := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+
+    if (PK1 <> PK2) then // switched to different club..
+    begin
+      frSession.Initialise;
+      frEvent.Initialise;
+      frFilterMember.Initialise;
+      frNominate.Initialise;
+
+      // initialize UI state tabsheet 0 and Collapsed grid view.
+      PageControl.ActivePageIndex := 0;
+      frEvent.actnEv_GridView.Checked := false;
+      pnlSession.Visible := true;
+
+    end;
+
   finally
     frSession.grid.EndUpdate;
+    frEvent.grid.EndUpdate;
+    frFilterMember.grid.EndUpdate;
+    frNominate.grid.EndUpdate;
   end;
 end;
 

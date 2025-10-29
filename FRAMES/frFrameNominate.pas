@@ -63,7 +63,7 @@ begin
         CORE.qryNominate.Close;
         CORE.qryNominate.ParamByName('MEMBERID').AsInteger := 0;
         CORE.qryNominate.ParamByName('SESSIONID').AsInteger := uSession.PK;
-        CORE.qryNominate.ParamByName('SEEDATE').AsDateTime := uNominate.GetSeedDate();
+        CORE.qryNominate.ParamByName('SEEDDATE').AsDateTime := uNominate.GetSeedDate();
         CORE.qryNominate.Prepare;
         CORE.qryNominate.Open;
 
@@ -87,22 +87,29 @@ begin
 
 procedure TFrameNominate.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
 begin
-  { the member (on the nominate tabsheet) has been scrolled ...
-    qryNominate must be reloaded.}
-  grid.BeginUpdate;
-  CORE.qryNominate.DisableControls;
-  try
-    begin
-      CORE.qryNominate.Close;
-      CORE.qryNominate.ParamByName('MEMBERID').AsInteger := Msg.WParam;
-      CORE.qryNominate.ParamByName('SESSIONID').AsInteger := uSession.PK;
-      CORE.qryNominate.ParamByName('SEEDDATE').AsDateTime := uNominate.GetSeedDate();
-      CORE.qryNominate.Prepare;
-      CORE.qryNominate.Open;
-    end;
-  finally
-    grid.EndUpdate;
-    CORE.qryNominate.EnableControls;
+  { member changed in filtermember FRAME}
+  // avoid unnessary calls during boot-up.
+
+
+  if Assigned(SCM2) and SCM2.scmConnection.Connected
+    and Assigned(CORE) and  CORE.IsActive then
+  begin
+
+    grid.BeginUpdate;
+    CORE.qryNominate.DisableControls;
+    try
+      begin
+        CORE.qryNominate.Close;
+        CORE.qryNominate.ParamByName('MEMBERID').AsInteger := Msg.WParam;
+        CORE.qryNominate.ParamByName('SESSIONID').AsInteger := uSession.PK;
+        CORE.qryNominate.ParamByName('SEEDDATE').AsDateTime := uNominate.GetSeedDate();
+        CORE.qryNominate.Prepare;
+        CORE.qryNominate.Open;
+      end;
+    finally
+      grid.EndUpdate;
+      CORE.qryNominate.EnableControls;
+  end;
   end;
 
 

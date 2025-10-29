@@ -2691,7 +2691,7 @@ object SwimClubSwitch: TSwimClubSwitch
     DefaultRowHeight = 50
     DrawingStyle = gdsClassic
     FixedColor = clWhite
-    RowCount = 3
+    RowCount = 2
     FixedRows = 1
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBlack
@@ -3067,8 +3067,6 @@ object SwimClubSwitch: TSwimClubSwitch
       FFC003FF}
     ShowPictureFields = True
     ShowUnicode = False
-    ExplicitWidth = 530
-    ExplicitHeight = 470
     ColWidths = (
       20
       50
@@ -3076,7 +3074,6 @@ object SwimClubSwitch: TSwimClubSwitch
       64)
     RowHeights = (
       0
-      50
       50)
   end
 end

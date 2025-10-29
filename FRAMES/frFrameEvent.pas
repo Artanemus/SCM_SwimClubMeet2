@@ -357,6 +357,7 @@ end;
 procedure TFrameEvent.Msg_SCM_Scroll_Event(var Msg: TMessage);
 begin
   // ...
+  ;
 end;
 
 procedure TFrameEvent.SetGridView_ColVisibility;

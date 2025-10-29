@@ -46,6 +46,7 @@ type
   published
     property DBVerInfoStr: string read FDBVerInfoStr;
 
+
   end;
 
 var
@@ -172,6 +173,7 @@ begin
   else
     raise Exception.CreateFmt('Connection definition "%s" not found.', [ConnectionName]);
 end;
+
 
 
 end.

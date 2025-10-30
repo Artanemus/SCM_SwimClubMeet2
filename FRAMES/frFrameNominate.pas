@@ -30,14 +30,24 @@ type
     grid: TDBAdvGrid;
     actnlistNominate: TActionList;
     pumenuNominate: TPopupMenu;
+    procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
+        HTMLTemplate: string; Fields: TFields);
   private
     { Private declarations }
   public
     procedure Initialise();
+    procedure UpdateQryNominate();
 
-    // messages must be forwarded by main form.
+    // messages originate in the CORE and are forwarded by main form.
     procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
-      message SCM_SCROLL_FILTERMEMBER;
+      message SCM_SCROLL_FILTERMEMBER; // refreshes nominate and qualified icons
+
+    procedure Msg_SCM_Scroll_Session(var Msg: TMessage);
+      message SCM_SCROLL_SESSION; // events change with each session.
+
+
+    {TODO -oBSA -cGeneral : deleteing and inserting an event also needs tracking
+      - it maybe easier to update query each time the tabsheet is selected?}
 
   end;
 
@@ -50,6 +60,18 @@ implementation
 
 uses
   dmSCM2, dmCORE, uSwimClub, uSession, uNominate;
+
+procedure TFrameNominate.gridGetHTMLTemplate(Sender: TObject; ACol, ARow:
+    Integer; var HTMLTemplate: string; Fields: TFields);
+var
+  s: string;
+begin
+  s := '''
+    <FONT size="12"><P line-height=".5"><B><#SubText></B><BR>
+    <#Caption></P></FONT>
+    ''';
+  HTMLTemplate := s;
+end;
 
 procedure TFrameNominate.Initialise;
 begin
@@ -85,34 +107,38 @@ begin
     grid.EndUpdate;
   end;end;
 
+
 procedure TFrameNominate.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
 begin
-  { member changed in filtermember FRAME}
-  // avoid unnessary calls during boot-up.
+    UpdateQryNominate;
+end;
 
+procedure TFrameNominate.Msg_SCM_Scroll_Session(var Msg: TMessage);
+begin
+    UpdateQryNominate;
+end;
 
+procedure TFrameNominate.UpdateQryNominate;
+begin
   if Assigned(SCM2) and SCM2.scmConnection.Connected
     and Assigned(CORE) and  CORE.IsActive then
   begin
-
     grid.BeginUpdate;
     CORE.qryNominate.DisableControls;
     try
       begin
         CORE.qryNominate.Close;
-        CORE.qryNominate.ParamByName('MEMBERID').AsInteger := Msg.WParam;
+        CORE.qryNominate.ParamByName('MEMBERID').AsInteger := CORE.qryFilterMember.FieldByName('MemberID').AsInteger;
         CORE.qryNominate.ParamByName('SESSIONID').AsInteger := uSession.PK;
         CORE.qryNominate.ParamByName('SEEDDATE').AsDateTime := uNominate.GetSeedDate();
         CORE.qryNominate.Prepare;
         CORE.qryNominate.Open;
       end;
     finally
-      grid.EndUpdate;
       CORE.qryNominate.EnableControls;
+      grid.EndUpdate;
+    end;
   end;
-  end;
-
-
 end;
 
 end.

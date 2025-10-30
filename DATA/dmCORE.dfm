@@ -1195,6 +1195,7 @@ object CORE: TCORE
   end
   object qryNominate: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     Connection = TestConnection
     SQL.Strings = (
       'USE SwimClubMeet2;'

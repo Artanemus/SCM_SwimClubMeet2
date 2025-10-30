@@ -107,6 +107,7 @@ type
     procedure FormShow(Sender: TObject);
     procedure frEventactnEv_GridViewExecute(Sender: TObject);
     procedure GenericActionUpdate(Sender: TObject);
+    procedure PageControlChange(Sender: TObject);
     procedure pnlTitleBarCustomButtons0Click(Sender: TObject);
     procedure pnlTitleBarCustomButtons0Paint(Sender: TObject);
     procedure pnlTitleBarCustomButtons1Click(Sender: TObject);
@@ -128,8 +129,7 @@ type
     procedure Msg_SCM_Connect(var Msg: TMessage); message SCM_Connect;
     procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
     procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
-    procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
-      message SCM_SCROLL_FILTERMEMBER;
+    procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage); message SCM_SCROLL_FILTERMEMBER;
 
   end;
 
@@ -314,7 +314,8 @@ begin
   StatusBar.Panels[0].Text := 'NOT CONNECTED'; // connection state
   StatusBar.Panels[1].Text := ''; // nominee count
   StatusBar.Panels[2].Text := ''; // entrant count
-  StatusBar.Panels[2].Text := ''; // status messages
+  StatusBar.Panels[3].Text := ''; // week of...
+  StatusBar.Panels[4].Text := ''; // week of...
 
   Application.ShowHint := true;
 
@@ -393,6 +394,8 @@ begin
   File_Connection.Execute;
 end;
 
+
+
 procedure TMain2.Msg_SCM_Scroll_Event(var Msg: TMessage);
 begin
   // pass message forward to event frame...
@@ -408,10 +411,14 @@ begin
 end;
 
 procedure TMain2.Msg_SCM_Scroll_Session(var Msg: TMessage);
+var
+  i: integer;
 begin
   if fscmIsConnecting then exit;
   // pass message forward to session frame...
   SendMessage(frSession.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
+  // update the list of events in nominate frame...
+  //  SendMessage(frNominate.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
   try // update the status bar with nominee and entrant counts.
     if (uSession.IsLocked) then
     begin // Fast.. gets the pre-calculated params from table.
@@ -423,7 +430,11 @@ begin
       StatusBar.Panels[1].Text := IntToStr(uSession.CalcSess_NomineeCount);
       StatusBar.Panels[2].Text := IntToStr(uSession.CalcSess_EntrantCount);
     end;
-    StatusBar.Panels[3].Text := IntToStr(uSession.WeeksSinceSeasonStart);
+    i := uSession.WeeksSinceSeasonStart;
+    if (i < 28) and (i > 0) then
+      StatusBar.Panels[3].Text := IntToStr(i)
+    else
+      StatusBar.Panels[3].Text := '';
   except on E: Exception do
     begin
       StatusBar.Panels[1].Text := 'ERR';
@@ -432,6 +443,12 @@ begin
     end;
   end;
 
+end;
+
+procedure TMain2.PageControlChange(Sender: TObject);
+begin
+  if PageControl.ActivePageIndex = 1 then
+    frNominate.UpdateQryNominate;
 end;
 
 procedure TMain2.pnlTitleBarCustomButtons0Click(Sender: TObject);
@@ -520,11 +537,14 @@ begin
     end;
     3: // SWIMMING SEASON WEEK COUNT.
     begin
-      IMG.imglstStatusPanel.Draw(StatusBar.Canvas, Rect.Left, Rect.Top  + 4, 3);
-      if connected then
+      if not Panel.Text.IsEmpty  then
       begin
-        StatusBar.Canvas.Font.Color := FontColor;
-        StatusBar.Canvas.TextOut(Rect.Left + 30, Rect.Top + 6, Panel.Text );
+        IMG.imglstStatusPanel.Draw(StatusBar.Canvas, Rect.Left, Rect.Top  + 4, 3);
+        if connected then
+        begin
+          StatusBar.Canvas.Font.Color := FontColor;
+          StatusBar.Canvas.TextOut(Rect.Left + 30, Rect.Top + 6, Panel.Text );
+        end;
       end;
     end;
     4: // SYSTEM MESSAGE

@@ -68,10 +68,10 @@ object FrameNominate: TFrameNominate
       Align = alClient
       Color = clWhite
       ColCount = 6
-      DefaultRowHeight = 48
+      DefaultRowHeight = 46
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 2
+      RowCount = 6
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -85,6 +85,7 @@ object FrameNominate: TFrameNominate
       GridLineColor = 15987699
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
+      HTMLKeepLineBreak = False
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
       ActiveCellFont.Height = -12
@@ -282,7 +283,7 @@ object FrameNominate: TFrameNominate
           PrintFont.Style = []
         end
         item
-          Alignment = taRightJustify
+          Alignment = taCenter
           Borders = []
           BorderPen.Color = clSilver
           ButtonHeight = 18
@@ -329,8 +330,8 @@ object FrameNominate: TFrameNominate
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
           HTMLTemplate = 
-            '<FONT size="12"><#SubText></FONT><BR><FONT size="10"><#Caption><' +
-            '/FONT>'
+            '<FONT size="12"><P line-height=".5"><B><#SubText></B><BR><#Capti' +
+            'on></P></FONT>'
           Name = 'IMG.imglstNomQualified'
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
@@ -507,6 +508,7 @@ object FrameNominate: TFrameNominate
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
+      OnGetHTMLTemplate = gridGetHTMLTemplate
       ColWidths = (
         20
         50
@@ -516,7 +518,11 @@ object FrameNominate: TFrameNominate
         50)
       RowHeights = (
         0
-        48)
+        46
+        46
+        46
+        46
+        46)
     end
   end
   object actnlistNominate: TActionList

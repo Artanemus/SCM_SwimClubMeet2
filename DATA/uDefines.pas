@@ -20,7 +20,6 @@ const
    SCM_SCROLL_FILTERMEMBER = WM_USER + 13;
    SCM_CONNECT = WM_USER + 14;
    SCM_DISCONNECT = WM_USER + 15;
-//   SCM_SWIMCLUB_CHANGED = WM_USER + 15;
 
  type
  scmSendToFileType = (sftPDF, sftXLS, sftHTML, sftIMG, sftNA);

@@ -30,6 +30,7 @@ type
     grid: TDBAdvGrid;
     actnlistNominate: TActionList;
     pumenuNominate: TPopupMenu;
+    procedure gridClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
   private
@@ -60,6 +61,42 @@ implementation
 
 uses
   dmSCM2, dmCORE, uSwimClub, uSession, uNominate;
+
+procedure TFrameNominate.gridClickCell(Sender: TObject; ARow, ACol: Integer);
+var
+  aEventID, amemberID: integer;
+begin
+  if ARow >= grid.FixedRows then
+  begin
+    if ACol = 1 then
+    begin
+      grid.BeginUpdate;
+      CORE.qryNominate.DisableControls;
+      try
+        aMemberID := CORE.qryFilterMember.FieldByName('MemberID').AsInteger;
+        aEventID := CORE.qryNominate.FieldByName('EventID').AsInteger;
+        if (aMemberID=0) or (aEventID=0)  then exit;
+        // is the member nominate?
+        if uNominate.Locate_Nominee(aMemberID, aEventID) then
+        begin
+          // UN-NOMINATE the member.
+          uNominate.DeleteNominee(aMemberID, aEventID);
+        end
+        else
+        begin
+          // NOMINATE THE MEMBER TO THE EVENT...
+          uNominate.NewNominee(aMemberID, aEventID);
+        end;
+      finally
+        CORE.qryNominate.EnableControls;
+        CORE.qryNominate.Refresh;
+        grid.EndUpdate;
+
+      end;
+
+    end;
+  end;
+end;
 
 procedure TFrameNominate.gridGetHTMLTemplate(Sender: TObject; ACol, ARow:
     Integer; var HTMLTemplate: string; Fields: TFields);

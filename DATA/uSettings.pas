@@ -27,6 +27,11 @@ type
     // FrameMember - grid sorton members name.
     MemberSortOn: integer; // 0 firstname-lastname 1 lastname-firstname;
 
+    // variables used to calcuate a Time-To-Beat
+    ttb_algorithm: integer;
+    ttb_calcDefault: integer;
+    ttb_percent: double;
+
     constructor Create(); overload;
     constructor Create(AutoLoad: boolean); overload;
     destructor Destroy(); override;
@@ -79,6 +84,11 @@ begin
   HideLockedSessions := false;
   MemberSortOn := 0;
   SeedDateAuto := 0;
+
+  ttb_algorithm := 2;
+  ttb_calcDefault := 1;
+  ttb_percent :=  50;
+
   ForceDirectories(GetDefPath());
   if not FileExists(GetDefPathFileName()) then
     SaveToFile();

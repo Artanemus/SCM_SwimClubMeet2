@@ -71,7 +71,7 @@ object FrameNominate: TFrameNominate
       DefaultRowHeight = 46
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 6
+      RowCount = 2
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -85,6 +85,7 @@ object FrameNominate: TFrameNominate
       GridLineColor = 15987699
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
+      OnClickCell = gridClickCell
       HTMLKeepLineBreak = False
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
@@ -518,10 +519,6 @@ object FrameNominate: TFrameNominate
         50)
       RowHeights = (
         0
-        46
-        46
-        46
-        46
         46)
     end
   end

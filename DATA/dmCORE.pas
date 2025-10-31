@@ -127,6 +127,7 @@ type
     qryNominateSessionID: TIntegerField;
     qryNominateNominated: TIntegerField;
     qryNominateQualified: TIntegerField;
+    qryMemberStats: TFDQuery;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterEdit(DataSet: TDataSet);

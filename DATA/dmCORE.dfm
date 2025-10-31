@@ -1195,7 +1195,6 @@ object CORE: TCORE
   end
   object qryNominate: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     Connection = TestConnection
     SQL.Strings = (
       'USE SwimClubMeet2;'
@@ -1316,5 +1315,65 @@ object CORE: TCORE
     DataSet = qryNominate
     Left = 944
     Top = 24
+  end
+  object qryMemberStats: TFDQuery
+    Connection = TestConnection
+    SQL.Strings = (
+      ''
+      'DECLARE @MemberID INTEGER = :MEMBERID;  -- :MEMBERID'
+      'DECLARE @SeedDate DATETIME = :SeedDate;'
+      'DECLARE @EventID INTEGER = :EVENTID;'
+      'DECLARE @Algorithm INTEGER = 1; -- '
+      'DECLARE @CalcDefault INTEGER = 1; -- '
+      'DECLARE @Percent FLOAT = 50.0;'
+      ''
+      'DECLARE @DistanceID INTEGER;'
+      'DECLARE @StrokeID INTEGER;'
+      ''
+      
+        'SET @DistanceID = (SELECT DistanceID FROM dbo.Event WHERE [Event' +
+        '].EventID = @EventID);'
+      
+        'SET @StrokeID = (SELECT StrokeID FROM dbo.Event WHERE [Event].Ev' +
+        'entID = @EventID);'
+      ''
+      'if @SeedDate IS NULL SET @SeedDate = GETDATE();'
+      ''
+      ''
+      'SELECT m.MemberID,'
+      #9'dbo.SwimmerAge(@SeedDate, m.DOB) AS DOB,'
+      
+        #9'--dbo.TimeToBeat(@Algorithm, @CalcDefault, @Percent, m.MemberID' +
+        ', @DistanceID, @StrokeID, @SeedDate),'
+      
+        #9'dbo.PersonalBest(m.MemberID, @DistanceID, @StrokeID, @SeedDate)' +
+        ' AS PB,'
+      #9'PB.RaceTime'
+      'FROM dbo.Member m'
+      
+        'LEFT JOIN dbo.PB ON m.MemberID = PB.MemberID AND PB.DistanceID =' +
+        ' @DistanceID AND PB.StrokeID = @StrokeID'
+      'WHERE m.MemberID = @MemberID;')
+    Left = 944
+    Top = 264
+    ParamData = <
+      item
+        Name = 'MEMBERID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = Null
+      end
+      item
+        Name = 'SEEDDATE'
+        DataType = ftDateTime
+        ParamType = ptInput
+        Value = Null
+      end
+      item
+        Name = 'EVENTID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = Null
+      end>
   end
 end

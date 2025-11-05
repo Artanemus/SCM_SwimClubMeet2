@@ -16,33 +16,66 @@ uses
   function Locate_FilterMember(aMemberID: integer): Boolean;
   function Locate_Nominee(aMemberID, aEventID: integer): Boolean;
   function GetSeedDate(): TDate;
-  function NewNominee(aMemberID, aEventID: integer): integer;
-  function DeleteNominee(aMemberID, aEventID: integer): boolean;
+  function NewNominee(aMemberID: integer): integer; // current event (PARENT)
+  function DeleteNominee(aMemberID: integer): boolean; // current event (PARENT)
 
 
 implementation
 
 uses
 
-dmCORE, dmSCM2, uDefines, uSettings, uSwimClub, uSession ;
+dmCORE, dmSCM2, uDefines, uSettings, uSwimClub, uSession, uEvent ;
 
-function DeleteNominee(aMemberID, aEventID: integer): boolean;
+function DeleteNominee(aMemberID: integer): boolean;
+var
+  SQL: string;
+  v: variant;
 begin
+  result := false;
+  // Clear any lane assignement....
+  // uEvent.ClearEntrant(aMemberID);
+  SQL := '''
+    UPDATE SwimClubMeet2.dbo.Lane SET(NomineeID) = NULL
+    INNER JOIN dbo.Heat ON Lane.HeatID = Heat.HeatID
+    INNER JOIN dbo.Event ON heat.EventID = Event.EventID
+    INNER JOIN dbo.Nominee ON dbo.Event.EventID = Nominee.EventID
+    WHERE dbo.Event.EventID = :ID1 AND NomineeID.MemberID = :ID2
+    ''';
 
-    // Clear any lane assignement....
 
-    // finally delete the nominee.
-    CORE.qryNominee.Delete;
+  // Clear any team assignment...
+  // uTeam.ClearTeamMember();
+  SQL := '''
+      DELETE FROM SwimClubMeet2.dbo.TeamLink
+      INNER JOIN dbo.Nominee ON TeamLink.NomineeID = Nominee.NomineeID
+      WHERE Nominee.EventID := ID1 AND Nominee.MemberID := ID2
+      ''';
+  try
+    begin
+      v := SCM2.scmConnection.ExecSQL(SQL, [uEvent.PK, aMemberID]);
+      if uNominate.Locate_Nominee(aMemberID, uEvent.PK) then
+      begin
+        // finally delete the nominee.
+        CORE.qryNominee.Delete;
+        result := true;
+      end;
+    end;
+  except on E: Exception do
+  end;
 
 end;
 
 
 
 
-function NewNominee(aMemberID, aEventID: integer): integer;
+function NewNominee(aMemberID: integer): integer;
 begin
-  // can't assign a member to an event if there isn't any events!
+  result := 0;
+
+  if not Assigned(CORE) then exit;
+  if not CORE.IsActive then exit;
   if CORE.qryEvent.IsEmpty then exit;
+
   CORE.qryNominee.CheckBrowseMode;
   CORE.qryNominee.DisableControls();
   try
@@ -52,20 +85,27 @@ begin
         CORE.qryMemberStats.Connection := SCM2.scmConnection;
         CORE.qryMemberStats.Close;
         CORE.qryMemberStats.ParamByName('MEMBERID').AsInteger := aMemberID;
-        CORE.qryMemberStats.ParamByName('EVENTID').AsInteger := aEventID;
+        CORE.qryMemberStats.ParamByName('EVENTID').AsInteger := uEvent.PK;
+
+        // SeedDate - Used to calculate AGE.
+        // StartOfSeason, StartOfSession, Today's Date.
         CORE.qryMemberStats.ParamByName('SEEDDATE').AsDateTime := uNominate.GetSeedDate();
 
-        if Assigned(Settings) then
+        if Assigned(Settings) then     //Algorithm
         begin
            CORE.qryMemberStats.ParamByName('ALGORITHM').AsInteger := Settings.ttb_algorithm;
-           CORE.qryMemberStats.ParamByName('CALCDEFAULT').AsInteger := Settings.ttb_calcDefault;
+           CORE.qryMemberStats.ParamByName('CALCDEFRT').AsInteger := Settings.ttb_calcDefRT;
            CORE.qryMemberStats.ParamByName('PERCENT').AsFloat := Settings.ttb_percent;
         end
         else
         begin
-           CORE.qryMemberStats.ParamByName('ALGORITHM').AsInteger := 2;
-           CORE.qryMemberStats.ParamByName('CALCDEFAULT').AsInteger := 1;
-           CORE.qryMemberStats.ParamByName('PERCENT').AsFloat := 50.0;
+          // Calculate the entrant's average RT from top 3 race-times
+          CORE.qryMemberStats.ParamByName('ALGORITHM').AsInteger := 1;
+          // If no RT exists ...
+          // Calculate race-time from the average times of (filtered) swimmers
+          CORE.qryMemberStats.ParamByName('CALCDEFRT').AsInteger := 1;
+           // The (bottom) percent to select from ... default is 50%.
+          CORE.qryMemberStats.ParamByName('PERCENT').AsFloat := 50.0;
         end;
 
         CORE.qryMemberStats.Prepare;
@@ -78,12 +118,18 @@ begin
         CORE.qryNominee.FieldByName('AGE').AsInteger := CORE.qryMemberStats.FieldByName('AGE').AsInteger;
         CORE.qryNominee.FieldByName('TTB').AsDateTime := CORE.qryMemberStats.FieldByName('TTB').AsDateTime;
         CORE.qryNominee.FieldByName('PB').AsDateTime :=CORE.qryMemberStats.FieldByName('PB').AsDateTime;
-        CORE.qryNominee.FieldByName('IsEntrant').AsBoolean := false;
         CORE.qryNominee.FieldByName('SeedTime').AsDateTime := CORE.qryMemberStats.FieldByName('RaceTime').AsDateTime;
-        CORE.qryNominee.FieldByName('AutoBuildFlag').Clear;
-        CORE.qryNominee.FieldByName('EventID').AsInteger := aEventID;
         CORE.qryNominee.FieldByName('MemberID').AsInteger := aMemberID;
         CORE.qryNominee.Post;
+
+        // Get the newly created nominee ID.. Safe to do in FireDAC.
+        result := CORE.qryNominee.FieldByName('NomineeID').AsInteger;
+
+      {  // BEST PRACTISE - Alternative method...
+      v := SCM2.scmConnection.ExecSQLScalar('SELECT IDENT_CURRENT (''dbo.Nominee'');' );
+      if not VarIsClear(v) and (v=0) then  NomineeID := v;
+      }
+
       except on E: Exception do
           CORE.qryNominee.Cancel;
       end;
@@ -93,8 +139,6 @@ begin
     CORE.qryNominee.EnableControls();
   end;
 end;
-
-
 
 
 function Locate_FilterMember(aMemberID: integer): Boolean;

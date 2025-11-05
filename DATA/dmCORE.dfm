@@ -586,6 +586,7 @@ object CORE: TCORE
   end
   object qryNominee: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    OnNewRecord = qryNomineeNewRecord
     Indexes = <
       item
         Active = True
@@ -1272,7 +1273,7 @@ object CORE: TCORE
       end
       item
         Name = 'SEEDDATE'
-        DataType = ftDate
+        DataType = ftDateTime
         ParamType = ptInput
         Value = Null
       end>
@@ -1323,9 +1324,9 @@ object CORE: TCORE
       'DECLARE @MemberID INTEGER = :MEMBERID;  -- :MEMBERID'
       'DECLARE @SeedDate DATETIME = :SeedDate;'
       'DECLARE @EventID INTEGER = :EVENTID;'
-      'DECLARE @Algorithm INTEGER = 1; -- '
-      'DECLARE @CalcDefault INTEGER = 1; -- '
-      'DECLARE @Percent FLOAT = 50.0;'
+      'DECLARE @Algorithm INTEGER = :ALGORITHM; -- 1; -- '
+      'DECLARE @CalcDefRT INTEGER = :CALCDEFRT;  --1; -- '
+      'DECLARE @Percent FLOAT = :PERCENT; ---50.0;'
       ''
       'DECLARE @DistanceID INTEGER;'
       'DECLARE @StrokeID INTEGER;'
@@ -1343,8 +1344,8 @@ object CORE: TCORE
       'SELECT m.MemberID,'
       #9'dbo.SwimmerAge(@SeedDate, m.DOB) AS DOB,'
       
-        #9'--dbo.TimeToBeat(@Algorithm, @CalcDefault, @Percent, m.MemberID' +
-        ', @DistanceID, @StrokeID, @SeedDate),'
+        #9'--dbo.TimeToBeat(@Algorithm, @CalcDefRT, @Percent, m.MemberID, ' +
+        '@DistanceID, @StrokeID, @SeedDate),'
       
         #9'dbo.PersonalBest(m.MemberID, @DistanceID, @StrokeID, @SeedDate)' +
         ' AS PB,'
@@ -1374,6 +1375,24 @@ object CORE: TCORE
         DataType = ftInteger
         ParamType = ptInput
         Value = Null
+      end
+      item
+        Name = 'ALGORITHM'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = 1
+      end
+      item
+        Name = 'CALCDEFRT'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = 1
+      end
+      item
+        Name = 'PERCENT'
+        DataType = ftFloat
+        ParamType = ptInput
+        Value = 50.000000000000000000
       end>
   end
 end

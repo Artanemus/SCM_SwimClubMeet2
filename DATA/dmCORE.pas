@@ -135,6 +135,7 @@ type
     procedure qryEventNewRecord(DataSet: TDataSet);
     procedure qryFilterMemberAfterScroll(DataSet: TDataSet);
     procedure qryHeatAfterScroll(DataSet: TDataSet);
+    procedure qryNomineeNewRecord(DataSet: TDataSet);
     procedure qrySessionAfterScroll(DataSet: TDataSet);
     procedure qrySessionBeforePost(DataSet: TDataSet);
     procedure qrySessionNewRecord(DataSet: TDataSet);
@@ -188,6 +189,7 @@ begin
     qryMember.Connection := SCM2.scmConnection;
     qrySession.Connection := SCM2.scmConnection;
     qryEvent.Connection := SCM2.scmConnection;
+    qryNominee.Connection := SCM2.scmConnection; // members nominated to events.
     qryHeat.Connection := SCM2.scmConnection;
     qryLane.Connection := SCM2.scmConnection;
     qryWatchTime.Connection := SCM2.scmConnection;
@@ -195,9 +197,11 @@ begin
     qryTeam.Connection := SCM2.scmConnection;
     qryTeamLink.Connection := SCM2.scmConnection;
 
-    // Nomination tabsheet - object : FrameMember.
+    // Nomination tabsheet - object : FrameMember. Manual open/close...
+    // ------------------------------------------
     qryFilterMember.Connection := SCM2.scmConnection;
     qryNominate.Connection := SCM2.scmConnection;
+    // ------------------------------------------
 
     {  if any table fails to open - a EFDDBEngineException occurs
       and FIsActive returns false.}
@@ -224,6 +228,7 @@ begin
       qrySession.IndexName := 'indxShowAll';
       qrySession.Open;
       qryEvent.Open;
+      qryNominee.Open;
       qryHeat.Open;
       qryLane.Open;
       qryWatchTime.Open;
@@ -259,6 +264,7 @@ begin
     // Detailed tables.
     qrySession.Close;
     qryEvent.Close;
+    qryNominee.Close;
     qryHeat.Close;
     qryLane.Close;
     qryWatchTime.Close;
@@ -283,8 +289,6 @@ begin
   // manage and assign event number
   if DataSet.FieldByName('EventNum').IsNull then
   begin
-//    if DataSet.State <> dsEdit then DataSet.Edit;
-
     if DataSet.State = dsEdit then
     begin
       DataSet.FieldByName('EventNum').AsInteger := DataSet.RecNo;
@@ -333,6 +337,14 @@ begin
   begin
     PostMessage(msgHandle, SCM_SCROLL_HEAT, 0,0);
   end;
+end;
+
+procedure TCORE.qryNomineeNewRecord(DataSet: TDataSet);
+begin
+  DataSet.FieldByName('EventID').AsInteger :=
+    qryEvent.FieldByName('EventID').AsInteger; // Master-Detail
+  DataSet.FieldByName('IsEntrant').AsBoolean := false;
+  DataSet.FieldByName('AutoBuildFlag').AsBoolean := false;
 end;
 
 procedure TCORE.qrySessionAfterScroll(DataSet: TDataSet);

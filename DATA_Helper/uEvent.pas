@@ -62,6 +62,7 @@ begin
   CORE.qryWatchTime.DisableControls;
   CORE.qryLane.DisableControls;
   CORE.qryHeat.DisableControls;
+  CORE.qryNominee.DisableControls;
 end;
 
 procedure DetailTBLs_ApplyMaster;
@@ -70,6 +71,9 @@ begin
   CORE.qryEvent.ApplyMaster;
   if CORE.qryEvent.RecordCount <> 0 then
   begin
+
+    CORE.qryNominee.ApplyMaster;
+
     CORE.qryHeat.ApplyMaster;
     if CORE.qryHeat.RecordCount <> 0 then
     begin
@@ -86,6 +90,7 @@ end;
 
 procedure DetailTBLs_EnableCNTRLs;
 begin
+  CORE.qryNominee.EnableControls;
   CORE.qryHeat.EnableControls;
   CORE.qryLane.EnableControls;
   CORE.qryWatchTime.EnableControls;

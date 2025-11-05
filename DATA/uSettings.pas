@@ -29,7 +29,7 @@ type
 
     // variables used to calcuate a Time-To-Beat
     ttb_algorithm: integer;
-    ttb_calcDefault: integer;
+    ttb_calcDefRT: integer;
     ttb_percent: double;
 
     constructor Create(); overload;
@@ -86,7 +86,7 @@ begin
   SeedDateAuto := 0;
 
   ttb_algorithm := 2;
-  ttb_calcDefault := 1;
+  ttb_calcDefRT := 1;
   ttb_percent :=  50;
 
   ForceDirectories(GetDefPath());

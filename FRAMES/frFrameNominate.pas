@@ -79,21 +79,19 @@ begin
         // is the member nominate?
         if uNominate.Locate_Nominee(aMemberID, aEventID) then
         begin
-          // UN-NOMINATE the member.
-          uNominate.DeleteNominee(aMemberID, aEventID);
+          // UN-NOMINATE the member. (in the current event)
+          uNominate.DeleteNominee(aMemberID);
         end
         else
         begin
-          // NOMINATE THE MEMBER TO THE EVENT...
-          uNominate.NewNominee(aMemberID, aEventID);
+          // NOMINATE the member. (for the current event)
+          uNominate.NewNominee(aMemberID);
         end;
       finally
+        CORE.qryNominate.Refresh; // redraws (icon) checkbox state.
         CORE.qryNominate.EnableControls;
-        CORE.qryNominate.Refresh;
         grid.EndUpdate;
-
       end;
-
     end;
   end;
 end;

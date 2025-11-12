@@ -2829,11 +2829,10 @@ object Main2: TMain2
     Width = 1103
     Height = 664
     Margins.Top = 10
-    ActivePage = tabNominate
+    ActivePage = tabSession
     Align = alClient
     TabOrder = 3
     OnChange = PageControlChange
-    ExplicitLeft = -2
     object tabSession: TTabSheet
       Caption = 'Session'
       object pnlSession: TPanel
@@ -3017,6 +3016,7 @@ object Main2: TMain2
             inherited grid: TDBAdvGrid
               Width = 620
               Height = 628
+              ExplicitLeft = 0
               ExplicitWidth = 620
               ExplicitHeight = 628
               RowHeights = (

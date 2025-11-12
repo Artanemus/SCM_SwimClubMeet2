@@ -102,7 +102,9 @@ begin
           // Calculate the entrant's average RT from top 3 race-times
           CORE.qryMemberStats.ParamByName('ALGORITHM').AsInteger := 1;
           // If no RT exists ...
-          // Calculate race-time from the average times of (filtered) swimmers
+          // 0 - ignore
+          // 1 - Calculate race-time from the average times of (filtered) swimmers
+          // 2 - use SeedTime
           CORE.qryMemberStats.ParamByName('CALCDEFRT').AsInteger := 1;
            // The (bottom) percent to select from ... default is 50%.
           CORE.qryMemberStats.ParamByName('PERCENT').AsFloat := 50.0;
@@ -118,7 +120,7 @@ begin
         CORE.qryNominee.FieldByName('AGE').AsInteger := CORE.qryMemberStats.FieldByName('AGE').AsInteger;
         CORE.qryNominee.FieldByName('TTB').AsDateTime := CORE.qryMemberStats.FieldByName('TTB').AsDateTime;
         CORE.qryNominee.FieldByName('PB').AsDateTime :=CORE.qryMemberStats.FieldByName('PB').AsDateTime;
-        CORE.qryNominee.FieldByName('SeedTime').AsDateTime := CORE.qryMemberStats.FieldByName('RaceTime').AsDateTime;
+        CORE.qryNominee.FieldByName('SeedTime').AsDateTime := CORE.qryMemberStats.FieldByName('SeedTime').AsDateTime;
         CORE.qryNominee.FieldByName('MemberID').AsInteger := aMemberID;
         CORE.qryNominee.Post;
 

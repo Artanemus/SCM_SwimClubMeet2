@@ -1,0 +1,368 @@
+object Preferences: TPreferences
+  Left = 0
+  Top = 0
+  BorderStyle = bsDialog
+  Caption = 'SwimClubMeet Preferences...'
+  ClientHeight = 590
+  ClientWidth = 728
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -16
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  KeyPreview = True
+  Position = poOwnerFormCenter
+  ShowHint = True
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnKeyDown = FormKeyDown
+  TextHeight = 21
+  object Panel1: TPanel
+    Left = 0
+    Top = 0
+    Width = 728
+    Height = 41
+    Align = alTop
+    BevelOuter = bvNone
+    TabOrder = 0
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 542
+    Width = 728
+    Height = 48
+    Align = alBottom
+    BevelOuter = bvNone
+    TabOrder = 1
+    DesignSize = (
+      728
+      48)
+    object btnClose: TButton
+      Left = 623
+      Top = 6
+      Width = 101
+      Height = 33
+      Anchors = [akTop, akRight]
+      Caption = 'Close'
+      TabOrder = 0
+      OnClick = btnCloseClick
+    end
+  end
+  object PageControl1: TPageControl
+    Left = 0
+    Top = 41
+    Width = 728
+    Height = 501
+    ActivePage = TabSheet7
+    Align = alClient
+    TabOrder = 2
+    object TabSheet2: TTabSheet
+      Caption = 'TTB'
+      object Label7: TLabel
+        Left = 9
+        Top = 205
+        Width = 398
+        Height = 21
+        Caption = 'Should the algorithm not be able to calculate a TTB, then...'
+      end
+      object Label8: TLabel
+        Left = 271
+        Top = 272
+        Width = 333
+        Height = 21
+        Caption = 'percent. (With consideration to age and gender.)'
+      end
+      object lbl2: TLabel
+        Left = 9
+        Top = 19
+        Width = 143
+        Height = 17
+        Caption = 'Entrant'#39's Time To Beat.'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold, fsUnderline]
+        ParentFont = False
+      end
+      object lbl1: TLabel
+        Left = 56
+        Top = 272
+        Width = 158
+        Height = 21
+        Caption = 'average of the bottom '
+      end
+      object prefAlgorithm: TRadioGroup
+        Left = 9
+        Top = 66
+        Width = 544
+        Height = 119
+        Caption = 'Algorithm ... '
+        ItemIndex = 1
+        Items.Strings = (
+          'Use the last known race time swum by the nominee.'
+          
+            'Find the average of the 3 fastest race times swum by the nominee' +
+            '.'
+          'Use the nominee'#39's personal best as the calculated race time.')
+        TabOrder = 0
+      end
+      object prefcalcDefRT: TCheckBox
+        Left = 38
+        Top = 232
+        Width = 531
+        Height = 34
+        Caption = 
+          'Use the swim club'#39's historical data to calculate a TTB based on ' +
+          'the mean'
+        Checked = True
+        State = cbChecked
+        TabOrder = 1
+        WordWrap = True
+      end
+      object prefcalcDefRTpercent: TSpinEdit
+        Left = 220
+        Top = 272
+        Width = 45
+        Height = 31
+        MaxValue = 100
+        MinValue = 0
+        TabOrder = 2
+        Value = 50
+      end
+    end
+    object tab1: TTabSheet
+      Caption = 'AutoBuild'
+      ImageIndex = 2
+      DesignSize = (
+        720
+        465)
+      object lbl3: TLabel
+        Left = 9
+        Top = 19
+        Width = 110
+        Height = 17
+        Caption = 'Auto-Build Heats.'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Segoe UI'
+        Font.Style = [fsBold, fsUnderline]
+        ParentFont = False
+      end
+      object btn1: TSpeedButton
+        Left = 199
+        Top = 15
+        Width = 33
+        Height = 33
+        Hint = 'Club Members'
+        Anchors = [akTop, akRight]
+        Flat = True
+        Glyph.Data = {
+          36090000424D3609000000000000360000002800000018000000180000000100
+          2000000000000009000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000004000000330000
+          005E000000790000008600000086000000790000005E00000033000000040000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000002F0000007C0000008A0000
+          008A0000008A00000089000000890000008A0000008A0000008A0000007C0000
+          002F000000000000000000000000000000000000000000000000000000000000
+          00000000000000000000000000010000004D0000008A0000008A0000006D0000
+          003400000011000000010000000100000011000000340000006D0000008A0000
+          008A0000004D0000000100000000000000000000000000000000000000000000
+          000000000000000000000000004D0000008A0000008500000036000000010000
+          0000000000000000000000000000000000000000000000000001000000360000
+          00850000008A0000004D00000000000000000000000000000000000000000000
+          0000000000000000002F0000008A000000860000002300000000000000000000
+          0000000000000000000200000002000000000000000000000000000000000000
+          0023000000860000008A0000002F000000000000000000000000000000000000
+          0000000000040000007C0000008A000000360000000000000000000000000000
+          0000000000000000008800000088000000000000000000000000000000000000
+          0000000000360000008A0000007C000000040000000000000000000000000000
+          0000000000330000008A0000006D000000010000000000000000000000000000
+          0000000000000000008800000088000000000000000000000000000000000000
+          0000000000010000006D0000008A000000330000000000000000000000000000
+          00000000005E0000008A00000034000000000000000000000000000000000000
+          0000000000000000008800000088000000000000000000000000000000000000
+          000000000000000000340000008A0000005E0000000000000000000000000000
+          0000000000790000008A00000011000000000000000000000000000000000000
+          0000000000000000008800000088000000000000000000000000000000000000
+          000000000000000000110000008A000000790000000000000000000000000000
+          0000000000860000008900000001000000000000000000000000000000000000
+          0000000000000000008800000088000000000000000000000000000000000000
+          0000000000000000000100000089000000860000000000000000000000000000
+          0000000000860000008900000001000000000000000000000000000000000000
+          0000000000000000008600000086000000000000000000000000000000000000
+          0000000000000000000100000089000000860000000000000000000000000000
+          0000000000790000008A00000011000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000110000008A000000790000000000000000000000000000
+          00000000005E0000008A00000034000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          000000000000000000340000008A0000005E0000000000000000000000000000
+          0000000000330000008A0000006D000000010000000000000000000000000000
+          0000000000000000008800000088000000000000000000000000000000000000
+          0000000000010000006D0000008A000000330000000000000000000000000000
+          0000000000040000007C0000008A000000360000000000000000000000000000
+          0000000000000000008800000088000000000000000000000000000000000000
+          0000000000360000008A0000007C000000040000000000000000000000000000
+          0000000000000000002F0000008A000000850000002300000000000000000000
+          0000000000000000000200000002000000000000000000000000000000000000
+          0023000000850000008A0000002F000000000000000000000000000000000000
+          000000000000000000000000004D0000008A0000008600000036000000010000
+          0000000000000000000000000000000000000000000000000001000000360000
+          00860000008A0000004D00000000000000000000000000000000000000000000
+          00000000000000000000000000010000004D0000008A0000008A0000006D0000
+          003400000011000000010000000100000011000000340000006D0000008A0000
+          008A0000004D0000000100000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000002F0000007C0000008A0000
+          008A0000008A00000089000000890000008A0000008A0000008A0000007C0000
+          002F000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000004000000330000
+          005E000000790000008600000086000000790000005E00000033000000040000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000000000000000
+          0000000000000000000000000000000000000000000000000000}
+        Layout = blGlyphTop
+        Margin = 0
+        Visible = False
+        ExplicitLeft = 139
+      end
+      object lblSeedDepth2: TLabel
+        Left = 435
+        Top = 226
+        Width = 73
+        Height = 21
+        Caption = '(Default 3)'
+      end
+      object lblSeedDepth1: TLabel
+        Left = 298
+        Top = 226
+        Width = 81
+        Height = 21
+        Caption = 'Seed depth:'
+      end
+      object prefSeperateGender: TCheckBox
+        Left = 9
+        Top = 60
+        Width = 163
+        Height = 26
+        Hint = 'Seperate male and female entrants.'
+        Caption = 'Seperate gender.'
+        TabOrder = 0
+      end
+      object prefExcludeOutsideLanes: TCheckBox
+        Left = 9
+        Top = 92
+        Width = 184
+        Height = 25
+        Hint = 'No swimming in the gutter lanes.'
+        Caption = 'Exclude outside lanes.'
+        TabOrder = 1
+      end
+      object prefGroupBy: TRadioGroup
+        Left = 3
+        Top = 123
+        Width = 254
+        Height = 175
+        Hint = 'Broad categories that gather together entants.'
+        Caption = 'Group entrants by ...'
+        Items.Strings = (
+          'Don'#39't group.'
+          'Entrant'#39's age.'
+          'Swimming Category.'
+          'Divisions.')
+        TabOrder = 2
+      end
+      object prefSeedMethod: TRadioGroup
+        Left = 297
+        Top = 130
+        Width = 264
+        Height = 87
+        Hint = 'Decides what lane an entrant is given.'
+        Caption = 'Seed Method (scattered using TTB).'
+        ItemIndex = 0
+        Items.Strings = (
+          'SwimClubMeet (default)'
+          'Circle Seeding')
+        TabOrder = 3
+      end
+      object prefSeedDepth: TSpinEdit
+        Left = 388
+        Top = 223
+        Width = 41
+        Height = 31
+        MaxValue = 10
+        MinValue = 0
+        TabOrder = 4
+        Value = 3
+      end
+    end
+    object TabSheet6: TTabSheet
+      Caption = 'Switches'
+      ImageIndex = 6
+      object prefEnableDQcodes: TCheckBox
+        Left = 32
+        Top = 43
+        Width = 649
+        Height = 20
+        Caption = 
+          'Enable FINA disqualification codes. (Else use the simplified met' +
+          'hod of disqualification.)'
+        TabOrder = 0
+      end
+      object prefShowDebugInfo: TCheckBox
+        Left = 32
+        Top = 69
+        Width = 633
+        Height = 65
+        Caption = 
+          'Show Debug Information. (Reveals a panel showing Primary Keys of' +
+          ' selected Sessions, Event, Heats, etc.) '
+        TabOrder = 1
+        WordWrap = True
+      end
+    end
+    object TabSheet7: TTabSheet
+      Caption = 'Member'
+      ImageIndex = 7
+      object Label19: TLabel
+        Left = 112
+        Top = 35
+        Width = 357
+        Height = 21
+        Caption = 'Number of data points to display in members chart.'
+      end
+      object Label20: TLabel
+        Left = 112
+        Top = 62
+        Width = 415
+        Height = 42
+        Caption = 
+          '(Range: 10-1000. Default: 26. Typically: 1 unit = 1 club night. ' +
+          '26 units = 1 swimming season.)'
+        WordWrap = True
+      end
+      object prefMemberChartDataPoints: TEdit
+        Left = 48
+        Top = 32
+        Width = 49
+        Height = 29
+        NumbersOnly = True
+        TabOrder = 0
+        Text = '26'
+      end
+    end
+  end
+end

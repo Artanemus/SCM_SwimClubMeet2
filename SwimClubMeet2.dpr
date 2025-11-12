@@ -29,7 +29,8 @@ uses
   dlgSwimClub_Manage in 'DIALOGS\SwimClub\dlgSwimClub_Manage.pas' {SwimClubManage},
   frFrameNominate in 'FRAMES\frFrameNominate.pas' {FrameNominate: TFrame},
   frFrameFilterMember in 'FRAMES\frFrameFilterMember.pas' {FrameFilterMember: TFrame},
-  uNominate in 'DATA_Helper\uNominate.pas';
+  uNominate in 'DATA_Helper\uNominate.pas',
+  dlgPreferences in 'TOOLS\dlgPreferences.pas' {Preferences};
 
 {$R *.res}
 

@@ -3220,7 +3220,7 @@ object SwimClubManage: TSwimClubManage
       Top = 0
       Width = 630
       Height = 575
-      ActivePage = ts_LinkedClubs
+      ActivePage = tsMain
       Align = alClient
       ParentShowHint = False
       ShowHint = True
@@ -3507,14 +3507,17 @@ object SwimClubManage: TSwimClubManage
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitLeft = 141
-          ExplicitTop = 111
+          ExplicitWidth = 622
+          ExplicitHeight = 539
           inherited pnlHeader: TPanel
             Width = 622
+            ExplicitWidth = 622
           end
           inherited pnlFooter: TPanel
             Top = 498
             Width = 622
+            ExplicitTop = 498
+            ExplicitWidth = 622
           end
           inherited rpnlBody: TRelativePanel
             Height = 459
@@ -3548,6 +3551,7 @@ object SwimClubManage: TSwimClubManage
                 AlignVerticalCenterWithPanel = False
                 RightOf = CGFrame.lbxL
               end>
+            ExplicitHeight = 459
             inherited lbxL: TListBox
               Height = 459
               ExplicitHeight = 459

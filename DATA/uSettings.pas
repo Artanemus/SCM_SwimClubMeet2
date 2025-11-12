@@ -28,9 +28,32 @@ type
     MemberSortOn: integer; // 0 firstname-lastname 1 lastname-firstname;
 
     // variables used to calcuate a Time-To-Beat
-    ttb_algorithm: integer;
-    ttb_calcDefRT: integer;
-    ttb_percent: double;
+    ttb_algorithmIndx: integer; // originally - HeatAlgorithm
+    ttb_calcDefRT: boolean; // originally - UseDefRaceTime
+    ttb_calcDefRTpercent: double;    // originally - RaceTimeTopPercent
+    ttb_checkMembersPB: boolean; // Inspect Members PB's data for ttb.
+
+    // Displays floating panel with PKs - a debug tool.
+    ShowDebugInfo: boolean;
+
+    // limits number of data points shown when charting members RTs
+    MemberChartDataPoints: integer;
+
+    // depreciated.
+    // HideTitlePanel: boolean; // no longer required.
+    // UseWindowsDefTheme: boolean; // only one theme available.
+    // CheckUnNomination: boolean; // no warning message will be shown.
+    // ImportSeedTime: integer; // see.. ttb_checkMembersPB.
+
+    // variables for Auto-Build.
+    ab_ExcludeOutsideLanes: boolean;
+    ab_SeperateGender: boolean;
+    ab_GroupByIndx: integer;     // originally - GroupBy.
+    ab_SeedMethodIndx: integer;  // originally - SeedMethod.
+    ab_SeedDepth: integer;
+
+    EnableDQcodes: boolean; // switch to FINA disqualification codes.
+
 
     constructor Create(); overload;
     constructor Create(AutoLoad: boolean); overload;
@@ -80,14 +103,27 @@ begin
   LoginTimeOut := CONNECTIONTIMEOUT;
   DoLoginOnBoot := false;
   DoAutoLoad := false;
-  LastSwimClubPK := 0;
-  HideLockedSessions := false;
-  MemberSortOn := 0;
-  SeedDateAuto := 0;
 
-  ttb_algorithm := 2;
-  ttb_calcDefRT := 1;
-  ttb_percent :=  50;
+  LastSwimClubPK := 0; // Restore last swim club. Used when booting up and managing clubs.
+  HideLockedSessions := false; // Display all sessions. Session grid variable.
+  MemberSortOn := 0; // Sort on firstname-lastname. Nomination members grid variable.
+  SeedDateAuto := 0; // Today's date. Needed to calculate AGE and TTB.
+
+  ttb_algorithmIndx := 2; // Use the average of the member's 3 fastest RTs
+  ttb_calcDefRT := true;  // if algorithm fails - calculate a mean average.
+  ttb_calcDefRTpercent :=  50.0; // bottom percent ...
+  ttb_checkMembersPB := false; // look for RT in SwimClubMeet2.dbo.PB data.
+
+  ShowDebugInfo := false;
+  MemberChartDataPoints := 26; // number of club nights - the length of a swimming season.
+
+  ab_ExcludeOutsideLanes := false;
+  ab_SeperateGender := false;
+  ab_GroupByIndx := 0; // 0=none, 1=Entrant's Age, 2-Swimming category, 3=Division.
+  ab_SeedMethodIndx := 0; // 0=SCM Method 1=Circle Seeding
+  ab_SeedDepth := 3; // Default.
+
+  EnableDQcodes := false; // use simple DQ method. (not FINA Codes).
 
   ForceDirectories(GetDefPath());
   if not FileExists(GetDefPathFileName()) then
@@ -120,7 +156,7 @@ begin
   if not FileExists(APathFileName) then
     exit;
   Json := TFile.ReadAllText(APathFileName, TEncoding.UTF8);
-  AssignFromJSON(Json); // magic method from XSuperObject's helper
+  AssignFromJSON(Json); // magic method from XSuperObject's helper...
 end;
 
 procedure TAppSetting.SaveToFile(APathFileName: string = '');
@@ -129,7 +165,7 @@ var
 begin
   if APathFileName = '' then
     APathFileName := GetDefPathFileName();
-  Json := AsJSON(True); // magic method from XSuperObject's helper too
+  Json := AsJSON(True); // magic method from XSuperObject's helper...
   TFile.WriteAllText(APathFileName, Json, TEncoding.UTF8);
 end;
 

@@ -1344,12 +1344,12 @@ object CORE: TCORE
       'SELECT m.MemberID,'
       #9'dbo.SwimmerAge(@SeedDate, m.DOB) AS DOB,'
       
-        #9'--dbo.TimeToBeat(@Algorithm, @CalcDefRT, @Percent, m.MemberID, ' +
-        '@DistanceID, @StrokeID, @SeedDate),'
+        #9'dbo.TimeToBeat(@Algorithm, @CalcDefRT, @Percent, m.MemberID, @D' +
+        'istanceID, @StrokeID, @SeedDate) AS TTB,'
       
         #9'dbo.PersonalBest(m.MemberID, @DistanceID, @StrokeID, @SeedDate)' +
         ' AS PB,'
-      #9'PB.RaceTime'
+      #9'PB.RaceTime AS SeedTime'
       'FROM dbo.Member m'
       
         'LEFT JOIN dbo.PB ON m.MemberID = PB.MemberID AND PB.DistanceID =' +

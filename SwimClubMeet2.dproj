@@ -71,7 +71,7 @@
         <UWP_DelphiLogo44>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_44.png</UWP_DelphiLogo44>
         <UWP_DelphiLogo150>$(BDS)\bin\Artwork\Windows\UWP\delphi_UwpDefault_150.png</UWP_DelphiLogo150>
         <SanitizedProjectName>SwimClubMeet2</SanitizedProjectName>
-        <DCC_UnitSearchPath>$(TMS);$(TMS)\xlsAdapter;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
+        <DCC_UnitSearchPath>$(TMS);$(TMS)\xlsAdapter;$(FASTREPORTS)\Source;$(FASTREPORTS)\FastScript;$(FASTREPORTS)\Source\ExportPack;$(DCC_UnitSearchPath)</DCC_UnitSearchPath>
         <VerInfo_Locale>3081</VerInfo_Locale>
         <VerInfo_Keys>CompanyName=;FileDescription=$(MSBuildProjectName);FileVersion=1.0.0.0;InternalName=;LegalCopyright=;LegalTrademarks=;OriginalFilename=;ProgramID=com.embarcadero.$(MSBuildProjectName);ProductName=$(MSBuildProjectName);ProductVersion=1.0.0.0;Comments=</VerInfo_Keys>
         <Custom_Styles>&quot;Windows10 SlateGray|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10SlateGray.vsf&quot;</Custom_Styles>
@@ -205,6 +205,83 @@
         <DCCReference Include="DATA_Helper\uNominate.pas"/>
         <DCCReference Include="TOOLS\dlgPreferences.pas">
             <Form>Preferences</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\dlgDeleteMember.pas">
+            <Form>DeleteMember</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\dlgFindMember.pas">
+            <Form>FindMember</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\dlgGotoMember.pas">
+            <Form>GotoMember</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\dlgGotoMembership.pas">
+            <Form>GotoMembership</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\dlgMemberClub.pas">
+            <Form>MemberClub</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\dlgMemberFilter.pas">
+            <Form>MemberFilter</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\dmManageMemberData.pas">
+            <Form>ManageMemberData</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\dmMemberHouse.pas">
+            <Form>MemberHouse</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\frmManageMember.pas">
+            <Form>ManageMember</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\rptMemberChart.pas">
+            <Form>MemberChart</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\rptMemberCheckData.pas">
+            <Form>MemberCheckData</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\rptMemberDetail.pas">
+            <Form>MemberDetail</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\rptMemberHistory.pas">
+            <Form>MemberHistory</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\rptMembersDetail.pas">
+            <Form>MembersDetail</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\rptMembersList.pas">
+            <Form>MembersList</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\rptMembersSummary.pas">
+            <Form>MembersSummary</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\dlgAboutManageMember.pas">
+            <Form>AboutManageMember</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">

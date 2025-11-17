@@ -3,12 +3,33 @@ unit dlgGotoMembership;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FireDAC.Stan.Intf, FireDAC.Stan.Option,
-  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.StdCtrls, Vcl.ExtCtrls,
-  Vcl.VirtualImage, Vcl.BaseImageCollection, Vcl.ImageCollection;
+  Winapi.Windows,
+  Winapi.Messages,
+  System.SysUtils,
+  System.Variants,
+  System.Classes,
+  Vcl.Graphics,
+  Vcl.Controls,
+  Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.StdCtrls,
+  Vcl.ExtCtrls,
+  Vcl.VirtualImage,
+  Vcl.BaseImageCollection,
+  Vcl.ImageCollection,
+  Data.DB,
+  FireDAC.Stan.Intf,
+  FireDAC.Stan.Option,
+  FireDAC.Stan.Param,
+  FireDAC.Stan.Error,
+  FireDAC.DatS,
+  FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf,
+  FireDAC.Stan.Async,
+  FireDAC.DApt,
+  FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client,
+  dmSCM2, dmIMG;
 
 type
   TGotoMembership = class(TForm)
@@ -27,20 +48,13 @@ type
     procedure FormShow(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
   private
-    { Private declarations }
     fMemberID: integer;
     fMembershipNum: integer;
-    fSwimClubID: integer;
-    fConnection: TFDConnection;
-    function AssertMembershipNum(MembershipNum: integer): boolean;
+    function TestForMembershipNum(MembershipNum: integer): boolean;
 
   public
-    { Public declarations }
-    procedure Prepare(AConnection: TFDConnection; ASwimClubID: integer);
     property MemberID: integer read fMemberID write fMemberID;
-    property SwimClubID: integer read fSwimClubID write fSwimClubID;
     property MembershipNum: integer read fMembershipNum write fMembershipNum;
-    property Connection: TFDConnection read FConnection write FConnection;
   end;
 
 var
@@ -50,47 +64,45 @@ implementation
 
 {$R *.dfm}
 
-function TGotoMembership.AssertMembershipNum(MembershipNum: integer): boolean;
+function TGotoMembership.TestForMembershipNum(MembershipNum: integer): boolean;
+var
+  SQL: string;
+  v: variant;
+
 begin
   result := false;
-  if Assigned(fConnection) then
+  if Assigned(SCM2) and SCM2.scmConnection.Connected then
   begin
-    qAssertMemberID.Connection := fConnection;
-    qAssertMemberID.Close;
-    qAssertMemberID.SQL.Clear;
-    qAssertMemberID.SQL.Add
-      ('SELECT MemberID, MembershipNum, SwimClubID FROM Member WHERE MembershipNum = '
-      + IntToStr(MembershipNum) + ' AND ((SwimClubID = ' + IntToStr(fSwimClubID)+ ') OR (SwimClubID IS NULL))');
+    SQL := '''
+      SELECT MemberID
+      FROM dbo.Member
+      WHERE MembershipNum = :ID
+      ''';
     try
-      qAssertMemberID.Open;
-      if (qAssertMemberID.Active) then
       begin
-        if qAssertMemberID.RecordCount > 0 then
+        v := SCM2.scmConnection.ExecSQL(SQL, [MembershipNum]);
+        if not VarIsClear(v) then
         begin
+          fMemberID := v;
           result := true;
-          // NOTE: MemberID assign ...
-          fMemberID := qAssertMemberID.FieldByName('MemberID').AsInteger;
         end;
       end;
     except
       on E: Exception do
         lblErrMsg.Caption := 'SCM DB access error.';
     end;
-
   end;
 end;
 
 procedure TGotoMembership.btnGotoClick(Sender: TObject);
 begin
-  if (fMembershipNum = 0) then
+  if (fMembershipNum <> 0) and TestForMembershipNum(fMembershipNum) then
+    ModalResult := mrOk
+  else
   begin
     Beep;
     lblErrMsg.Caption := 'Membership number is invalid.';
-    exit;
   end;
-  // check if valid membership number
-  if AssertMembershipNum(fMembershipNum) then
-    ModalResult := mrOk;
 end;
 
 procedure TGotoMembership.Edit1Change(Sender: TObject);
@@ -110,7 +122,7 @@ begin
     lblErrMsg.Caption := '';
     exit;
   end;
-  if AssertMembershipNum(i) then
+  if TestForMembershipNum(i) then
   begin
     fMembershipNum := i;
     lblErrMsg.Caption := 'Membership number ..OK.';
@@ -130,7 +142,6 @@ procedure TGotoMembership.FormCreate(Sender: TObject);
 begin
   fMemberID := 0;
   fMembershipNum := 0;
-  fSwimClubID := 0;
   lblErrMsg.Caption := '';
   Edit1.Text := '';
 end;
@@ -157,15 +168,5 @@ begin
 end;
 
 
-
-procedure TGotoMembership.Prepare(AConnection: TFDConnection;
-  ASwimClubID: integer);
-begin
-  if Assigned(AConnection) then
-  begin
-    fConnection := AConnection;
-    fSwimClubID := ASwimClubID;
-  end;
-end;
 
 end.

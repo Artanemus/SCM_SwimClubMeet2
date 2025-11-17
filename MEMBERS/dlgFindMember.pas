@@ -3,15 +3,42 @@ unit dlgFindMember;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, FireDAC.Stan.Intf,
-  FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
-  FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
-  FireDAC.Comp.Client, FireDAC.Comp.DataSet, Vcl.Grids, Vcl.DBGrids,
-  Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.VirtualImage, Vcl.BaseImageCollection,
-  Vcl.ImageCollection, FireDAC.UI.Intf, FireDAC.Stan.Def, FireDAC.Stan.Pool,
-  FireDAC.Phys, FireDAC.Phys.MSSQL, FireDAC.Phys.MSSQLDef, FireDAC.VCLUI.Wait;
+  Winapi.Windows,
+  Winapi.Messages,
+  System.SysUtils,
+  System.Variants,
+  System.Classes,
+  Vcl.Graphics,
+  Vcl.Controls,
+  Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.Grids,
+  Vcl.DBGrids,
+  Vcl.StdCtrls,
+  Vcl.ExtCtrls,
+  Vcl.VirtualImage,
+  Vcl.BaseImageCollection,
+  Vcl.ImageCollection,
+  Data.DB,
+  FireDAC.Stan.Intf,
+  FireDAC.Stan.Option,
+  FireDAC.Stan.Param,
+  FireDAC.Stan.Error,
+  FireDAC.DatS,
+  FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf,
+  FireDAC.Stan.Async,
+  FireDAC.DApt,
+  FireDAC.Comp.Client,
+  FireDAC.Comp.DataSet,
+  FireDAC.UI.Intf,
+  FireDAC.Stan.Def,
+  FireDAC.Stan.Pool,
+  FireDAC.Phys,
+  FireDAC.Phys.MSSQL,
+  FireDAC.Phys.MSSQLDef,
+  FireDAC.VCLUI.Wait,
+  dmSCM2, dmIMG;
 
 type
   TFindMember = class(TForm)
@@ -36,12 +63,8 @@ type
     procedure Edit1Change(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
-    { Private declarations }
-    fMemberID, fSwimClubID: integer;
-    fConnection: TFDConnection;
+    fMemberID: integer;
   public
-    { Public declarations }
-    procedure Prepare(AConnection: TFDConnection; ASwimClubID: integer);
     property MemberID: integer read fMemberID write fMemberID;
   end;
 
@@ -136,8 +159,17 @@ end;
 procedure TFindMember.FormCreate(Sender: TObject);
 begin
   fMemberID := 0;
-  fSwimClubID := 0;
-  fConnection := nil;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected then
+  begin
+    qryFindMember.Connection := SCM2.scmConnection;
+    qryFindMember.Open;
+  end;
+  if qryFindMember.Active then
+  begin
+    DBGrid1.DataSource := dsFindMember;
+    // Triggers Edit1Change event.   (Sets up filters and record count.)
+    Edit1.Text := '';
+  end;
 end;
 
 procedure TFindMember.FormKeyDown(Sender: TObject; var Key: Word;
@@ -145,26 +177,6 @@ procedure TFindMember.FormKeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = VK_ESCAPE then
     ModalResult := mrCancel;
-end;
-
-
-procedure TFindMember.Prepare(AConnection: TFDConnection; ASwimClubID: integer);
-begin
-  if Assigned(AConnection) then
-  begin
-    fConnection := AConnection;
-    fSwimClubID := ASwimClubID;
-    qryFindMember.Connection := AConnection;
-    qryFindMember.ParamByName('SWIMCLUBID').AsInteger := fSwimClubID;
-    qryFindMember.Open;
-  end;
-  if qryFindMember.Active then
-  begin
-    // A s s i g n m e n t   r e q u i r e d  !
-    DBGrid1.DataSource := dsFindMember;
-    // Results in Edit1Change event!   (Sets up filters and record count.)
-    Edit1.Text := '';
-  end;
 end;
 
 

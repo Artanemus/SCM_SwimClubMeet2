@@ -41,7 +41,7 @@ type
 
     // messages originate in the CORE and are forwarded by main form.
     procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
-      message SCM_SCROLL_FILTERMEMBER; // refreshes nominate and qualified icons
+      message SCM_SCROLL_NOMINATE_FILTERMEMBER; // refreshes nominate and qualified icons
 
     procedure Msg_SCM_Scroll_Session(var Msg: TMessage);
       message SCM_SCROLL_SESSION; // events change with each session.

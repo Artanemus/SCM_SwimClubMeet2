@@ -280,7 +280,6 @@ object ManageMemberData: TManageMemberData
   object tblGender: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'GenderID'
-    Connection = SCM.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet..Gender'
     TableName = 'SwimClubMeet..Gender'
@@ -529,7 +528,6 @@ object ManageMemberData: TManageMemberData
   end
   object qryEntrantDataCount: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Connection = SCM.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
@@ -798,9 +796,7 @@ object ManageMemberData: TManageMemberData
       'INNER JOIN Session ON Event.SessionID = Session.SessionID'
       'INNER JOIN Stroke ON Event.StrokeID = Stroke.StrokeID'
       'INNER JOIN Distance ON Event.DistanceID = Distance.DistanceID'
-      
-        'INNER JOIN Heat ON Event.EventID = Heat.Even' +
-        'tID'
+      'INNER JOIN Heat ON Event.EventID = Heat.EventID'
       'INNER JOIN Entrant ON Heat.HeatID = Entrant.HeatID'
       'INNER JOIN Member ON Entrant.MemberID = Member.MemberID'
       'WHERE RaceTime IS NOT NULL'
@@ -851,8 +847,6 @@ object ManageMemberData: TManageMemberData
   end
   object qryChart: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
-    Connection = SCM.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayDateTime]
     FormatOptions.FmtDisplayDateTime = 'dd/mmm/yyyy'
     SQL.Strings = (
@@ -891,9 +885,7 @@ object ManageMemberData: TManageMemberData
       ''
       'INTO #charttemp'
       'FROM Entrant'
-      
-        'INNER JOIN Heat ON Entrant.HeatID = Heat.Hea' +
-        'tID'
+      'INNER JOIN Heat ON Entrant.HeatID = Heat.HeatID'
       'INNER JOIN Event ON Heat.EventID = Event.EventID'
       'INNER JOIN Session ON Event.SessionID = Session.SessionID'
       'INNER JOIN SwimClub ON Session.SwimClubID = SwimClub.SwimClubID'
@@ -969,10 +961,8 @@ object ManageMemberData: TManageMemberData
   end
   object tblSwimClub: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'SwimClubID'
     DetailFields = 'SwimClubID'
-    Connection = SCM.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     TableName = 'SwimClubMeet..SwimClub'
@@ -985,7 +975,6 @@ object ManageMemberData: TManageMemberData
     Top = 672
   end
   object qryDataCheck: TFDQuery
-    Connection = SCM.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
@@ -1081,7 +1070,6 @@ object ManageMemberData: TManageMemberData
     Top = 88
   end
   object qryDataCheckPart: TFDQuery
-    Connection = SCM.scmConnection
     SQL.Strings = (
       'DECLARE @SwimClubID AS INteger;'
       'SET @SwimClubID = :SWIMCLUBID;'

@@ -354,11 +354,9 @@ end;
 
 procedure TFrameSession.gridGetCellColor(Sender: TObject; ARow, ACol:
     Integer; AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
-var
-  FontColor: TColor;
 begin
   // method to obtain the 'StyleElements' font color for grid items.
-  FontColor := StyleServices.GetStyleFontColor(sfGridItemFixedPressed);
+  // FontColor := StyleServices.GetStyleFontColor(sfGridItemFixedPressed);
   // blueish-white..$00FFE4D8;
 
   if (ARow >= grid.FixedRows) then   // (ARow >= grid.FixedCols)

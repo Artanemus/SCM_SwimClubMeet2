@@ -6,7 +6,7 @@ uses
   System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client, dmSCM;
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, dmSCM2;
 
 type
   TMemberHouse = class(TDataModule)
@@ -15,10 +15,7 @@ type
     procedure DataModuleDestroy(Sender: TObject);
     procedure DataModuleCreate(Sender: TObject);
   private
-    FConnection: TFDConnection;
     fManageHouseDataActive: Boolean;
-    constructor CreateWithConnection(AOwner: TComponent;
-      AConnection: TFDConnection);
     function MinHouse(AConnection: TFDConnection; ASwimClubID: integer): integer;
 
   public
@@ -35,15 +32,6 @@ implementation
 
 {$R *.dfm}
 
-{ TMemberHouse }
-
-constructor TMemberHouse.CreateWithConnection(AOwner: TComponent;
-  AConnection: TFDConnection);
-begin
-  self.Create(AOwner);
-  FConnection := AConnection;
-end;
-
 procedure TMemberHouse.DataModuleDestroy(Sender: TObject);
 begin
 //  DeallocateHWND(fHandle);
@@ -58,7 +46,7 @@ begin
     result := 0;
     if Active then
       Close;
-    Connection := AConnection;
+    Connection := SCM2.scmConnection;
     ParamByName('SWIMCLUBID').AsInteger := ASwimClubID;
     Prepare;
     Open;
@@ -75,6 +63,8 @@ procedure TMemberHouse.DataModuleCreate(Sender: TObject);
 //IniFileName: string;
 begin
   inherited;
+
+
 //  fHandle := AllocateHWnd(WndProc);
 //  prefChartMaxRecords := CHARTMAXRECORDS;
 

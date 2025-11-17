@@ -2662,6 +2662,71 @@ object IMG: TIMG
           ' -0.717988,-1.538545 -0.706591,-0.558435 -1.983014,-0.558435 z" ' +
           'id="text1" transform="scale(0.78052385,1.2811908)" aria-label="P' +
           'B"/>'#13#10'  </g>'#13#10'</svg>'#13#10
+      end
+      item
+        IconName = 'goto'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 16 16"><path fill="currentColor" fill-rule="evenod' +
+          'd" d="m4.874 1.81l.707.707l-1.514 1.514h5.464a4.5 4.5 0 1 1 0 9H' +
+          '3.063v-1H9.53a3.5 3.5 0 1 0 0-7H3.967l1.702 1.702l-.707.707l-2.8' +
+          '6-2.859z" clip-rule="evenodd"/></svg>'
+      end
+      item
+        IconName = 'warning-triangle'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 14 14"><path fill="currentColor" fill-rule="evenod' +
+          'd" d="M6.676 2.188a.375.375 0 0 1 .648 0l5.374 9.214a.375.375 0 ' +
+          '0 1-.324.564H1.626a.375.375 0 0 1-.324-.564zm1.727-.63a1.625 1.6' +
+          '25 0 0 0-2.807 0L.222 10.773a1.625 1.625 0 0 0 1.404 2.444h10.74' +
+          '8a1.625 1.625 0 0 0 1.404-2.444zM7.75 4.376a.75.75 0 1 0-1.5 0v3' +
+          '.25a.75.75 0 1 0 1.5 0zm-1.75 6a1 1 0 1 0 2 0a1 1 0 0 0-2 0" cli' +
+          'p-rule="evenodd"/></svg>'
+        FixedColor = clCoral
+      end
+      item
+        IconName = 'Warning_Tape'
+        SVGText = 
+          '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'#10'<svg'#10'   w' +
+          'idth="900"'#10'   height="76"'#10'   viewBox="0 0 900 76"'#10'   version="1.' +
+          '1"'#10'   id="svg28"'#10'   sodipodi:docname="Warning_Tape.svg"'#10'   xml:s' +
+          'pace="preserve"'#10'   inkscape:version="1.4 (86a8ad7, 2024-10-11)"'#10 +
+          '   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"'#10 +
+          '   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-' +
+          '0.dtd"'#10'   xmlns="http://www.w3.org/2000/svg"'#10'   xmlns:svg="http:' +
+          '//www.w3.org/2000/svg"><defs'#10'     id="defs28" /><sodipodi:namedv' +
+          'iew'#10'     id="namedview28"'#10'     pagecolor="#ffffff"'#10'     borderco' +
+          'lor="#666666"'#10'     borderopacity="1.0"'#10'     inkscape:showpagesha' +
+          'dow="2"'#10'     inkscape:pageopacity="0.0"'#10'     inkscape:pagechecke' +
+          'rboard="0"'#10'     inkscape:deskcolor="#d1d1d1"'#10'     showgrid="fals' +
+          'e"'#10'     inkscape:zoom="1.2767206"'#10'     inkscape:cx="426.4833"'#10'  ' +
+          '   inkscape:cy="93.990809"'#10'     inkscape:window-width="2560"'#10'   ' +
+          '  inkscape:window-height="1377"'#10'     inkscape:window-x="-8"'#10'    ' +
+          ' inkscape:window-y="-8"'#10'     inkscape:window-maximized="1"'#10'     ' +
+          'inkscape:current-layer="svg28" /><!-- Yellow background --><rect' +
+          #10'     width="900"'#10'     height="76"'#10'     fill="#FFFF00"'#10'     id="' +
+          'rect1" /><!-- Black diagonal stripes at 45'#176', sloping bottom-left' +
+          ' to top-right --><!-- Each stripe is 16 units wide, repeating ev' +
+          'ery 32 units --><path'#10'     id="polygon1"'#10'     d="M 0,0 H 56 L 0,' +
+          '76 h -56 z"'#10'     sodipodi:nodetypes="ccccc" /><path'#10'     id="pol' +
+          'ygon1-0"'#10'     d="m 112.10475,0.02092905 h 56 l -56,76.00000095 h' +
+          ' -56.0001 z"'#10'     sodipodi:nodetypes="ccccc" /><path'#10'     id="po' +
+          'lygon1-9"'#10'     d="m 224.02933,0.06572427 h 56 l -56,75.99999973 ' +
+          'h -56 z"'#10'     sodipodi:nodetypes="ccccc" /><path'#10'     id="polygo' +
+          'n1-0-4"'#10'     d="m 336.13408,0.08665327 h 56 l -56,76.00000073 h ' +
+          '-56.0001 z"'#10'     sodipodi:nodetypes="ccccc" /><path'#10'     id="pol' +
+          'ygon1-8"'#10'     d="m 447.36573,0.00919094 h 56 l -56,76.00000106 h' +
+          ' -56 z"'#10'     sodipodi:nodetypes="ccccc" /><path'#10'     id="polygon' +
+          '1-0-8"'#10'     d="m 559.47048,0.03011994 h 56 l -56,76.00000206 h -' +
+          '56.0001 z"'#10'     sodipodi:nodetypes="ccccc" /><path'#10'     id="poly' +
+          'gon1-9-2"'#10'     d="m 671.39506,0.07491494 h 56 l -56,75.99999706 ' +
+          'h -56 z"'#10'     sodipodi:nodetypes="ccccc" /><path'#10'     id="polygo' +
+          'n1-0-4-4"'#10'     d="m 783.49981,0.09584394 h 56 l -56,75.99999806 ' +
+          'h -56.0001 z"'#10'     sodipodi:nodetypes="ccccc" /><path'#10'     id="p' +
+          'olygon1-0-4-4-5"'#10'     d="m 895.16503,0.04468524 h 60.56923 l -56' +
+          ',75.99999876 h -60.56933 z"'#10'     sodipodi:nodetypes="ccccc" /></' +
+          'svg>'#10
       end>
     Left = 320
     Top = 8

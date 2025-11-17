@@ -25,7 +25,6 @@ object FindMember: TFindMember
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 357
     object VirtualImage1: TVirtualImage
       Left = 8
       Top = 7
@@ -39,9 +38,9 @@ object FindMember: TFindMember
     end
     object Edit1: TEdit
       Left = 48
-      Top = 11
-      Width = 284
-      Height = 27
+      Top = 7
+      Width = 305
+      Height = 34
       TabOrder = 0
       Text = 'Edit1'
       OnChange = Edit1Change
@@ -55,8 +54,6 @@ object FindMember: TFindMember
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = 480
-    ExplicitWidth = 357
     DesignSize = (
       353
       51)
@@ -76,7 +73,6 @@ object FindMember: TFindMember
       Caption = 'Goto Member'
       TabOrder = 0
       OnClick = btnGotoMemberClick
-      ExplicitLeft = 201
     end
   end
   object DBGrid1: TDBGrid
@@ -162,32 +158,20 @@ object FindMember: TFindMember
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
     SQL.Strings = (
-      'USE SwimClubMeet;'
-      'DECLARE @SwimClubID AS INTEGER;'
-      'SET @SwimClubID = :SWIMCLUBID;'
-      ''
       'SELECT        '
-      ' Member.MemberID'
-      ', Member.MembershipNum'
-      ', CONCAT(UPPER([LastName]), '#39', '#39', Member.FirstName ) AS FName'
-      ', Member.SwimClubID'
-      'FROM            Member WHERE [Member].[SwimClubID] = @SwimClubID'
+      '   Member.MemberID'
+      '   , Member.MembershipNum'
+      '   , CONCAT(UPPER([LastName]), '#39', '#39', Member.FirstName ) AS FName'
+      'FROM            '
+      ' dbo.Member '
       'ORDER BY Member.LastName;')
     Left = 97
     Top = 176
-    ParamData = <
-      item
-        Name = 'SWIMCLUBID'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = 1
-      end>
     object qryFindMemberMemberID: TFDAutoIncField
       DisplayLabel = 'ID'
       DisplayWidth = 5
       FieldName = 'MemberID'
       Origin = 'MemberID'
-      ReadOnly = True
       Visible = False
     end
     object qryFindMemberMembershipNum: TIntegerField

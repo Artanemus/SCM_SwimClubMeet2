@@ -62,13 +62,17 @@ object MemberClub: TMemberClub
   end
   object qrySwimClub: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    ConnectionName = 'MSSQL_SwimClubMeet'
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
     SQL.Strings = (
-      'Select SwimClubID, Caption FROM SwimClub ORDER BY SwimClubID ASC')
+      ''
+      ''
+      'Select SwimClubID, Caption '
+      'FROM SwimClub '
+      'WHERE SwimCLub.IsClubGroup = 0'
+      'ORDER BY SwimClubID ASC')
     Left = 176
     Top = 40
   end

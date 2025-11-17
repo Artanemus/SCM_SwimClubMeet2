@@ -117,6 +117,7 @@ type
         Rect: TRect);
     procedure SwimClub_ManageExecute(Sender: TObject);
     procedure SwimClub_SwitchExecute(Sender: TObject);
+    procedure Tools_PreferencesExecute(Sender: TObject);
   private
 
     fscmIsConnecting: boolean;
@@ -129,7 +130,7 @@ type
     procedure Msg_SCM_Connect(var Msg: TMessage); message SCM_Connect;
     procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
     procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
-    procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage); message SCM_SCROLL_FILTERMEMBER;
+    procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage); message SCM_SCROLL_NOMINATE_FILTERMEMBER;
 
   end;
 
@@ -141,7 +142,7 @@ implementation
 {$R *.dfm}
 
 uses
-  dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession;
+  dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences;
 
 procedure TMain2.DetailTBLs_ApplyMaster;
 begin
@@ -407,7 +408,7 @@ procedure TMain2.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
 begin
   // forward message to nominate frame.
   if fscmIsConnecting then exit;
-  SendMessage(frNominate.Handle, SCM_SCROLL_FILTERMEMBER, Msg.WParam, Msg.LParam);
+  SendMessage(frNominate.Handle, SCM_SCROLL_NOMINATE_FILTERMEMBER, Msg.WParam, Msg.LParam);
 end;
 
 procedure TMain2.Msg_SCM_Scroll_Session(var Msg: TMessage);
@@ -580,12 +581,10 @@ begin
       frEvent.Initialise;
       frFilterMember.Initialise;
       frNominate.Initialise;
-
       // initialize UI state tabsheet 0 and Collapsed grid view.
       PageControl.ActivePageIndex := 0;
       frEvent.actnEv_GridView.Checked := false;
       pnlSession.Visible := true;
-
     end;
 
   finally
@@ -619,12 +618,10 @@ begin
       frEvent.Initialise;
       frFilterMember.Initialise;
       frNominate.Initialise;
-
       // initialize UI state tabsheet 0 and Collapsed grid view.
       PageControl.ActivePageIndex := 0;
       frEvent.actnEv_GridView.Checked := false;
       pnlSession.Visible := true;
-
     end;
 
   finally
@@ -633,6 +630,19 @@ begin
     frFilterMember.grid.EndUpdate;
     frNominate.grid.EndUpdate;
   end;
+end;
+
+procedure TMain2.Tools_PreferencesExecute(Sender: TObject);
+var
+  dlg: TPreferences;
+begin
+  dlg := TPreferences.Create(Self);
+  dlg.ShowModal;
+  dlg.Free;
+
+  // enable/disable FINA codes....
+  // show/hide debug info.
+
 end;
 
 end.

@@ -168,7 +168,6 @@ object MemberChart: TMemberChart
   end
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'MemberID'
     Connection = SCM.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]

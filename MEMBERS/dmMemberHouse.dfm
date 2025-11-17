@@ -4,7 +4,7 @@ object MemberHouse: TMemberHouse
   Height = 480
   Width = 640
   object qryMinHouse: TFDQuery
-    Connection = SCM.scmConnection
+    Connection = SCM2.scmConnection
     SQL.Strings = (
       '-- Drop a temporary table called '#39'#tmpHouse'#39
       '-- Drop the table if it already exists'
@@ -48,7 +48,7 @@ object MemberHouse: TMemberHouse
       end>
   end
   object qryMinHouseAGE: TFDQuery
-    Connection = SCM.scmConnection
+    Connection = SCM2.scmConnection
     SQL.Strings = (
       '-- Drop a temporary table called '#39'#tmpHouse'#39
       '-- Drop the table if it already exists'

@@ -4186,6 +4186,7 @@ object Main2: TMain2
     object Tools_Preferences: TAction
       Category = 'Tools'
       Caption = 'Preferences...'
+      OnExecute = Tools_PreferencesExecute
     end
     object Tools_QualifyTimes: TAction
       Category = 'Tools'

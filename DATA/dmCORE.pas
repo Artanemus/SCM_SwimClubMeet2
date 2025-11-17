@@ -327,7 +327,7 @@ begin
   begin
     WP := qryFilterMember.FieldByName('MemberID').AsInteger;
     LP := qrySession.FieldByName('SessionID').AsInteger;
-    PostMessage(msgHandle, SCM_SCROLL_FILTERMEMBER, WP, LP);
+    PostMessage(msgHandle, SCM_SCROLL_NOMINATE_FILTERMEMBER, WP, LP);
   end;
 end;
 

@@ -3,16 +3,33 @@ unit dlgMemberClub;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  Winapi.Windows,
+  Winapi.Messages,
+  System.SysUtils,
+  System.Variants,
   System.Classes,
   System.Generics.Collections,
+  Data.DB,
   Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
+  Vcl.Controls,
+  Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.StdCtrls,
+  Vcl.ExtCtrls,
   Vcl.CheckLst,
-  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
-  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
-  FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
-  FireDAC.Comp.Client, uDefines, Vcl.DBCtrls;
+  Vcl.DBCtrls,
+  FireDAC.Stan.Intf,
+  FireDAC.Stan.Option,
+  FireDAC.Stan.Param,
+  FireDAC.Stan.Error,
+  FireDAC.DatS,
+  FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf,
+  FireDAC.Stan.Async,
+  FireDAC.DApt,
+  FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client,
+  uDefines, dmSCM2, dmIMG;
 
 type
   TItemData = class
@@ -35,7 +52,7 @@ type
   private
     fSwimClubID: Integer;
   public
-    procedure Prepare(AConnection: TFDConnection; ASwimClubID: Integer);
+    procedure Prepare(ASwimClubID: Integer);
     property SwimClubID: Integer read fSwimClubID write fSwimClubID;
   end;
 
@@ -92,6 +109,12 @@ procedure TMemberClub.FormCreate(Sender: TObject);
 begin
   chklstSwimClub.Items.Clear; // Clear the list of prototype data
   fSwimClubID := 0;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected then
+  begin
+    qrySwimClub.Connection := SCM2.scmConnection
+  end
+  else
+    Close();
 end;
 
 procedure TMemberClub.FormDestroy(Sender: TObject);
@@ -115,13 +138,11 @@ begin
   end;
 end;
 
-procedure TMemberClub.Prepare(AConnection: TFDConnection;  ASwimClubID: Integer);
+procedure TMemberClub.Prepare(ASwimClubID: Integer);
 var
   idx: Integer;
   itemdata: TItemData;
 begin
-  if not Assigned(AConnection) then exit;
-  qrySwimClub.Connection := AConnection;
   qrySwimClub.Open;
   if qrySwimClub.Active then
   begin

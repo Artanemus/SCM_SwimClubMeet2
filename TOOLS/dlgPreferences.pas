@@ -35,7 +35,6 @@ type
     lblSeedDepth1: TLabel;
     lblSeedDepth2: TLabel;
     PageControl1: TPageControl;
-    Panel1: TPanel;
     Panel2: TPanel;
     prefEnableDQcodes: TCheckBox;
     prefExcludeOutsideLanes: TCheckBox;
@@ -60,12 +59,9 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
-    FConnection: TFDConnection;
     procedure ReadPreferences();
     procedure WritePreferences();
   public
-    constructor Create(AOwner: TComponent; AConnection: TFDConnection);
-      reintroduce; overload;
   end;
 
 var
@@ -80,13 +76,10 @@ uses SCMUtils, System.UITypes;
 
 procedure TPreferences.btnCloseClick(Sender: TObject);
 begin
-  // ...
+  ModalResult := mrOK;
 end;
 
-
 procedure TPreferences.FormCreate(Sender: TObject);
-var
-  IniFileName: string;
 begin
   if not Assigned(Settings) then Close();
   // I N I T  L O C A L   U I   P A R A M S .
@@ -95,8 +88,6 @@ begin
 end;
 
 procedure TPreferences.FormDestroy(Sender: TObject);
-var
-  IniFileName: string;
 begin
   // w r i t e   p r e f e r e n c e s .
   if Assigned(Settings) then
@@ -108,10 +99,9 @@ procedure TPreferences.FormKeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = vk_escape then
   begin
-    // special note:
-    // By default all database changes are saved.
-    btnCloseClick(self);
+    // note: all database changes are saved.
     Key := 0;
+    ModalResult := mrOK;
   end;
 end;
 
@@ -128,7 +118,6 @@ begin
   prefShowDebugInfo.Checked := Settings.ShowDebugInfo;
   prefEnableDQcodes.Checked := Settings.EnableDQcodes;
   prefMemberChartDataPoints.Text := FloatToStr(Settings.MemberChartDataPoints);
-
 end;
 
 procedure TPreferences.WritePreferences();

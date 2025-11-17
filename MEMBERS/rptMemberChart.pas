@@ -3,12 +3,22 @@ unit rptMemberChart;
 interface
 
 uses
-  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  System.SysUtils, System.Classes, System.Types,
+
+  Data.DB,
+
+  VclTee.DBChart,
+
+  FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, frxClass, frxDBSet,
-  frxExportPDF, frxExportHTML, frxExportBaseDialog, frxExportXLS, Data.DB,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client, VclTee.DBChart, dmSCM
-  , System.Types;
+  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+
+  frxClass, frxDBSet,
+  frxExportPDF, frxExportHTML, frxExportBaseDialog, frxExportXLS,
+
+  dmSCM2
+  ;
 
 type
   TMemberChart = class(TDataModule)
@@ -42,8 +52,8 @@ implementation
 procedure TMemberChart.DataModuleCreate(Sender: TObject);
 begin
 	// Assert connection
-	if Assigned (SCM) then
-		qryReport.Connection := SCM.scmConnection;
+	if Assigned (SCM2) then
+		qryReport.Connection := SCM2.scmConnection;
 	fDBChart := nil;
 end;
 

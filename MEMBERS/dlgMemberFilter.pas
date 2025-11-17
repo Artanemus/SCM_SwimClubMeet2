@@ -8,7 +8,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.ImageList, Vcl.ImgList,
   Vcl.VirtualImageList, Vcl.BaseImageCollection, Vcl.ImageCollection,
   Vcl.StdCtrls, Vcl.ButtonGroup, System.Actions, Vcl.ActnList,
-  Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan, SCMUtility, uDefines;
+  Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan, SCMUtils, uDefines;
 
 type
   PFilterState = ^TFilterState;
@@ -137,7 +137,7 @@ end;
 procedure TMemberFilter.FormDeactivate(Sender: TObject);
 begin
   WritePreferences; // record filter state
-  PostMessage(TForm(Owner).Handle, SCM_FILTERDEACTIVATED, 0, 0);
+  PostMessage(TForm(Owner).Handle, SCM_MEMBER_FILTER_DEACTIVATED, 0, 0);
 end;
 
 procedure TMemberFilter.FormKeyDown(Sender: TObject; var Key: Word;
@@ -160,7 +160,7 @@ var
   iFile: TIniFile;
   iniFileName: string;
 begin
-  iniFileName := SCMUtility.GetSCMPreferenceFileName;
+  iniFileName := SCMUtils.GetSCMPreferenceFileName;
   if not FileExists(iniFileName) then exit;
   iFile := TIniFile.Create(iniFileName);
   actnHideArchived.Checked := iFile.ReadBool(INIFILE_SECTION,
@@ -189,7 +189,7 @@ begin
     CopyData.cbData := Buffer.Size;
     CopyData.lpData := Buffer.Memory;
     // run filter on form
-    SendMessage(TForm(Owner).Handle, SCM_FILTERUPDATED, 0, LParam(@CopyData));
+    SendMessage(TForm(Owner).Handle, SCM_MEMBER_FILTER_UPDATED, 0, LParam(@CopyData));
 
   finally
     Buffer.free;
@@ -218,7 +218,7 @@ var
   iFile: TIniFile;
   iniFileName: string;
 begin
-  iniFileName := SCMUtility.GetSCMPreferenceFileName;
+  iniFileName := SCMUtils.GetSCMPreferenceFileName;
   if not FileExists(iniFileName) then exit;
   iFile := TIniFile.Create(iniFileName);
   iFile.WriteBool(INIFILE_SECTION, 'HideArchived', actnHideArchived.Checked);

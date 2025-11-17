@@ -30,7 +30,24 @@ uses
   frFrameNominate in 'FRAMES\frFrameNominate.pas' {FrameNominate: TFrame},
   frFrameFilterMember in 'FRAMES\frFrameFilterMember.pas' {FrameFilterMember: TFrame},
   uNominate in 'DATA_Helper\uNominate.pas',
-  dlgPreferences in 'TOOLS\dlgPreferences.pas' {Preferences};
+  dlgPreferences in 'TOOLS\dlgPreferences.pas' {Preferences},
+  dlgDeleteMember in 'MEMBERS\dlgDeleteMember.pas' {DeleteMember},
+  dlgFindMember in 'MEMBERS\dlgFindMember.pas' {FindMember},
+  dlgGotoMember in 'MEMBERS\dlgGotoMember.pas' {GotoMember},
+  dlgGotoMembership in 'MEMBERS\dlgGotoMembership.pas' {GotoMembership},
+  dlgMemberClub in 'MEMBERS\dlgMemberClub.pas' {MemberClub},
+  dlgMemberFilter in 'MEMBERS\dlgMemberFilter.pas' {MemberFilter},
+  dmManageMemberData in 'MEMBERS\dmManageMemberData.pas' {ManageMemberData: TDataModule},
+  dmMemberHouse in 'MEMBERS\dmMemberHouse.pas' {MemberHouse: TDataModule},
+  frmManageMember in 'MEMBERS\frmManageMember.pas' {ManageMember},
+  rptMemberChart in 'MEMBERS\rptMemberChart.pas' {MemberChart: TDataModule},
+  rptMemberCheckData in 'MEMBERS\rptMemberCheckData.pas' {MemberCheckData: TDataModule},
+  rptMemberDetail in 'MEMBERS\rptMemberDetail.pas' {MemberDetail: TDataModule},
+  rptMemberHistory in 'MEMBERS\rptMemberHistory.pas' {MemberHistory: TDataModule},
+  rptMembersDetail in 'MEMBERS\rptMembersDetail.pas' {MembersDetail: TDataModule},
+  rptMembersList in 'MEMBERS\rptMembersList.pas' {MembersList: TDataModule},
+  rptMembersSummary in 'MEMBERS\rptMembersSummary.pas' {MembersSummary: TDataModule},
+  dlgAboutManageMember in 'MEMBERS\dlgAboutManageMember.pas' {AboutManageMember};
 
 {$R *.res}
 

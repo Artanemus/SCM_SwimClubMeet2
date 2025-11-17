@@ -3,8 +3,8 @@ object Preferences: TPreferences
   Top = 0
   BorderStyle = bsDialog
   Caption = 'SwimClubMeet Preferences...'
-  ClientHeight = 590
-  ClientWidth = 728
+  ClientHeight = 413
+  ClientWidth = 695
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,29 +18,22 @@ object Preferences: TPreferences
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   TextHeight = 21
-  object Panel1: TPanel
-    Left = 0
-    Top = 0
-    Width = 728
-    Height = 41
-    Align = alTop
-    BevelOuter = bvNone
-    TabOrder = 0
-  end
   object Panel2: TPanel
     Left = 0
-    Top = 542
-    Width = 728
+    Top = 365
+    Width = 695
     Height = 48
     Align = alBottom
     BevelOuter = bvNone
-    TabOrder = 1
+    TabOrder = 0
+    ExplicitTop = 542
+    ExplicitWidth = 728
     DesignSize = (
-      728
+      695
       48)
     object btnClose: TButton
-      Left = 623
-      Top = 6
+      Left = 584
+      Top = 8
       Width = 101
       Height = 33
       Anchors = [akTop, akRight]
@@ -51,12 +44,15 @@ object Preferences: TPreferences
   end
   object PageControl1: TPageControl
     Left = 0
-    Top = 41
-    Width = 728
-    Height = 501
-    ActivePage = TabSheet7
+    Top = 0
+    Width = 695
+    Height = 365
+    ActivePage = TabSheet2
     Align = alClient
-    TabOrder = 2
+    TabOrder = 1
+    ExplicitTop = 41
+    ExplicitWidth = 728
+    ExplicitHeight = 501
     object TabSheet2: TTabSheet
       Caption = 'TTB'
       object Label7: TLabel
@@ -136,8 +132,8 @@ object Preferences: TPreferences
       Caption = 'AutoBuild'
       ImageIndex = 2
       DesignSize = (
-        720
-        465)
+        687
+        329)
       object lbl3: TLabel
         Left = 9
         Top = 19
@@ -152,8 +148,8 @@ object Preferences: TPreferences
         ParentFont = False
       end
       object btn1: TSpeedButton
-        Left = 199
-        Top = 15
+        Left = 568
+        Top = 123
         Width = 33
         Height = 33
         Hint = 'Club Members'
@@ -237,7 +233,6 @@ object Preferences: TPreferences
         Layout = blGlyphTop
         Margin = 0
         Visible = False
-        ExplicitLeft = 139
       end
       object lblSeedDepth2: TLabel
         Left = 435
@@ -286,12 +281,12 @@ object Preferences: TPreferences
         TabOrder = 2
       end
       object prefSeedMethod: TRadioGroup
-        Left = 297
-        Top = 130
+        Left = 298
+        Top = 123
         Width = 264
         Height = 87
         Hint = 'Decides what lane an entrant is given.'
-        Caption = 'Seed Method (scattered using TTB).'
+        Caption = 'Seed Method.'
         ItemIndex = 0
         Items.Strings = (
           'SwimClubMeet (default)'

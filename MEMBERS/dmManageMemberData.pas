@@ -3,12 +3,20 @@ unit dmManageMemberData;
 interface
 
 uses
-  System.SysUtils, System.Classes, FireDAC.Stan.Intf, FireDAC.Stan.Option,
+  System.SysUtils, System.Classes,
+  Windows, Winapi.Messages,
+  Data.DB,
+
+  FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Error, FireDAC.UI.Intf, FireDAC.Phys.Intf, FireDAC.Stan.Def,
   FireDAC.Stan.Pool, FireDAC.Stan.Async, FireDAC.Phys, FireDAC.VCLUI.Wait,
-  Data.DB, FireDAC.Comp.Client, FireDAC.Stan.Param, FireDAC.DatS,
+  FireDAC.Comp.Client, FireDAC.Stan.Param, FireDAC.DatS,
   FireDAC.DApt.Intf, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Phys.MSSQL,
-  FireDAC.Phys.MSSQLDef, dmSCM, Windows, Winapi.Messages, uDefines
+  FireDAC.Phys.MSSQLDef,
+
+  dmSCM2,
+
+  uDefines
   ;
 
 type
@@ -181,7 +189,7 @@ implementation
 {$R *.dfm}
 
 uses
-  System.IOUtils, IniFiles, SCMUtility,
+  System.IOUtils, IniFiles, SCMUtils,
   vcl.Dialogs, System.UITypes, vcl.Forms, System.DateUtils;
 
 constructor TManageMemberData.Create(AOwner: TComponent);
@@ -193,7 +201,7 @@ begin
   prefChartMaxRecords := CHARTMAXRECORDS;
 
   // r e a d   p r e f e r e n c e .
-  IniFileName := SCMUtility.GetSCMPreferenceFileName();
+  IniFileName := SCMUtils.GetSCMPreferenceFileName();
   if (FileExists(IniFileName)) then
     ReadPreferences(IniFileName);
 end;
@@ -395,7 +403,7 @@ begin
     end
   except
     on E: Exception do
-      // lblErrMsg.Caption := 'SCM DB access error.';
+      // lblErrMsg.Caption := 'SCM2 DB access error.';
   end;
 end;
 
@@ -411,7 +419,7 @@ begin
     end
   except
     on E: Exception do
-      // lblErrMsg.Caption := 'SCM DB access error.';
+      // lblErrMsg.Caption := 'SCM2 DB access error.';
   end;
 end;
 
@@ -427,7 +435,7 @@ begin
     end
   except
     on E: Exception do
-      // lblErrMsg.Caption := 'SCM DB access error.';
+      // lblErrMsg.Caption := 'SCM2 DB access error.';
   end;
 end;
 
@@ -468,23 +476,28 @@ end;
 
 procedure TManageMemberData.qryMemberAfterPost(DataSet: TDataSet);
 begin
+{TODO -oBSA -cV2 : CHECK}
+
   // As there is a calculation field (FNAME) in this query - the call to
   // refresh ensures that the main forms header banner will display the new
   // member's name.
   // ie. frmManageMember.DBTextFullName uses field qrMember.FNAME.
   qryMember.Refresh;
   if Owner is TForm then
-    // Updates the display of the member's age.
-    PostMessage(TForm(Owner).Handle, SCM_AFTERPOST, 0, 0);
+//     Updates the display of the member's age.
+    PostMessage(TForm(Owner).Handle, SCM_MEMBER_AFTERPOST, 0, 0);
 end;
 
 procedure TManageMemberData.qryMemberAfterScroll(DataSet: TDataSet);
 begin
+{TODO -oBSA -cV2 : CHECK}
+
   // Display Members Personal Best
   UpdateMembersPersonalBest();
+  qryMember.Refresh;
   // Updates the display of the member's age.
   if Owner is TForm then
-    PostMessage(TForm(Owner).Handle, SCM_AFTERSCROLL, 0, 0);
+    PostMessage(TForm(Owner).Handle, SCM_MEMBER_SCROLL, 0, 0);
 
   // Update chart query?
 
@@ -890,22 +903,22 @@ begin
   if (wndMsg.WParam = 0) then
     exit;
 
-  if (wndMsg.Msg = SCM_LOCATEMEMBER) then
+  if (wndMsg.Msg = SCM_MEMBER_LOCATE) then
   begin
     aMemberID := wndMsg.WParam;
     LocateMember(aMemberID);
   end;
 
 
-  if (wndMsg.Msg = SCM_DOBUPDATED) OR (wndMsg.Msg = SCM_ELECTEDONUPDATED) OR
-    (wndMsg.Msg = SCM_RETIREDONUPDATED) then
+  if (wndMsg.Msg = SCM_MEMBER_UPDATE_DOB) OR (wndMsg.Msg = SCM_MEMBER_UPDATE_ELECTEDON) OR
+    (wndMsg.Msg = SCM_MEMBER_UPDATE_RETIREDON) then
   BEGIN
     case wndMsg.Msg of
-      SCM_DOBUPDATED:
+      SCM_MEMBER_UPDATE_DOB:
         fldName := 'DOB';
-      SCM_ELECTEDONUPDATED:
+      SCM_MEMBER_UPDATE_ELECTEDON:
         fldName := 'ElectedOn';
-      SCM_RETIREDONUPDATED:
+      SCM_MEMBER_UPDATE_RETIREDON:
         fldName := 'RetiredOn';
     end;
 

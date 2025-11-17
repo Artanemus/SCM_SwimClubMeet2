@@ -3,13 +3,26 @@ unit dlgDeleteMember;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.WinXCtrls,
-  Vcl.VirtualImage, Vcl.BaseImageCollection, Vcl.ImageCollection, Vcl.StdCtrls;
+  Winapi.Windows,
+  Winapi.Messages,
+  System.SysUtils,
+  System.Variants,
+  System.Classes,
+  Vcl.Graphics,
+  Vcl.Controls,
+  Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.ExtCtrls,
+  Vcl.WinXCtrls,
+  Vcl.VirtualImage,
+  Vcl.BaseImageCollection,
+  Vcl.ImageCollection,
+  Vcl.StdCtrls,
+  dmIMG
+  ;
 
 type
   TDeleteMember = class(TForm)
-    ImageCollection1: TImageCollection;
     VirtualImage1: TVirtualImage;
     RelativePanel1: TRelativePanel;
     lblTitle: TLabel;
@@ -19,16 +32,17 @@ type
     lblDetails: TLabel;
     VirtualImage2: TVirtualImage;
     lblDetailEx: TLabel;
-    VirtualImage3: TVirtualImage;
-    VirtualImage4: TVirtualImage;
+    vimgWarningTape: TVirtualImage;
+    vimgWarningTapeTop: TVirtualImage;
+    procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnYesClick(Sender: TObject);
     procedure btnNoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
-    { Private declarations }
+    fMemberName: string;
   public
-    { Public declarations }
+    property MemberName: string read FMemberName write FMemberName;
   end;
 
 var
@@ -37,6 +51,13 @@ var
 implementation
 
 {$R *.dfm}
+
+
+
+procedure TDeleteMember.FormCreate(Sender: TObject);
+begin
+  fMemberName := '';
+end;
 
 procedure TDeleteMember.btnNoClick(Sender: TObject);
 begin
@@ -57,6 +78,11 @@ end;
 
 procedure TDeleteMember.FormShow(Sender: TObject);
 begin
+  if fMemberName.IsEmpty then
+    lblTitle.Caption := 'Delete member from database?'
+  else
+    lblTitle.Caption := 'Delete ' + fMemberName + ' from database?';
+
   btnNo.SetFocus;
 end;
 

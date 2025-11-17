@@ -3,22 +3,37 @@ unit frmManageMember;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics, System.Generics.Collections,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, VclTee.TeeGDIPlus,
-  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
-  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
-  FireDAC.Stan.Async, FireDAC.DApt, System.ImageList, Vcl.ImgList,
-  FireDAC.Comp.Client, FireDAC.Comp.DataSet, Vcl.StdCtrls, VclTee.TeEngine,
+  Winapi.Windows, Winapi.Messages,
+
+  System.SysUtils, System.Variants, System.Classes, System.Generics.Collections,
+  System.ImageList, System.Actions, System.Rtti, System.Bindings.Outputs,
+
+  Data.DB,  Data.Bind.EngExt, Data.Bind.Components, Data.Bind.DBScope,
+
+  Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,  VclTee.TeeGDIPlus,
+  Vcl.StdCtrls, VclTee.TeEngine,
   VclTee.TeeSpline, VclTee.Series, VclTee.TeeProcs, VclTee.Chart,
   VclTee.DBChart, Vcl.ComCtrls, Vcl.Grids, Vcl.DBGrids, Vcl.DBCtrls, Vcl.Mask,
-  Vcl.ExtCtrls, Vcl.Menus, Vcl.WinXCalendars, dmManageMemberData, uDefines,
+  Vcl.ExtCtrls, Vcl.Menus, Vcl.WinXCalendars,
   Vcl.VirtualImageList, Vcl.BaseImageCollection, Vcl.ImageCollection,
-  System.Actions, Vcl.ActnList, Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan,
-  Vcl.ToolWin, Vcl.ActnCtrls, Vcl.ActnMenus, Data.Bind.EngExt,
-  Vcl.Bind.DBEngExt, System.Rtti, System.Bindings.Outputs, Vcl.Bind.Editors,
-  Data.Bind.Components, Data.Bind.DBScope, Vcl.VirtualImage, SCMHelpers,
-  Vcl.ButtonGroup, dlgMemberFilter, VclTee.TeeData, Vcl.Buttons, dlgMemberClub;
+  Vcl.ActnList, Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan,
+  Vcl.ToolWin, Vcl.ActnCtrls, Vcl.ActnMenus, Vcl.Bind.DBEngExt,
+  VclTee.TeeData, Vcl.Buttons,
+
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, Vcl.ImgList,
+  FireDAC.Comp.Client, FireDAC.Comp.DataSet,
+
+  Vcl.Bind.Editors,
+  Vcl.VirtualImage,
+  Vcl.ButtonGroup,
+
+  dmManageMemberData, uDefines,
+
+  dlgMemberFilter, dlgMemberClub
+  ;
 
 type
   TManageMember = class(TForm)
@@ -212,12 +227,11 @@ type
     procedure UpdateMembersAge();
     procedure WritePreferences();
   protected
-    procedure MSG_AfterPost(var Msg: TMessage); message SCM_AFTERPOST;
-    procedure MSG_AfterScroll(var Msg: TMessage); message SCM_AFTERSCROLL;
-    procedure MSG_ChangeSwimClub(var Msg: TMessage); message SCM_CHANGESWIMCLUB;
-    procedure MSG_FilterDeactivated(var Msg: TMessage);
-      message SCM_FILTERDEACTIVATED;
-    procedure MSG_FilterUpdated(var Msg: TMessage); message SCM_FILTERUPDATED;
+    procedure MSG_AfterPost(var Msg: TMessage); message SCM_MEMBER_AFTERPOST;
+    procedure MSG_AfterScroll(var Msg: TMessage); message SCM_MEMBER_AFTERSCROLL;
+    procedure MSG_ChangeSwimClub(var Msg: TMessage); message SCM_MEMBER_CHANGE_SWIMCLUB;
+    procedure MSG_FilterDeactivated(var Msg: TMessage); message SCM_MEMBER_FILTER_DEACTIVATED;
+    procedure MSG_FilterUpdated(var Msg: TMessage); message SCM_MEMBER_FILTER_UPDATED;
   public
     { Public declarations }
     procedure Prepare(AConnection: TFDConnection; ASwimClubID: Integer = 1;
@@ -235,17 +249,35 @@ implementation
 
 {$R *.dfm}
 
-uses SCMUtility, dlgBasicLogin, System.IniFiles, System.UITypes, dlgAbout,
-  dlgDatePicker, dlgFindMember, dlgGotoMember, dlgGotoMembership,
-  System.IOUtils, Winapi.ShellAPI, dlgDeleteMember, Vcl.Themes, rptMemberDetail,
-  rptMemberHistory, rptMembersList, rptMembersDetail, rptMembersSummary,
-  System.DateUtils, rptMemberChart, rptMemberCheckData;
+uses
+  System.DateUtils,
+  System.IniFiles,
+  System.UITypes,
+  System.IOUtils,
+  Winapi.ShellAPI,
+  dlgDeleteMember,
+  Vcl.Themes,
+  SCMUtils,
+  dlgDatePicker,
+  dlgFindMember,
+  dlgGotoMember,
+  dlgGotoMembership,
+  rptMemberDetail,
+  rptMemberHistory,
+  rptMembersList,
+  rptMembersDetail,
+  rptMembersSummary,
+  rptMemberChart,
+  rptMemberCheckData,
+  dlgAboutManageMember;
+
+  // dlgBasicLogin,  dlgAbout,
 
 procedure TManageMember.About2Click(Sender: TObject);
 var
-  dlg: TAbout;
+  dlg: TAboutManageMember;
 begin
-  dlg := TAbout.Create(Self);
+  dlg := TAboutManageMember.Create(Self);
   dlg.ShowModal;
   FreeAndNil(dlg);
 end;
@@ -267,7 +299,7 @@ begin
   if IsPositiveResult(dlg.ShowModal) then
   begin
     if dlg.SwimClubID <> ManageMemberData.GetSwimClubID then
-      SendMessage(Handle, SCM_CHANGESWIMCLUB, 0, dlg.SwimClubID);
+      SendMessage(Handle, SCM_MEMBER_CHANGE_SWIMCLUB, 0, dlg.SwimClubID);
   end;
   dlg.Free;
 end;
@@ -379,11 +411,11 @@ end;
 
 procedure TManageMember.btnDOBPickerClick(Sender: TObject);
 var
-  dlg: TDOBPicker;
+  dlg: TDatePicker;
   Rect: TRect;
   rtn: TModalResult;
 begin
-  dlg := TDOBPicker.Create(Self);
+  dlg := TDatePicker.Create(Self);
   dlg.Position := poDesigned;
   // Assign date to DB Field.
   Rect := btnDOBPicker.ClientToScreen(btnDOBPicker.ClientRect);

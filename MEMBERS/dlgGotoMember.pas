@@ -3,13 +3,34 @@ unit dlgGotoMember;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FireDAC.Stan.Intf, FireDAC.Stan.Option,
-  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.StdCtrls, Vcl.ExtCtrls,
-  Vcl.VirtualImage, Vcl.BaseImageCollection, Vcl.ImageCollection;
+  Winapi.Windows,
+  Winapi.Messages,
+  System.SysUtils,
+  System.Variants,
+  System.Classes,
+  Vcl.Graphics,
+  Vcl.Controls,
+  Vcl.Forms,
+  Vcl.Dialogs,
+  Vcl.StdCtrls,
+  Vcl.ExtCtrls,
+  Vcl.VirtualImage,
+  Vcl.BaseImageCollection,
+  Vcl.ImageCollection,
+  FireDAC.Stan.Intf,
+  FireDAC.Stan.Option,
+  FireDAC.Stan.Param,
+  FireDAC.Stan.Error,
+  FireDAC.DatS,
+  FireDAC.Phys.Intf,
+  FireDAC.DApt.Intf,
+  FireDAC.Stan.Async,
+  FireDAC.DApt,
+  Data.DB,
+  FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client,
+  dmSCM2,
+  dmIMG;
 
 type
   TGotoMember = class(TForm)
@@ -19,9 +40,8 @@ type
     Label1: TLabel;
     lblErrMsg: TLabel;
     Edit1: TEdit;
-    ImageCollection1: TImageCollection;
-    VirtualImage1: TVirtualImage;
-    qAssertMemberID: TFDQuery;
+    vimgMember: TVirtualImage;
+    vimgGoto: TVirtualImage;
     procedure FormCreate(Sender: TObject);
     procedure btnGotoClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
@@ -31,16 +51,10 @@ type
   private
     { Private declarations }
     fMemberID: integer;
-    fSwimClubID: integer;
-    fConnection: TFDConnection;
-    function AssertMemberID(aMemberID: integer): boolean;
+    function TestForMemberID(aMemberID: integer): boolean;
 
   public
-    { Public declarations }
-    procedure Prepare(AConnection: TFDConnection; ASwimClubID: integer);
     property MemberID: integer read fMemberID write fMemberID;
-    property SwimClubID: integer read fSwimClubID write fSwimClubID;
-    property Connection: TFDConnection read fConnection write fConnection;
 
   end;
 
@@ -51,29 +65,28 @@ implementation
 
 {$R *.dfm}
 
-function TGotoMember.AssertMemberID(aMemberID: integer): boolean;
+function TGotoMember.TestForMemberID(aMemberID: integer): boolean;
+var
+  SQL: string;
+  v: variant;
 begin
   result := false;
-  if Assigned(fConnection) then
+  if Assigned(SCM2) and SCM2.scmConnection.Connected then
   begin
-    qAssertMemberID.Connection := fConnection;
-    qAssertMemberID.Close;
-    qAssertMemberID.SQL.Clear;
-    qAssertMemberID.SQL.Add
-      ('SELECT MemberID, MembershipNum, SwimClubID FROM Member WHERE MemberID = '
-      + IntToStr(aMemberID) + ' AND ((SwimClubID = ' + IntToStr(fSwimClubID)+ ') OR (SwimClubID IS NULL))');
+    SQL := '''
+      SELECT Count(MemberID)
+      FROM dbo.Member
+      WHERE MemberID = :ID
+      ''';
     try
-      qAssertMemberID.Open;
-      if (qAssertMemberID.Active) then
       begin
-        if qAssertMemberID.RecordCount > 0 then
-          result := true;
+        v := SCM2.scmConnection.ExecSQL(SQL, [fMemberID]);
+        if v = 1 then result := true;
       end;
     except
       on E: Exception do
         lblErrMsg.Caption := 'SCM DB access error.';
     end;
-
   end;
 end;
 
@@ -85,15 +98,13 @@ end;
 
 procedure TGotoMember.btnGotoClick(Sender: TObject);
 begin
-  if (fMemberID = 0) then
+  if (MemberID <> 0) and TestForMemberID(fMemberID) then
+    ModalResult := mrOk
+  else
   begin
     Beep;
     lblErrMsg.Caption := 'Member''s ID invalid.';
-    exit;
   end;
-  // Assert state of local-fMemberID
-  if AssertMemberID(fMemberID) then
-    ModalResult := mrOk;
 end;
 
 procedure TGotoMember.Edit1Change(Sender: TObject);
@@ -112,7 +123,7 @@ begin
     lblErrMsg.Caption := '';
     exit;
   end;
-  if AssertMemberID(i) then
+  if TestForMemberID(i) then
   begin
     fMemberID := i;
     lblErrMsg.Caption := 'Member''s ID ..OK';
@@ -128,10 +139,11 @@ end;
 procedure TGotoMember.FormCreate(Sender: TObject);
 begin
   fMemberID := 0;
-  fSwimClubID := 0;
   lblErrMsg.Caption := '';
+  if not Assigned(SCM2) or not SCM2.scmConnection.Connected then
+    Close();
+  // Triggers Edit1Change event.
   Edit1.Text := '';
-  fConnection := nil;
 end;
 
 procedure TGotoMember.FormKeyDown(Sender: TObject; var Key: Word;
@@ -151,15 +163,6 @@ begin
   Edit1.SetFocus;
 end;
 
-
-procedure TGotoMember.Prepare(AConnection: TFDConnection; ASwimClubID: integer);
-begin
-  if Assigned(AConnection) then
-  begin
-    fConnection := AConnection;
-    fSwimClubID := ASwimClubID;
-  end;
-end;
 
 
 end.

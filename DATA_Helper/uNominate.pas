@@ -93,9 +93,9 @@ begin
 
         if Assigned(Settings) then     //Algorithm
         begin
-           CORE.qryMemberStats.ParamByName('ALGORITHM').AsInteger := Settings.ttb_algorithm;
-           CORE.qryMemberStats.ParamByName('CALCDEFRT').AsInteger := Settings.ttb_calcDefRT;
-           CORE.qryMemberStats.ParamByName('PERCENT').AsFloat := Settings.ttb_percent;
+           CORE.qryMemberStats.ParamByName('ALGORITHM').AsInteger := Settings.ttb_algorithmIndx;
+           CORE.qryMemberStats.ParamByName('CALCDEFRT').AsInteger := ORD(Settings.ttb_calcDefRT);
+           CORE.qryMemberStats.ParamByName('PERCENT').AsFloat := Settings.ttb_calcDefRTpercent;
         end
         else
         begin

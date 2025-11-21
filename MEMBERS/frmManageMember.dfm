@@ -25,7 +25,6 @@ object ManageMember: TManageMember
     BevelEdges = []
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 1334
     object btnInfoFilter: TVirtualImage
       Left = 869
       Top = 6
@@ -120,7 +119,6 @@ object ManageMember: TManageMember
     BevelEdges = []
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 1334
     object DBNavigator1: TDBNavigator
       Left = 347
       Top = 9
@@ -140,13 +138,12 @@ object ManageMember: TManageMember
     Top = 76
     Width = 1370
     Height = 659
-    ActivePage = TabSheet5
+    ActivePage = ts_MemberDetail3
     Align = alClient
     MultiLine = True
     TabHeight = 40
     TabOrder = 2
     TabWidth = 180
-    ExplicitWidth = 1334
     object TabSheet1: TTabSheet
       Caption = 'Member'#39's Details 1'
       object Panel7: TPanel
@@ -157,7 +154,7 @@ object ManageMember: TManageMember
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitWidth = 1326
+        ExplicitTop = -2
         object Label3: TLabel
           Left = 23
           Top = 227
@@ -329,14 +326,6 @@ object ManageMember: TManageMember
           OnClick = btnInfoDateTimeClick
           OnMouseLeave = btnInfoMouseLeave
         end
-        object Label15: TLabel
-          Left = 670
-          Top = 268
-          Width = 102
-          Height = 19
-          Alignment = taRightJustify
-          Caption = 'Metadata Tags'
-        end
         object Label25: TLabel
           Left = 146
           Top = 63
@@ -344,35 +333,32 @@ object ManageMember: TManageMember
           Height = 19
           Caption = 'Fields marked with an asterisk * are required.'
         end
-        object Label29: TLabel
-          Left = 675
-          Top = 399
-          Width = 95
-          Height = 19
-          Alignment = taRightJustify
-          Caption = '*Swim Club'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Tahoma'
-          Font.Style = [fsBold]
-          ParentFont = False
-          Visible = False
-        end
         object Label30: TLabel
-          Left = 575
-          Top = 430
-          Width = 197
+          Left = 564
+          Top = 244
+          Width = 207
           Height = 19
           Alignment = taRightJustify
-          Caption = 'Swim Club Memberships'
-          Enabled = False
+          Caption = '*Swim Club Memberships'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -16
           Font.Name = 'Tahoma'
           Font.Style = [fsBold]
           ParentFont = False
+        end
+        object vimgHelpBug: TVirtualImage
+          Left = 1189
+          Top = 214
+          Width = 25
+          Height = 26
+          ImageCollection = ImageCollectMember
+          ImageWidth = 0
+          ImageHeight = 0
+          ImageIndex = 4
+          ImageName = 'Info'
+          OnClick = btnInfoContactClick
+          OnMouseLeave = btnInfoMouseLeave
         end
         object DBlucboGender: TDBLookupComboBox
           Left = 144
@@ -547,70 +533,39 @@ object ManageMember: TManageMember
           DataSource = ManageMemberData.dsMember
           TabOrder = 2
         end
-        object DBMemo1: TDBMemo
-          Left = 778
-          Top = 265
-          Width = 407
-          Height = 124
-          DataField = 'TAGS'
-          DataSource = ManageMemberData.dsMember
-          TabOrder = 15
-        end
-        object DBLookupComboBox1: TDBLookupComboBox
-          Left = 777
-          Top = 395
-          Width = 407
-          Height = 27
-          DataField = 'SwimClubID'
-          DataSource = ManageMemberData.dsMember
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          KeyField = 'SwimClubID'
-          ListField = 'Caption'
-          ListSource = ManageMemberData.dsluSwimClub
-          NullValueKey = 32776
-          ParentFont = False
-          TabOrder = 16
-          Visible = False
-        end
         object ListBox1: TListBox
-          Left = 778
-          Top = 428
+          Left = 777
+          Top = 244
           Width = 406
-          Height = 181
+          Height = 349
           Enabled = False
           ItemHeight = 19
-          TabOrder = 17
+          TabOrder = 15
         end
-        object Button1: TButton
-          Left = 1190
-          Top = 428
-          Width = 75
-          Height = 25
-          Caption = 'Add'
-          Enabled = False
-          TabOrder = 18
-        end
-        object Button2: TButton
-          Left = 1190
-          Top = 459
-          Width = 75
-          Height = 25
-          Caption = 'Remove'
-          Enabled = False
-          TabOrder = 19
-        end
-        object Button3: TButton
-          Left = 1190
-          Top = 490
-          Width = 75
-          Height = 25
-          Caption = 'Archive'
-          Enabled = False
-          TabOrder = 20
+        object navSwimClub: TDBNavigator
+          Left = 1189
+          Top = 246
+          Width = 60
+          Height = 176
+          DataSource = ManageMemberData.dsContactNum
+          VisibleButtons = [nbInsert, nbDelete, nbPost, nbCancel]
+          Hints.Strings = (
+            'First record'
+            'Prior record'
+            'Next record'
+            'Last record'
+            'Insert contact record'
+            'Delete contact record'
+            'Edit record'
+            'Post contact edit'
+            'Cancel contact edit'
+            'Refresh data'
+            'Apply updates'
+            'Cancel updates')
+          Kind = dbnVertical
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 16
         end
       end
     end
@@ -675,13 +630,13 @@ object ManageMember: TManageMember
         ParentFont = False
         Layout = tlCenter
       end
-      object Label23: TLabel
-        Left = 54
-        Top = 226
+      object Label15: TLabel
+        Left = 501
+        Top = 326
         Width = 21
-        Height = 118
-        Alignment = taCenter
-        Caption = 'PERSONAL BEST'
+        Height = 124
+        Alignment = taRightJustify
+        Caption = 'METADATA TAGS'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -16
@@ -690,13 +645,13 @@ object ManageMember: TManageMember
         Font.Style = []
         ParentFont = False
       end
-      object Label26: TLabel
-        Left = 501
-        Top = 223
+      object lblParaCodes: TLabel
+        Left = 54
+        Top = 326
         Width = 21
-        Height = 108
+        Height = 159
         Alignment = taRightJustify
-        Caption = 'EVENTS SWUM'
+        Caption = 'PARAOLYMPIC CODES'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -16
@@ -706,11 +661,24 @@ object ManageMember: TManageMember
         ParentFont = False
         Layout = tlCenter
       end
+      object vimgParaCodesInfo: TVirtualImage
+        Left = 408
+        Top = 295
+        Width = 25
+        Height = 26
+        ImageCollection = ImageCollectMember
+        ImageWidth = 0
+        ImageHeight = 0
+        ImageIndex = 4
+        ImageName = 'Info'
+        OnClick = btnInfoContactClick
+        OnMouseLeave = btnInfoMouseLeave
+      end
       object DBGridRole: TDBGrid
         Left = 528
         Top = 7
         Width = 675
-        Height = 210
+        Height = 282
         DataSource = ManageMemberData.dsMemberRoleLnk
         DefaultDrawing = False
         Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -822,7 +790,7 @@ object ManageMember: TManageMember
         Left = 81
         Top = 10
         Width = 321
-        Height = 210
+        Height = 279
         DataSource = ManageMemberData.dsContactNum
         Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
         TabOrder = 0
@@ -848,40 +816,94 @@ object ManageMember: TManageMember
             Visible = True
           end>
       end
-      object DBgridHistoryPB: TDBGrid
-        Left = 81
-        Top = 228
+      object DBMemo1: TDBMemo
+        Left = 528
+        Top = 327
         Width = 321
-        Height = 381
-        DataSource = ManageMemberData.dsMemberPB
+        Height = 266
+        DataField = 'TAGS'
+        DataSource = ManageMemberData.dsMember
         TabOrder = 4
+      end
+      object dbgParaCode: TDBGrid
+        Left = 82
+        Top = 327
+        Width = 320
+        Height = 266
+        TabOrder = 5
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
         TitleFont.Height = -16
         TitleFont.Name = 'Tahoma'
         TitleFont.Style = []
-        Columns = <
-          item
-            Expanded = False
-            FieldName = 'EventStr'
-            Title.Caption = 'Event'
-            Width = 155
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'PB'
-            Width = 90
-            Visible = True
-          end>
+      end
+      object navParaCodes: TDBNavigator
+        Left = 408
+        Top = 327
+        Width = 60
+        Height = 176
+        DataSource = ManageMemberData.dsContactNum
+        VisibleButtons = [nbInsert, nbDelete, nbPost, nbCancel]
+        Hints.Strings = (
+          'First record'
+          'Prior record'
+          'Next record'
+          'Last record'
+          'Insert contact record'
+          'Delete contact record'
+          'Edit record'
+          'Post contact edit'
+          'Cancel contact edit'
+          'Refresh data'
+          'Apply updates'
+          'Cancel updates')
+        Kind = dbnVertical
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 6
+      end
+    end
+    object ts_MemberDetail3: TTabSheet
+      Caption = 'Member'#39's Details 3'
+      ImageIndex = 2
+      object Label23: TLabel
+        Left = 3
+        Top = 15
+        Width = 21
+        Height = 118
+        Alignment = taCenter
+        Caption = 'PERSONAL BEST'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Orientation = 900
+        Font.Style = []
+        ParentFont = False
+      end
+      object Label26: TLabel
+        Left = 316
+        Top = 17
+        Width = 21
+        Height = 108
+        Alignment = taRightJustify
+        Caption = 'EVENTS SWUM'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Orientation = 900
+        Font.Style = []
+        ParentFont = False
+        Layout = tlCenter
       end
       object DBGrid1: TDBGrid
-        Left = 528
-        Top = 223
-        Width = 417
-        Height = 385
+        Left = 343
+        Top = 17
+        Width = 338
+        Height = 576
         DataSource = ManageMemberData.dsMemberEvents
-        TabOrder = 5
+        TabOrder = 0
         TitleFont.Charset = DEFAULT_CHARSET
         TitleFont.Color = clWindowText
         TitleFont.Height = -16
@@ -919,6 +941,33 @@ object ManageMember: TManageMember
             Expanded = False
             FieldName = 'FName'
             Visible = False
+          end>
+      end
+      object DBgridHistoryPB: TDBGrid
+        Left = 30
+        Top = 17
+        Width = 283
+        Height = 573
+        DataSource = ManageMemberData.dsMemberPB
+        TabOrder = 1
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -16
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'EventStr'
+            Title.Caption = 'Event'
+            Width = 155
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'PB'
+            Width = 90
+            Visible = True
           end>
       end
     end
@@ -1151,7 +1200,6 @@ object ManageMember: TManageMember
         Caption = 'pnlDataCheck'
         ShowCaption = False
         TabOrder = 5
-        ExplicitLeft = 873
         object lblDataCheck: TLabel
           AlignWithMargins = True
           Left = 3
@@ -1374,7 +1422,6 @@ object ManageMember: TManageMember
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitWidth = 1326
         DesignSize = (
           1362
           41)
@@ -1432,7 +1479,6 @@ object ManageMember: TManageMember
           Caption = 'Print Chart'
           TabOrder = 3
           OnClick = btmPrintChartClick
-          ExplicitLeft = 1194
         end
       end
       object DBChart1: TDBChart
@@ -1451,7 +1497,6 @@ object ManageMember: TManageMember
         OnGetLegendText = DBChart1GetLegendText
         Align = alClient
         TabOrder = 1
-        ExplicitWidth = 1326
         DefaultCanvas = 'TGDIPlusCanvas'
         ColorPaletteIndex = 13
         object Series2: TLineSeries
@@ -1494,7 +1539,6 @@ object ManageMember: TManageMember
     Font.Style = []
     HorzMargin = 10
     Spacing = 10
-    ExplicitWidth = 1334
   end
   object ActnManagerMember: TActionManager
     ActionBars = <

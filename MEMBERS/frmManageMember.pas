@@ -62,9 +62,6 @@ type
     btnInfoRoles: TVirtualImage;
     btnMemberDetail: TButton;
     btnMemberHistory: TButton;
-    Button1: TButton;
-    Button2: TButton;
-    Button3: TButton;
     chkbDoCurrSeason: TCheckBox;
     cmboDistance: TComboBox;
     cmboStroke: TComboBox;
@@ -84,7 +81,6 @@ type
     DBgridHistoryPB: TDBGrid;
     DBGridRole: TDBGrid;
     dblblMemberID: TDBText;
-    DBLookupComboBox1: TDBLookupComboBox;
     DBlucboGender: TDBLookupComboBox;
     DBlucboHouse: TDBLookupComboBox;
     DBMemo1: TDBMemo;
@@ -113,7 +109,6 @@ type
     Label26: TLabel;
     Label27: TLabel;
     Label28: TLabel;
-    Label29: TLabel;
     Label3: TLabel;
     Label30: TLabel;
     Label4: TLabel;
@@ -155,6 +150,13 @@ type
     GridPanel1: TGridPanel;
     Panel4: TPanel;
     btnCheckDataReport: TButton;
+    ts_MemberDetail3: TTabSheet;
+    vimgHelpBug: TVirtualImage;
+    navSwimClub: TDBNavigator;
+    dbgParaCode: TDBGrid;
+    lblParaCodes: TLabel;
+    vimgParaCodesInfo: TVirtualImage;
+    navParaCodes: TDBNavigator;
     procedure About2Click(Sender: TObject);
     procedure actnFilterClubExecute(Sender: TObject);
     procedure actnFilterExecute(Sender: TObject);

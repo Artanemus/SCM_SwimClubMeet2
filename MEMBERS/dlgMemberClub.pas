@@ -29,7 +29,8 @@ uses
   FireDAC.DApt,
   FireDAC.Comp.DataSet,
   FireDAC.Comp.Client,
-  uDefines, dmSCM2, dmIMG;
+  uDefines, dmSCM2, dmIMG, Vcl.WinXCtrls, AdvUtil, Vcl.Grids, AdvObj, BaseGrid,
+  AdvGrid, DBAdvGrid;
 
 type
   TItemData = class
@@ -40,15 +41,23 @@ type
 
   TMemberClub = class(TForm)
     btnOk: TButton;
-    chklstSwimClub: TCheckListBox;
     dsSwimClub: TDataSource;
-    Panel1: TPanel;
     qrySwimClub: TFDQuery;
+    pnlBody: TPanel;
+    btnSelectNone: TButton;
+    btnSelectAll: TButton;
+    pnlCNTRL: TRelativePanel;
+    Grid: TDBAdvGrid;
+    qrySwimClubSwimClubID: TFDAutoIncField;
+    qrySwimClubCaption: TWideStringField;
+    qrySwimClubLogoImg: TBlobField;
+    qrySwimClubIsSelected: TIntegerField;
     procedure btnOkClick(Sender: TObject);
-    procedure chklstSwimClubClickCheck(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure GridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
+        State: TGridDrawState);
+    procedure qrySwimClubCalcFields(DataSet: TDataSet);
   private
     fSwimClubID: Integer;
   public
@@ -69,45 +78,12 @@ begin
 end;
 
 procedure TMemberClub.btnOkClick(Sender: TObject);
-var
-  idx: Integer;
-  itemdata: TItemData;
 begin
-  fSwimClubID := 0;
-  for idx := 0 to chklstSwimClub.Count - 1 do
-  begin
-    if chklstSwimClub.Checked[idx] then
-    begin
-      itemdata := TItemData(chklstSwimClub.Items.Objects[idx]);
-      fSwimClubID := itemdata.Value;
-      break;
-    end;
-  end;
-  if fSwimClubID > 0 then
     ModalResult := mrOK
-  else
-    ModalResult := mrCancel;
-
-end;
-
-procedure TMemberClub.chklstSwimClubClickCheck(Sender: TObject);
-var
-  idx, I: Integer;
-begin
-  // update state of fListOfClubIDs;
-  idx := TCheckListBox(Sender).ItemIndex; // current item.
-  if chklstSwimClub.Checked[idx] then
-  begin
-    // clear any other checked items
-    for I := 0 to TCheckListBox(Sender).Count - 1 do
-      if I <> idx then
-        TCheckListBox(Sender).Checked[I] := false;
-  end;
 end;
 
 procedure TMemberClub.FormCreate(Sender: TObject);
 begin
-  chklstSwimClub.Items.Clear; // Clear the list of prototype data
   fSwimClubID := 0;
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
   begin
@@ -115,18 +91,6 @@ begin
   end
   else
     Close();
-end;
-
-procedure TMemberClub.FormDestroy(Sender: TObject);
-var
-  itemdata: TItemData;
-  idx: integer;
-begin
-  for idx := 0 to chklstSwimClub.Count - 1 do
-  begin
-    itemdata := TItemData(chklstSwimClub.Items.Objects[idx]);
-    itemdata.Free;
-  end;
 end;
 
 procedure TMemberClub.FormKeyDown(Sender: TObject; var Key: Word;
@@ -138,6 +102,30 @@ begin
   end;
 end;
 
+procedure TMemberClub.GridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
+    TRect; State: TGridDrawState);
+begin
+  If not Assigned(IMG) then exit;
+  if (ARow >= grid.HeaderRow) then
+  begin
+    case ACol of
+      1:
+      begin
+        if qrySwimClub.FieldByName('IsSelected').AsInteger = 1 then
+
+        IMG.imglstNomCheckBox.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 4,
+          Rect.top + 4, 1)
+
+        else
+
+        IMG.imglstNomCheckBox.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 4,
+          Rect.top + 4, 0)
+
+      end;
+    end;
+  end;
+end;
+
 procedure TMemberClub.Prepare(ASwimClubID: Integer);
 var
   idx: Integer;
@@ -146,22 +134,12 @@ begin
   qrySwimClub.Open;
   if qrySwimClub.Active then
   begin
-    // BUILD THE LIST ITEMS AND OBJECTS FOR THE CHECKBOXLIST.
-    // Check the current active swimming club.
-    While not qrySwimClub.Eof DO
-    begin
-      itemdata := TItemData.Create(qrySwimClub.FieldByName('SwimClubID')
-        .AsInteger);
-      idx := chklstSwimClub.Items.Add(qrySwimClub.FieldByName('Caption')
-        .AsString);
-      chklstSwimClub.Items.Objects[idx] := TObject(itemdata);
-      if itemdata.Value = ASwimClubID then
-        chklstSwimClub.Checked[idx] := true
-      else
-        chklstSwimClub.Checked[idx] := false;
-      qrySwimClub.next;
-    end;
   end;
+end;
+
+procedure TMemberClub.qrySwimClubCalcFields(DataSet: TDataSet);
+begin
+  DataSet.FieldByName('IsSelected').AsInteger := 0;
 end;
 
 end.

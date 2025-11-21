@@ -466,6 +466,7 @@ object CORE: TCORE
   end
   object qrySwimClub: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     AfterScroll = qrySwimClubAfterScroll
     OnNewRecord = qrySwimClubNewRecord
     Filter = 'IsArchived <> 1'

@@ -1,4 +1,4 @@
-unit dlgFindMember;
+unit dlgFindMember_FName;
 
 interface
 
@@ -41,7 +41,7 @@ uses
   dmSCM2, dmIMG;
 
 type
-  TFindMember = class(TForm)
+  TFindMember_FName = class(TForm)
     Panel1: TPanel;
     Edit1: TEdit;
     Panel2: TPanel;
@@ -69,13 +69,13 @@ type
   end;
 
 var
-  FindMember: TFindMember;
+  FindMember_FName: TFindMember_FName;
 
 implementation
 
 {$R *.dfm}
 
-procedure TFindMember.btnGotoMemberClick(Sender: TObject);
+procedure TFindMember_FName.btnGotoMemberClick(Sender: TObject);
 begin
   if qryFindMember.Active then
     begin
@@ -87,12 +87,12 @@ begin
     end;
 end;
 
-procedure TFindMember.DBGrid1DblClick(Sender: TObject);
+procedure TFindMember_FName.DBGrid1DblClick(Sender: TObject);
 begin
   btnGotoMemberClick(self);
 end;
 
-procedure TFindMember.Edit1Change(Sender: TObject);
+procedure TFindMember_FName.Edit1Change(Sender: TObject);
 var
   LocateSuccess: boolean;
   SearchOptions: TLocateOptions;
@@ -151,19 +151,21 @@ begin
   qryFindMember.EnableControls();
 end;
 
-procedure TFindMember.FormClose(Sender: TObject; var Action: TCloseAction);
+procedure TFindMember_FName.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   qryFindMember.Close;
 end;
 
-procedure TFindMember.FormCreate(Sender: TObject);
+procedure TFindMember_FName.FormCreate(Sender: TObject);
 begin
   fMemberID := 0;
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
   begin
     qryFindMember.Connection := SCM2.scmConnection;
     qryFindMember.Open;
-  end;
+  end
+  else
+    Close();
   if qryFindMember.Active then
   begin
     DBGrid1.DataSource := dsFindMember;
@@ -172,7 +174,7 @@ begin
   end;
 end;
 
-procedure TFindMember.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TFindMember_FName.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then

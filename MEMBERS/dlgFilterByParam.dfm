@@ -1,4 +1,4 @@
-object MemberFilter: TMemberFilter
+object FilterByParam: TFilterByParam
   Left = 0
   Top = 0
   BorderStyle = bsNone
@@ -195,12 +195,12 @@ object MemberFilter: TMemberFilter
     Width = 32
     Height = 32
     Left = 56
-    Top = 48
+    Top = 64
   end
   object filterActionManager: TActionManager
     Images = filterImageList32x32
     Left = 128
-    Top = 24
+    Top = 72
     StyleName = 'Platform Default'
     object actnHideArchived: TAction
       Caption = 'Hide Archived Members'

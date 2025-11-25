@@ -211,24 +211,24 @@
             <Form>DeleteMember</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dlgFindMember.pas">
-            <Form>FindMember</Form>
+        <DCCReference Include="MEMBERS\dlgFindMember_FName.pas">
+            <Form>FindMember_FName</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dlgGotoMember.pas">
-            <Form>GotoMember</Form>
+        <DCCReference Include="MEMBERS\dlgFindMember_ID.pas">
+            <Form>FindMember_ID</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dlgGotoMembership.pas">
-            <Form>GotoMembership</Form>
+        <DCCReference Include="MEMBERS\dlgFindMember_Membership.pas">
+            <Form>FindMember_Membership</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dlgMemberClub.pas">
-            <Form>MemberClub</Form>
+        <DCCReference Include="MEMBERS\dlgFilterBySwimClub.pas">
+            <Form>FilterBySwimClub</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dlgMemberFilter.pas">
-            <Form>MemberFilter</Form>
+        <DCCReference Include="MEMBERS\dlgFilterByParam.pas">
+            <Form>FilterByParam</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="MEMBERS\dmManageMemberData.pas">

@@ -31,9 +31,10 @@ uses
   Vcl.ButtonGroup,
 
   dmManageMemberData, uDefines,
-
-  dlgMemberFilter, dlgMemberClub
+  dlgFilterByParam, // persistent dlg.
+  dlgFilterBySwimClub // persistent dlg.
   ;
+
 
 type
   TManageMember = class(TForm)
@@ -212,7 +213,7 @@ type
     fColorEditBoxFocused: TColor;
     fColorEditBoxNormal: TColor;
     FConnection: TFDConnection;
-    fFilterDlg: TMemberFilter;
+    fFilterDlg: TFilterByParam;
     fHideArchived: Boolean;
     fHideInActive: Boolean;
     fHideNonSwimmer: Boolean;
@@ -221,7 +222,7 @@ type
     fSystemTime: TSystemTime;
     function AssertConnection: Boolean;
     procedure ChartReport();
-    function FindMember(MemberID: Integer): Boolean;
+    function GotoMember(MemberID: Integer): Boolean;
     function GetMembersAge(aMemberID: Integer; aDate: TDate): Integer;
     procedure ReadPreferences(aIniFileName: string);
     procedure UpdateChart();
@@ -231,9 +232,9 @@ type
   protected
     procedure MSG_AfterPost(var Msg: TMessage); message SCM_MEMBER_AFTERPOST;
     procedure MSG_AfterScroll(var Msg: TMessage); message SCM_MEMBER_AFTERSCROLL;
-    procedure MSG_ChangeSwimClub(var Msg: TMessage); message SCM_MEMBER_CHANGE_SWIMCLUB;
-    procedure MSG_FilterDeactivated(var Msg: TMessage); message SCM_MEMBER_FILTER_DEACTIVATED;
-    procedure MSG_FilterUpdated(var Msg: TMessage); message SCM_MEMBER_FILTER_UPDATED;
+    procedure MSG_ChangeSwimClub(var Msg: TMessage); message SCM_MEMBER_FILTER_SWIMCLUB;
+    procedure MSG_FilterDeactivated(var Msg: TMessage); message SCM_MEMBER_FILTER_ACTIVATED;
+    procedure MSG_FilterUpdated(var Msg: TMessage); message SCM_MEMBER_FILTER_CHANGED;
   public
     { Public declarations }
     procedure Prepare(AConnection: TFDConnection; ASwimClubID: Integer = 1;
@@ -261,9 +262,9 @@ uses
   Vcl.Themes,
   SCMUtils,
   dlgDatePicker,
-  dlgFindMember,
-  dlgGotoMember,
-  dlgGotoMembership,
+  dlgFindMember_ID,
+  dlgFindMember_Membership,
+  dlgFindMember_FName,
   rptMemberDetail,
   rptMemberHistory,
   rptMembersList,
@@ -286,32 +287,25 @@ end;
 
 procedure TManageMember.actnFilterClubExecute(Sender: TObject);
 var
-//  aRect: TRect;
-  dlg: TMemberClub;
+  dlg: TFilterBySwimClub;
 begin
   if not assigned(FConnection) then
     exit;
-
-  dlg := TMemberClub.Create(Self);
-  // dlg.Position := poDesigned;
-  // aRect := btnFilterClub.ClientToScreen(btnFilterClub.ClientRect);
-  // dlg.Left := aRect.Left;
-  // dlg.Top := aRect.Bottom + 1;
-  dlg.Prepare(FConnection, ManageMemberData.GetSwimClubID);
-  if IsPositiveResult(dlg.ShowModal) then
-  begin
-    if dlg.SwimClubID <> ManageMemberData.GetSwimClubID then
-      SendMessage(Handle, SCM_MEMBER_CHANGE_SWIMCLUB, 0, dlg.SwimClubID);
-  end;
-  dlg.Free;
+  {TODO -oBSA -cGeneral : Make dlg persistent. }
+{
+dlg := TFilterBySwimClub.Create(Self);
+if IsPositiveResult(dlg.ShowModal) then
+begin
+  SendMessage(Handle, SCM_MEMBER_CHANGE_SWIMCLUB, 0, 0);
+end;
+dlg.Free;
+}
 end;
 
 procedure TManageMember.actnFilterExecute(Sender: TObject);
 var
   aRect: TRect;
 begin
-  // double tap on btnFilter
-
   if assigned(fFilterDlg) then
   begin
     FreeAndNil(fFilterDlg);
@@ -320,7 +314,7 @@ begin
 
   WritePreferences;
 
-  fFilterDlg := TMemberFilter.Create(Self);
+  fFilterDlg := TFilterByParam.Create(Self);
   fFilterDlg.Position := poDesigned;
   aRect := btnFilter.ClientToScreen(btnFilter.ClientRect);
   fFilterDlg.Left := aRect.Left;
@@ -442,14 +436,13 @@ end;
 
 procedure TManageMember.btnFindMemberClick(Sender: TObject);
 var
-  dlg: TFindMember;
+  dlg: TFindMember_FName;
 begin
-  dlg := TFindMember.Create(Self);
-  dlg.Prepare(FConnection, ManageMemberData.GetSwimClubID);
+  dlg := TFindMember_FName.Create(Self);
   if IsPositiveResult(dlg.ShowModal()) then
   begin
     // LOCATE MEMBER IN qryMember
-    FindMember(dlg.MemberID)
+    GotoMember(dlg.MemberID)
   end;
   dlg.Free;
 end;
@@ -486,18 +479,17 @@ end;
 
 procedure TManageMember.btnGotoMemberIDClick(Sender: TObject);
 var
-  dlg: TGotoMember;
+  dlg: TFindMember_ID;
   rtn: TModalResult;
 begin
   if assigned(ManageMemberData) then
   begin
-    dlg := TGotoMember.Create(Self);
-    dlg.Prepare(FConnection, ManageMemberData.GetSwimClubID);
+    dlg := TFindMember_ID.Create(Self);
     rtn := dlg.ShowModal;
     if IsPositiveResult(rtn) then
     begin
       // LOCATE MEMBER IN qryMember
-      FindMember(dlg.MemberID)
+      GotoMember(dlg.MemberID)
     end;
     dlg.Free;
   end;
@@ -505,19 +497,18 @@ end;
 
 procedure TManageMember.btnGotoMembershipClick(Sender: TObject);
 var
-  dlg: TGotoMembership;
+  dlg: TFindMember_Membership;
   rtn: TModalResult;
 begin
   if assigned(ManageMemberData) then
   begin
-    dlg := TGotoMembership.Create(Self);
-    dlg.Prepare(FConnection, ManageMemberData.GetSwimClubID);
+    dlg := TFindMember_Membership.Create(Self);
     rtn := dlg.ShowModal;
     if IsPositiveResult(rtn) then
     begin
       // NOTE: returns both MembershipNum and MemberID
       // LOCATE MEMBER IN qryMember
-      FindMember(dlg.MemberID)
+      GotoMember(dlg.MemberID)
     end;
     dlg.Free;
   end;
@@ -740,7 +731,7 @@ end;
 procedure TManageMember.DBGridEditButtonClick(Sender: TObject);
 var
   fld: TField;
-  cal: TDOBPicker;
+  cal: TDatePicker;
   // point: TPoint;
   Rect: TRect;
   rtn: TModalResult;
@@ -749,7 +740,7 @@ begin
   fld := TDBGrid(Sender).SelectedField;
   if fld.Name = 'qryMemberDOB' then
   begin
-    cal := TDOBPicker.Create(Self);
+    cal := TDatePicker.Create(Self);
     Rect := TButton(Sender).ClientToScreen(TButton(Sender).ClientRect);
     cal.Left := Rect.Left;
     cal.Top := Rect.Top;
@@ -908,7 +899,7 @@ end;
 procedure TManageMember.DBGridRoleEditButtonClick(Sender: TObject);
 var
   fld: TField;
-  dlg: TDOBPicker;
+  dlg: TDatePicker;
   mrRtn: TModalResult;
 begin
   // handle the ellipse button for TDateTime entry...
@@ -917,16 +908,16 @@ begin
     exit;
   if (fld.FieldName = 'ElectedOn') OR (fld.FieldName = 'RetiredOn') then
   begin
-    dlg := TDOBPicker.Create(Self);
+    dlg := TDatePicker.Create(Self);
     mrRtn := dlg.ShowModal; // open DATE PICKER ...
     if (mrRtn = mrOk) then
     begin
       DateTimeToSystemTime(dlg.CalendarView1.Date, fSystemTime);
       if (fld.FieldName = 'ElectedOn') then
-        PostMessage(ManageMemberData.Handle, SCM_ELECTEDONUPDATED,
+        PostMessage(ManageMemberData.Handle, SCM_MEMBER_UPDATE_ELECTEDON,
           longint(@fSystemTime), 0)
       else
-        PostMessage(ManageMemberData.Handle, SCM_RETIREDONUPDATED,
+        PostMessage(ManageMemberData.Handle, SCM_MEMBER_UPDATE_RETIREDON,
           longint(@fSystemTime), 0);
     end;
     dlg.Free;
@@ -959,7 +950,7 @@ begin
   end;
 end;
 
-function TManageMember.FindMember(MemberID: Integer): Boolean;
+function TManageMember.GotoMember(MemberID: Integer): Boolean;
 var
   b: Boolean;
   s: string;
@@ -1052,7 +1043,7 @@ begin
   // ----------------------------------------------------
   // R E A D   P R E F E R E N C E S .
   // ----------------------------------------------------
-  iniFileName := SCMUtility.GetSCMPreferenceFileName;
+  iniFileName := SCMUtils.GetSCMPreferenceFileName;
   ReadPreferences(iniFileName);
   if not AssertConnection then
     exit;
@@ -1139,7 +1130,7 @@ begin
       IntToStr(ManageMemberData.RecordCount) + ')';
   end;
   if aMemberID > 0 then
-    PostMessage(ManageMemberData.Handle, SCM_LOCATEMEMBER, aMemberID, 0);
+    PostMessage(ManageMemberData.Handle, SCM_MEMBER_LOCATE, aMemberID, 0);
 
 end;
 
@@ -1245,7 +1236,7 @@ begin
   end;
 
   if aMemberID > 0 then
-    PostMessage(ManageMemberData.Handle, SCM_LOCATEMEMBER, aMemberID, 0);
+    PostMessage(ManageMemberData.Handle, SCM_MEMBER_LOCATE, aMemberID, 0);
 end;
 
 procedure TManageMember.ReadPreferences(aIniFileName: string);
@@ -1373,7 +1364,7 @@ var
   iFile: TIniFile;
   iniFileName: string;
 begin
-  iniFileName := SCMUtility.GetSCMPreferenceFileName;
+  iniFileName := SCMUtils.GetSCMPreferenceFileName;
   if not FileExists(iniFileName) then
     exit;
   iFile := TIniFile.Create(iniFileName);

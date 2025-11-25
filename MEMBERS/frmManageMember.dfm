@@ -98,11 +98,12 @@ object ManageMember: TManageMember
       TabOrder = 3
     end
     object btnFilterClub: TButton
-      Left = 579
+      Left = 536
       Top = 9
-      Width = 142
+      Width = 185
       Height = 34
       Action = actnFilterClub
+      Caption = 'Filter by Swim Club'
       ImageIndex = 10
       ImageMargins.Left = 4
       ImageMargins.Right = -16
@@ -138,14 +139,14 @@ object ManageMember: TManageMember
     Top = 76
     Width = 1370
     Height = 659
-    ActivePage = ts_MemberDetail3
+    ActivePage = TabSheet2
     Align = alClient
     MultiLine = True
     TabHeight = 40
     TabOrder = 2
     TabWidth = 180
     object TabSheet1: TTabSheet
-      Caption = 'Member'#39's Details 1'
+      Caption = 'Member Main'
       object Panel7: TPanel
         Left = 0
         Top = 0
@@ -154,7 +155,6 @@ object ManageMember: TManageMember
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitTop = -2
         object Label3: TLabel
           Left = 23
           Top = 227
@@ -570,7 +570,7 @@ object ManageMember: TManageMember
       end
     end
     object TabSheet4: TTabSheet
-      Caption = 'Member'#39's Details 2'
+      Caption = 'Member Misc.'
       ImageIndex = 3
       object Label6: TLabel
         Left = 501
@@ -864,7 +864,7 @@ object ManageMember: TManageMember
       end
     end
     object ts_MemberDetail3: TTabSheet
-      Caption = 'Member'#39's Details 3'
+      Caption = 'Member Stats'
       ImageIndex = 2
       object Label23: TLabel
         Left = 3
@@ -918,13 +918,11 @@ object ManageMember: TManageMember
           item
             Expanded = False
             FieldName = 'RaceTime'
-            Width = 64
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'EventDate'
-            Width = 64
             Visible = True
           end
           item
@@ -971,6 +969,113 @@ object ManageMember: TManageMember
           end>
       end
     end
+    object TabSheet5: TTabSheet
+      Caption = 'Member Charts'
+      ImageIndex = 4
+      object Panel2: TPanel
+        Left = 0
+        Top = 0
+        Width = 1362
+        Height = 41
+        Align = alTop
+        BevelOuter = bvNone
+        TabOrder = 0
+        DesignSize = (
+          1362
+          41)
+        object Label27: TLabel
+          Left = 24
+          Top = 11
+          Width = 59
+          Height = 19
+          Alignment = taRightJustify
+          Caption = 'Distance'
+        end
+        object Label28: TLabel
+          Left = 334
+          Top = 11
+          Width = 45
+          Height = 19
+          Alignment = taRightJustify
+          Caption = 'Stroke'
+        end
+        object cmboDistance: TComboBox
+          Left = 89
+          Top = 8
+          Width = 183
+          Height = 27
+          TabOrder = 0
+          Text = 'cmboDistance'
+          OnChange = cmboDistanceChange
+        end
+        object cmboStroke: TComboBox
+          Left = 385
+          Top = 8
+          Width = 184
+          Height = 27
+          TabOrder = 1
+          Text = 'cmboStroke'
+          OnChange = cmboStrokeChange
+        end
+        object chkbDoCurrSeason: TCheckBox
+          Left = 616
+          Top = 11
+          Width = 225
+          Height = 17
+          Caption = 'Current swimming season.'
+          Checked = True
+          State = cbChecked
+          TabOrder = 2
+          OnClick = chkbDoCurrSeasonClick
+        end
+        object btmPrintChart: TButton
+          Left = 1230
+          Top = 8
+          Width = 129
+          Height = 25
+          Anchors = [akTop, akRight]
+          Caption = 'Print Chart'
+          TabOrder = 3
+          OnClick = btmPrintChartClick
+        end
+      end
+      object DBChart1: TDBChart
+        Left = 0
+        Top = 41
+        Width = 1362
+        Height = 568
+        Title.Text.Strings = (
+          'TDBChart')
+        BottomAxis.ExactDateTime = False
+        BottomAxis.Increment = 1.000000000000000000
+        Legend.Title.Alignment = taCenter
+        Legend.Title.Text.Strings = (
+          'Race Time & Date')
+        View3D = False
+        OnGetLegendText = DBChart1GetLegendText
+        Align = alClient
+        TabOrder = 1
+        DefaultCanvas = 'TGDIPlusCanvas'
+        ColorPaletteIndex = 13
+        object Series2: TLineSeries
+          HoverElement = [heCurrent]
+          DataSource = ManageMemberData.qryChart
+          XLabelsSource = 'ChartX'
+          Brush.BackColor = clDefault
+          Pointer.Brush.Gradient.EndColor = 10708548
+          Pointer.Gradient.EndColor = 10708548
+          Pointer.InflateMargins = True
+          Pointer.Style = psRectangle
+          Pointer.Visible = True
+          XValues.Name = 'X'
+          XValues.Order = loAscending
+          XValues.ValueSource = 'ChartX'
+          YValues.Name = 'Y'
+          YValues.Order = loNone
+          YValues.ValueSource = 'Seconds'
+        end
+      end
+    end
     object TabSheet2: TTabSheet
       Caption = 'LIST'
       ImageIndex = 1
@@ -1010,32 +1115,27 @@ object ManageMember: TManageMember
           item
             Expanded = False
             FieldName = 'MembershipNum'
-            Width = 64
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'FirstName'
-            Width = 64
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'LastName'
-            Width = 64
             Visible = True
           end
           item
             ButtonStyle = cbsEllipsis
             Expanded = False
             FieldName = 'DOB'
-            Width = 64
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'luGender'
-            Width = 64
             Visible = True
           end
           item
@@ -1043,7 +1143,6 @@ object ManageMember: TManageMember
             Expanded = False
             FieldName = 'IsArchived'
             Title.Caption = 'Archive'
-            Width = 64
             Visible = True
           end
           item
@@ -1057,13 +1156,11 @@ object ManageMember: TManageMember
             Expanded = False
             FieldName = 'IsSwimmer'
             Title.Caption = 'Swims'
-            Width = 64
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'luHouse'
-            Width = 64
             Visible = True
           end
           item
@@ -1411,113 +1508,6 @@ object ManageMember: TManageMember
         end
       end
     end
-    object TabSheet5: TTabSheet
-      Caption = 'CHART'
-      ImageIndex = 4
-      object Panel2: TPanel
-        Left = 0
-        Top = 0
-        Width = 1362
-        Height = 41
-        Align = alTop
-        BevelOuter = bvNone
-        TabOrder = 0
-        DesignSize = (
-          1362
-          41)
-        object Label27: TLabel
-          Left = 24
-          Top = 11
-          Width = 59
-          Height = 19
-          Alignment = taRightJustify
-          Caption = 'Distance'
-        end
-        object Label28: TLabel
-          Left = 334
-          Top = 11
-          Width = 45
-          Height = 19
-          Alignment = taRightJustify
-          Caption = 'Stroke'
-        end
-        object cmboDistance: TComboBox
-          Left = 89
-          Top = 8
-          Width = 183
-          Height = 27
-          TabOrder = 0
-          Text = 'cmboDistance'
-          OnChange = cmboDistanceChange
-        end
-        object cmboStroke: TComboBox
-          Left = 385
-          Top = 8
-          Width = 184
-          Height = 27
-          TabOrder = 1
-          Text = 'cmboStroke'
-          OnChange = cmboStrokeChange
-        end
-        object chkbDoCurrSeason: TCheckBox
-          Left = 616
-          Top = 11
-          Width = 225
-          Height = 17
-          Caption = 'Current swimming season.'
-          Checked = True
-          State = cbChecked
-          TabOrder = 2
-          OnClick = chkbDoCurrSeasonClick
-        end
-        object btmPrintChart: TButton
-          Left = 1230
-          Top = 8
-          Width = 129
-          Height = 25
-          Anchors = [akTop, akRight]
-          Caption = 'Print Chart'
-          TabOrder = 3
-          OnClick = btmPrintChartClick
-        end
-      end
-      object DBChart1: TDBChart
-        Left = 0
-        Top = 41
-        Width = 1362
-        Height = 568
-        Title.Text.Strings = (
-          'TDBChart')
-        BottomAxis.ExactDateTime = False
-        BottomAxis.Increment = 1.000000000000000000
-        Legend.Title.Alignment = taCenter
-        Legend.Title.Text.Strings = (
-          'Race Time & Date')
-        View3D = False
-        OnGetLegendText = DBChart1GetLegendText
-        Align = alClient
-        TabOrder = 1
-        DefaultCanvas = 'TGDIPlusCanvas'
-        ColorPaletteIndex = 13
-        object Series2: TLineSeries
-          HoverElement = [heCurrent]
-          DataSource = ManageMemberData.qryChart
-          XLabelsSource = 'ChartX'
-          Brush.BackColor = clDefault
-          Pointer.Brush.Gradient.EndColor = 10708548
-          Pointer.Gradient.EndColor = 10708548
-          Pointer.InflateMargins = True
-          Pointer.Style = psRectangle
-          Pointer.Visible = True
-          XValues.Name = 'X'
-          XValues.Order = loAscending
-          XValues.ValueSource = 'ChartX'
-          YValues.Name = 'Y'
-          YValues.Order = loNone
-          YValues.ValueSource = 'Seconds'
-        end
-      end
-    end
   end
   object ActnMemberMenuBar: TActionMainMenuBar
     Left = 0
@@ -1589,7 +1579,7 @@ object ManageMember: TManageMember
         ActionBar = ActnMemberMenuBar
       end>
     Images = VirtlImageListMember
-    Left = 152
+    Left = 96
     Top = 648
     StyleName = 'Platform Default'
     object MemFile_AutoEdit: TAction
@@ -2129,8 +2119,8 @@ object ManageMember: TManageMember
               42A70000000049454E44AE426082}
           end>
       end>
-    Left = 320
-    Top = 624
+    Left = 496
+    Top = 472
   end
   object VirtlImageListMember: TVirtualImageList
     Images = <
@@ -2172,13 +2162,13 @@ object ManageMember: TManageMember
     ImageCollection = ImageCollectMember
     Width = 32
     Height = 32
-    Left = 400
+    Left = 520
     Top = 648
   end
   object BalloonHint1: TBalloonHint
     Delay = 100
-    Left = 324
-    Top = 686
+    Left = 388
+    Top = 654
   end
   object BTNImageList32x32: TVirtualImageList
     Images = <
@@ -2241,6 +2231,6 @@ object ManageMember: TManageMember
     Width = 32
     Height = 32
     Left = 256
-    Top = 656
+    Top = 648
   end
 end

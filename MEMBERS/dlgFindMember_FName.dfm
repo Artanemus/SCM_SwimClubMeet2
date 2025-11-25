@@ -1,8 +1,8 @@
-object FindMember: TFindMember
+object FindMember_FName: TFindMember_FName
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Find Member'
+  Caption = 'Find a Member...'
   ClientHeight = 530
   ClientWidth = 353
   Color = clBtnFace
@@ -40,7 +40,7 @@ object FindMember: TFindMember
       Left = 48
       Top = 7
       Width = 305
-      Height = 34
+      Height = 27
       TabOrder = 0
       Text = 'Edit1'
       OnChange = Edit1Change

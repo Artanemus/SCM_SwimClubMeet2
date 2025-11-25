@@ -1,4 +1,4 @@
-unit dlgMemberFilter;
+unit dlgFilterByParam;
 
 interface
 
@@ -18,7 +18,7 @@ type
     HideNonSwimmer: Boolean;
   end;
 
-  TMemberFilter = class(TForm)
+  TFilterByParam = class(TForm)
     btngrpFilter: TButtonGroup;
     filterImageCollection: TImageCollection;
     filterImageList32x32: TVirtualImageList;
@@ -58,7 +58,7 @@ const
   INIFILE_SECTION = 'SCM_Member';
 
 var
-  MemberFilter: TMemberFilter;
+  FilterByParam: TFilterByParam;
 
 implementation
 
@@ -66,7 +66,7 @@ implementation
 
 Uses IniFiles;
 
-procedure TMemberFilter.actnClearExecute(Sender: TObject);
+procedure TFilterByParam.actnClearExecute(Sender: TObject);
 begin
   actnHideArchived.Checked := false;
   actnHideInActive.Checked := false;
@@ -75,79 +75,79 @@ begin
   SendFilterDataPacket;
 end;
 
-procedure TMemberFilter.actnClearUpdate(Sender: TObject);
+procedure TFilterByParam.actnClearUpdate(Sender: TObject);
 begin
   if actnHideArchived.Checked or actnHideInActive.Checked or actnHideNonSwimmer.Checked
   then TAction(Sender).ImageName := 'filter_alt'
   else TAction(Sender).ImageName := 'filter_alt_off';
 end;
 
-procedure TMemberFilter.actnCloseExecute(Sender: TObject);
+procedure TFilterByParam.actnCloseExecute(Sender: TObject);
 begin
   WritePreferences;
   ModalResult := mrOK;
 end;
 
-procedure TMemberFilter.actnHideArchivedExecute(Sender: TObject);
+procedure TFilterByParam.actnHideArchivedExecute(Sender: TObject);
 begin
   TAction(Sender).Checked := not TAction(Sender).Checked;
   SetIconDisplayState;
   SendFilterDataPacket;
 end;
 
-procedure TMemberFilter.actnHideArchivedUpdate(Sender: TObject);
+procedure TFilterByParam.actnHideArchivedUpdate(Sender: TObject);
 begin
   if TAction(Sender).Checked then TAction(Sender).ImageName := 'Checked'
   else TAction(Sender).ImageName := 'UnChecked';
 end;
 
-procedure TMemberFilter.actnHideInActiveExecute(Sender: TObject);
+procedure TFilterByParam.actnHideInActiveExecute(Sender: TObject);
 begin
   TAction(Sender).Checked := not TAction(Sender).Checked;
   SetIconDisplayState;
   SendFilterDataPacket;
 end;
 
-procedure TMemberFilter.actnHideInActiveUpdate(Sender: TObject);
+procedure TFilterByParam.actnHideInActiveUpdate(Sender: TObject);
 begin
   if TAction(Sender).Checked then TAction(Sender).ImageName := 'Checked'
   else TAction(Sender).ImageName := 'UnChecked';
 end;
 
-procedure TMemberFilter.actnHideNonSwimmerExecute(Sender: TObject);
+procedure TFilterByParam.actnHideNonSwimmerExecute(Sender: TObject);
 begin
   TAction(Sender).Checked := not TAction(Sender).Checked;
   SetIconDisplayState;
   SendFilterDataPacket;
 end;
 
-procedure TMemberFilter.actnHideNonSwimmerUpdate(Sender: TObject);
+procedure TFilterByParam.actnHideNonSwimmerUpdate(Sender: TObject);
 begin
   if TAction(Sender).Checked then TAction(Sender).ImageName := 'Checked'
   else TAction(Sender).ImageName := 'UnChecked';
 end;
 
-procedure TMemberFilter.FormCreate(Sender: TObject);
+procedure TFilterByParam.FormCreate(Sender: TObject);
 begin
   actnHideArchived.Checked := false;
   actnHideInActive.Checked := false;
   actnHideNonSwimmer.Checked := false;
 end;
 
-procedure TMemberFilter.FormDeactivate(Sender: TObject);
+procedure TFilterByParam.FormDeactivate(Sender: TObject);
 begin
   WritePreferences; // record filter state
   PostMessage(TForm(Owner).Handle, SCM_MEMBER_FILTER_DEACTIVATED, 0, 0);
 end;
 
-procedure TMemberFilter.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TFilterByParam.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
     FormDeactivate(Self);
 end;
 
-procedure TMemberFilter.FormShow(Sender: TObject);
+procedure TFilterByParam.FormShow(Sender: TObject);
 begin
   ReadPreferences;
   SetIconDisplayState;
@@ -155,7 +155,7 @@ end;
 
 { TMemberFilter }
 
-procedure TMemberFilter.ReadPreferences;
+procedure TFilterByParam.ReadPreferences;
 var
   iFile: TIniFile;
   iniFileName: string;
@@ -172,7 +172,7 @@ begin
   iFile.Free;
 end;
 
-procedure TMemberFilter.SendFilterDataPacket;
+procedure TFilterByParam.SendFilterDataPacket;
 var
   Buffer: TMemoryStream;
   CopyData: TCopyDataStruct;
@@ -196,7 +196,7 @@ begin
   end;
 end;
 
-procedure TMemberFilter.SetIconDisplayState;
+procedure TFilterByParam.SetIconDisplayState;
 begin
   // The TAction's state must change else OnActionUpdate isn't called.
   // Programmatically assigning TAction.Checked with a value does not
@@ -213,7 +213,7 @@ begin
   else actnClear.ImageName := 'filter_alt_off';
 end;
 
-procedure TMemberFilter.WritePreferences;
+procedure TFilterByParam.WritePreferences;
 var
   iFile: TIniFile;
   iniFileName: string;

@@ -1,4 +1,4 @@
-unit dlgGotoMember;
+unit dlgFindMember_Membership;
 
 interface
 
@@ -17,6 +17,7 @@ uses
   Vcl.VirtualImage,
   Vcl.BaseImageCollection,
   Vcl.ImageCollection,
+  Data.DB,
   FireDAC.Stan.Intf,
   FireDAC.Stan.Option,
   FireDAC.Stan.Param,
@@ -26,14 +27,12 @@ uses
   FireDAC.DApt.Intf,
   FireDAC.Stan.Async,
   FireDAC.DApt,
-  Data.DB,
   FireDAC.Comp.DataSet,
   FireDAC.Comp.Client,
-  dmSCM2,
-  dmIMG;
+  dmSCM2, dmIMG;
 
 type
-  TGotoMember = class(TForm)
+  TFindMember_Membership = class(TForm)
     Panel1: TPanel;
     btnGoto: TButton;
     Panel2: TPanel;
@@ -43,45 +42,49 @@ type
     vimgMember: TVirtualImage;
     vimgGoto: TVirtualImage;
     procedure FormCreate(Sender: TObject);
-    procedure btnGotoClick(Sender: TObject);
-    procedure btnCancelClick(Sender: TObject);
-    procedure Edit1Change(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure btnGotoClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
+    procedure Edit1Change(Sender: TObject);
   private
-    { Private declarations }
     fMemberID: integer;
-    function TestForMemberID(aMemberID: integer): boolean;
+    fMembershipNum: integer;
+    function TestForMembershipNum(MembershipNum: integer): boolean;
 
   public
     property MemberID: integer read fMemberID write fMemberID;
-
+    property MembershipNum: integer read fMembershipNum write fMembershipNum;
   end;
 
 var
-  GotoMember: TGotoMember;
+  FindMember_Membership: TFindMember_Membership;
 
 implementation
 
 {$R *.dfm}
 
-function TGotoMember.TestForMemberID(aMemberID: integer): boolean;
+function TFindMember_Membership.TestForMembershipNum(MembershipNum: integer): boolean;
 var
   SQL: string;
   v: variant;
+
 begin
   result := false;
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
   begin
     SQL := '''
-      SELECT Count(MemberID)
+      SELECT MemberID
       FROM dbo.Member
-      WHERE MemberID = :ID
+      WHERE MembershipNum = :ID
       ''';
     try
       begin
-        v := SCM2.scmConnection.ExecSQL(SQL, [fMemberID]);
-        if v = 1 then result := true;
+        v := SCM2.scmConnection.ExecSQL(SQL, [MembershipNum]);
+        if not VarIsClear(v) then
+        begin
+          fMemberID := v;
+          result := true;
+        end;
       end;
     except
       on E: Exception do
@@ -90,24 +93,19 @@ begin
   end;
 end;
 
-procedure TGotoMember.btnCancelClick(Sender: TObject);
+procedure TFindMember_Membership.btnGotoClick(Sender: TObject);
 begin
-  fMemberID := 0;
-  ModalResult := mrCancel;
-end;
-
-procedure TGotoMember.btnGotoClick(Sender: TObject);
-begin
-  if (MemberID <> 0) and TestForMemberID(fMemberID) then
+  if (fMembershipNum <> 0) and TestForMembershipNum(fMembershipNum) then
     ModalResult := mrOk
   else
   begin
     Beep;
-    lblErrMsg.Caption := 'Member''s ID invalid.';
+    lblErrMsg.Caption := 'Membership number is invalid.';
   end;
 end;
 
-procedure TGotoMember.Edit1Change(Sender: TObject);
+procedure TFindMember_Membership.Edit1Change(Sender: TObject);
+begin
 var
   i: integer;
 begin
@@ -123,10 +121,10 @@ begin
     lblErrMsg.Caption := '';
     exit;
   end;
-  if TestForMemberID(i) then
+  if TestForMembershipNum(i) then
   begin
-    fMemberID := i;
-    lblErrMsg.Caption := 'Member''s ID ..OK';
+    fMembershipNum := i;
+    lblErrMsg.Caption := 'Membership number ..OK.';
     exit;
   end
   else
@@ -136,17 +134,21 @@ begin
   end;
 end;
 
-procedure TGotoMember.FormCreate(Sender: TObject);
+
+end;
+
+procedure TFindMember_Membership.FormCreate(Sender: TObject);
 begin
   fMemberID := 0;
+  fMembershipNum := 0;
   lblErrMsg.Caption := '';
   if not Assigned(SCM2) or not SCM2.scmConnection.Connected then
     Close();
-  // Triggers Edit1Change event.
-  Edit1.Text := '';
+  Edit1.Text := ''; // Triggers Edit1Change event.
+
 end;
 
-procedure TGotoMember.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TFindMember_Membership.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key = VK_RETURN) then
@@ -154,11 +156,15 @@ begin
   else
   begin
     if (Key = VK_ESCAPE) then
-      btnCancelClick(self);
+    begin
+      fMemberID := 0;
+      fMembershipNum := 0;
+      ModalResult := mrCancel;
+    end;
   end;
 end;
 
-procedure TGotoMember.FormShow(Sender: TObject);
+procedure TFindMember_Membership.FormShow(Sender: TObject);
 begin
   Edit1.SetFocus;
 end;

@@ -1,4 +1,4 @@
-unit dlgMemberClub;
+unit dlgFilterBySwimClub;
 
 interface
 
@@ -33,13 +33,8 @@ uses
   AdvGrid, DBAdvGrid;
 
 type
-  TItemData = class
-  public
-    Value: Integer;
-    constructor Create(AValue: Integer);
-  end;
 
-  TMemberClub = class(TForm)
+  TFilterBySwimClub = class(TForm)
     btnOk: TButton;
     dsSwimClub: TDataSource;
     qrySwimClub: TFDQuery;
@@ -55,45 +50,37 @@ type
     procedure btnOkClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure GridClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure GridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
         State: TGridDrawState);
-    procedure qrySwimClubCalcFields(DataSet: TDataSet);
-  private
-    fSwimClubID: Integer;
-  public
-    procedure Prepare(ASwimClubID: Integer);
-    property SwimClubID: Integer read fSwimClubID write fSwimClubID;
+    procedure qrySwimClubAfterOpen(DataSet: TDataSet);
   end;
 
 var
-  MemberClub: TMemberClub;
+  FilterBySwimClub: TFilterBySwimClub;
 
 implementation
 
 {$R *.dfm}
 
-constructor TItemData.Create(AValue: Integer);
-begin
-  Value := AValue;
-end;
-
-procedure TMemberClub.btnOkClick(Sender: TObject);
+procedure TFilterBySwimClub.btnOkClick(Sender: TObject);
 begin
     ModalResult := mrOK
 end;
 
-procedure TMemberClub.FormCreate(Sender: TObject);
+procedure TFilterBySwimClub.FormCreate(Sender: TObject);
 begin
-  fSwimClubID := 0;
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
   begin
-    qrySwimClub.Connection := SCM2.scmConnection
+    qrySwimClub.Connection := SCM2.scmConnection;
+    qrySwimClub.Open;
+    if not qrySwimClub.Active then Close();
   end
   else
     Close();
 end;
 
-procedure TMemberClub.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TFilterBySwimClub.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
@@ -102,7 +89,20 @@ begin
   end;
 end;
 
-procedure TMemberClub.GridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
+procedure TFilterBySwimClub.GridClickCell(Sender: TObject; ARow, ACol: Integer);
+var
+  SelectState: integer;
+begin
+  if (ARow >= Grid.FixedRows) and (ACol = 1) then
+  begin
+    // note: IsSelected is InternalCalc field. (In memory)
+    SelectState := Grid.DataSource.DataSet.FieldByName('IsSelected').AsInteger;
+    SelectState := not SelectState;
+    Grid.DataSource.DataSet.FieldByName('IsSelected').AsInteger := SelectState;
+  end;
+end;
+
+procedure TFilterBySwimClub.GridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
     TRect; State: TGridDrawState);
 begin
   If not Assigned(IMG) then exit;
@@ -126,20 +126,24 @@ begin
   end;
 end;
 
-procedure TMemberClub.Prepare(ASwimClubID: Integer);
-var
-  idx: Integer;
-  itemdata: TItemData;
+procedure TFilterBySwimClub.qrySwimClubAfterOpen(DataSet: TDataSet);
 begin
-  qrySwimClub.Open;
-  if qrySwimClub.Active then
+  // Iterate HERE, once, immediately after loading data
+  DataSet.First;
+  while not DataSet.Eof do
   begin
+    DataSet.Edit;
+    // a default expression has been defined (1) for field IsSelected
+    // and the following line may be redundant.
+    DataSet.FieldByName('IsSelected').AsInteger := 1; // Set default
+    DataSet.Post;
+    DataSet.Next;
   end;
+  // Reset cursor to top
+  DataSet.First;
 end;
 
-procedure TMemberClub.qrySwimClubCalcFields(DataSet: TDataSet);
-begin
-  DataSet.FieldByName('IsSelected').AsInteger := 0;
-end;
+
+
 
 end.

@@ -1,8 +1,9 @@
-object GotoMember: TGotoMember
+object FindMember_Membership: TFindMember_Membership
   Left = 0
   Top = 0
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Goto Member'#39's ID'
+  Caption = 'Goto member using membership number...'
   ClientHeight = 200
   ClientWidth = 432
   Color = clBtnFace
@@ -19,18 +20,18 @@ object GotoMember: TGotoMember
   TextHeight = 19
   object Panel1: TPanel
     Left = 0
-    Top = 144
+    Top = 147
     Width = 432
-    Height = 56
+    Height = 53
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
     object btnGoto: TButton
-      Left = 124
-      Top = 13
-      Width = 184
+      Left = 91
+      Top = 12
+      Width = 250
       Height = 29
-      Caption = 'Goto Member ID'
+      Caption = 'Goto Membership Number'
       TabOrder = 0
       OnClick = btnGotoClick
     end
@@ -39,29 +40,29 @@ object GotoMember: TGotoMember
     Left = 0
     Top = 0
     Width = 432
-    Height = 144
+    Height = 147
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = -6
     object Label1: TLabel
-      Left = 142
-      Top = 40
-      Width = 131
+      Left = 136
+      Top = 41
+      Width = 140
       Height = 19
-      Caption = 'Enter Member'#39's ID'
+      Caption = 'Enter Membership#'
     end
     object lblErrMsg: TLabel
-      Left = 142
-      Top = 83
-      Width = 263
-      Height = 27
+      Left = 136
+      Top = 84
+      Width = 323
+      Height = 19
       AutoSize = False
-      Caption = 'The Member ID doesn'#39't exist.'
+      Caption = 'The Membership number doesn'#39't exist.'
+      WordWrap = True
     end
     object vimgMember: TVirtualImage
-      Left = 16
-      Top = 5
+      Left = 25
+      Top = 0
       Width = 105
       Height = 105
       ImageCollection = IMG.CollectionCore
@@ -71,8 +72,8 @@ object GotoMember: TGotoMember
       ImageName = 'user'
     end
     object vimgGoto: TVirtualImage
-      Left = 31
-      Top = 35
+      Left = 40
+      Top = 30
       Width = 105
       Height = 105
       ImageCollection = IMG.CollectionCore
@@ -82,9 +83,9 @@ object GotoMember: TGotoMember
       ImageName = 'goto'
     end
     object Edit1: TEdit
-      Left = 275
-      Top = 37
-      Width = 78
+      Left = 285
+      Top = 38
+      Width = 74
       Height = 27
       NumbersOnly = True
       TabOrder = 0

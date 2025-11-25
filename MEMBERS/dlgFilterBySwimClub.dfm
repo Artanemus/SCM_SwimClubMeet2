@@ -1,4 +1,4 @@
-object MemberClub: TMemberClub
+object FilterBySwimClub: TFilterBySwimClub
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu]
@@ -25,10 +25,6 @@ object MemberClub: TMemberClub
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 120
-    ExplicitTop = 200
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object Grid: TDBAdvGrid
       Left = 0
       Top = 0
@@ -36,18 +32,27 @@ object MemberClub: TMemberClub
       Height = 397
       Cursor = crDefault
       Align = alClient
+      Color = clWhite
       ColCount = 4
       DefaultRowHeight = 50
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 4
+      RowCount = 2
       FixedRows = 1
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
+      ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
       OnDrawCell = GridDrawCell
-      GridLineColor = 13948116
-      GridFixedLineColor = 11250603
+      GridLineColor = 15987699
+      GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
+      OnClickCell = GridClickCell
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
       ActiveCellFont.Height = -12
@@ -60,6 +65,7 @@ object MemberClub: TMemberClub
       ControlLook.FixedGradientTo = clWhite
       ControlLook.FixedGradientMirrorFrom = clWhite
       ControlLook.FixedGradientMirrorTo = clWhite
+      ControlLook.FixedGradientHoverFrom = clGray
       ControlLook.FixedGradientHoverTo = clWhite
       ControlLook.FixedGradientHoverMirrorFrom = clWhite
       ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -105,7 +111,7 @@ object MemberClub: TMemberClub
       FixedColWidth = 20
       FixedRowHeight = 50
       FixedFont.Charset = DEFAULT_CHARSET
-      FixedFont.Color = 3881787
+      FixedFont.Color = clBlack
       FixedFont.Height = -12
       FixedFont.Name = 'Tahoma'
       FixedFont.Style = [fsBold]
@@ -194,24 +200,24 @@ object MemberClub: TMemberClub
           ButtonHeight = 18
           CheckFalse = 'N'
           CheckTrue = 'Y'
-          Color = clWindow
+          Color = clWhite
           DataImageField = True
           FieldName = 'IsSelected'
           Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
+          Font.Color = clBlack
           Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
           HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -12
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
           Images = IMG.imglstNomCheckBox
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
           Width = 64
@@ -409,12 +415,14 @@ object MemberClub: TMemberClub
         FFC003FF}
       ShowPictureFields = True
       ShowUnicode = False
-      ExplicitLeft = 2
       ColWidths = (
         20
         64
         64
         350)
+      RowHeights = (
+        50
+        50)
     end
   end
   object pnlCNTRL: TRelativePanel
@@ -455,7 +463,6 @@ object MemberClub: TMemberClub
     BevelOuter = bvNone
     Padding.Top = 10
     TabOrder = 0
-    ExplicitLeft = 348
     DesignSize = (
       140
       397)
@@ -495,8 +502,7 @@ object MemberClub: TMemberClub
   end
   object qrySwimClub: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
-    OnCalcFields = qrySwimClubCalcFields
+    AfterOpen = qrySwimClubAfterOpen
     Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -531,9 +537,9 @@ object MemberClub: TMemberClub
       Origin = 'LogoImg'
     end
     object qrySwimClubIsSelected: TIntegerField
-      FieldKind = fkCalculated
+      DefaultExpression = '1'
+      FieldKind = fkInternalCalc
       FieldName = 'IsSelected'
-      Calculated = True
     end
   end
   object dsSwimClub: TDataSource

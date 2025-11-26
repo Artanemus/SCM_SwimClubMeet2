@@ -47,6 +47,7 @@ type
     qrySwimClubCaption: TWideStringField;
     qrySwimClubLogoImg: TBlobField;
     qrySwimClubIsSelected: TIntegerField;
+    qrySwimClubNickName: TWideStringField;
     procedure btnOkClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);

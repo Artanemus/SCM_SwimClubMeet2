@@ -5,6 +5,7 @@ object ManageMemberData: TManageMemberData
   object tblContactNumType: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'ContactNumTypeID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -28,6 +29,7 @@ object ManageMemberData: TManageMemberData
   object tblStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'StrokeID'
+    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet..Stroke'
     TableName = 'SwimClubMeet..Stroke'
     Left = 184
@@ -36,6 +38,7 @@ object ManageMemberData: TManageMemberData
   object tblDistance: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'DistanceID'
+    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet..Distance'
     TableName = 'SwimClubMeet..Distance'
     Left = 184
@@ -48,15 +51,14 @@ object ManageMemberData: TManageMemberData
   end
   object qryMember: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     AfterInsert = qryMemberAfterInsert
     AfterPost = qryMemberAfterPost
     BeforeDelete = qryMemberBeforeDelete
     BeforeScroll = qryMemberBeforeScroll
     AfterScroll = qryMemberAfterScroll
-    IndexFieldNames = 'SwimClubID'
-    MasterSource = dsSwimClub
-    MasterFields = 'SwimClubID'
-    DetailFields = 'SwimClubID'
+    IndexFieldNames = 'MemberID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvStrsTrim2Len]
     UpdateOptions.UpdateTableName = 'SwimClubMeet..Member'
     UpdateOptions.KeyFields = 'MemberID'
@@ -82,11 +84,9 @@ object ManageMemberData: TManageMemberData
       '       IsArchived,'
       '       [Email],'
       '       [GenderID],'
-      '       [SwimClubID],'
       
         '       CONCAT(Member.FirstName, '#39' '#39', UPPER(Member.LastName)) AS ' +
         'FName,'
-      '       HouseID,'
       '       CreatedOn,'
       '       ArchivedOn,'
       '       TAGS'
@@ -223,12 +223,6 @@ object ManageMemberData: TManageMemberData
       Origin = 'Email'
       Size = 256
     end
-    object qryMemberSwimClubID: TIntegerField
-      FieldName = 'SwimClubID'
-      Origin = 'SwimClubID'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
-      Visible = False
-    end
     object qryMemberCreatedOn: TSQLTimeStampField
       FieldName = 'CreatedOn'
       Origin = 'CreatedOn'
@@ -253,24 +247,6 @@ object ManageMemberData: TManageMemberData
       KeyFields = 'GenderID'
       Lookup = True
     end
-    object qryMemberluHouse: TStringField
-      DisplayLabel = 'House'
-      DisplayWidth = 14
-      FieldKind = fkLookup
-      FieldName = 'luHouse'
-      LookupDataSet = tblHouse
-      LookupKeyFields = 'HouseID'
-      LookupResultField = 'Caption'
-      KeyFields = 'HouseID'
-      Lookup = True
-    end
-    object qryMemberHouseID: TIntegerField
-      DisplayLabel = 'House'
-      DisplayWidth = 14
-      FieldName = 'HouseID'
-      Origin = 'HouseID'
-      Visible = False
-    end
     object qryMemberTAGS: TWideMemoField
       FieldName = 'TAGS'
       Origin = 'TAGS'
@@ -279,7 +255,9 @@ object ManageMemberData: TManageMemberData
   end
   object tblGender: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'GenderID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet..Gender'
     TableName = 'SwimClubMeet..Gender'
@@ -288,22 +266,8 @@ object ManageMemberData: TManageMemberData
   end
   object dsGender: TDataSource
     DataSet = tblGender
-    Left = 272
-    Top = 392
-  end
-  object dsHouse: TDataSource
-    DataSet = tblHouse
-    Left = 272
+    Left = 248
     Top = 344
-  end
-  object tblHouse: TFDTable
-    ActiveStoredUsage = [auDesignTime]
-    IndexFieldNames = 'HouseID'
-    ResourceOptions.AssignedValues = [rvEscapeExpand]
-    UpdateOptions.UpdateTableName = 'SwimClubMeet..House'
-    TableName = 'SwimClubMeet..House'
-    Left = 184
-    Top = 496
   end
   object dsContactNum: TDataSource
     DataSet = qryContactNum
@@ -390,13 +354,13 @@ object ManageMemberData: TManageMemberData
         'e, '#39')'#39'), 0, 60) AS DetailStr'
       'FROM SwimCLub;'
       '')
-    Left = 200
-    Top = 40
+    Left = 936
+    Top = 280
   end
   object dsSwimClub: TDataSource
     DataSet = qrySwimClub
-    Left = 272
-    Top = 40
+    Left = 1008
+    Top = 280
   end
   object qryFindMember: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -760,6 +724,7 @@ object ManageMemberData: TManageMemberData
   object tblMemberRole: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'MemberRoleID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'SwimClubMeet.dbo.MemberRole'
     Left = 184
@@ -963,6 +928,7 @@ object ManageMemberData: TManageMemberData
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'SwimClubID'
     DetailFields = 'SwimClubID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     TableName = 'SwimClubMeet..SwimClub'

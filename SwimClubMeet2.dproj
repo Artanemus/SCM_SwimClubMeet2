@@ -284,6 +284,10 @@
             <Form>AboutManageMember</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="DIALOGS\Picker\dlgSwimClubPicker.pas">
+            <Form>SwimClubPicker</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -1,11 +1,10 @@
-object FilterBySwimClub: TFilterBySwimClub
+object SwimClubPicker: TSwimClubPicker
   Left = 0
   Top = 0
-  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
-  Caption = 'Filter members by swimming club.'
-  ClientHeight = 812
-  ClientWidth = 660
+  Caption = 'Swimming Club Picker'
+  ClientHeight = 779
+  ClientWidth = 450
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -15,26 +14,105 @@ object FilterBySwimClub: TFilterBySwimClub
   KeyPreview = True
   Position = poOwnerFormCenter
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   TextHeight = 21
-  object pnlBody: TPanel
+  object pnlSearch: TPanel
     Left = 0
     Top = 0
-    Width = 520
-    Height = 812
-    Align = alClient
+    Width = 450
+    Height = 49
+    Align = alTop
+    BevelOuter = bvNone
+    TabOrder = 0
+    DesignSize = (
+      450
+      49)
+    object vimgSearch: TVirtualImage
+      Left = 8
+      Top = 7
+      Width = 34
+      Height = 34
+      ImageCollection = IMG.CollectionCore
+      ImageWidth = 0
+      ImageHeight = 0
+      ImageIndex = 67
+      ImageName = 'search'
+    end
+    object vimgClearFilter: TVirtualImage
+      Left = 415
+      Top = 9
+      Width = 34
+      Height = 34
+      ImageCollection = IMG.CollectionCore
+      ImageWidth = 0
+      ImageHeight = 0
+      ImageIndex = 53
+      ImageName = 'clear'
+      OnClick = vimgClearFilterClick
+    end
+    object edtSearch: TEdit
+      Left = 48
+      Top = 14
+      Width = 361
+      Height = 29
+      Anchors = [akLeft, akTop, akRight]
+      TabOrder = 0
+      OnChange = edtSearchChange
+      OnKeyDown = edtSearchKeyDown
+    end
+  end
+  object pnlFooter: TPanel
+    Left = 0
+    Top = 724
+    Width = 450
+    Height = 55
+    Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitHeight = 397
+    object lblRecCount: TLabel
+      Left = 8
+      Top = 17
+      Width = 18
+      Height = 21
+      Caption = '00'
+    end
+    object btnOK: TButton
+      Left = 220
+      Top = 14
+      Width = 75
+      Height = 30
+      Caption = 'OK'
+      TabOrder = 0
+      OnClick = btnOKClick
+    end
+    object btnCancel: TButton
+      Left = 139
+      Top = 14
+      Width = 75
+      Height = 30
+      Caption = 'Cancel'
+      TabOrder = 1
+      OnClick = btnCancelClick
+    end
+  end
+  object pnlBody: TPanel
+    Left = 0
+    Top = 49
+    Width = 450
+    Height = 675
+    Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 2
     object Grid: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 520
-      Height = 812
+      Width = 450
+      Height = 675
       Cursor = crDefault
       Align = alClient
       Color = clWhite
-      ColCount = 4
+      ColCount = 5
       DefaultRowHeight = 52
       DrawingStyle = gdsClassic
       FixedColor = clWhite
@@ -45,15 +123,14 @@ object FilterBySwimClub: TFilterBySwimClub
       Font.Height = -16
       Font.Name = 'Segoe UI'
       Font.Style = []
-      Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
+      Options = [goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
       ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
-      OnDrawCell = GridDrawCell
+      OnDblClick = GridDblClick
       GridLineColor = 15987699
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
-      OnClickCell = GridClickCell
       HTMLKeepLineBreak = False
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
@@ -111,7 +188,7 @@ object FilterBySwimClub: TFilterBySwimClub
         'Smaller than'
         'Clear')
       FixedColWidth = 20
-      FixedRowHeight = 0
+      FixedRowHeight = 30
       FixedFont.Charset = DEFAULT_CHARSET
       FixedFont.Color = clBlack
       FixedFont.Height = -12
@@ -177,10 +254,37 @@ object FilterBySwimClub: TFilterBySwimClub
           CheckFalse = 'N'
           CheckTrue = 'Y'
           Color = clWindow
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = 3881787
+          HeaderFont.Height = -12
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          HTMLTemplate = '<FONT size="12"><B>[#Caption]</B></FONT><BR>'
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clWindowText
+          PrintFont.Height = -12
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 20
+        end
+        item
+          Alignment = taRightJustify
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWindow
           FieldName = 'SwimClubID'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -16
+          Font.Height = -12
           Font.Name = 'Segoe UI'
           Font.Style = []
           HeaderFont.Charset = DEFAULT_CHARSET
@@ -194,7 +298,7 @@ object FilterBySwimClub: TFilterBySwimClub
           PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 20
+          Width = 0
         end
         item
           Borders = []
@@ -203,46 +307,16 @@ object FilterBySwimClub: TFilterBySwimClub
           CheckFalse = 'N'
           CheckTrue = 'Y'
           Color = clWhite
-          DataImageField = True
-          FieldName = 'IsSelected'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          Header = ' '
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = clBlack
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          HeaderAlignment = taCenter
-          Images = IMG.imglstNomCheckBox
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clBlack
-          PrintFont.Height = -16
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 64
-        end
-        item
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWindow
-          DataPictureField = True
           FieldName = 'LogoImg'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -16
+          Font.Height = -12
           Font.Name = 'Segoe UI'
           Font.Style = []
+          Header = 'Logo'
           HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = clWindowText
-          HeaderFont.Height = -16
+          HeaderFont.Color = 3881787
+          HeaderFont.Height = -13
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
           HeaderAlignment = taCenter
@@ -250,10 +324,10 @@ object FilterBySwimClub: TFilterBySwimClub
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
           PrintFont.Color = clWindowText
-          PrintFont.Height = -16
+          PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 64
+          Width = 84
         end
         item
           Borders = []
@@ -261,16 +335,18 @@ object FilterBySwimClub: TFilterBySwimClub
           ButtonHeight = 18
           CheckFalse = 'N'
           CheckTrue = 'Y'
-          Color = clWindow
+          Color = clWhite
+          EditLength = 128
           FieldName = 'Caption'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -16
+          Font.Height = -12
           Font.Name = 'Segoe UI'
           Font.Style = []
+          Header = 'Club Name'
           HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = clWindowText
-          HeaderFont.Height = -16
+          HeaderFont.Color = 3881787
+          HeaderFont.Height = -13
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
           HTMLTemplate = 
@@ -279,10 +355,41 @@ object FilterBySwimClub: TFilterBySwimClub
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
           PrintFont.Color = clWindowText
-          PrintFont.Height = -16
+          PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 350
+          Width = 250
+        end
+        item
+          Alignment = taCenter
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          DataImageField = True
+          FieldName = 'Archived'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = 'Archived'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = 3881787
+          HeaderFont.Height = -13
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          HeaderAlignment = taCenter
+          Images = IMG.imglstNomCheckBox
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clWindowText
+          PrintFont.Height = -12
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 64
         end>
       DataSource = dsSwimClub
       InvalidPicture.Data = {
@@ -425,144 +532,40 @@ object FilterBySwimClub: TFilterBySwimClub
       ShowUnicode = False
       ColWidths = (
         20
-        64
-        64
-        350)
-      RowHeights = (
         0
+        84
+        250
+        64)
+      RowHeights = (
+        30
         52
         52
         52)
     end
   end
-  object pnlCNTRL: TRelativePanel
-    Left = 520
-    Top = 0
-    Width = 140
-    Height = 812
-    ControlCollection = <
-      item
-        Control = btnOk
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = False
-      end
-      item
-        Control = btnSelectAll
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = False
-        Below = btnSelectNone
-      end
-      item
-        Control = btnSelectNone
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = True
-        AlignVerticalCenterWithPanel = False
-      end>
-    Align = alRight
-    BevelOuter = bvNone
-    Padding.Top = 10
-    TabOrder = 0
-    ExplicitHeight = 397
-    DesignSize = (
-      140
-      812)
-    object btnOk: TButton
-      Left = 8
-      Top = 755
-      Width = 123
-      Height = 34
-      Anchors = []
-      Caption = 'CLOSE'
-      TabOrder = 0
-      OnClick = btnOkClick
-    end
-    object btnSelectAll: TButton
-      AlignWithMargins = True
-      Left = 8
-      Top = 54
-      Width = 123
-      Height = 34
-      Margins.Left = 0
-      Margins.Top = 10
-      Margins.Right = 0
-      Margins.Bottom = 0
-      Anchors = []
-      Caption = 'Select ALL'
-      TabOrder = 1
-    end
-    object btnSelectNone: TButton
-      Left = 8
-      Top = 10
-      Width = 123
-      Height = 34
-      Anchors = []
-      Caption = 'Select NONE'
-      TabOrder = 2
-    end
-  end
   object qrySwimClub: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     Active = True
-    AfterOpen = qrySwimClubAfterOpen
     Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
     SQL.Strings = (
-      ''
-      'Select SwimClubID, '
-      '  Caption,'
-      '  LogoImg,'
-      '  NickName'
-      ' '
-      'FROM SwimClub '
-      'WHERE SwimCLub.IsClubGroup = 0'
-      'ORDER BY Caption ASC')
-    Left = 368
-    Top = 72
-    object qrySwimClubSwimClubID: TFDAutoIncField
-      FieldName = 'SwimClubID'
-      Origin = 'SwimClubID'
-      ProviderFlags = [pfInWhere, pfInKey]
-    end
-    object qrySwimClubCaption: TWideStringField
-      DisplayLabel = 'Club Name'
-      DisplayWidth = 128
-      FieldName = 'Caption'
-      Origin = 'Caption'
-      Size = 128
-    end
-    object qrySwimClubLogoImg: TBlobField
-      DisplayLabel = 'Logo'
-      FieldName = 'LogoImg'
-      Origin = 'LogoImg'
-    end
-    object qrySwimClubIsSelected: TIntegerField
-      DefaultExpression = '1'
-      FieldKind = fkInternalCalc
-      FieldName = 'IsSelected'
-    end
-    object qrySwimClubNickName: TWideStringField
-      FieldName = 'NickName'
-      Origin = 'NickName'
-      Size = 128
-    end
+      'SELECT SwimClubID'
+      '  ,Caption'
+      '  ,NickName'
+      '  ,LogoImg'
+      '  , IsArchived'
+      '  ,CAST(IsArchived as integer) as Archived'
+      'FROM [dbo].[SwimClub] '
+      'WHERE [IsClubGroup] = 0')
+    Left = 208
+    Top = 248
   end
   object dsSwimClub: TDataSource
     DataSet = qrySwimClub
-    Left = 368
-    Top = 16
+    Left = 328
+    Top = 248
   end
 end

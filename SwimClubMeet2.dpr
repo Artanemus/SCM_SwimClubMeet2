@@ -47,7 +47,8 @@ uses
   rptMembersDetail in 'MEMBERS\rptMembersDetail.pas' {MembersDetail: TDataModule},
   rptMembersList in 'MEMBERS\rptMembersList.pas' {MembersList: TDataModule},
   rptMembersSummary in 'MEMBERS\rptMembersSummary.pas' {MembersSummary: TDataModule},
-  dlgAboutManageMember in 'MEMBERS\dlgAboutManageMember.pas' {AboutManageMember};
+  dlgAboutManageMember in 'MEMBERS\dlgAboutManageMember.pas' {AboutManageMember},
+  dlgSwimClubPicker in 'DIALOGS\Picker\dlgSwimClubPicker.pas' {SwimClubPicker};
 
 {$R *.res}
 

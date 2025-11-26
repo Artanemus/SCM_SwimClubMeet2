@@ -32,7 +32,7 @@ uses
 
   dmManageMemberData, uDefines,
   dlgFilterByParam, // persistent dlg.
-  dlgFilterBySwimClub // persistent dlg.
+  dlgFilterBySwimClub, AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid // persistent dlg.
   ;
 
 
@@ -46,7 +46,6 @@ type
     btmPrintChart: TButton;
     btnClearDOB: TButton;
     btnClearGender: TButton;
-    btnClearHouse: TButton;
     btnClubMembersDetailed: TButton;
     btnClubMembersList: TButton;
     btnClubMembersSummary: TButton;
@@ -83,7 +82,6 @@ type
     DBGridRole: TDBGrid;
     dblblMemberID: TDBText;
     DBlucboGender: TDBLookupComboBox;
-    DBlucboHouse: TDBLookupComboBox;
     DBMemo1: TDBMemo;
     DBNavigator1: TDBNavigator;
     DBNavigator2: TDBNavigator;
@@ -102,7 +100,6 @@ type
     Label19: TLabel;
     Label2: TLabel;
     Label20: TLabel;
-    Label21: TLabel;
     Label22: TLabel;
     Label23: TLabel;
     Label24: TLabel;
@@ -158,11 +155,11 @@ type
     lblParaCodes: TLabel;
     vimgParaCodesInfo: TVirtualImage;
     navParaCodes: TDBNavigator;
+    ListGrid: TDBAdvGrid;
     procedure About2Click(Sender: TObject);
     procedure actnFilterClubExecute(Sender: TObject);
     procedure actnFilterExecute(Sender: TObject);
     procedure btmPrintChartClick(Sender: TObject);
-    procedure btnClearClick(Sender: TObject);
     procedure btnClearDOBClick(Sender: TObject);
     procedure btnClubMembersDetailedClick(Sender: TObject);
     procedure btnClubMembersListClick(Sender: TObject);
@@ -233,8 +230,9 @@ type
     procedure MSG_AfterPost(var Msg: TMessage); message SCM_MEMBER_AFTERPOST;
     procedure MSG_AfterScroll(var Msg: TMessage); message SCM_MEMBER_AFTERSCROLL;
     procedure MSG_ChangeSwimClub(var Msg: TMessage); message SCM_MEMBER_FILTER_SWIMCLUB;
-    procedure MSG_FilterDeactivated(var Msg: TMessage); message SCM_MEMBER_FILTER_ACTIVATED;
-    procedure MSG_FilterUpdated(var Msg: TMessage); message SCM_MEMBER_FILTER_CHANGED;
+    procedure MSG_FilterDeactivated(var Msg: TMessage); message SCM_MEMBER_FILTER_DEACTIVATED;
+    procedure MSG_FilterChanged(var Msg: TMessage); message
+        SCM_MEMBER_FILTER_CHANGED;
   public
     { Public declarations }
     procedure Prepare(AConnection: TFDConnection; ASwimClubID: Integer = 1;
@@ -286,8 +284,8 @@ begin
 end;
 
 procedure TManageMember.actnFilterClubExecute(Sender: TObject);
-var
-  dlg: TFilterBySwimClub;
+//var
+//  dlg: TFilterBySwimClub;
 begin
   if not assigned(FConnection) then
     exit;
@@ -337,25 +335,6 @@ end;
 procedure TManageMember.btmPrintChartClick(Sender: TObject);
 begin
   ChartReport;
-end;
-
-procedure TManageMember.btnClearClick(Sender: TObject);
-begin
-  if not assigned(ManageMemberData) then
-    exit;
-  with ManageMemberData.dsMember.DataSet do
-  begin
-    if not(Active) then
-      exit;
-    if (State <> dsInsert) or (State <> dsEdit) then
-      Edit;
-    case TButton(Sender).Tag of
-      1:
-        FieldByName('GenderID').Clear();
-      3:
-        FieldByName('HouseID').Clear();
-    end;
-  end;
 end;
 
 procedure TManageMember.btnClearDOBClick(Sender: TObject);
@@ -715,7 +694,7 @@ begin
     else
       clFont := fColorEditBoxNormal;
     clBg := fColorBgColor;
-    TDBGrid(Sender).DrawCheckBoxes(Sender, Rect, Column, clFont, clBg);
+//    TDBGrid(Sender).DrawCheckBoxes(Sender, Rect, Column, clFont, clBg);
     // draw 'Focused' frame  (for boolean datatype only)
     if gdFocused in State then
       TDBGrid(Sender).Canvas.DrawFocusRect(Rect);
@@ -1140,7 +1119,7 @@ begin
     FreeAndNil(fFilterDlg);
 end;
 
-procedure TManageMember.MSG_FilterUpdated(var Msg: TMessage);
+procedure TManageMember.MSG_FilterChanged(var Msg: TMessage);
 var
   CopyData: PCopyDataStruct;
   FilterState: PFilterState;

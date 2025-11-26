@@ -27,20 +27,32 @@ object FindMember_FName: TFindMember_FName
     TabOrder = 0
     object VirtualImage1: TVirtualImage
       Left = 8
-      Top = 7
+      Top = 8
       Width = 34
       Height = 34
-      ImageCollection = ImageCollection1
+      ImageCollection = IMG.CollectionCore
       ImageWidth = 0
       ImageHeight = 0
-      ImageIndex = 0
-      ImageName = 'Search_48x48'
+      ImageIndex = 67
+      ImageName = 'search'
+    end
+    object vimgClear: TVirtualImage
+      Left = 320
+      Top = 8
+      Width = 34
+      Height = 34
+      ImageCollection = IMG.CollectionCore
+      ImageWidth = 0
+      ImageHeight = 0
+      ImageIndex = 53
+      ImageName = 'clear'
+      OnClick = vimgClearClick
     end
     object Edit1: TEdit
       Left = 48
-      Top = 7
-      Width = 305
-      Height = 27
+      Top = 12
+      Width = 265
+      Height = 30
       TabOrder = 0
       Text = 'Edit1'
       OnChange = Edit1Change

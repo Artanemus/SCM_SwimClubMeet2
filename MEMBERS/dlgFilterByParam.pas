@@ -189,7 +189,7 @@ begin
     CopyData.cbData := Buffer.Size;
     CopyData.lpData := Buffer.Memory;
     // run filter on form
-    SendMessage(TForm(Owner).Handle, SCM_MEMBER_FILTER_UPDATED, 0, LParam(@CopyData));
+    SendMessage(TForm(Owner).Handle, SCM_MEMBER_FILTER_CHANGED, 0, LParam(@CopyData));
 
   finally
     Buffer.free;

@@ -56,12 +56,14 @@ type
     qryFindMemberMembershipNum: TIntegerField;
     qryFindMemberFName: TWideStringField;
     qryFindMemberSwimClubID: TIntegerField;
+    vimgClear: TVirtualImage;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnGotoMemberClick(Sender: TObject);
     procedure DBGrid1DblClick(Sender: TObject);
     procedure Edit1Change(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure vimgClearClick(Sender: TObject);
   private
     fMemberID: integer;
   public
@@ -169,7 +171,7 @@ begin
   if qryFindMember.Active then
   begin
     DBGrid1.DataSource := dsFindMember;
-    // Triggers Edit1Change event.   (Sets up filters and record count.)
+    // Triggers OnChange event.   (Sets up filters and record count.)
     Edit1.Text := '';
   end;
 end;
@@ -179,6 +181,12 @@ procedure TFindMember_FName.FormKeyDown(Sender: TObject; var Key: Word;
 begin
   if Key = VK_ESCAPE then
     ModalResult := mrCancel;
+end;
+
+procedure TFindMember_FName.vimgClearClick(Sender: TObject);
+begin
+    // Triggers OnChange event.   (Clears filters.)
+    Edit1.Text := '';
 end;
 
 

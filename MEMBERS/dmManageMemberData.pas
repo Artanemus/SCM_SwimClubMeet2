@@ -16,7 +16,7 @@ uses
 
   dmSCM2,
 
-  uDefines
+  uDefines, uSettings
   ;
 
 type
@@ -25,7 +25,6 @@ type
     dsContactNum: TDataSource;
     dsFindMember: TDataSource;
     dsGender: TDataSource;
-    dsHouse: TDataSource;
     dsMember: TDataSource;
     dsMemberPB: TDataSource;
     dsMemberRoleLnk: TDataSource;
@@ -58,13 +57,11 @@ type
     qryMemberFirstName: TWideStringField;
     qryMemberFName: TWideStringField;
     qryMemberGenderID: TIntegerField;
-    qryMemberHouseID: TIntegerField;
     qryMemberIsActive: TBooleanField;
     qryMemberIsArchived: TBooleanField;
     qryMemberIsSwimmer: TBooleanField;
     qryMemberLastName: TWideStringField;
     qryMemberluGender: TStringField;
-    qryMemberluHouse: TStringField;
     qryMemberMemberID: TFDAutoIncField;
     qryMemberMembershipNum: TIntegerField;
     qryMemberMembershipStr: TWideStringField;
@@ -75,14 +72,12 @@ type
     qryMemberPBPB: TTimeField;
     qryMemberPBStrokeID: TFDAutoIncField;
     qryMemberRoleLnk: TFDQuery;
-    qryMemberSwimClubID: TIntegerField;
     qrySwimClub: TFDQuery;
     tblContactNumType: TFDTable;
     tblContactNumTypeCaption: TWideStringField;
     tblContactNumTypeContactNumTypeID: TFDAutoIncField;
     tblDistance: TFDTable;
     tblGender: TFDTable;
-    tblHouse: TFDTable;
     tblMemberRole: TFDTable;
     tblStroke: TFDTable;
     qryMemberRoleLnkMemberRoleID: TIntegerField;
@@ -164,7 +159,6 @@ type
     procedure UpdateElectedOn(aDate: TDate);
     procedure UpdateRetiredOn(aDate: TDate);
     procedure UpdateChart(aMemberID, aDistanceID, aStrokeID: integer; DoCurrSeason: boolean = true);
-    procedure ReadPreferences(aIniFileName: string);
     procedure DataCheckPart(PartNumber: integer);
 
     property Connection: TFDConnection read FConnection write FConnection;
@@ -176,8 +170,6 @@ type
   end;
 
 const
-  SCMMEMBERPREF = 'SCM_MemberPref.ini';
-  USEDSHAREDINIFILE = True; // NOTE: Always true. 26/09/2022
   CHARTMAXRECORDS = 26; // max number of events show in TDBChart
 
 var
@@ -193,17 +185,19 @@ uses
   vcl.Dialogs, System.UITypes, vcl.Forms, System.DateUtils;
 
 constructor TManageMemberData.Create(AOwner: TComponent);
-var
-IniFileName: string;
 begin
   inherited;
   fHandle := AllocateHWnd(WndProc);
-  prefChartMaxRecords := CHARTMAXRECORDS;
 
-  // r e a d   p r e f e r e n c e .
-  IniFileName := SCMUtils.GetSCMPreferenceFileName();
-  if (FileExists(IniFileName)) then
-    ReadPreferences(IniFileName);
+  if Assigned(Settings) then
+    prefChartMaxRecords := Settings.MemberChartDataPoints
+  else
+    prefChartMaxRecords := CHARTMAXRECORDS;
+
+  // Assign the default connection
+  if Assigned(SCM2) then
+    FConnection := SCM2.scmConnection;
+
 end;
 
 constructor TManageMemberData.CreateWithConnection(AOwner: TComponent;
@@ -231,7 +225,7 @@ begin
     tblStroke.Connection := FConnection;
     tblDistance.Connection := FConnection;
     tblGender.Connection := FConnection;
-    tblHouse.Connection := FConnection;
+//    tblHouse.Connection := FConnection;
     tblContactNumType.Connection := FConnection;
     tblMemberRole.Connection := FConnection;
     tblSwimClub.Connection := FConnection;
@@ -243,7 +237,7 @@ begin
       tblStroke.Open;
       tblDistance.Open;
       tblGender.Open;
-      tblHouse.Open;
+//      tblHouse.Open;
       tblContactNumType.Open;
       tblMemberRole.Open;
       tblSwimClub.Open;
@@ -766,21 +760,6 @@ begin
   // begin
   // fld.AsInteger := 0;
   // end;
-end;
-
-procedure TManageMemberData.ReadPreferences(aIniFileName: string);
-var
-  iFile: TIniFile;
-begin
-  // ---------------------------------------------------------
-  // R E A D   P R E F E R E N C E S ...
-  // ---------------------------------------------------------
-  if not FileExists(aIniFileName) then exit;
-  iFile := TIniFile.Create(aIniFileName);
-  // 2024.03.18
-  prefChartMaxRecords := iFile.ReadInteger('ManageMemberData', 'MemberChartDataPoints', CHARTMAXRECORDS);
-
-  iFile.Free;
 end;
 
 procedure TManageMemberData.UpdateChart(aMemberID, aDistanceID, aStrokeID: integer; DoCurrSeason: boolean = true);

@@ -2733,7 +2733,7 @@ object Main2: TMain2
     object DBTextClubName: TDBText
       Left = 6
       Top = 0
-      Width = 116
+      Width = 159
       Height = 20
       AutoSize = True
       DataField = 'Caption'
@@ -2749,7 +2749,7 @@ object Main2: TMain2
     object DBTextNickName: TDBText
       Left = 6
       Top = 18
-      Width = 91
+      Width = 102
       Height = 15
       AutoSize = True
       DataField = 'NickName'
@@ -2829,7 +2829,7 @@ object Main2: TMain2
     Width = 1103
     Height = 664
     Margins.Top = 10
-    ActivePage = tabSession
+    ActivePage = tabHeats
     Align = alClient
     TabOrder = 3
     OnChange = PageControlChange
@@ -3639,8 +3639,11 @@ object Main2: TMain2
               end
               item
                 Action = SwimClub_Stats
-                Caption = 'C&lub Statistics...'
+                Caption = 'C&lub Dashboard...'
                 ImageName = 'Query-Stats'
+              end
+              item
+                Action = SwimClub_Reports
               end
               item
                 Caption = '-'
@@ -3883,7 +3886,6 @@ object Main2: TMain2
                 ImageName = 'delete'
               end>
             Caption = 'Nom&inate'
-            ImageName = 'empty'
           end
           item
             Items = <
@@ -4057,6 +4059,9 @@ object Main2: TMain2
                 ImageName = 'Members'
               end
               item
+                Action = Member_Stats
+              end
+              item
                 Caption = '-'
               end
               item
@@ -4068,6 +4073,13 @@ object Main2: TMain2
                 Action = Members_Import
                 Caption = '&Import Members...'
                 ImageName = 'import'
+              end
+              item
+                Caption = '-'
+              end
+              item
+                Action = Member_CheckData
+                Caption = '&Check Members Data...'
               end>
             Caption = '&Members'
           end
@@ -4160,8 +4172,8 @@ object Main2: TMain2
         Caption = 'NomMember'
       end>
     Images = IMG.imglstMenuBar
-    Left = 400
-    Top = 232
+    Left = 704
+    Top = 224
     StyleName = 'Platform Default'
     object Help_About: TAction
       Category = 'Help'
@@ -4433,6 +4445,8 @@ object Main2: TMain2
       Category = 'Members'
       Caption = 'Manage Members...'
       ImageName = 'Members'
+      OnExecute = Members_ManageExecute
+      OnUpdate = Members_ManageUpdate
     end
     object Members_Export: TAction
       Category = 'Members'
@@ -4452,7 +4466,7 @@ object Main2: TMain2
     end
     object SwimClub_Stats: TAction
       Category = 'SwimClub'
-      Caption = 'Club Statistics...'
+      Caption = 'Club Dashboard...'
       ImageName = 'Query-Stats'
     end
     object File_ExportClub: TAction
@@ -4472,6 +4486,20 @@ object Main2: TMain2
       Caption = 'Manage Swim Clubs ...'
       ImageName = 'folder_managed'
       OnExecute = SwimClub_ManageExecute
+      OnUpdate = GenericActionUpdate
+    end
+    object Member_Stats: TAction
+      Category = 'Members'
+      Caption = 'Member Dashboard...'
+    end
+    object Member_CheckData: TAction
+      Category = 'Members'
+      Caption = 'Check Members Data...'
+    end
+    object SwimClub_Reports: TAction
+      Category = 'SwimClub'
+      Caption = 'Club Reports...'
+      OnExecute = SwimClub_ReportsExecute
       OnUpdate = GenericActionUpdate
     end
   end

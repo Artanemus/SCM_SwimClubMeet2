@@ -1,5 +1,6 @@
 object ManageMemberData: TManageMemberData
   OnCreate = DataModuleCreate
+  OnDestroy = DataModuleDestroy
   Height = 738
   Width = 1139
   object tblContactNumType: TFDTable
@@ -11,8 +12,7 @@ object ManageMemberData: TManageMemberData
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
-    UpdateOptions.UpdateTableName = 'SwimClubMeet..ContactNumType'
-    TableName = 'SwimClubMeet..ContactNumType'
+    TableName = 'SwimClubMeet2..ContactNumType'
     Left = 184
     Top = 552
     object tblContactNumTypeContactNumTypeID: TFDAutoIncField
@@ -30,28 +30,27 @@ object ManageMemberData: TManageMemberData
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'StrokeID'
     Connection = SCM2.scmConnection
-    UpdateOptions.UpdateTableName = 'SwimClubMeet..Stroke'
-    TableName = 'SwimClubMeet..Stroke'
-    Left = 184
-    Top = 392
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Stroke'
+    TableName = 'SwimClubMeet2..Stroke'
+    Left = 88
+    Top = 352
   end
   object tblDistance: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'DistanceID'
     Connection = SCM2.scmConnection
-    UpdateOptions.UpdateTableName = 'SwimClubMeet..Distance'
-    TableName = 'SwimClubMeet..Distance'
-    Left = 184
-    Top = 440
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Distance'
+    TableName = 'SwimClubMeet2..Distance'
+    Left = 88
+    Top = 400
   end
   object dsMember: TDataSource
     DataSet = qryMember
-    Left = 272
-    Top = 120
+    Left = 112
+    Top = 16
   end
   object qryMember: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     AfterInsert = qryMemberAfterInsert
     AfterPost = qryMemberAfterPost
     BeforeDelete = qryMemberBeforeDelete
@@ -60,7 +59,7 @@ object ManageMemberData: TManageMemberData
     IndexFieldNames = 'MemberID'
     Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvStrsTrim2Len]
-    UpdateOptions.UpdateTableName = 'SwimClubMeet..Member'
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Member'
     UpdateOptions.KeyFields = 'MemberID'
     SQL.Strings = (
       ''
@@ -132,8 +131,8 @@ object ManageMemberData: TManageMemberData
       ''
       ''
       '')
-    Left = 200
-    Top = 120
+    Left = 40
+    Top = 16
     ParamData = <
       item
         Name = 'HIDE_INACTIVE'
@@ -255,24 +254,22 @@ object ManageMemberData: TManageMemberData
   end
   object tblGender: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
-    IndexFieldNames = 'GenderID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
-    UpdateOptions.UpdateTableName = 'SwimClubMeet..Gender'
-    TableName = 'SwimClubMeet..Gender'
-    Left = 184
-    Top = 344
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Gender'
+    TableName = 'SwimClubMeet2..Gender'
+    Left = 88
+    Top = 304
   end
   object dsGender: TDataSource
     DataSet = tblGender
-    Left = 248
-    Top = 344
+    Left = 152
+    Top = 304
   end
   object dsContactNum: TDataSource
     DataSet = qryContactNum
-    Left = 136
-    Top = 216
+    Left = 192
+    Top = 72
   end
   object qryContactNum: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -288,7 +285,8 @@ object ManageMemberData: TManageMemberData
     MasterSource = dsMember
     MasterFields = 'MemberID'
     DetailFields = 'MemberID'
-    UpdateOptions.UpdateTableName = 'SwimClubMeet..ContactNum'
+    Connection = SCM2.scmConnection
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.ContactNum'
     UpdateOptions.KeyFields = 'ContactNumID'
     SQL.Strings = (
       'USE [SwimClubMeet];'
@@ -298,8 +296,8 @@ object ManageMemberData: TManageMemberData
       #9',ContactNum.ContactNumTypeID'
       #9',ContactNum.MemberID'
       'FROM ContactNum;')
-    Left = 136
-    Top = 160
+    Left = 88
+    Top = 72
     object qryContactNumContactNumID: TFDAutoIncField
       FieldName = 'ContactNumID'
       Origin = 'ContactNumID'
@@ -559,17 +557,17 @@ object ManageMemberData: TManageMemberData
   object qryMemberPB: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'MemberID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
-    UpdateOptions.UpdateTableName = 'SwimClubMeet..Member'
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2..Member'
     UpdateOptions.KeyFields = 'MemberID'
     SQL.Strings = (
-      'USE SwimClubMeet'
-      ';'
+      ''
       ''
       'DECLARE @memberid as int'
       'SET @memberid = :MEMBERID'
@@ -645,8 +643,9 @@ object ManageMemberData: TManageMemberData
     MasterSource = dsMember
     MasterFields = 'MemberID'
     DetailFields = 'MemberID'
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
-    UpdateOptions.UpdateTableName = 'SwimClubMeet.dbo.MemberRoleLink'
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.MemberRoleLink'
     UpdateOptions.KeyFields = 'MemberRoleID;MemberID'
     SQL.Strings = (
       'USE SwimClubMeet;'
@@ -668,8 +667,8 @@ object ManageMemberData: TManageMemberData
         '        --ON [MemberRoleLink].[MemberRoleID] = [MemberRole].[Mem' +
         'berRoleID]'
       '--WHERE [MemberRoleLink].[MemberID] = @MemberID;')
-    Left = 328
-    Top = 160
+    Left = 88
+    Top = 128
     object qryMemberRoleLnkMemberRoleID: TIntegerField
       FieldName = 'MemberRoleID'
       Origin = 'MemberRoleID'
@@ -718,22 +717,22 @@ object ManageMemberData: TManageMemberData
   end
   object dsMemberRoleLnk: TDataSource
     DataSet = qryMemberRoleLnk
-    Left = 328
-    Top = 216
+    Left = 192
+    Top = 128
   end
   object tblMemberRole: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'MemberRoleID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
-    TableName = 'SwimClubMeet.dbo.MemberRole'
+    TableName = 'SwimClubMeet2.dbo.MemberRole'
     Left = 184
     Top = 608
   end
   object dsMemberEvents: TDataSource
     DataSet = qryMemberEvents
-    Left = 448
-    Top = 216
+    Left = 192
+    Top = 184
   end
   object qryMemberEvents: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -741,36 +740,50 @@ object ManageMemberData: TManageMemberData
     MasterSource = dsMember
     MasterFields = 'MemberID'
     DetailFields = 'MemberID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Event'
     UpdateOptions.KeyFields = 'EventID'
     SQL.Strings = (
+      'DECLARE @EventID AS INteger;'
+      'SET @EventID = :EVENTID;'
+      ''
+      ''
       'SELECT '
-      'Event.EventID'
-      ',Entrant.MemberID '
+      '[Event].EventID'
+      ',Nominee.MemberID '
       ',Concat(Member.FirstName, '#39' '#39', Member.LastName) AS FName'
       ',Concat(Distance.Caption, '#39' '#39', Stroke.Caption) AS EventStr'
-      ',Entrant.RaceTime'
-      ', CONVERT(VARCHAR(11), Session.SessionStart, 106) AS EventDate '
+      ',Lane.RaceTime'
+      ', CONVERT(VARCHAR(11), Session.SessionDT, 106) AS EventDate '
       ''
-      'FROM Event'
-      'INNER JOIN Session ON Event.SessionID = Session.SessionID'
-      'INNER JOIN Stroke ON Event.StrokeID = Stroke.StrokeID'
-      'INNER JOIN Distance ON Event.DistanceID = Distance.DistanceID'
-      'INNER JOIN Heat ON Event.EventID = Heat.EventID'
-      'INNER JOIN Entrant ON Heat.HeatID = Entrant.HeatID'
-      'INNER JOIN Member ON Entrant.MemberID = Member.MemberID'
-      'WHERE RaceTime IS NOT NULL'
+      'FROM [Event]'
+      'INNER JOIN Session ON [Event].SessionID = Session.SessionID'
+      'INNER JOIN Stroke ON [Event].StrokeID = Stroke.StrokeID'
+      'INNER JOIN Distance ON [Event].DistanceID = Distance.DistanceID'
+      'INNER JOIN Heat ON [Event].EventID = Heat.EventID'
+      'INNER JOIN Lane ON [Heat].HeatID = Lane.HeatID'
+      'INNER JOIN Nominee ON Lane.NomineeID = Nominee.NomineeID'
       
-        'ORDER BY Session.SessionStart ASC, dbo.Distance.Meters, dbo.Stro' +
-        'ke.StrokeID'
+        'INNER JOIN Member ON Nominee.MemberID = Member.MemberID AND [Eve' +
+        'nt].[EventID] = Nominee.EventID'
+      'WHERE RaceTime IS NOT NULL'
+      'ORDER BY Session.SessionDT ASC, Distance.Meters, Stroke.StrokeID'
       ';')
-    Left = 448
-    Top = 160
+    Left = 88
+    Top = 184
+    ParamData = <
+      item
+        Name = 'EVENTID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = Null
+      end>
     object qryMemberEventsEventID: TFDAutoIncField
       DisplayWidth = 5
       FieldName = 'EventID'
@@ -812,10 +825,11 @@ object ManageMemberData: TManageMemberData
   end
   object qryChart: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayDateTime]
     FormatOptions.FmtDisplayDateTime = 'dd/mmm/yyyy'
     SQL.Strings = (
-      'USE [SwimClubMeet];'
+      'USE SwimClubMeet2;'
       ''
       'DECLARE @StrokeID AS INT;'
       'DECLARE @DistanceID AS INT;'
@@ -836,57 +850,60 @@ object ManageMemberData: TManageMemberData
       ''
       ''
       
-        'SELECT TOP (@MaxRecords) [dbo].[SwimTimeToString](Entrant.RaceTi' +
-        'me) AS RaceTimeAsString'
-      #9',(DATEPART(MILLISECOND, Entrant.RaceTime) / 1000.0) '
-      '                + (DATEPART(SECOND, Entrant.RaceTime)) '
+        'SELECT TOP (@MaxRecords) [dbo].[SwimTimeToString](Lane.RaceTime)' +
+        ' AS RaceTimeAsString'
+      #9',(DATEPART(MILLISECOND, Lane.RaceTime) / 1000.0) '
+      '                + (DATEPART(SECOND, Lane.RaceTime)) '
       
-        '                + (DATEPART(MINUTE, Entrant.RaceTime) * 60.0) AS' +
-        ' Seconds'
+        '                + (DATEPART(MINUTE, Lane.RaceTime) * 60.0) AS Se' +
+        'conds'
       ''
-      #9',Session.SessionStart'
+      #9',Session.SessionDT'
       #9',Distance.Caption AS cDistance'
       #9',Stroke.Caption AS cStroke'
       ''
       'INTO #charttemp'
-      'FROM Entrant'
-      'INNER JOIN Heat ON Entrant.HeatID = Heat.HeatID'
+      'FROM [dbo].[Lane]'
+      'INNER JOIN Heat ON Lane.HeatID = Heat.HeatID'
       'INNER JOIN Event ON Heat.EventID = Event.EventID'
+      
+        'INNER JOIN Nominee ON Lane.NomineeID = Nominee.NomineeID AND Eve' +
+        'nt.EventID = Nominee.EventID'
       'INNER JOIN Session ON Event.SessionID = Session.SessionID'
       'INNER JOIN SwimClub ON Session.SwimClubID = SwimClub.SwimClubID'
       'INNER JOIN Stroke ON Event.StrokeID = Stroke.StrokeID'
       'INNER JOIN Distance ON Event.DistanceID = Distance.DistanceID'
       'WHERE (Event.StrokeID = @StrokeID)'
       #9'AND (Event.DistanceID = @DistanceID) '
-      '        AND (Entrant.MemberID = @MemberID) '
-      '        AND Entrant.RaceTime IS NOT NULL'
+      '        AND (Nominee.MemberID = @MemberID) '
+      '        AND Lane.RaceTime IS NOT NULL'
       #9#9'-- playing it extra careful'
-      #9#9'AND CONVERT(time(0), Entrant.RaceTime) > '#39'00:00:00'#39
+      #9#9'AND CONVERT(time(0), Lane.RaceTime) > '#39'00:00:00'#39
       '        AND ('
       
-        '           (@DoCurrSeason = 1 AND Session.SessionStart >= SwimCl' +
-        'ub.StartOfSwimSeason)'
+        '           (@DoCurrSeason = 1 AND Session.SessionDT >= SwimClub.' +
+        'StartOfSwimSeason)'
       '           OR'
       '           (@DoCurrSeason = 0)'
       #9#9' )'
       '        '
-      'ORDER BY SessionStart DESC;'
+      'ORDER BY SessionDT DESC;'
       ''
       'SELECT '
       #9'RaceTimeAsString'
       #9',Seconds'
-      #9',SessionStart'
+      #9',SessionDT'
       #9',cDistance'
       #9',cStroke'
       
-        ',ROW_NUMBER()OVER (PARTITION BY 1  ORDER BY SessionStart ) AS Ch' +
-        'artX'
+        ',ROW_NUMBER()OVER (PARTITION BY 1  ORDER BY SessionDT ) AS Chart' +
+        'X'
       'FROM'
       '#charttemp'
-      'ORDER BY SessionStart ASC;'
+      'ORDER BY SessionDT ASC;'
       '')
     Left = 496
-    Top = 592
+    Top = 552
     ParamData = <
       item
         Name = 'STROKEID'
@@ -921,8 +938,8 @@ object ManageMemberData: TManageMemberData
   end
   object dsChart: TDataSource
     DataSet = qryChart
-    Left = 560
-    Top = 592
+    Left = 584
+    Top = 552
   end
   object tblSwimClub: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -931,7 +948,7 @@ object ManageMemberData: TManageMemberData
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
-    TableName = 'SwimClubMeet..SwimClub'
+    TableName = 'SwimClubMeet2..SwimClub'
     Left = 184
     Top = 672
   end
@@ -941,45 +958,38 @@ object ManageMemberData: TManageMemberData
     Top = 672
   end
   object qryDataCheck: TFDQuery
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
     SQL.Strings = (
-      'DECLARE @SwimClubID AS INteger;'
-      'SET @SwimClubID = :SWIMCLUBID;'
-      ''
       ''
       'SELECT [MemberID]'
       '      ,'#39'No firstname.'#39' as MSG'
       '  FROM [dbo].[Member]'
-      'WHERE firstname IS NULL AND SwimClubID = @SwimClubID'
+      'WHERE firstname IS NULL'
       ''
       'UNION'
       ''
       'SELECT [MemberID]'
       '      ,'#39'No lastname.'#39' as MSG'
       '  FROM [dbo].[Member]'
-      'WHERE lastname IS NULL AND SwimClubID = @SwimClubID'
+      'WHERE lastname IS NULL'
       ''
       'UNION'
       ''
       'SELECT [MemberID]'
       '    ,'#39'Gender not given.'#39' as MSG'
       'FROM [dbo].[Member]'
-      'WHERE GenderID IS NULL AND SwimClubID = @SwimClubID'
+      'WHERE GenderID IS NULL'
       ''
       'UNION'
       ''
       'SELECT [MemberID]'
-      '      ,'#39'Swimming Club not assigned.'#39' as MSG'
-      '  FROM [dbo].[Member]'
-      'WHERE SwimClubID IS NULL AND SwimClubID = @SwimClubID'
-      ''
-      'SELECT [MemberID]'
       '      ,'#39'No date of birth.'#39' as MSG'
       '  FROM [dbo].[Member]'
-      'WHERE DOB is null AND SwimClubID = @SwimClubID'
+      'WHERE DOB is null'
       ''
       'UNION'
       ''
@@ -989,14 +999,13 @@ object ManageMemberData: TManageMemberData
       
         'WHERE IsArchived IS NULL OR IsActive IS NULL OR IsSwimmer IS NUL' +
         'L  '
-      'AND SwimClubID = @SwimClubID'
       ''
       'UNION'
       ''
       'SELECT [MemberID]'
       '      ,'#39'No membership number.'#39' as MSG'
       '  FROM [dbo].[Member]'
-      'WHERE MembershipNum IS NULL  AND SwimClubID = @SwimClubID'
+      'WHERE MembershipNum IS NULL'
       ''
       'ORDER BY MemberID DESC;'
       ''
@@ -1007,13 +1016,6 @@ object ManageMemberData: TManageMemberData
       '')
     Left = 928
     Top = 88
-    ParamData = <
-      item
-        Name = 'SWIMCLUBID'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = 1
-      end>
     object qryDataCheckMemberID: TIntegerField
       DisplayLabel = 'Member'#39's ID'
       FieldName = 'MemberID'

@@ -21,7 +21,7 @@ type
     { Private declarations }
   public
     { Public declarations }
-    procedure RunReport(AConnection: TFDConnection; ASwimClubID: integer);
+    procedure RunReport(AConnection: TFDConnection);
   end;
 
 var
@@ -35,12 +35,9 @@ implementation
 
 { TDataModule1 }
 
-procedure TMemberCheckData.RunReport(AConnection: TFDConnection;
-  ASwimClubID: integer);
+procedure TMemberCheckData.RunReport(AConnection: TFDConnection);
 begin
 	qryDataCheck.Connection := AConnection;
-  qryDataCheck.ParamByName('SWIMCLUBID').AsInteger := aSwimClubID;
-	qryDataCheck.Prepare;
 	qryDataCheck.Open;
 	if qryDataCheck.Active then
 		frxReport1.ShowReport();

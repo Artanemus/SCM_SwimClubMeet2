@@ -99,6 +99,9 @@ type
     pnlNominate: TPanel;
     frNominate: TFrameNominate;
     frFilterMember: TFrameFilterMember;
+    Member_Stats: TAction;
+    Member_CheckData: TAction;
+    SwimClub_Reports: TAction;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -107,6 +110,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure frEventactnEv_GridViewExecute(Sender: TObject);
     procedure GenericActionUpdate(Sender: TObject);
+    procedure Members_ManageExecute(Sender: TObject);
+    procedure Members_ManageUpdate(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     procedure pnlTitleBarCustomButtons0Click(Sender: TObject);
     procedure pnlTitleBarCustomButtons0Paint(Sender: TObject);
@@ -116,11 +121,13 @@ type
     procedure StatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const
         Rect: TRect);
     procedure SwimClub_ManageExecute(Sender: TObject);
+    procedure SwimClub_ReportsExecute(Sender: TObject);
     procedure SwimClub_SwitchExecute(Sender: TObject);
     procedure Tools_PreferencesExecute(Sender: TObject);
   private
 
     fscmIsConnecting: boolean;
+    fCueToMemberID: integer;
 
     procedure DetailTBLs_ApplyMaster;
     procedure DetailTBLs_DisableCNTRLs;
@@ -142,7 +149,8 @@ implementation
 {$R *.dfm}
 
 uses
-  dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences;
+  dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
+  frmManageMember, dlgSwimClub_Reports;
 
 procedure TMain2.DetailTBLs_ApplyMaster;
 begin
@@ -387,6 +395,42 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
+procedure TMain2.Members_ManageExecute(Sender: TObject);
+var
+  dlg: TManageMember;
+begin
+  if Assigned(SCM2) and SCM2.scmConnection.Connected then // Assert state
+  begin
+    dlg := TManageMember.Create(self);
+    try
+      dlg.Prepare(SCM2.scmConnection, fCueToMemberID);
+      dlg.ShowModal();
+    finally
+      dlg.Free;
+    end;
+    {
+      requery on dmSCM members
+     count the number of members in DB prior to PostMessage
+     Assert the 'No Members' Caption in TLabel lblNomWarning
+     refresh all controls and labels on active tabsheet
+     via page control - it also actions SCM_TABSHEETDISPLAYSTATE
+    }
+//    Refresh_Nominate;
+//    fCountOfMembers := SCM.Members_Count;
+//    PageControl1Change(PageControl1);
+  end;
+end;
+
+procedure TMain2.Members_ManageUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected then
+    DoEnable := true;
+  TAction(Sender).Enabled := DoEnable;
+end;
+
 procedure TMain2.Msg_SCM_Connect(var Msg: TMessage);
 begin
   // already connected.. NOTE: Use TMessage SCM_DISCONNECT to disconnect.
@@ -394,8 +438,6 @@ begin
   //  actnManager.ExecuteAction(File_Connection); // doesn't work
   File_Connection.Execute;
 end;
-
-
 
 procedure TMain2.Msg_SCM_Scroll_Event(var Msg: TMessage);
 begin
@@ -454,8 +496,23 @@ end;
 
 procedure TMain2.pnlTitleBarCustomButtons0Click(Sender: TObject);
 begin
+  fCueToMemberID := 0;
+
+  if PageControl.ActivePageIndex = 1 then // Nominate...
+    fCueToMemberID := frFilterMember.Grid.DataSource.DataSet.FieldByName('MemberID').AsInteger;
+  {
+  if PageControl.ActivePageIndex = 2 then // Heat/Lane
+  begin
+    ID := frLane.Grid.DataSource.DataSet.FieldByName('NomineeID').AsInteger;
+    fCueToMemberID := uNominate.GetMemberID(NomineeID);
+  end;
+  }
+
+  Members_Manage.Execute();
+  {
   MessageBox(Handle, PChar('Open the Member Management Tool.'),
     PChar('CustomBar OnClick'), MB_ICONINFORMATION or MB_OK);
+  }
 end;
 
 procedure TMain2.pnlTitleBarCustomButtons0Paint(Sender: TObject);
@@ -594,6 +651,16 @@ begin
     frFilterMember.grid.EndUpdate;
     frNominate.grid.EndUpdate;
   end;
+end;
+
+procedure TMain2.SwimClub_ReportsExecute(Sender: TObject);
+var
+  dlg: TSwimClub_Reports;
+begin
+  dlg := TSwimClub_Reports.Create(Self);
+  dlg.SwimClubID := uSwimClub.PK;
+  dlg.ShowModal;
+  dlg.Free;
 end;
 
 procedure TMain2.SwimClub_SwitchExecute(Sender: TObject);

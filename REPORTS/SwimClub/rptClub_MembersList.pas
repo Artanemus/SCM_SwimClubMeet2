@@ -1,4 +1,4 @@
-unit rptMembersDetail;
+unit rptClub_MembersList;
 
 interface
 
@@ -10,7 +10,7 @@ uses
   frxExportPDF, frxClass, frxExportBaseDialog, frxExportHTML, frxDBSet;
 
 type
-  TMembersDetail = class(TDataModule)
+  TClub_MembersList = class(TDataModule)
     frxReport1: TfrxReport;
     frxDSReport: TfrxDBDataset;
     frxHTMLExport1: TfrxHTMLExport;
@@ -23,11 +23,10 @@ type
   public
     { Public declarations }
     procedure RunReport(AConnection: TFDConnection; ASwimClubID: integer);
-
   end;
 
 var
-  MembersDetail: TMembersDetail;
+  Club_MembersList: TClub_MembersList;
 
 implementation
 
@@ -35,9 +34,10 @@ implementation
 
 {$R *.dfm}
 
-{ TMembersDetailRpt }
+{ TMembersList }
 
-procedure TMembersDetail.RunReport(AConnection: TFDConnection; ASwimClubID: integer);
+procedure TClub_MembersList.RunReport(AConnection: TFDConnection;
+  ASwimClubID: integer);
 begin
 	qryReport.Connection := AConnection;
 	qryReport.ParamByName('SWIMCLUBID').AsInteger := aSwimClubID;

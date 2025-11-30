@@ -44,11 +44,14 @@ uses
   rptMemberCheckData in 'MEMBERS\rptMemberCheckData.pas' {MemberCheckData: TDataModule},
   rptMemberDetail in 'MEMBERS\rptMemberDetail.pas' {MemberDetail: TDataModule},
   rptMemberHistory in 'MEMBERS\rptMemberHistory.pas' {MemberHistory: TDataModule},
-  rptMembersDetail in 'MEMBERS\rptMembersDetail.pas' {MembersDetail: TDataModule},
-  rptMembersList in 'MEMBERS\rptMembersList.pas' {MembersList: TDataModule},
-  rptMembersSummary in 'MEMBERS\rptMembersSummary.pas' {MembersSummary: TDataModule},
   dlgAboutManageMember in 'MEMBERS\dlgAboutManageMember.pas' {AboutManageMember},
-  dlgSwimClubPicker in 'DIALOGS\Picker\dlgSwimClubPicker.pas' {SwimClubPicker};
+  dlgSwimClubPicker in 'DIALOGS\Picker\dlgSwimClubPicker.pas' {SwimClubPicker},
+  frmManagemember_Stats in 'MEMBERS\frmManagemember_Stats.pas' {ManageMember_Stats},
+  dlgSwimClub_Reports in 'DIALOGS\SwimClub\dlgSwimClub_Reports.pas' {SwimClub_Reports},
+  rptClub_MembersDetail in 'REPORTS\SwimClub\rptClub_MembersDetail.pas' {Club_MembersDetail: TDataModule},
+  rptClub_MembersList in 'REPORTS\SwimClub\rptClub_MembersList.pas' {Club_MembersList: TDataModule},
+  rptClub_MembersSummary in 'REPORTS\SwimClub\rptClub_MembersSummary.pas' {Club_MembersSummary: TDataModule},
+  frmManageMember_CheckData in 'MEMBERS\frmManageMember_CheckData.pas' {ManageMember_CheckData};
 
 {$R *.res}
 

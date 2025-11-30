@@ -265,27 +265,39 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="MEMBERS\rptMembersDetail.pas">
-            <Form>MembersDetail</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
-        <DCCReference Include="MEMBERS\rptMembersList.pas">
-            <Form>MembersList</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
-        <DCCReference Include="MEMBERS\rptMembersSummary.pas">
-            <Form>MembersSummary</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
         <DCCReference Include="MEMBERS\dlgAboutManageMember.pas">
             <Form>AboutManageMember</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="DIALOGS\Picker\dlgSwimClubPicker.pas">
             <Form>SwimClubPicker</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\frmManagemember_Stats.pas">
+            <Form>ManageMember_Stats</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="DIALOGS\SwimClub\dlgSwimClub_Reports.pas">
+            <Form>SwimClub_Reports</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="REPORTS\SwimClub\rptClub_MembersDetail.pas">
+            <Form>Club_MembersDetail</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\SwimClub\rptClub_MembersList.pas">
+            <Form>Club_MembersList</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\SwimClub\rptClub_MembersSummary.pas">
+            <Form>Club_MembersSummary</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\frmManageMember_CheckData.pas">
+            <Form>ManageMember_CheckData</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">

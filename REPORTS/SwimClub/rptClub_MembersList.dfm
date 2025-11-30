@@ -1,6 +1,6 @@
-object MembersDetail: TMembersDetail
-  Height = 547
-  Width = 422
+object Club_MembersList: TClub_MembersList
+  Height = 458
+  Width = 395
   object frxReport1: TfrxReport
     Version = '6.6.11'
     DotMatrixReport = False
@@ -17,8 +17,8 @@ object MembersDetail: TMembersDetail
       'begin'
       ''
       'end.')
-    Left = 264
-    Top = 296
+    Left = 224
+    Top = 96
     Datasets = <
       item
         DataSet = frxDSReport
@@ -98,7 +98,7 @@ object MembersDetail: TMembersDetail
         end
         object Memo2: TfrxMemoView
           AllowVectorExport = True
-          Left = 573.158010000000000000
+          Left = 572.658010000000000000
           Top = 37.795300000000000000
           Width = 86.929190000000000000
           Height = 34.015770000000000000
@@ -280,7 +280,7 @@ object MembersDetail: TMembersDetail
         RowCount = 0
         object frxDSMembershipNum: TfrxMemoView
           AllowVectorExport = True
-          Left = 573.158010000000000000
+          Left = 572.658010000000000000
           Width = 75.590600000000000000
           Height = 18.897650000000000000
           DataSet = frxDSReport
@@ -342,6 +342,18 @@ object MembersDetail: TMembersDetail
           Memo.UTF8W = (
             '[frxDS."cGender"]')
         end
+        object frxDSIsSwimmer: TfrxMemoView
+          AllowVectorExport = True
+          Left = 449.764070000000000000
+          Width = 52.913420000000000000
+          Height = 18.897650000000000000
+          DataField = 'IsActive'
+          DataSet = frxDSReport
+          DataSetName = 'frxDS'
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[frxDS."IsActive"]')
+        end
         object frxDSMemberID: TfrxMemoView
           AllowVectorExport = True
           Width = 60.472480000000000000
@@ -353,19 +365,6 @@ object MembersDetail: TMembersDetail
           Frame.Typ = []
           Memo.UTF8W = (
             '[frxDS."MemberID"]')
-        end
-        object CheckBox1: TfrxCheckBoxView
-          AllowVectorExport = True
-          Left = 460.500000000000000000
-          Top = 0.759740000000000000
-          Width = 18.897650000000000000
-          Height = 18.897650000000000000
-          CheckColor = clBlack
-          CheckStyle = csCheck
-          DataField = 'IsActive'
-          DataSet = frxDSReport
-          DataSetName = 'frxDS'
-          Frame.Typ = []
         end
       end
     end
@@ -390,8 +389,8 @@ object MembersDetail: TMembersDetail
       'Age=Age')
     DataSet = qryReport
     BCDToCurrency = False
-    Left = 160
-    Top = 296
+    Left = 144
+    Top = 96
   end
   object frxHTMLExport1: TfrxHTMLExport
     UseFileCache = True
@@ -405,8 +404,8 @@ object MembersDetail: TMembersDetail
     EmptyLines = True
     Print = False
     PictureType = gpPNG
-    Left = 120
-    Top = 136
+    Left = 72
+    Top = 320
   end
   object frxPDFExport1: TfrxPDFExport
     UseFileCache = True
@@ -432,8 +431,8 @@ object MembersDetail: TMembersDetail
     PdfA = False
     PDFStandard = psNone
     PDFVersion = pv17
-    Left = 120
-    Top = 72
+    Left = 72
+    Top = 256
   end
   object frxXLSExport1: TfrxXLSExport
     UseFileCache = True
@@ -447,8 +446,8 @@ object MembersDetail: TMembersDetail
     PageBreaks = True
     EmptyLines = True
     SuppressPageHeadersFooters = False
-    Left = 232
-    Top = 80
+    Left = 168
+    Top = 256
   end
   object frxMailExport1: TfrxMailExport
     UseFileCache = True
@@ -463,12 +462,12 @@ object MembersDetail: TMembersDetail
     ConfurmReading = False
     UseMAPI = SMTP
     MAPISendFlag = 0
-    Left = 232
-    Top = 136
+    Left = 168
+    Top = 320
   end
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Connection = SCM.scmConnection
+    Connection = SCM2.scmConnection
     SQL.Strings = (
       'USE SwimClubMeet'
       ''
@@ -479,9 +478,7 @@ object MembersDetail: TMembersDetail
       ', Member.FirstName'
       ', Member.LastName'
       ', Member.MembershipNum'
-      
-        ', CONCAT(UPPER(Member.LastName), '#39', '#39', Member.FirstName)  AS ucF' +
-        'Name'
+      ', UPPER(Member.LastName) + '#39', '#39' + Member.FirstName  AS ucFName'
       ', Member.DOB'
       ', Member.IsActive'
       ', Member.Email'
@@ -500,8 +497,8 @@ object MembersDetail: TMembersDetail
       'LEFT OUTER JOIN Gender ON Member.GenderID = Gender.GenderID '
       'WHERE        (Member.SwimClubID = @SwimClubID )'
       'ORDER BY Member.LastName')
-    Left = 64
-    Top = 296
+    Left = 72
+    Top = 96
     ParamData = <
       item
         Name = 'SWIMCLUBID'

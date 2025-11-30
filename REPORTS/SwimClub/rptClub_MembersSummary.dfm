@@ -1,4 +1,4 @@
-object MembersSummary: TMembersSummary
+object Club_MembersSummary: TClub_MembersSummary
   Height = 468
   Width = 474
   object frxReport1: TfrxReport
@@ -306,8 +306,7 @@ object MembersSummary: TMembersSummary
   end
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
-    Connection = SCM.scmConnection
+    Connection = SCM2.scmConnection
     SQL.Strings = (
       'USE SwimClubMeet;'
       'DECLARE @SwimClubID AS INTEGER;'

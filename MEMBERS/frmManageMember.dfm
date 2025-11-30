@@ -41,7 +41,7 @@ object ManageMember: TManageMember
     object DBTextFullName: TDBText
       Left = 21
       Top = 6
-      Width = 151
+      Width = 154
       Height = 25
       AutoSize = True
       DataField = 'FName'
@@ -139,7 +139,7 @@ object ManageMember: TManageMember
     Top = 76
     Width = 1370
     Height = 659
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     Align = alClient
     MultiLine = True
     TabHeight = 40
@@ -826,221 +826,6 @@ object ManageMember: TManageMember
         TabOrder = 6
       end
     end
-    object ts_MemberDetail3: TTabSheet
-      Caption = 'Member Stats'
-      ImageIndex = 2
-      object Label23: TLabel
-        Left = 3
-        Top = 15
-        Width = 21
-        Height = 118
-        Alignment = taCenter
-        Caption = 'PERSONAL BEST'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Orientation = 900
-        Font.Style = []
-        ParentFont = False
-      end
-      object Label26: TLabel
-        Left = 316
-        Top = 17
-        Width = 21
-        Height = 108
-        Alignment = taRightJustify
-        Caption = 'EVENTS SWUM'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Tahoma'
-        Font.Orientation = 900
-        Font.Style = []
-        ParentFont = False
-        Layout = tlCenter
-      end
-      object DBGrid1: TDBGrid
-        Left = 343
-        Top = 17
-        Width = 338
-        Height = 576
-        DataSource = ManageMemberData.dsMemberEvents
-        TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -16
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        Columns = <
-          item
-            Expanded = False
-            FieldName = 'EventStr'
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'RaceTime'
-            Width = 64
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'EventDate'
-            Width = 64
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'EventID'
-            Visible = False
-          end
-          item
-            Expanded = False
-            FieldName = 'MemberID'
-            Visible = False
-          end
-          item
-            Expanded = False
-            FieldName = 'FName'
-            Visible = False
-          end>
-      end
-      object DBgridHistoryPB: TDBGrid
-        Left = 30
-        Top = 17
-        Width = 283
-        Height = 573
-        DataSource = ManageMemberData.dsMemberPB
-        TabOrder = 1
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -16
-        TitleFont.Name = 'Tahoma'
-        TitleFont.Style = []
-        Columns = <
-          item
-            Expanded = False
-            FieldName = 'EventStr'
-            Title.Caption = 'Event'
-            Width = 155
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'PB'
-            Width = 90
-            Visible = True
-          end>
-      end
-    end
-    object TabSheet5: TTabSheet
-      Caption = 'Member Charts'
-      ImageIndex = 4
-      object Panel2: TPanel
-        Left = 0
-        Top = 0
-        Width = 1362
-        Height = 41
-        Align = alTop
-        BevelOuter = bvNone
-        TabOrder = 0
-        DesignSize = (
-          1362
-          41)
-        object Label27: TLabel
-          Left = 24
-          Top = 11
-          Width = 59
-          Height = 19
-          Alignment = taRightJustify
-          Caption = 'Distance'
-        end
-        object Label28: TLabel
-          Left = 334
-          Top = 11
-          Width = 45
-          Height = 19
-          Alignment = taRightJustify
-          Caption = 'Stroke'
-        end
-        object cmboDistance: TComboBox
-          Left = 89
-          Top = 8
-          Width = 183
-          Height = 27
-          TabOrder = 0
-          Text = 'cmboDistance'
-          OnChange = cmboDistanceChange
-        end
-        object cmboStroke: TComboBox
-          Left = 385
-          Top = 8
-          Width = 184
-          Height = 27
-          TabOrder = 1
-          Text = 'cmboStroke'
-          OnChange = cmboStrokeChange
-        end
-        object chkbDoCurrSeason: TCheckBox
-          Left = 616
-          Top = 11
-          Width = 225
-          Height = 17
-          Caption = 'Current swimming season.'
-          Checked = True
-          State = cbChecked
-          TabOrder = 2
-          OnClick = chkbDoCurrSeasonClick
-        end
-        object btmPrintChart: TButton
-          Left = 1230
-          Top = 8
-          Width = 129
-          Height = 25
-          Anchors = [akTop, akRight]
-          Caption = 'Print Chart'
-          TabOrder = 3
-          OnClick = btmPrintChartClick
-        end
-      end
-      object DBChart1: TDBChart
-        Left = 0
-        Top = 41
-        Width = 1362
-        Height = 568
-        Title.Text.Strings = (
-          'TDBChart')
-        BottomAxis.ExactDateTime = False
-        BottomAxis.Increment = 1.000000000000000000
-        Legend.Title.Alignment = taCenter
-        Legend.Title.Text.Strings = (
-          'Race Time & Date')
-        View3D = False
-        OnGetLegendText = DBChart1GetLegendText
-        Align = alClient
-        TabOrder = 1
-        DefaultCanvas = 'TGDIPlusCanvas'
-        ColorPaletteIndex = 13
-        object Series2: TLineSeries
-          HoverElement = [heCurrent]
-          DataSource = ManageMemberData.qryChart
-          XLabelsSource = 'ChartX'
-          Brush.BackColor = clDefault
-          Pointer.Brush.Gradient.EndColor = 10708548
-          Pointer.Gradient.EndColor = 10708548
-          Pointer.InflateMargins = True
-          Pointer.Style = psRectangle
-          Pointer.Visible = True
-          XValues.Name = 'X'
-          XValues.Order = loAscending
-          XValues.ValueSource = 'ChartX'
-          YValues.Name = 'Y'
-          YValues.Order = loNone
-          YValues.ValueSource = 'Seconds'
-        end
-      end
-    end
     object TabSheet2: TTabSheet
       Caption = 'LIST'
       ImageIndex = 1
@@ -1141,7 +926,7 @@ object ManageMember: TManageMember
         ColCount = 15
         DrawingStyle = gdsClassic
         FixedColor = clWhite
-        RowCount = 101
+        RowCount = 2
         FixedRows = 1
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -1823,105 +1608,6 @@ object ManageMember: TManageMember
           64)
         RowHeights = (
           22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
-          22
           22)
       end
     end
@@ -1931,9 +1617,9 @@ object ManageMember: TManageMember
       object Label5: TLabel
         Left = 241
         Top = 51
-        Width = 443
+        Width = 409
         Height = 19
-        Caption = 'Produce a detailed report of the current selected club member.'
+        Caption = 'Produce a detailed report of the current selected member.'
         WordWrap = True
       end
       object Label14: TLabel
@@ -1946,49 +1632,12 @@ object ManageMember: TManageMember
           'um.'
         WordWrap = True
       end
-      object Label16: TLabel
-        Left = 241
-        Top = 236
-        Width = 472
-        Height = 19
-        Caption = 'Prepare a summary of all the club members (3 columns per page).'
-        WordWrap = True
-      end
-      object Label17: TLabel
-        Left = 241
-        Top = 282
-        Width = 352
-        Height = 19
-        Caption = 'Prepare a detailed report of all the club members.'
-        WordWrap = True
-      end
-      object Label9: TLabel
-        Left = 242
-        Top = 328
-        Width = 290
-        Height = 19
-        Caption = 'Prepare a compact list of club members. '
-        WordWrap = True
-      end
       object Label19: TLabel
         Left = 242
         Top = 20
         Width = 248
         Height = 25
         Caption = 'Current Selected Member ...'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -19
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold, fsUnderline]
-        ParentFont = False
-      end
-      object Label20: TLabel
-        Left = 241
-        Top = 205
-        Width = 131
-        Height = 25
-        Caption = 'All Members ...'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -19
@@ -2005,15 +1654,6 @@ object ManageMember: TManageMember
         TabOrder = 0
         OnClick = btnMemberDetailClick
       end
-      object btnClubMembersSummary: TButton
-        Left = 3
-        Top = 228
-        Width = 218
-        Height = 38
-        Caption = 'Club Members Summary'
-        TabOrder = 2
-        OnClick = btnClubMembersSummaryClick
-      end
       object btnMemberHistory: TButton
         Left = 3
         Top = 89
@@ -2022,244 +1662,6 @@ object ManageMember: TManageMember
         Caption = 'Member History'
         TabOrder = 1
         OnClick = btnMemberHistoryClick
-      end
-      object btnClubMembersDetailed: TButton
-        Left = 3
-        Top = 274
-        Width = 218
-        Height = 38
-        Caption = 'Club Members Detailed'
-        TabOrder = 3
-        OnClick = btnClubMembersDetailedClick
-      end
-      object btnClubMembersList: TButton
-        Left = 3
-        Top = 320
-        Width = 218
-        Height = 38
-        Caption = 'Club Members List'
-        TabOrder = 4
-        OnClick = btnClubMembersListClick
-      end
-      object pnlDataCheck: TPanel
-        Left = 909
-        Top = 0
-        Width = 453
-        Height = 609
-        Align = alRight
-        BevelOuter = bvNone
-        Caption = 'pnlDataCheck'
-        ShowCaption = False
-        TabOrder = 5
-        object lblDataCheck: TLabel
-          AlignWithMargins = True
-          Left = 3
-          Top = 10
-          Width = 447
-          Height = 33
-          Margins.Top = 10
-          Align = alTop
-          Alignment = taCenter
-          Caption = '... CHECK DATA ...'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -27
-          Font.Name = 'Tahoma'
-          Font.Style = []
-          ParentFont = False
-          ExplicitWidth = 219
-        end
-        object DBGrid2: TDBGrid
-          Left = 0
-          Top = 326
-          Width = 453
-          Height = 283
-          Align = alBottom
-          DataSource = ManageMemberData.dsDataCheckPart
-          Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
-          ReadOnly = True
-          TabOrder = 0
-          TitleFont.Charset = DEFAULT_CHARSET
-          TitleFont.Color = clWindowText
-          TitleFont.Height = -16
-          TitleFont.Name = 'Tahoma'
-          TitleFont.Style = []
-        end
-        object GridPanel1: TGridPanel
-          Left = 0
-          Top = 46
-          Width = 453
-          Height = 239
-          Align = alClient
-          Caption = 'GridPanel1'
-          ColumnCollection = <
-            item
-              Value = 50.000000000000000000
-            end
-            item
-              Value = 50.000000000000000000
-            end>
-          ControlCollection = <
-            item
-              Column = 0
-              Control = btnFirstName
-              Row = 0
-            end
-            item
-              Column = 1
-              Control = btnLastName
-              Row = 0
-            end
-            item
-              Column = 0
-              Control = btnGender
-              Row = 1
-            end
-            item
-              Column = 1
-              Control = btnDOB
-              Row = 1
-            end
-            item
-              Column = 0
-              Control = btnSwimmingClub
-              Row = 2
-            end
-            item
-              Column = 1
-              Control = btnBooleanNulls
-              Row = 2
-            end
-            item
-              Column = 0
-              Control = btnMembershipNum
-              Row = 3
-            end
-            item
-              Column = 1
-              Control = btnCheckDataReport
-              Row = 3
-            end>
-          RowCollection = <
-            item
-              SizeStyle = ssAbsolute
-              Value = 60.000000000000000000
-            end
-            item
-              SizeStyle = ssAbsolute
-              Value = 60.000000000000000000
-            end
-            item
-              SizeStyle = ssAbsolute
-              Value = 60.000000000000000000
-            end
-            item
-              SizeStyle = ssAbsolute
-              Value = 60.000000000000000000
-            end>
-          ShowCaption = False
-          TabOrder = 1
-          DesignSize = (
-            453
-            239)
-          object btnFirstName: TButton
-            Tag = 1
-            Left = 45
-            Top = 12
-            Width = 137
-            Height = 38
-            Anchors = []
-            Caption = 'FirstName'
-            TabOrder = 0
-            OnClick = btnCheckDataClick
-          end
-          object btnLastName: TButton
-            Tag = 2
-            Left = 271
-            Top = 12
-            Width = 137
-            Height = 38
-            Anchors = []
-            Caption = 'LastName'
-            TabOrder = 1
-            OnClick = btnCheckDataClick
-          end
-          object btnGender: TButton
-            Tag = 3
-            Left = 45
-            Top = 72
-            Width = 137
-            Height = 38
-            Anchors = []
-            Caption = 'Gender'
-            TabOrder = 2
-            OnClick = btnCheckDataClick
-          end
-          object btnDOB: TButton
-            Tag = 4
-            Left = 271
-            Top = 72
-            Width = 137
-            Height = 38
-            Anchors = []
-            Caption = 'DOB'
-            TabOrder = 3
-            OnClick = btnCheckDataClick
-          end
-          object btnSwimmingClub: TButton
-            Tag = 5
-            Left = 45
-            Top = 132
-            Width = 137
-            Height = 38
-            Anchors = []
-            Caption = 'Swimming Club'
-            TabOrder = 4
-            OnClick = btnCheckDataClick
-          end
-          object btnBooleanNulls: TButton
-            Tag = 6
-            Left = 271
-            Top = 132
-            Width = 137
-            Height = 38
-            Anchors = []
-            Caption = 'Boolean NULLS'
-            TabOrder = 5
-            OnClick = btnCheckDataClick
-          end
-          object btnMembershipNum: TButton
-            Tag = 7
-            Left = 45
-            Top = 192
-            Width = 137
-            Height = 38
-            Anchors = []
-            Caption = 'Membership #'
-            TabOrder = 6
-            OnClick = btnCheckDataClick
-          end
-          object btnCheckDataReport: TButton
-            Tag = 8
-            Left = 271
-            Top = 192
-            Width = 137
-            Height = 38
-            Anchors = []
-            Caption = 'Create Report'
-            TabOrder = 7
-            OnClick = btnCheckDataReportClick
-          end
-        end
-        object Panel4: TPanel
-          Left = 0
-          Top = 285
-          Width = 453
-          Height = 41
-          Align = alBottom
-          Caption = 'DESCRIPTION'
-          TabOrder = 2
-        end
       end
     end
   end

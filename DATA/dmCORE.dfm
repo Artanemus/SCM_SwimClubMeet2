@@ -1087,28 +1087,28 @@ object CORE: TCORE
       '    mlist.SwimClubID,'
       '    mlist.MemberID,'
       '    mm.FirstName,'
-      '    mm.MiddleInitial,'
+      '    mm.MiddleName,'
       '    mm.LastName,'
       '    scc.NickName,'
       '    dbo.SwimmerAge(@SeedDate, mm.DOB) AS Age,'
       #9'gender.ABREV,'
       #9'CASE WHEN @SortOn = 0 then'
       #9#9'CASE '
-      #9#9'WHEN (mm.MiddleInitial IS NULL) THEN'
+      #9#9'WHEN (mm.MiddleName IS NULL) THEN'
       #9#9#9'CONCAT(mm.FirstName, '#39' '#39', UPPER(mm.LastName))'
       #9#9'ELSE'
       
-        #9#9#9'CONCAT(mm.FirstName, '#39' '#39', mm.MiddleInitial, '#39'. '#39', UPPER(mm.La' +
-        'stName))'
+        #9#9#9'CONCAT(mm.FirstName, '#39' '#39', LEFT(mm.MiddleName,1), '#39'. '#39', UPPER(' +
+        'mm.LastName))'
       #9#9'END '
       #9'ELSE'#9
       #9#9'CASE '
-      #9#9'WHEN (mm.MiddleInitial IS NULL) THEN'
+      #9#9'WHEN (mm.MiddleName IS NULL) THEN'
       #9#9#9'CONCAT(UPPER(mm.LastName), '#39', '#39', mm.FirstName)'
       #9#9'ELSE'
       
-        #9#9#9'CONCAT(UPPER(mm.LastName), '#39', '#39', mm.FirstName, '#39' .'#39', mm.Middl' +
-        'eInitial)'
+        #9#9#9'CONCAT(UPPER(mm.LastName), '#39', '#39', mm.FirstName, '#39' .'#39', LEFT(mm.' +
+        'MiddleName, 0) )'
       #9#9'END '#9
       #9'END'#9'as FName '
       'FROM #SwimClubMembers AS mlist'
@@ -1157,10 +1157,10 @@ object CORE: TCORE
       Origin = 'FirstName'
       Size = 128
     end
-    object qryFilterMemberMiddleInitial: TWideStringField
-      FieldName = 'MiddleInitial'
-      Origin = 'MiddleInitial'
-      Size = 4
+    object qryFilterMemberMiddleName: TWideStringField
+      FieldName = 'MiddleName'
+      Origin = 'MiddleName'
+      Size = 128
     end
     object qryFilterMemberLastName: TWideStringField
       FieldName = 'LastName'

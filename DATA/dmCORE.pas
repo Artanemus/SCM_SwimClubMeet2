@@ -111,7 +111,6 @@ type
     qryFilterMemberSwimClubID: TIntegerField;
     qryFilterMemberMemberID: TIntegerField;
     qryFilterMemberFirstName: TWideStringField;
-    qryFilterMemberMiddleInitial: TWideStringField;
     qryFilterMemberLastName: TWideStringField;
     qryFilterMemberNickName: TWideStringField;
     qryFilterMemberAge: TIntegerField;
@@ -128,6 +127,7 @@ type
     qryNominateNominated: TIntegerField;
     qryNominateQualified: TIntegerField;
     qryMemberStats: TFDQuery;
+    qryFilterMemberMiddleName: TWideStringField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterEdit(DataSet: TDataSet);

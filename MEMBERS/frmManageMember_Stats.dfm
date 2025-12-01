@@ -11,6 +11,7 @@ object ManageMember_Stats: TManageMember_Stats
   Font.Name = 'Segoe UI'
   Font.Style = []
   OnCreate = FormCreate
+  OnShow = FormShow
   TextHeight = 21
   object rpnlHeader: TRelativePanel
     Left = 0
@@ -30,7 +31,6 @@ object ManageMember_Stats: TManageMember_Stats
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 927
     DesignSize = (
       1102
       45)
@@ -59,14 +59,12 @@ object ManageMember_Stats: TManageMember_Stats
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 927
-    ExplicitHeight = 563
     object pcntrlStats: TPageControl
       Left = 0
       Top = 0
       Width = 1102
       Height = 696
-      ActivePage = tsMemberChart
+      ActivePage = tsMemberStats
       Align = alClient
       TabOrder = 0
       object tsDash: TTabSheet
@@ -107,7 +105,7 @@ object ManageMember_Stats: TManageMember_Stats
         end
         object dbgPB: TDBGrid
           Left = 30
-          Top = -46
+          Top = 17
           Width = 283
           Height = 573
           DataSource = dsPB
@@ -134,7 +132,7 @@ object ManageMember_Stats: TManageMember_Stats
         end
         object dbgEventsSwum: TDBGrid
           Left = 343
-          Top = -49
+          Top = 17
           Width = 442
           Height = 576
           DataSource = dsEventsSwum
@@ -188,7 +186,6 @@ object ManageMember_Stats: TManageMember_Stats
           Align = alTop
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitWidth = 919
           DesignSize = (
             1094
             41)
@@ -245,7 +242,6 @@ object ManageMember_Stats: TManageMember_Stats
             Anchors = [akTop, akRight]
             Caption = 'Print Chart'
             TabOrder = 3
-            ExplicitLeft = 1230
           end
         end
         object DBChart: TDBChart
@@ -264,13 +260,16 @@ object ManageMember_Stats: TManageMember_Stats
           OnGetLegendText = DBChartGetLegendText
           Align = alClient
           TabOrder = 1
-          ExplicitWidth = 919
-          ExplicitHeight = 486
           DefaultCanvas = 'TGDIPlusCanvas'
+          PrintMargins = (
+            15
+            24
+            15
+            24)
           ColorPaletteIndex = 13
           object Series2: TLineSeries
             HoverElement = [heCurrent]
-            DataSource = ManageMemberData.qryChart
+            DataSource = qryChart
             XLabelsSource = 'ChartX'
             Brush.BackColor = clDefault
             Pointer.Brush.Gradient.EndColor = 10708548
@@ -297,17 +296,30 @@ object ManageMember_Stats: TManageMember_Stats
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = 608
-    ExplicitWidth = 927
+    object btnOK: TButton
+      Left = 992
+      Top = 6
+      Width = 75
+      Height = 33
+      Caption = 'Close'
+      TabOrder = 0
+    end
+    object btnPickMember: TButton
+      Left = 849
+      Top = 6
+      Width = 137
+      Height = 33
+      Caption = 'Select Member'
+      TabOrder = 1
+    end
   end
   object dsPB: TDataSource
     DataSet = qryPB
-    Left = 713
-    Top = 128
+    Left = 409
+    Top = 264
   end
   object qryPB: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'MemberID'
     MasterSource = dsMember
     MasterFields = 'MemberID'
@@ -351,14 +363,14 @@ object ManageMember_Stats: TManageMember_Stats
       #9',StrokeID'
       #9',PB ASC'
       ';')
-    Left = 609
-    Top = 128
+    Left = 305
+    Top = 264
     ParamData = <
       item
         Name = 'MEMBERID'
-        DataType = ftInteger
+        DataType = ftAutoInc
         ParamType = ptInput
-        Value = Null
+        Value = 50
       end>
     object qryPBEventStr: TWideStringField
       FieldName = 'EventStr'
@@ -392,6 +404,7 @@ object ManageMember_Stats: TManageMember_Stats
   end
   object qryChart: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'MemberID'
     MasterSource = dsMember
     MasterFields = 'MemberID'
@@ -422,6 +435,8 @@ object ManageMember_Stats: TManageMember_Stats
       '    DROP TABLE #charttemp;'
       '    '
       'IF @MaxRecords IS NULL SET @MaxRecords = 26;'
+      ''
+      'if @MemberID IS NULL SET @MemberID = 0;'
       ''
       ''
       
@@ -470,6 +485,7 @@ object ManageMember_Stats: TManageMember_Stats
       #9',SessionDT'
       #9',cDistance'
       #9',cStroke'
+      ' ,@MemberID as MemberID'
       
         ',ROW_NUMBER()OVER (PARTITION BY 1  ORDER BY SessionDT ) AS Chart' +
         'X'
@@ -477,14 +493,14 @@ object ManageMember_Stats: TManageMember_Stats
       '#charttemp'
       'ORDER BY SessionDT ASC;'
       '')
-    Left = 608
-    Top = 184
+    Left = 304
+    Top = 328
     ParamData = <
       item
         Name = 'STROKEID'
         DataType = ftInteger
         ParamType = ptInput
-        Value = 2
+        Value = 1
       end
       item
         Name = 'DISTANCEID'
@@ -494,9 +510,9 @@ object ManageMember_Stats: TManageMember_Stats
       end
       item
         Name = 'MEMBERID'
-        DataType = ftInteger
+        DataType = ftAutoInc
         ParamType = ptInput
-        Value = 9
+        Value = 2
       end
       item
         Name = 'DOCURRSEASON'
@@ -510,16 +526,52 @@ object ManageMember_Stats: TManageMember_Stats
         ParamType = ptInput
         Value = 26
       end>
+    object qryChartRaceTimeAsString: TWideStringField
+      FieldName = 'RaceTimeAsString'
+      Origin = 'RaceTimeAsString'
+      Size = 12
+    end
+    object qryChartSeconds: TFMTBCDField
+      FieldName = 'Seconds'
+      Origin = 'Seconds'
+      Precision = 20
+      Size = 6
+    end
+    object qryChartSessionDT: TSQLTimeStampField
+      FieldName = 'SessionDT'
+      Origin = 'SessionDT'
+      DisplayFormat = 'dd/mmm/yyyy'
+    end
+    object qryChartcDistance: TWideStringField
+      FieldName = 'cDistance'
+      Origin = 'cDistance'
+      Size = 128
+    end
+    object qryChartcStroke: TWideStringField
+      FieldName = 'cStroke'
+      Origin = 'cStroke'
+      Size = 128
+    end
+    object qryChartChartX: TLargeintField
+      FieldName = 'ChartX'
+      Origin = 'ChartX'
+      ReadOnly = True
+    end
+    object qryChartMemberID: TIntegerField
+      FieldName = 'MemberID'
+      Origin = 'MemberID'
+      ReadOnly = True
+    end
   end
   object dsChart: TDataSource
     DataSet = qryChart
-    Left = 712
-    Top = 184
+    Left = 408
+    Top = 320
   end
   object dsEventsSwum: TDataSource
     DataSet = qryEventsSwum
-    Left = 712
-    Top = 248
+    Left = 408
+    Top = 208
   end
   object qryEventsSwum: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -562,8 +614,8 @@ object ManageMember_Stats: TManageMember_Stats
       'WHERE RaceTime IS NOT NULL'
       'ORDER BY Session.SessionDT ASC, Distance.Meters, Stroke.StrokeID'
       ';')
-    Left = 608
-    Top = 248
+    Left = 304
+    Top = 208
     ParamData = <
       item
         Name = 'EVENTID'
@@ -612,8 +664,8 @@ object ManageMember_Stats: TManageMember_Stats
   end
   object dsMember: TDataSource
     DataSet = qryMember
-    Left = 360
-    Top = 8
+    Left = 304
+    Top = 136
   end
   object qryMember: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -624,94 +676,55 @@ object ManageMember_Stats: TManageMember_Stats
     UpdateOptions.KeyFields = 'MemberID'
     SQL.Strings = (
       ''
-      'DECLARE @HideInActive BIT;'
-      'DECLARE @HideArchived BIT;'
-      'DECLARE @HideNonSwimmers BIT;'
+      'DECLARE @MemberID INTEGER;'
       ''
+      'SET @MemberID = :MEMBERID;'
       ''
-      'SET @HideInActive = :HIDE_INACTIVE;'
-      'SET @HideArchived = :HIDE_ARCHIVED;'
-      'SET @HideNonSwimmers = :HIDE_NONSWIMMERS;'
-      ''
-      'SELECT [MemberID],'
-      '       [MembershipNum],'
-      '       [MembershipStr],'
-      '       [FirstName],'
-      '       [LastName],'
-      '       [DOB],'
-      '       [IsActive],'
-      '       IsSwimmer,'
-      '       IsArchived,'
-      '       [Email],'
-      '       [GenderID],'
+      'SELECT'
+      '    m.[MemberID],'
+      '    m.[MembershipNum],'
+      '    m.[MembershipStr],'
+      '    m.[FirstName],'
+      '    m.[MiddleName],'
+      '    m.[LastName],'
+      '    m.[DOB],'
+      '    m.[IsActive],'
+      '    m.IsSwimmer,'
+      '    m.IsArchived,'
+      '    m.[Email],'
+      '    m.[GenderID],'
+      '    TRIM(CONCAT('
+      '        m.[FirstName],'
+      '        '#39' '#39','
+      '        IIF('
       
-        '       CONCAT(Member.FirstName, '#39' '#39', UPPER(Member.LastName)) AS ' +
-        'FName,'
-      '       CreatedOn,'
-      '       ArchivedOn,'
-      '       TAGS'
-      'FROM [dbo].[Member]'
-      'WHERE (IsActive >= CASE'
-      '                       WHEN @HideInActive = 1 THEN'
-      '                           1'
-      '                       ELSE'
-      '                           0'
-      '                   END'
-      '      )'
-      '      AND (IsArchived <= CASE'
-      '                             WHEN @HideArchived = 1 THEN'
-      '                                 0'
-      '                             ELSE'
-      '                                 1'
-      '                         END'
-      '          )'
-      '      AND (IsSwimmer >= CASE'
-      '                            WHEN @HideNonSwimmers = 1 THEN'
-      '                                1'
-      '                            ELSE'
-      '                                0'
-      '                        END'
-      '          )'
-      '-- mitigates NULL booleans'
-      '      OR'
-      '      ('
-      '          IsArchived IS NULL'
-      '          AND @HideArchived = 0'
-      '      )'
-      '      OR'
-      '      ('
-      '          IsActive IS NULL'
-      '          AND @HideInActive = 0'
-      '      )'
-      '      OR'
-      '      ('
-      '          IsSwimmer IS NULL'
-      '          AND @HideNonSwimmers = 0'
-      '      );'
+        '            m.[MiddleName] IS NULL OR LEN(LTRIM(RTRIM(m.[MiddleN' +
+        'ame]))) = 0,'
+      '            '#39#39','
+      
+        '            CONCAT(UPPER(LEFT(LTRIM(RTRIM(m.[MiddleName])),1)), ' +
+        #39'. '#39')'
+      '        ),'
+      '        UPPER(m.[LastName])'
+      '    )) AS FName,'
+      '    m.CreatedOn,'
+      '    m.ArchivedOn,'
+      '    m.TAGS'
+      'FROM [dbo].[Member] AS m'
+      'WHERE (@MemberID = 0 AND m.MemberID > 0)'
+      '   OR (@MemberID <> 0 AND m.MemberID = @MemberID);'
       ''
       ''
       ''
       '')
-    Left = 288
-    Top = 8
+    Left = 200
+    Top = 136
     ParamData = <
       item
-        Name = 'HIDE_INACTIVE'
-        DataType = ftBoolean
+        Name = 'MEMBERID'
+        DataType = ftInteger
         ParamType = ptInput
-        Value = False
-      end
-      item
-        Name = 'HIDE_ARCHIVED'
-        DataType = ftBoolean
-        ParamType = ptInput
-        Value = False
-      end
-      item
-        Name = 'HIDE_NONSWIMMERS'
-        DataType = ftBoolean
-        ParamType = ptInput
-        Value = False
+        Value = 2
       end>
     object qryMemberMemberID: TFDAutoIncField
       Alignment = taCenter
@@ -794,16 +807,6 @@ object ManageMember_Stats: TManageMember_Stats
       Origin = 'GenderID'
       Visible = False
     end
-    object qryMemberluGender: TStringField
-      DisplayLabel = 'Gender'
-      DisplayWidth = 12
-      FieldKind = fkLookup
-      FieldName = 'luGender'
-      LookupKeyFields = 'GenderID'
-      LookupResultField = 'Caption'
-      KeyFields = 'GenderID'
-      Lookup = True
-    end
     object qryMemberTAGS: TWideMemoField
       FieldName = 'TAGS'
       Origin = 'TAGS'
@@ -811,11 +814,23 @@ object ManageMember_Stats: TManageMember_Stats
     end
   end
   object tblDistance: TFDTable
-    Left = 456
-    Top = 336
+    ActiveStoredUsage = [auDesignTime]
+    Active = True
+    IndexFieldNames = 'DistanceID'
+    Connection = SCM2.scmConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    TableName = 'SwimClubMeet2.dbo.Distance'
+    Left = 360
+    Top = 416
   end
   object tblStroke: TFDTable
-    Left = 456
-    Top = 392
+    ActiveStoredUsage = [auDesignTime]
+    Active = True
+    IndexFieldNames = 'StrokeID'
+    Connection = SCM2.scmConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    TableName = 'SwimClubMeet2.dbo.Stroke'
+    Left = 360
+    Top = 472
   end
 end

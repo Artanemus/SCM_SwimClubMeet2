@@ -112,6 +112,7 @@ type
     procedure GenericActionUpdate(Sender: TObject);
     procedure Members_ManageExecute(Sender: TObject);
     procedure Members_ManageUpdate(Sender: TObject);
+    procedure Member_StatsExecute(Sender: TObject);
     procedure PageControlChange(Sender: TObject);
     procedure pnlTitleBarCustomButtons0Click(Sender: TObject);
     procedure pnlTitleBarCustomButtons0Paint(Sender: TObject);
@@ -150,7 +151,7 @@ implementation
 
 uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
-  frmManageMember, dlgSwimClub_Reports;
+  frmManageMember, dlgSwimClub_Reports, frmManageMember_Stats;
 
 procedure TMain2.DetailTBLs_ApplyMaster;
 begin
@@ -429,6 +430,32 @@ begin
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
     DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TMain2.Member_StatsExecute(Sender: TObject);
+var
+  dlg: TManageMember_Stats;
+  AMemberID: integer;
+begin
+  if not Assigned(CORE) or (CORE.IsActive = false) then exit;
+
+  dlg := TManageMember_Stats.Create(Self);
+  case PageControl.ActivePageIndex of
+    0:
+      dlg.Prepare(0); // forces prompt for member's ID
+    1:
+    begin
+        AMemberID := CORE.dsFilterMember.DataSet.FieldByName('MemberID').AsInteger;
+        dlg.Prepare(AMemberID);
+    end;
+    2:
+    begin
+      {TODO -oBSA -cGeneral : use member's ID from current selected lane}
+    end
+    else dlg.Prepare(0);
+  end;
+  dlg.ShowModal;
+  dlg.Free;
 end;
 
 procedure TMain2.Msg_SCM_Connect(var Msg: TMessage);

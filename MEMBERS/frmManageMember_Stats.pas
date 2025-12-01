@@ -10,7 +10,7 @@ uses
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, dmSCM2, Vcl.Grids, Vcl.DBGrids,
   VclTee.TeeGDIPlus, VCLTee.TeEngine, VCLTee.Series, VCLTee.TeeProcs,
-  VCLTee.Chart, VCLTee.DBChart, uSwimClub, uSettings;
+  VCLTee.Chart, VCLTee.DBChart, uSwimClub, uSettings, uDefines;
 
 type
   TManageMember_Stats = class(TForm)
@@ -68,29 +68,43 @@ type
     qryMemberCreatedOn: TSQLTimeStampField;
     qryMemberArchivedOn: TSQLTimeStampField;
     qryMemberGenderID: TIntegerField;
-    qryMemberluGender: TStringField;
     qryMemberTAGS: TWideMemoField;
     tblDistance: TFDTable;
     tblStroke: TFDTable;
+    btnOK: TButton;
+    btnPickMember: TButton;
+    qryChartRaceTimeAsString: TWideStringField;
+    qryChartSeconds: TFMTBCDField;
+    qryChartSessionDT: TSQLTimeStampField;
+    qryChartcDistance: TWideStringField;
+    qryChartcStroke: TWideStringField;
+    qryChartChartX: TLargeintField;
+    qryChartMemberID: TIntegerField;
     procedure chkbDoCurrSeasonClick(Sender: TObject);
     procedure cmboDistanceChange(Sender: TObject);
     procedure cmboStrokeChange(Sender: TObject);
     procedure DBChartGetLegendText(Sender: TCustomAxisPanel; LegendStyle:
         TLegendStyle; Index: Integer; var LegendText: string);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     fMemberID: integer;
     fMemberChartDataPoints: Integer;
     fConnection: TFDConnection;
     fIsActive: Boolean;
+    procedure ActivateMMS;
     procedure ChartReport();
     procedure ChartPrepare(aMemberID, aDistanceID, aStrokeID: integer; DoCurrSeason: boolean = true);
     procedure UpdateChart();
     function LocateChart(ChartX: Integer): Boolean;
   public
-    procedure Prepare(AConnection: TFDConnection; aMemberID: Integer = 0);
+    procedure Prepare(aMemberID: Integer = 0);
 
     property MemberID: integer read FMemberID write FMemberID;
+
+  protected
+    procedure Msg_SCM_Connect(var Msg: TMessage); message SCM_CONNECT;
+
   end;
 
 var
@@ -99,7 +113,7 @@ var
 implementation
 
 uses
-  rptMemberChart;
+  rptMemberChart, dlgMemberPicker;
 
 {$R *.dfm}
 
@@ -129,36 +143,23 @@ begin
   end;
 end;
 
-procedure TManageMember_Stats.Prepare(AConnection: TFDConnection;
-  aMemberID: Integer);
+procedure TManageMember_Stats.Msg_SCM_Connect(var Msg: TMessage);
+var
+  dlg: TMemberPicker;
 begin
-  fConnection := AConnection;
+  dlg := TMemberPicker.Create(Self);
+  dlg.ShowModal;
+  fMemberID := dlg.MemberID;
+  dlg.Free;
+  UpdateChart;
+
+end;
+
+procedure TManageMember_Stats.Prepare(aMemberID: Integer = 0);
+begin
   fMemberID := aMemberID;
   fIsActive := false;
-  qryMember.Connection := fConnection;
-  qryPB.Connection := fConnection;
-  qryEventsSwum.Connection := fConnection;
-  qryChart.Connection := fConnection;
-  tblDistance.Connection := fConnection;
-  tblStroke.Connection := fConnection;
-
-  qryMember.ParamByName('MemberID').AsInteger := fMemberID;
-  qryMember.Prepare;
-  try
-    qryMember.Open;
-    if qryMember.Active then
-    begin
-      tblDistance.Open;
-      tblStroke.Open;
-      qryPB.Open;
-      qryChart.Open;
-      qryEventsSwum.Open;
-      fIsActive := true;
-    end;
-  except
-    on E: EFDDBEngineException do
-      SCM2.FDGUIxErrorDialog.Execute(E);
-  end;
+  ActivateMMS();
 
   // prepare comboboxes - distance and stroke
   if fIsActive then
@@ -186,16 +187,40 @@ begin
 
 end;
 
+procedure TManageMember_Stats.ActivateMMS;
+begin
+  fIsActive := false;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected then
+  begin
+    qryPB.Connection := SCM2.scmConnection;
+    qryChart.Connection := SCM2.scmConnection;
+    qryEventsSwum.Connection := SCM2.scmConnection;
+    qryMember.Connection := SCM2.scmConnection;
+    tblDistance.Connection := SCM2.scmConnection;
+    tblStroke.Connection := SCM2.scmConnection;
+    try
+      qryMember.ParamByName('MEMBERID').AsInteger := fMemberID;
+      qryMember.Prepare;
+      qryMember.Open;
+      tblDistance.Open;
+      tblStroke.Open;
+      qryPB.Open;
+      qryEventsSwum.Open;
+      fIsActive := true;
+    except
+      on E: EFDDBEngineException do
+        SCM2.FDGUIxErrorDialog.Execute(E);
+    end;
+  end;
+end;
+
 procedure TManageMember_Stats.ChartPrepare(aMemberID, aDistanceID,
   aStrokeID: integer; DoCurrSeason: boolean);
 begin
   if not fIsActive then exit;
   qryChart.DisableControls;
   qryChart.Close;
-  if (aMemberID = 0) and (qryMember.Active) then
-    aMemberID := qryMember.FieldByName('MemberID').AsInteger;
-  if aMemberID <> 0 then
-  begin
+  try
     qryChart.ParamByName('MEMBERID').AsInteger := aMemberID;
     qryChart.ParamByName('DISTANCEID').AsInteger := aDistanceID;
     qryChart.ParamByName('STROKEID').AsInteger := aStrokeID;
@@ -203,10 +228,9 @@ begin
     qryChart.ParamByName('MAXRECORDS').AsInteger:= fMemberChartDataPoints;
     qryChart.Prepare;
     qryChart.Open;
-    if qryChart.Active then
-    begin
-      // signal success?
-    end
+  except
+    on E: EFDDBEngineException do
+      SCM2.FDGUIxErrorDialog.Execute(E);
   end;
   qryChart.EnableControls;
 end;
@@ -257,6 +281,26 @@ begin
     .AsString + '  ' + s;
 end;
 
+procedure TManageMember_Stats.FormShow(Sender: TObject);
+begin
+  if fIsActive and (fMemberID = 0)then
+  begin
+    TThread.CreateAnonymousThread(
+      procedure
+      begin
+        Sleep(250); // Wait 250ms for the form and grids to paint
+        TThread.Synchronize(nil,
+          procedure
+          begin
+            PostMessage(Handle, SCM_CONNECT, 0, 0);
+          end
+        );
+      end
+    ).Start;
+  end;
+
+end;
+
 procedure TManageMember_Stats.UpdateChart;
 var
   d, s: Integer;
@@ -281,7 +325,7 @@ begin
   else
     docurrseason := false;
   // Requery FireDAC Chart
-  ChartPrepare(0, d, s, docurrseason);
+  ChartPrepare(fMemberID, d, s, docurrseason);
   // Chart title
   DBChart.Title.Text.Clear;
   str := qryMember.FieldByName('FName').AsString;

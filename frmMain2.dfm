@@ -2829,7 +2829,7 @@ object Main2: TMain2
     Width = 1103
     Height = 664
     Margins.Top = 10
-    ActivePage = tabHeats
+    ActivePage = tabNominate
     Align = alClient
     TabOrder = 3
     OnChange = PageControlChange
@@ -3644,6 +3644,7 @@ object Main2: TMain2
               end
               item
                 Action = SwimClub_Reports
+                Caption = 'Cl&ub Reports...'
               end
               item
                 Caption = '-'
@@ -4490,7 +4491,9 @@ object Main2: TMain2
     end
     object Member_Stats: TAction
       Category = 'Members'
-      Caption = 'Member Dashboard...'
+      Caption = 'Member'#39's Dashboard...'
+      OnExecute = Member_StatsExecute
+      OnUpdate = GenericActionUpdate
     end
     object Member_CheckData: TAction
       Category = 'Members'

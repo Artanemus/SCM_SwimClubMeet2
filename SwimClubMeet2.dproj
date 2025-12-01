@@ -273,7 +273,7 @@
             <Form>SwimClubPicker</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\frmManagemember_Stats.pas">
+        <DCCReference Include="MEMBERS\frmManageMember_Stats.pas">
             <Form>ManageMember_Stats</Form>
             <FormType>dfm</FormType>
         </DCCReference>
@@ -298,6 +298,10 @@
         </DCCReference>
         <DCCReference Include="MEMBERS\frmManageMember_CheckData.pas">
             <Form>ManageMember_CheckData</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="DIALOGS\Picker\dlgMemberPicker.pas">
+            <Form>MemberPicker</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">

@@ -596,8 +596,10 @@ object ManageMember_Stats: TManageMember_Stats
       'SELECT '
       '[Event].EventID'
       ',Nominee.MemberID '
-      ',Concat(Member.FirstName, '#39' '#39', Member.LastName) AS FName'
-      ',Concat(Distance.Caption, '#39' '#39', Stroke.Caption) AS EventStr'
+      '--,Concat(Member.FirstName, '#39' '#39', Member.LastName) AS FName'
+      
+        ',SubString(Concat(Distance.Caption, '#39' '#39', Stroke.Caption), 0, 32)' +
+        ' AS EventStr'
       ',Lane.RaceTime'
       ', CONVERT(VARCHAR(11), Session.SessionDT, 106) AS EventDate '
       ''
@@ -607,11 +609,15 @@ object ManageMember_Stats: TManageMember_Stats
       'INNER JOIN Distance ON [Event].DistanceID = Distance.DistanceID'
       'INNER JOIN Heat ON [Event].EventID = Heat.EventID'
       'INNER JOIN Lane ON [Heat].HeatID = Lane.HeatID'
-      'INNER JOIN Nominee ON Lane.NomineeID = Nominee.NomineeID'
       
-        'INNER JOIN Member ON Nominee.MemberID = Member.MemberID AND [Eve' +
-        'nt].[EventID] = Nominee.EventID'
-      'WHERE RaceTime IS NOT NULL'
+        'INNER JOIN Nominee ON Lane.NomineeID = Nominee.NomineeID AND [Ev' +
+        'ent].EventID = Nominee.EventID'
+      
+        '--INNER JOIN Member ON Nominee.MemberID = Member.MemberID AND [E' +
+        'vent].[EventID] = Nominee.EventID'
+      
+        'WHERE (RaceTime IS NOT NULL OR (dbo.SwimTimeToMilliseconds(RaceT' +
+        'ime) > 0))'
       'ORDER BY Session.SessionDT ASC, Distance.Meters, Stroke.StrokeID'
       ';')
     Left = 304

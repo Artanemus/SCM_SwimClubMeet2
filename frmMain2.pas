@@ -404,7 +404,7 @@ begin
   begin
     dlg := TManageMember.Create(self);
     try
-      dlg.Prepare(SCM2.scmConnection, fCueToMemberID);
+      dlg.Prepare(fCueToMemberID);
       dlg.ShowModal();
     finally
       dlg.Free;

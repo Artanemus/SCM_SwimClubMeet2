@@ -39,6 +39,11 @@ type
     // limits number of data points shown when charting members RTs
     MemberChartDataPoints: integer;
 
+    mm_HideArchived: boolean;
+    mm_HideInActive: boolean;
+    mm_HideNonSwimmer: boolean;
+    mm_ActivePageIndex: integer;
+
     // depreciated.
     // HideTitlePanel: boolean; // no longer required.
     // UseWindowsDefTheme: boolean; // only one theme available.
@@ -116,6 +121,11 @@ begin
 
   ShowDebugInfo := false;
   MemberChartDataPoints := 26; // number of club nights - the length of a swimming season.
+
+  mm_HideArchived := false;
+  mm_HideInActive := false;
+  mm_HideNonSwimmer := false;
+  mm_ActivePageIndex := -1;
 
   ab_ExcludeOutsideLanes := false;
   ab_SeperateGender := false;

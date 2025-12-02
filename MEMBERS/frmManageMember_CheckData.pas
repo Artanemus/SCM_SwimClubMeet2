@@ -31,6 +31,7 @@ type
     dsDataCheck: TDataSource;
     qryDataCheckPart: TFDQuery;
     dsDataCheckPart: TDataSource;
+    cmdFixNullBooleans: TFDCommand;
     procedure FormCreate(Sender: TObject);
     procedure btnCheckDataClick(Sender: TObject);
     procedure btnCheckDataReportClick(Sender: TObject);

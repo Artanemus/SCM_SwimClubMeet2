@@ -4061,6 +4061,7 @@ object Main2: TMain2
               end
               item
                 Action = Member_Stats
+                Caption = 'Mem&ber'#39's Dashboard...'
               end
               item
                 Caption = '-'

@@ -14,7 +14,6 @@ object ManageMember: TManageMember
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  OnShow = FormShow
   TextHeight = 19
   object Panel1: TPanel
     Left = 0
@@ -829,101 +828,16 @@ object ManageMember: TManageMember
     object TabSheet2: TTabSheet
       Caption = 'LIST'
       ImageIndex = 1
-      object DBGrid3: TDBGrid
+      object ListGrid: TDBAdvGrid
         Left = 0
         Top = 0
         Width = 1362
-        Height = 225
-        Align = alTop
-        BorderStyle = bsNone
-        DataSource = ManageMemberData.dsMember
-        DefaultDrawing = False
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -13
-        TitleFont.Name = 'Segoe UI'
-        TitleFont.Style = []
-        OnCellClick = DBGridCellClick
-        OnColEnter = DBGridColEnter
-        OnColExit = DBGridColExit
-        OnDrawColumnCell = DBGridDrawColumnCell
-        OnEditButtonClick = DBGridEditButtonClick
-        OnKeyDown = DBGridKeyDown
-        Columns = <
-          item
-            Expanded = False
-            FieldName = 'MemberID'
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'MembershipNum'
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'FirstName'
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'LastName'
-            Visible = True
-          end
-          item
-            ButtonStyle = cbsEllipsis
-            Expanded = False
-            FieldName = 'DOB'
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'luGender'
-            Visible = True
-          end
-          item
-            Alignment = taCenter
-            Expanded = False
-            FieldName = 'IsArchived'
-            Title.Caption = 'Archive'
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'IsActive'
-            Width = 40
-            Visible = True
-          end
-          item
-            Alignment = taCenter
-            Expanded = False
-            FieldName = 'IsSwimmer'
-            Title.Caption = 'Swims'
-            Visible = True
-          end
-          item
-            Expanded = False
-            FieldName = 'Email'
-            Width = 250
-            Visible = True
-          end>
-      end
-      object ListGrid: TDBAdvGrid
-        Left = 0
-        Top = 304
-        Width = 1362
-        Height = 305
+        Height = 609
         Cursor = crDefault
-        Align = alBottom
+        Align = alClient
         Color = clWhite
-        ColCount = 15
+        ColCount = 12
+        DefaultRowHeight = 24
         DrawingStyle = gdsClassic
         FixedColor = clWhite
         RowCount = 2
@@ -933,10 +847,10 @@ object ManageMember: TManageMember
         Font.Height = -16
         Font.Name = 'Tahoma'
         Font.Style = []
-        Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
+        Options = [goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
         ParentFont = False
         ScrollBars = ssBoth
-        TabOrder = 1
+        TabOrder = 0
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
@@ -996,7 +910,7 @@ object ManageMember: TManageMember
           'Smaller than'
           'Clear')
         FixedColWidth = 20
-        FixedRowHeight = 22
+        FixedRowHeight = 24
         FixedFont.Charset = DEFAULT_CHARSET
         FixedFont.Color = clBlack
         FixedFont.Height = -12
@@ -1064,12 +978,12 @@ object ManageMember: TManageMember
             Color = clWindow
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
-            Font.Height = -12
+            Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
+            HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
@@ -1091,12 +1005,13 @@ object ManageMember: TManageMember
             FieldName = 'MemberID'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
-            Font.Height = -12
+            Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
+            Header = 'ID'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
+            HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
@@ -1105,7 +1020,7 @@ object ManageMember: TManageMember
             PrintFont.Height = -12
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
+            Width = 38
           end
           item
             Borders = []
@@ -1113,79 +1028,25 @@ object ManageMember: TManageMember
             ButtonHeight = 18
             CheckFalse = 'N'
             CheckTrue = 'Y'
-            Color = clWindow
-            FieldName = 'MembershipNum'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -12
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 64
-          end
-          item
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWindow
-            EditLength = 24
-            FieldName = 'MembershipStr'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -12
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 64
-          end
-          item
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWindow
-            EditLength = 128
+            Color = clWhite
             FieldName = 'FirstName'
             Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Segoe UI'
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Tahoma'
             Font.Style = []
             HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -12
-            PrintFont.Name = 'Segoe UI'
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Tahoma'
             PrintFont.Style = []
-            Width = 64
+            Width = 110
           end
           item
             Borders = []
@@ -1198,12 +1059,13 @@ object ManageMember: TManageMember
             FieldName = 'LastName'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
-            Font.Height = -12
+            Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
+            Header = 'Last Name'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
+            HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
@@ -1212,191 +1074,7 @@ object ManageMember: TManageMember
             PrintFont.Height = -12
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
-          end
-          item
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWindow
-            FieldName = 'DOB'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -12
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 64
-          end
-          item
-            Alignment = taCenter
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWindow
-            FieldName = 'IsActive'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -12
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 64
-          end
-          item
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWindow
-            FieldName = 'IsSwimmer'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -12
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 64
-          end
-          item
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWindow
-            FieldName = 'IsArchived'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -12
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 64
-          end
-          item
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWindow
-            EditLength = 256
-            FieldName = 'Email'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -12
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 64
-          end
-          item
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWindow
-            FieldName = 'CreatedOn'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -12
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 64
-          end
-          item
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWindow
-            FieldName = 'ArchivedOn'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -12
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -12
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 64
+            Width = 130
           end
           item
             Borders = []
@@ -1409,12 +1087,12 @@ object ManageMember: TManageMember
             FieldName = 'luGender'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
-            Font.Height = -12
+            Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
+            HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
@@ -1423,7 +1101,7 @@ object ManageMember: TManageMember
             PrintFont.Height = -12
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
+            Width = 74
           end
           item
             Borders = []
@@ -1432,15 +1110,130 @@ object ManageMember: TManageMember
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWindow
-            FieldName = 'TAGS'
+            FieldName = 'DOB'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
-            Font.Height = -12
+            Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
-            HeaderFont.Height = -12
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            HeaderAlignment = taCenter
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clWindowText
+            PrintFont.Height = -12
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 102
+          end
+          item
+            Alignment = taCenter
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWindow
+            FieldName = 'IsArchived'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = 'Archive'
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = 3881787
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            HeaderAlignment = taCenter
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clWindowText
+            PrintFont.Height = -12
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 59
+          end
+          item
+            Alignment = taCenter
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWindow
+            FieldName = 'IsActive'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = 'Active'
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = 3881787
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            HeaderAlignment = taCenter
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clWindowText
+            PrintFont.Height = -12
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 59
+          end
+          item
+            Alignment = taCenter
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWindow
+            FieldName = 'IsSwimmer'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = 'Swims'
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = 3881787
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            HeaderAlignment = taCenter
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clWindowText
+            PrintFont.Height = -12
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 59
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWindow
+            EditLength = 256
+            FieldName = 'Email'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = 3881787
+            HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
@@ -1449,7 +1242,62 @@ object ManageMember: TManageMember
             PrintFont.Height = -12
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
+            Width = 266
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWindow
+            FieldName = 'MembershipNum'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = 'Club#'
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = 3881787
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clWindowText
+            PrintFont.Height = -12
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 73
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWindow
+            EditLength = 24
+            FieldName = 'MembershipStr'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = 'Federation#'
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = 3881787
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clWindowText
+            PrintFont.Height = -12
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 105
           end>
         DataSource = ManageMemberData.dsMember
         InvalidPicture.Data = {
@@ -1592,23 +1440,20 @@ object ManageMember: TManageMember
         ShowUnicode = False
         ColWidths = (
           20
-          64
-          64
-          64
-          64
-          64
-          64
-          64
-          64
-          64
-          64
-          64
-          64
-          64
-          64)
+          38
+          110
+          130
+          74
+          102
+          59
+          59
+          59
+          266
+          73
+          105)
         RowHeights = (
-          22
-          22)
+          24
+          24)
       end
     end
     object TabSheet3: TTabSheet
@@ -1631,19 +1476,6 @@ object ManageMember: TManageMember
           'List the swimming events that the current selected member has sw' +
           'um.'
         WordWrap = True
-      end
-      object Label19: TLabel
-        Left = 242
-        Top = 20
-        Width = 248
-        Height = 25
-        Caption = 'Current Selected Member ...'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -19
-        Font.Name = 'Segoe UI'
-        Font.Style = [fsBold, fsUnderline]
-        ParentFont = False
       end
       object btnMemberDetail: TButton
         Left = 3

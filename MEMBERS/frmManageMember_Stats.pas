@@ -107,6 +107,10 @@ type
 
   end;
 
+  const
+  CHARTMAXRECORDS = 26; // max number of events show in TDBChart
+
+
 var
   ManageMember_Stats: TManageMember_Stats;
 

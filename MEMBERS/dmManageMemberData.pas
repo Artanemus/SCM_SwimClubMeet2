@@ -21,32 +21,19 @@ uses
 
 type
   TManageMemberData = class(TDataModule)
-    cmdFixNullBooleans: TFDCommand;
-    dsChart: TDataSource;
     dsContactNum: TDataSource;
-    dsDataCheck: TDataSource;
-    dsDataCheckPart: TDataSource;
     dsFindMember: TDataSource;
     dsGender: TDataSource;
     dsluSwimClub: TDataSource;
     dsMember: TDataSource;
-    dsMemberEvents: TDataSource;
-    dsMemberPB: TDataSource;
     dsMemberRoleLnk: TDataSource;
     dsSwimClub: TDataSource;
-    qAssertMemberID: TFDQuery;
-    qryChart: TFDQuery;
     qryContactNum: TFDQuery;
     qryContactNumContactNumID: TFDAutoIncField;
     qryContactNumContactNumTypeID: TIntegerField;
     qryContactNumlu: TStringField;
     qryContactNumMemberID: TIntegerField;
     qryContactNumNumber: TWideStringField;
-    qryDataCheck: TFDQuery;
-    qryDataCheckMemberID: TIntegerField;
-    qryDataCheckMSG: TStringField;
-    qryDataCheckPart: TFDQuery;
-    qryEntrantDataCount: TFDQuery;
     qryFindMember: TFDQuery;
     qryFindMemberAge: TIntegerField;
     qryFindMembercGender: TWideStringField;
@@ -64,13 +51,6 @@ type
     qryMemberCreatedOn: TSQLTimeStampField;
     qryMemberDOB: TSQLTimeStampField;
     qryMemberEmail: TWideStringField;
-    qryMemberEvents: TFDQuery;
-    qryMemberEventsEventDate: TStringField;
-    qryMemberEventsEventID: TFDAutoIncField;
-    qryMemberEventsEventStr: TWideStringField;
-    qryMemberEventsFName: TWideStringField;
-    qryMemberEventsMemberID: TIntegerField;
-    qryMemberEventsRaceTime: TTimeField;
     qryMemberFirstName: TWideStringField;
     qryMemberFName: TWideStringField;
     qryMemberGenderID: TIntegerField;
@@ -82,12 +62,6 @@ type
     qryMemberMemberID: TFDAutoIncField;
     qryMemberMembershipNum: TIntegerField;
     qryMemberMembershipStr: TWideStringField;
-    qryMemberPB: TFDQuery;
-    qryMemberPBDistanceID: TFDAutoIncField;
-    qryMemberPBEventStr: TWideStringField;
-    qryMemberPBMemberID: TFDAutoIncField;
-    qryMemberPBPB: TTimeField;
-    qryMemberPBStrokeID: TFDAutoIncField;
     qryMemberRoleLnk: TFDQuery;
     qryMemberRoleLnkCreatedOn: TSQLTimeStampField;
     qryMemberRoleLnkElectedOn: TSQLTimeStampField;
@@ -107,6 +81,7 @@ type
     tblMemberRole: TFDTable;
     tblStroke: TFDTable;
     tblSwimClub: TFDTable;
+    qryMemberMiddleName: TWideStringField;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure qryMemberAfterInsert(DataSet: TDataSet);
@@ -128,22 +103,15 @@ type
     procedure qryMemberRoleLnkNewRecord(DataSet: TDataSet);
   private
     fHandle: HWND;
-    { Private declarations }
     fIsActive: Boolean;
     fRecordCount: Integer;
-    prefChartMaxRecords: Integer;
-    procedure UpdateMembersPersonalBest;
   protected
     procedure WndProc(var wndMsg: TMessage); virtual;
   public
     procedure ActivateMMD;
     procedure DeActivateMMD;
-    procedure DataCheckPart(PartNumber: integer);
     function GetMemberID(): integer;
-    function LocateChart(ChartX: Integer): Boolean;
     function LocateMember(MemberID: Integer): Boolean;
-    function LocateSwimClub(SwimClubID: Integer): Boolean;
-    procedure UpdateChart(aMemberID, aDistanceID, aStrokeID: integer; DoCurrSeason: boolean = true);
     procedure UpdateDOB(DOB: TDateTime);
     procedure UpdateElectedOn(aDate: TDate);
     procedure UpdateMember(hideArchived, hideInactive, hideNonSwimmer: Boolean);
@@ -152,9 +120,6 @@ type
     property IsActive: boolean read FIsActive write FIsActive;
     property RecordCount: Integer read fRecordCount;
   end;
-
-const
-  CHARTMAXRECORDS = 26; // max number of events show in TDBChart
 
 var
   ManageMemberData: TManageMemberData;
@@ -168,19 +133,15 @@ uses
   System.IOUtils, IniFiles, SCMUtils,
   vcl.Dialogs, System.UITypes, vcl.Forms, System.DateUtils;
 
-
 procedure TManageMemberData.ActivateMMD;
 begin
   fIsActive := false;
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
   begin
+
     qryMember.Connection := SCM2.scmConnection;
     qryContactNum.Connection := SCM2.scmConnection;
     qryMemberRoleLnk.Connection := SCM2.scmConnection;
-    qryMemberPB.Connection := SCM2.scmConnection;
-    qryMemberEvents.Connection := SCM2.scmConnection;
-    qryChart.Connection := SCM2.scmConnection;
-    qryDataCheck.Connection := SCM2.scmConnection;
 
     // prepare lookup tables.
     tblStroke.Connection := SCM2.scmConnection;
@@ -190,110 +151,56 @@ begin
     tblMemberRole.Connection := SCM2.scmConnection;
     tblSwimClub.Connection := SCM2.scmConnection;
 
+        qryMember.DisableControls;
+        qryContactNum.DisableControls;
+        qryMemberRoleLnk.DisableControls;
     try
-      // Lookup tables...
-      tblStroke.Open;
-      tblDistance.Open;
-      tblGender.Open;
-      tblContactNumType.Open;
-      tblMemberRole.Open;
+      try
+        // Lookup tables...
+        tblStroke.Open;
+        tblDistance.Open;
+        tblGender.Open;
+        tblContactNumType.Open;
+        tblMemberRole.Open;
 
-      qryMember.Open;
-      qryContactNum.Open;
-      qryMemberRoleLnk.Open;
-      qryMemberPB.Open;
-      qryChart.Open;
-      qryDataCheck.Open;
-      qryMemberEvents.Open;
-      fIsActive := True;
-    except
-      on E: EFDDBEngineException do
-        SCM2.FDGUIxErrorDialog.Execute(E);
+        if Assigned(Settings) then
+        begin
+          qryMember.ParamByName('HIDE_INACTIVE').AsBoolean := Settings.mm_HideInActive;
+          qryMember.ParamByName('HIDE_ARCHIVED').AsBoolean := Settings.mm_HideArchived;
+          qryMember.ParamByName('HIDE_NONSWIMMERS').AsBoolean := Settings.mm_HideNonSwimmer;
+        end
+        else
+        begin
+          qryMember.ParamByName('HIDE_INACTIVE').AsBoolean := false;
+          qryMember.ParamByName('HIDE_ARCHIVED').AsBoolean := false;
+          qryMember.ParamByName('HIDE_NONSWIMMERS').AsBoolean := false;
+        end;
+        qryMember.Prepare;
+        qryMember.Open;
+        fRecordCount := qryMember.RecordCount;
+        qryContactNum.Open;
+        qryMemberRoleLnk.Open;
+
+        fIsActive := True;
+      except
+        on E: EFDDBEngineException do
+          SCM2.FDGUIxErrorDialog.Execute(E);
+      end;
+    finally
+      begin
+        qryMember.EnableControls;
+        qryContactNum.EnableControls;
+        qryMemberRoleLnk.EnableControls;
+      end;
     end;
   end;
 end;
 
-procedure TManageMemberData.DataCheckPart(PartNumber: Integer);
-var
-  SQL: string;
-begin
-  if qryDataCheckPart.Active then
-    qryDataCheckPart.Close;
-  dsDataCheckPart.Enabled := false;
-
-  case PartNumber of
-    1: // FirstName
-      begin
-        SQL := 'SELECT[MemberID], ''No first-name.'' as MSG' + sLineBreak +
-          'FROM [SwimClubMeet2].[dbo].[Member]' + sLineBreak +
-          'WHERE firstname IS NULL AND' + sLineBreak +
-          'ORDER BY MemberID DESC;';
-      end;
-    2:
-      begin
-        SQL := SQL +
-          'SELECT[MemberID], ''No last-name.'' as MSG' + sLineBreak +
-          'FROM [SwimClubMeet2].[dbo].[Member]' + sLineBreak +
-          'WHERE lastname IS NULL AND' + sLineBreak +
-          'ORDER BY MemberID DESC;';
-      end;
-     3:
-     begin
-        SQL := SQL +
-          'SELECT[MemberID], ''Gender not given.'' as MSG' + sLineBreak +
-          'FROM [SwimClubMeet2].[dbo].[Member]' + sLineBreak +
-          'WHERE genderID IS NULL AND' + sLineBreak +
-          'ORDER BY MemberID DESC;';
-     end;
-     4:
-     begin
-        SQL := SQL +
-          'SELECT[MemberID], ''No date of birth.'' as MSG' + sLineBreak +
-          'FROM [SwimClubMeet2].[dbo].[Member]' + sLineBreak +
-          'WHERE DOB IS NULL AND' + sLineBreak +
-          'ORDER BY MemberID DESC;';
-     end;
-     5:
-     begin
-       SQL := SQL +
-          'SELECT[MemberID], ''Swimming Club not assigned.'' as MSG' + sLineBreak +
-          'FROM [SwimClubMeet2].[dbo].[Member]' + sLineBreak +
-          'WHERE SwimClubID IS NULL AND' + sLineBreak +
-          'ORDER BY MemberID DESC;';
-     end;
-     6:
-     begin
-       SQL := SQL +
-          'SELECT[MemberID], ''IsArchived, IsActive, IsSwimmer?'' as MSG' + sLineBreak +
-          'FROM [SwimClubMeet2].[dbo].[Member]' + sLineBreak +
-          'WHERE IsArchived IS NULL OR IsActive IS NULL OR IsSwimmer IS NULL AND' + sLineBreak +
-          'ORDER BY MemberID DESC;';
-     end;
-     7:
-     begin
-       SQL := SQL +
-          'SELECT[MemberID], ''No Membership number.'' as MSG' + sLineBreak +
-          'FROM [SwimClubMeet2].[dbo].[Member]' + sLineBreak +
-          'WHERE MemberShipNum IS NULL AND' + sLineBreak +
-          'ORDER BY MemberID DESC;';
-     end;
-  end;
-
-  qryDataCheckPart.SQL.Text := SQL;
-  qryDataCheckPart.Prepare;
-  qryDataCheckPart.Open;
-  if qryDataCheckPart.Active then
-    dsDataCheckPart.Enabled := true;
-end;
 
 procedure TManageMemberData.DataModuleCreate(Sender: TObject);
 begin
   FIsActive := false;
   fHandle := AllocateHWnd(WndProc);
-  if Assigned(Settings) then
-    prefChartMaxRecords := Settings.MemberChartDataPoints
-  else
-    prefChartMaxRecords := CHARTMAXRECORDS;
 end;
 
 procedure TManageMemberData.DataModuleDestroy(Sender: TObject);
@@ -311,11 +218,7 @@ begin
     tblMemberRole.Close;
     qryContactNum.Close;
     qryMemberRoleLnk.Close;
-    qryMemberPB.Close;
-    qryMemberEvents.Close;
-    qryChart.Close;
-    qryDataCheck.Close;
-    qrymember.Close;
+    qryMember.Close;
   finally
     fIsActive := false;
   end;
@@ -329,21 +232,6 @@ begin
         result := dsMember.DataSet.FieldByName('MemberID').AsInteger;
 end;
 
-function TManageMemberData.LocateChart(ChartX: Integer): Boolean;
-var
-  SearchOptions: TLocateOptions;
-begin
-  result := false;
-  SearchOptions := [loPartialKey];
-  try
-    begin
-      result := qryChart.Locate('ChartX', ChartX, SearchOptions);
-    end
-  except
-    on E: Exception do
-      // lblErrMsg.Caption := 'SCM2 DB access error.';
-  end;
-end;
 
 function TManageMemberData.LocateMember(MemberID: Integer): Boolean;
 var
@@ -351,31 +239,33 @@ var
 begin
   result := false;
   SearchOptions := [loPartialKey];
+
+  qryMember.DisableControls;
+  qryContactNum.DisableControls;
+  qryMemberRoleLnk.DisableControls;
+
   try
-    begin
-      result := qryMember.Locate('MemberID', MemberID, SearchOptions);
-    end
-  except
-    on E: Exception do
-      // lblErrMsg.Caption := 'SCM2 DB access error.';
+    try
+      begin
+        result := qryMember.Locate('MemberID', MemberID, SearchOptions);
+        if result then
+        begin
+          qryContactNum.ApplyMaster;
+          qryMemberRoleLnk.ApplyMaster;
+        end;
+      end
+    except
+      on E: Exception do
+        // lblErrMsg.Caption := 'SCM2 DB access error.';
+    end;
+  finally
+    qryMember.EnableControls;
+    qryContactNum.EnableControls;
+    qryMemberRoleLnk.EnableControls;
+
   end;
 end;
 
-function TManageMemberData.LocateSwimClub(SwimClubID: Integer): Boolean;
-var
-  SearchOptions: TLocateOptions;
-begin
-  result := false;
-  SearchOptions := [loPartialKey];
-  try
-    begin
-      result := qrySwimClub.Locate('SwimClubID', SwimClubID, SearchOptions);
-    end
-  except
-    on E: Exception do
-      // lblErrMsg.Caption := 'SCM2 DB access error.';
-  end;
-end;
 
 procedure TManageMemberData.qryMemberAfterInsert(DataSet: TDataSet);
 var
@@ -415,23 +305,16 @@ end;
 
 procedure TManageMemberData.qryMemberAfterScroll(DataSet: TDataSet);
 begin
-{TODO -oBSA -cV2 : CHECK}
-
-  // Display Members Personal Best
-  UpdateMembersPersonalBest();
   qryMember.Refresh;
   // Updates the display of the member's age.
   if Owner is TForm then
     PostMessage(TForm(Owner).Handle, SCM_MEMBER_SCROLL, 0, 0);
-
-  // Update chart query?
-
 end;
 
 procedure TManageMemberData.qryMemberBeforeDelete(DataSet: TDataSet);
 var
   SQL: string;
-  MemberID, result: Integer;
+  MemberID: Integer;
   tmpQry: TFDQuery;
 begin
   // Best to finalize any editing - prior to calling execute statements.
@@ -442,6 +325,8 @@ begin
   MemberID := DataSet.FieldByName('MemberID').AsInteger;
   if MemberID <> 0 then
   begin
+
+  {
     // second chance to abort delete - but only displayed if there is entrant data with race-times
     // could have used SCMConnection.ExecScalar(SQL, [MemberID]).
     qryEntrantDataCount.Connection := SCM2.scmConnection;
@@ -465,6 +350,7 @@ begin
       end;
       qryEntrantDataCount.Close;
     end;
+  }
 
     // remove all C O N T A C T N U Mbers for this member.
     SQL := 'DELETE FROM [SwimClubMeet2].[dbo].[ContactNum] WHERE MemberID = ' +
@@ -693,32 +579,6 @@ begin
   // end;
 end;
 
-procedure TManageMemberData.UpdateChart(aMemberID, aDistanceID, aStrokeID: integer; DoCurrSeason: boolean = true);
-begin
-  if not Assigned(SCM2.scmConnection) then
-    exit;
-  if not qryChart.Active then
-    exit;
-  qryChart.DisableControls;
-  qryChart.Close;
-  if (aMemberID = 0) and (qryMember.Active) then
-    aMemberID := qryMember.FieldByName('MemberID').AsInteger;
-  if aMemberID <> 0 then
-  begin
-    qryChart.ParamByName('MEMBERID').AsInteger := aMemberID;
-    qryChart.ParamByName('DISTANCEID').AsInteger := aDistanceID;
-    qryChart.ParamByName('STROKEID').AsInteger := aStrokeID;
-    qryChart.ParamByName('DOCURRSEASON').AsBoolean:= DoCurrSeason;
-    qryChart.ParamByName('MAXRECORDS').AsInteger:= prefChartMaxRecords;
-    qryChart.Prepare;
-    qryChart.Open;
-    if qryChart.Active then
-    begin
-      // signal success?
-    end
-  end;
-  qryChart.EnableControls;
-end;
 
 procedure TManageMemberData.UpdateDOB(DOB: TDateTime);
 
@@ -745,50 +605,44 @@ begin
   end;
 end;
 
-procedure TManageMemberData.UpdateMember(hideArchived, hideInactive, hideNonSwimmer: Boolean);
+procedure TManageMemberData.UpdateMember(hideArchived, hideInactive,
+  hideNonSwimmer: Boolean);
 begin
-  if not Assigned(SCM2.scmConnection) then
-    exit;
-  if not qryMember.Active then
-    exit;
+  if not fIsActive then exit;
 
   qryMember.DisableControls;
-  qryMember.Close;
-  qryMember.ParamByName('HIDE_ARCHIVED').AsBoolean := hideArchived;
-  qryMember.ParamByName('HIDE_INACTIVE').AsBoolean := hideInactive;
-  qryMember.ParamByName('HIDE_NONSWIMMERS').AsBoolean := hideNonSwimmer;
-  qryMember.Prepare;
-  qryMember.Open;
-  if qryMember.Active then
-  begin
-    fRecordCount := qryMember.RecordCount;
-    if not Assigned(qryContactNum.Connection) then
-      qryContactNum.Connection := SCM2.scmConnection;
-    if not qryContactNum.Active then
-      qryContactNum.Open;
-  end
-  else
-    fRecordCount := 0;
-  qryMember.EnableControls;
+  qryMember.DisableControls;
+  qryContactNum.DisableControls;
+  qryMemberRoleLnk.DisableControls;
+  try
+    begin
+      qryMember.Close;
+      qryMember.ParamByName('HIDE_ARCHIVED').AsBoolean := hideArchived;
+      qryMember.ParamByName('HIDE_INACTIVE').AsBoolean := hideInactive;
+      qryMember.ParamByName('HIDE_NONSWIMMERS').AsBoolean := hideNonSwimmer;
+      qryMember.Prepare;
+      qryMember.Open;
+
+      if qryMember.Active then
+      begin
+        fRecordCount := qryMember.RecordCount;
+        qryContactNum.ApplyMaster;
+        qryMemberRoleLnk.ApplyMaster;
+      end
+      else
+        fRecordCount := 0;
+    end;
+  finally
+    begin
+      qryContactNum.DisableControls;
+      qryMemberRoleLnk.DisableControls;
+
+      qryMember.EnableControls;
+    end;
+
+  end;
 end;
 
-procedure TManageMemberData.UpdateMembersPersonalBest;
-begin
-  if not Assigned(SCM2.scmConnection) then
-    exit;
-  if not dsMember.DataSet.Active then
-    exit;
-  // to improve loading performance of the Member's Dialogue
-  // the 'personal bests' for a member are loaded on demand.
-  qryMemberPB.DisableControls;
-  qryMemberPB.Close();
-  qryMemberPB.ParamByName('MEMBERID').AsInteger :=
-    dsMember.DataSet.FieldByName('MemberID').AsInteger;
-  // ensures params changes are used
-  qryMemberPB.Prepare();
-  qryMemberPB.Open();
-  qryMemberPB.EnableControls;
-end;
 
 procedure TManageMemberData.UpdateRetiredOn(aDate: TDate);
 begin

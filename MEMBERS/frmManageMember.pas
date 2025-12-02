@@ -30,7 +30,9 @@ uses
   Vcl.VirtualImage,
   Vcl.ButtonGroup,
 
-  dmManageMemberData, uDefines,
+  dmManageMemberData, uDefines, uSettings,
+
+
   dlgFilterByParam, // persistent dlg.
   dlgFilterBySwimClub, AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid, dmSCM2 // persistent dlg.
   ;
@@ -67,7 +69,6 @@ type
     DBedtFirstName: TDBEdit;
     DBedtLastName: TDBEdit;
     DBedtMembershipNum: TDBEdit;
-    DBGrid3: TDBGrid;
     DBgridContactInfo: TDBGrid;
     DBGridRole: TDBGrid;
     dblblMemberID: TDBText;
@@ -85,7 +86,6 @@ type
     Label14: TLabel;
     Label15: TLabel;
     Label18: TLabel;
-    Label19: TLabel;
     Label2: TLabel;
     Label22: TLabel;
     Label24: TLabel;
@@ -151,16 +151,15 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
-    procedure FormShow(Sender: TObject);
     procedure MemFile_ExitExecute(Sender: TObject);
     procedure MemSearch_FindMemberExecute(Sender: TObject);
     procedure Onlinehelp1Click(Sender: TObject);
     procedure SCMwebsite1Click(Sender: TObject);
   private
     { Private declarations }
-    fColorBgColor: TColor;
-    fColorEditBoxFocused: TColor;
-    fColorEditBoxNormal: TColor;
+//    fColorBgColor: TColor;
+//    fColorEditBoxFocused: TColor;
+//    fColorEditBoxNormal: TColor;
     FConnection: TFDConnection;
     fFilterDlg: TFilterByParam;
     fHideArchived: Boolean;
@@ -172,7 +171,6 @@ type
     function AssertConnection: Boolean;
     function GotoMember(MemberID: Integer): Boolean;
     function GetMembersAge(aMemberID: Integer; aDate: TDate): Integer;
-    procedure ReadPreferences(aIniFileName: string);
     procedure UpdateFilterCount();
     procedure UpdateMembersAge();
     procedure WritePreferences();
@@ -185,7 +183,7 @@ type
         SCM_MEMBER_FILTER_CHANGED;
   public
     { Public declarations }
-    procedure Prepare(AConnection: TFDConnection; aMemberID: Integer = 0);
+    procedure Prepare(aMemberID: Integer = 0);
   end;
 
 const
@@ -475,8 +473,8 @@ end;
 
 procedure TManageMember.DBGridDrawColumnCell(Sender: TObject; const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
-var
-  clFont, clBg: TColor;
+//var
+//  clFont, clBg: TColor;
 begin
   // NOTE: DEFAULT DRAWING IS DISABLED ....
   // NOTE: DO NOT ENABLE TDBGRID OPTION dgAlwaysShowEditor.
@@ -485,11 +483,11 @@ begin
     (Column.Field.FieldName = 'IsArchived') or
     (Column.Field.FieldName = 'IsSwimmer') then
   begin
-    if gdFocused in State then
-      clFont := fColorEditBoxFocused
-    else
-      clFont := fColorEditBoxNormal;
-    clBg := fColorBgColor;
+//    if gdFocused in State then
+//      clFont := fColorEditBoxFocused
+//    else
+//      clFont := fColorEditBoxNormal;
+//    clBg := fColorBgColor;
 //    TDBGrid(Sender).DrawCheckBoxes(Sender, Rect, Column, clFont, clBg);
     // draw 'Focused' frame  (for boolean datatype only)
     if gdFocused in State then
@@ -759,18 +757,13 @@ end;
 
 procedure TManageMember.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
-  // Test database state
-  if assigned(ManageMemberData) and (ManageMemberData.qryMember.Active) then
-  begin
-    if (ManageMemberData.qryMember.State = dsEdit) or
-      (ManageMemberData.qryMember.State = dsInsert) then
-      ManageMemberData.qryMember.Post();
-  end;
+  if assigned(ManageMemberData) and (ManageMemberData.IsActive) then
+    ManageMemberData.qryMember.CheckBrowseMode;
 end;
 
 procedure TManageMember.FormCreate(Sender: TObject);
 var
-  css: TCustomStyleServices;
+//  css: TCustomStyleServices;
   LFormatSettings: TFormatSettings;
 begin
   // ----------------------------------------------------
@@ -780,9 +773,16 @@ begin
   fHideInActive := false;
   fHideNonSwimmer := false;
   fFilterDlg := nil;
+  PageControl1.ActivePageIndex := 0;
+  LFormatSettings := TFormatSettings.Create;
+  Label11.Caption := 'Date Syntax : ' + LFormatSettings.ShortDateFormat;
+
+  if Assigned(Settings) then
+    PageControl1.ActivePageIndex := Settings.mm_ActivePageIndex;
 
   // Special color assignment - used in TDBGrid painting...
   // -------------------------------------------
+  {
   css := TStyleManager.Style[TStyleManager.ActiveStyle.Name];
   if assigned(css) then
   begin
@@ -796,12 +796,24 @@ begin
     fColorEditBoxNormal := cardinal(clWindowText); // TColors.SysWindowText;
     fColorBgColor := cardinal(clAppWorkSpace); // TColors.SysAppWorkSpace;
   end;
+  }
 
-  // Display tabsheet
-  PageControl1.TabIndex := 0;
-  LFormatSettings := TFormatSettings.Create;
-  Label11.Caption := 'Date Syntax : ' + LFormatSettings.ShortDateFormat;
+  // ----------------------------------------------------
+  // C R E A T E   D A T A M O D U L E .
+  // ----------------------------------------------------
+  try
+    ManageMemberData := TManageMemberData.Create(Self); // uses SCM2.scmConnection
+  finally
+    // with ManageMemberData created and the essential tables are open then
+    // asserting the connection should be true
+    if not assigned(ManageMemberData) then
+      raise Exception.Create('Manage Member''s Data Module creation error.');
+  end;
 
+  ListGrid.BeginUpdate;
+  ManageMemberData.ActivateMMD;
+  ListGrid.EndUpdate;
+  UpdateFilterCount; // # of records appears on filter button.
 end;
 
 procedure TManageMember.FormDestroy(Sender: TObject);
@@ -809,27 +821,6 @@ begin
   WritePreferences;
   if assigned(fFilterDlg) then
     fFilterDlg.Free;
-end;
-
-procedure TManageMember.FormShow(Sender: TObject);
-var
-  iniFileName: string;
-begin
-  // ----------------------------------------------------
-  // R E A D   P R E F E R E N C E S .
-  // ----------------------------------------------------
-  iniFileName := SCMUtils.GetSCMPreferenceFileName;
-  ReadPreferences(iniFileName);
-  if not AssertConnection then
-    exit;
-
-  // run filter
-  ManageMemberData.UpdateMember(fHideArchived, fHideInActive, fHideNonSwimmer);
-  UpdateFilterCount;
-
-  // display record count
-  actnFilter.Caption := 'Filter (' +
-    IntToStr(ManageMemberData.RecordCount) + ')';
 end;
 
 function TManageMember.GetMembersAge(aMemberID: Integer; aDate: TDate): Integer;
@@ -951,64 +942,17 @@ begin
 
 end;
 
-procedure TManageMember.Prepare(AConnection: TFDConnection; aMemberID: Integer
-    = 0);
+procedure TManageMember.Prepare(aMemberID: Integer = 0);
 begin
-  FConnection := AConnection;
-
-  // ----------------------------------------------------
-  // C R E A T E   D A T A M O D U L E   S C M .
-  // ----------------------------------------------------
-  try
-    ManageMemberData := TManageMemberData.Create(Self); // uses SCM2.scmConnection
-  finally
-    // with ManageMemberData created and the essential tables are open then
-    // asserting the connection should be true
-    if not assigned(ManageMemberData) then
-      raise Exception.Create('Manage Member''s Data Module creation error.');
-  end;
-
-  // ----------------------------------------------------
-  // Check that ManageMemberData is active .
-  // fails if SCM2 isn't connected
-  // ----------------------------------------------------
-  ManageMemberData.ActivateMMD;
-  if not ManageMemberData.IsActive then
-  begin
-    MessageDlg('An error occurred during MSSQL table activation.' + sLinebreak +
-      'The database''s schema may need updating.' + sLinebreak +
-      'The application will terminate!', mtError, [mbOk], 0);
-    raise Exception.Create('ManageMemberData Member not active.');
-  end;
-
-  ManageMemberData.qryMember.First;
-  // ASSUMPTION: at least one swimming club...
-
-
   if aMemberID > 0 then
-    PostMessage(ManageMemberData.Handle, SCM_MEMBER_LOCATE, aMemberID, 0);
-end;
-
-procedure TManageMember.ReadPreferences(aIniFileName: string);
-var
-  i: Integer;
-  iFile: TIniFile;
-begin
-  // ---------------------------------------------------------
-  // A S S I G N   MANAGEMEMBER  P R E F E R E N C E S ...
-  // ---------------------------------------------------------
-  if not FileExists(aIniFileName) then
-    exit;
-  iFile := TIniFile.Create(aIniFileName);
-  fHideArchived := iFile.ReadBool(INIFILE_SECTION, 'HideArchived', true);
-  fHideInActive := iFile.ReadBool(INIFILE_SECTION, 'HideInActive', false);
-  fHideNonSwimmer := iFile.ReadBool(INIFILE_SECTION, 'HideNonSwimmer', false);
-  i := iFile.ReadInteger(INIFILE_SECTION, 'TabIndex', -1);
-  // test bounds
-  if ((i > -1) and (i < PageControl1.PageCount)) then
-    PageControl1.ActivePageIndex := i;
-
-  iFile.Free;
+  begin
+    if Assigned(ManageMemberData) and ManageMemberData.IsActive then
+    begin
+      ListGrid.BeginUpdate;
+      PostMessage(ManageMemberData.Handle, SCM_MEMBER_LOCATE, aMemberID, 0);
+      ListGrid.EndUpdate;
+    end;
+  end;
 end;
 
 procedure TManageMember.SCMwebsite1Click(Sender: TObject);
@@ -1022,11 +966,8 @@ begin
 
 end;
 
-
 procedure TManageMember.UpdateFilterCount;
 begin
-  if not AssertConnection then
-    exit;
   // display record count
   actnFilter.Caption := 'Filter (' +
     IntToStr(ManageMemberData.RecordCount) + ')';

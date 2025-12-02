@@ -22,9 +22,6 @@ object ManageMember_CheckData: TManageMember_CheckData
     Caption = 'pnlDataCheck'
     ShowCaption = False
     TabOrder = 0
-    ExplicitLeft = 367
-    ExplicitWidth = 453
-    ExplicitHeight = 609
     object lblDataCheck: TLabel
       AlignWithMargins = True
       Left = 3
@@ -49,7 +46,6 @@ object ManageMember_CheckData: TManageMember_CheckData
       Width = 553
       Height = 386
       Align = alClient
-      DataSource = ManageMemberData.dsDataCheckPart
       Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
       ReadOnly = True
       TabOrder = 0
@@ -133,8 +129,6 @@ object ManageMember_CheckData: TManageMember_CheckData
         end>
       ShowCaption = False
       TabOrder = 1
-      ExplicitWidth = 453
-      ExplicitHeight = 239
       DesignSize = (
         553
         250)
@@ -148,7 +142,6 @@ object ManageMember_CheckData: TManageMember_CheckData
         Caption = 'FirstName'
         TabOrder = 0
         OnClick = btnCheckDataClick
-        ExplicitLeft = 45
       end
       object btnLastName: TButton
         Tag = 2
@@ -159,7 +152,6 @@ object ManageMember_CheckData: TManageMember_CheckData
         Anchors = []
         Caption = 'LastName'
         TabOrder = 1
-        ExplicitLeft = 271
       end
       object btnGender: TButton
         Tag = 3
@@ -170,7 +162,6 @@ object ManageMember_CheckData: TManageMember_CheckData
         Anchors = []
         Caption = 'Gender'
         TabOrder = 2
-        ExplicitLeft = 45
       end
       object btnDOB: TButton
         Tag = 4
@@ -181,7 +172,6 @@ object ManageMember_CheckData: TManageMember_CheckData
         Anchors = []
         Caption = 'DOB'
         TabOrder = 3
-        ExplicitLeft = 271
       end
       object btnSwimmingClub: TButton
         Tag = 5
@@ -192,7 +182,6 @@ object ManageMember_CheckData: TManageMember_CheckData
         Anchors = []
         Caption = 'Swimming Club'
         TabOrder = 4
-        ExplicitLeft = 45
       end
       object btnBooleanNulls: TButton
         Tag = 6
@@ -203,7 +192,6 @@ object ManageMember_CheckData: TManageMember_CheckData
         Anchors = []
         Caption = 'Boolean NULLS'
         TabOrder = 5
-        ExplicitLeft = 271
       end
       object btnMembershipNum: TButton
         Tag = 7
@@ -214,7 +202,6 @@ object ManageMember_CheckData: TManageMember_CheckData
         Anchors = []
         Caption = 'Membership #'
         TabOrder = 6
-        ExplicitLeft = 45
       end
       object btnCheckDataReport: TButton
         Tag = 8
@@ -226,7 +213,6 @@ object ManageMember_CheckData: TManageMember_CheckData
         Caption = 'Create Report'
         TabOrder = 7
         OnClick = btnCheckDataReportClick
-        ExplicitLeft = 271
       end
     end
     object Panel4: TPanel
@@ -237,8 +223,6 @@ object ManageMember_CheckData: TManageMember_CheckData
       Align = alTop
       Caption = 'DESCRIPTION'
       TabOrder = 2
-      ExplicitTop = 285
-      ExplicitWidth = 453
     end
   end
   object qryDataCheck: TFDQuery
@@ -337,5 +321,37 @@ object ManageMember_CheckData: TManageMember_CheckData
     Enabled = False
     Left = 317
     Top = 448
+  end
+  object cmdFixNullBooleans: TFDCommand
+    CommandText.Strings = (
+      'USE SwimClubMeet;'
+      ''
+      'UPDATE [SwimClubMeet].[dbo].[Member]'
+      'SET IsActive = CASE'
+      '                   WHEN IsActive IS NULL THEN'
+      '                       1'
+      '                   ELSE'
+      '                       IsActive'
+      '               END'
+      '  , [IsArchived] = CASE'
+      '                       WHEN IsArchived IS NULL THEN'
+      '                           0'
+      '                       ELSE'
+      '                           IsArchived'
+      '                   END'
+      '  , [IsSwimmer] = CASE'
+      '                      WHEN IsSwimmer IS NULL THEN'
+      '                          1'
+      '                      ELSE'
+      '                          IsSwimmer'
+      '                  END'
+      'WHERE IsArchived IS NULL'
+      '      OR IsActive IS NULL'
+      '      OR IsSwimmer IS NULL'
+      ''
+      ';')
+    ActiveStoredUsage = []
+    Left = 237
+    Top = 528
   end
 end

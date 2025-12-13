@@ -246,8 +246,8 @@ begin
         // iterate over events in session - re-calculating counts.
         uSession.UpdateEvent_Stats();
         // uses database scalar functions.
-        uSession.SetSess_NomineeCount; // SwimClubMeet.dbo.SessionNomineeCount
-        uSession.SetSess_EntrantCount; // SwimClubMeet.dbo.SessionEntrantCount
+        uSession.SetSess_NomineeCount; // SwimClubMeet2.dbo.SessionNomineeCount
+        uSession.SetSess_EntrantCount; // SwimClubMeet2.dbo.SessionEntrantCount
       finally
         actnSess_Lock.Checked := true; // syncronize to equal db state
         SetLockIcon;

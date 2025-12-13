@@ -1,4 +1,4 @@
-unit frmManageMember_CheckData;
+unit frmMM_CheckData;
 
 interface
 
@@ -48,7 +48,7 @@ var
 implementation
 
 uses
-  rptMemberCheckData;
+  rptMM_CheckData;
 
 {$R *.dfm}
 

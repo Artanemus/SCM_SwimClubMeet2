@@ -18,7 +18,6 @@ type
     lblServer: TLabel;
     lblUserName: TLabel;
     lblPassword: TLabel;
-    lblStatusMsg: TLabel;
     chkbOSAuthent: TCheckBox;
     edtPassword: TEdit;
     edtServer: TEdit;
@@ -30,11 +29,11 @@ type
     RelativePanel1: TRelativePanel;
     pnlBody: TPanel;
     btnDone: TButton;
-    lblConnectionInfo: TLabel;
     vimgVisibility: TVirtualImage;
     imgLoginPanel: TImage;
     lblLoginPanelTxt1: TLabel;
     lblLoginPanelTxt2: TLabel;
+    memoInfo: TMemo;
 
     procedure btnDisconnectClick(Sender: TObject);
     procedure btnConnectClick(Sender: TObject);
@@ -66,7 +65,6 @@ uses exeinfo, System.IniFiles, scmUtils;   //frmMain2,
 
 procedure TLogin.btnDisconnectClick(Sender: TObject);
 begin
-  lblStatusMsg.Caption := '';
   if Assigned(SCM2.scmConnection) then
   begin
     if (SCM2.scmConnection.Connected) then
@@ -82,11 +80,12 @@ begin
   end
   else
   begin
-    lblStatusMsg.Caption := 'Disconnected from DB server.';
-    lblConnectionInfo. Caption := '';
     btnDisconnect.Visible := false;
     btnConnect.Visible := true;
   end;
+
+  SetConnectionInfo;
+
 end;
 
 procedure TLogin.btnConnectClick(Sender: TObject);
@@ -95,28 +94,33 @@ begin
   begin
     if (SCM2.scmConnection.Connected) then
       SCM2.scmConnection.Close;
-    lblStatusMsg.Caption := 'Attempting to connect.';
-    // Assert the default OLE DB provider login timeout. 10 seconds.
-    SCM2.WriteConnectionDef('MSSQL_SwimClubMeet', 'LoginTimeout', '10');
+    memoInfo.Lines.BeginUpdate;
+    memoInfo.Clear;
+    memoInfo.Lines.Append('Attempting to connect.');
+    memoInfo.Lines.EndUpdate;
+
+    // Assert the default OLE DB provider login timeout. 5 seconds.
+    SCM2.WriteConnectionDef('MSSQL_SCM2', 'LoginTimeout', '5');
     btnDisconnect.Visible := false;
     btnConnect.Visible := false;
     WriteLoginParams();
     SCM2.scmConnection.Open;
     if (SCM2.scmConnection.Connected) then
     begin
-      lblStatusMsg.Caption := 'Connected to DB server.';
       btnDisconnect.Visible := true;
       btnConnect.Visible := false;
       SetConnectionInfo;
     end
     else
     begin
-      lblStatusMsg.Caption := 'Could not connect.';
-      lblConnectionInfo. Caption := '';
+      memoInfo.Text := '';
       btnDisconnect.Visible := false;
       btnConnect.Visible := true;
     end;
   end;
+
+  SetConnectionInfo;
+
 end;
 
 procedure TLogin.btnDoneClick(Sender: TObject);
@@ -126,10 +130,8 @@ end;
 
 procedure TLogin.FormCreate(Sender: TObject);
 begin
-  lblStatusMsg.Caption := '';
-  lblConnectionInfo.Caption := '';
-  // by default always hide password.
-  edtPassword.PasswordChar := '*';
+  memoInfo.Clear;
+  edtPassword.PasswordChar := '*'; // default : hide password.
   vimgVisibility.imageName := 'visible_off';
 
   ReadLoginParams;
@@ -137,17 +139,17 @@ begin
   begin
     if (SCM2.scmConnection.Connected) then
     begin
-      lblStatusMsg.Caption := 'Connected to DB server.';
       btnDisconnect.Visible := true;
       btnConnect.Visible := false;
     end
     else
     begin
-      lblStatusMsg.Caption := 'Could not connect.';
       btnDisconnect.Visible := false;
       btnConnect.Visible := true;
     end;
   end;
+
+  SetConnectionInfo;
 end;
 
 procedure TLogin.FormKeyDown(Sender: TObject; var Key: Word;
@@ -158,50 +160,25 @@ begin
 end;
 
 procedure TLogin.FormShow(Sender: TObject);
-var
-ParamValue: string;
 begin
-  lblStatusMsg.Caption := '';
-  lblConnectionInfo.Caption := '';
-
-  if Assigned(SCM2.scmConnection) then
-  begin
-    // Form Caption. (reads TFDManager params).
-    SCM2.ReadConnectionDef('MSSQL_SwimClubMeet', 'DataBase', ParamValue);
-    Caption := 'Connected to the ' + ParamValue + ' Database Server ...';
-    // Status Message Caption.
-    if SCM2.scmConnection.Connected then
-    begin
-      lblStatusMsg.Caption := 'Connected to DB server.';
-      SetConnectionInfo; // Machine, Server, SCM2 DB version.
-      btnDisconnect.Visible := true;
-      btnConnect.Visible := false;
-    end
-    else
-    begin
-      lblStatusMsg.Caption := 'Not connected.';
-      btnDisconnect.Visible := false;
-      btnConnect.Visible := true;
-    end;
-  end;
+  SetConnectionInfo; // Assert or duplicity?
   btnDone.SetFocus;
 end;
-
 
 procedure TLogin.ReadLoginParams();
 var
   iFile: TIniFile;
   iniFileName, UseOsAuthentication: string;
 begin
-  // scmFDManager SHOULD point to this connection definition file...
+  // FDManager SHOULD point to this connection definition file...
   // %AppData%\Artanemus\scm\FDConnectionDefs.ini
-  iniFileName := SCM2.scmFDManager.ActualConnectionDefFileName;
+  iniFileName := FDManager.ActualConnectionDefFileName;
   if not FileExists(iniFileName) then exit;
   iFile := TIniFile.Create(iniFileName);
-  edtServer.Text := iFile.ReadString('MSSQL_SwimClubMeet', 'Server', 'localHost\SQLEXPRESS');
-  edtUser_Name.Text := iFile.ReadString('MSSQL_SwimClubMeet', 'User_Name', '');
-  edtPassword.Text := iFile.ReadString('MSSQL_SwimClubMeet', 'Password', '');
-  UseOsAuthentication := iFile.ReadString('MSSQL_SwimClubMeet', 'OSAuthent', 'Yes');
+  edtServer.Text := iFile.ReadString('MSSQL_SCM2', 'Server', 'localHost\SQLEXPRESS');
+  edtUser_Name.Text := iFile.ReadString('MSSQL_SCM2', 'User_Name', '');
+  edtPassword.Text := iFile.ReadString('MSSQL_SCM2', 'Password', '');
+  UseOsAuthentication := iFile.ReadString('MSSQL_SCM2', 'OSAuthent', 'Yes');
   UseOsAuthentication := LowerCase(UseOsAuthentication);
   if UseOsAuthentication.Contains('yes') or UseOsAuthentication.Contains('true') then
     chkbOSAuthent.Checked := true else chkbOSAuthent.Checked := false;
@@ -212,45 +189,39 @@ procedure TLogin.SetConnectionInfo;
 var
   VersionInfo: string;
   HostMachine: string;
+  DataBaseName: string;
 begin
   HostMachine := '';
-  if Assigned(SCM2.scmConnection) then
-  begin
-    if SCM2.scmConnection.Connected then
+  memoInfo.Lines.BeginUpdate;
+  try
+    memoInfo.Clear;
+    if Assigned(SCM2.scmConnection) and SCM2.scmConnection.Connected then
     begin
       // Display some information on the connection.
-      with  lblConnectionInfo do
-      begin
+      memoInfo.Lines.Append('FireDAC''s Connection Definition: ' +
+        FDManager.ActualConnectionDefFileName);
+      VersionInfo := SCM2.scmConnection.ExecSQLScalar(
+        'SELECT CAST(SERVERPROPERTY(''ProductVersion'') AS VARCHAR(50)) + '' - '' ' +
+        '+ CAST(SERVERPROPERTY(''ProductLevel'') AS VARCHAR(50)) + '' - '' ' +
+        '+ CAST(SERVERPROPERTY(''Edition'') AS VARCHAR(50)) AS VersionInfo');
+      memoInfo.Lines.Append('Server version: ' + VersionInfo);
 
 {$IFDEF DEBUG}
-        // Security issues. (wit: demostrating code).
-        Caption := 'FireDAC''s Connection Definition :' + sLineBreak;
-        Caption := Caption + '%APPDATA%\ARTANEMUS\SCM2\FDConnectionDefs.ini' + sLineBreak + sLineBreak;
-        VersionInfo := SCM2.scmConnection.ExecSQLScalar(
-    'SELECT CAST(SERVERPROPERTY(''ProductVersion'') AS VARCHAR(50)) + '' - '' ' +
-    '+ CAST(SERVERPROPERTY(''ProductLevel'') AS VARCHAR(50)) + '' - '' ' +
-    '+ CAST(SERVERPROPERTY(''Edition'') AS VARCHAR(50)) AS VersionInfo');
-        Caption := Caption + 'Server version: ' + VersionInfo + sLineBreak;
-        Caption := Caption + 'Host Machine: ARTANEMUS-LORE'  + sLineBreak;
-        Caption := Caption + 'SCM2 database version: ' + SCM2.GetDBVerInfo;
+      // Security issues. (wit: demostrating code).
+      memoInfo.Lines.Append('Host Machine: ARTANEMUS-LORE');
 {$ELSE}
-        Caption := 'FireDAC''s Connection Definition :' + sLineBreak;
-        Caption := Caption + SCM2.scmFDManager.ConnectionDefFileName + sLineBreak + sLineBreak;
-        VersionInfo := SCM2.scmConnection.ExecSQLScalar(
-    'SELECT CAST(SERVERPROPERTY(''ProductVersion'') AS VARCHAR(50)) + '' - '' ' +
-    '+ CAST(SERVERPROPERTY(''ProductLevel'') AS VARCHAR(50)) + '' - '' ' +
-    '+ CAST(SERVERPROPERTY(''Edition'') AS VARCHAR(50)) AS VersionInfo');
-        Caption := Caption + 'Server version: ' + VersionInfo + sLineBreak;
-        HostMachine := SCM2.scmConnection.ExecSQLScalar(
-    'SELECT CAST(SERVERPROPERTY(''MachineName'') AS VARCHAR(50)) AS MachineName;');
-        Caption := Caption + 'Host Machine: ' + HostMachine + sLineBreak;
-        Caption := Caption + 'SCM2 database version: ' + SCM2.GetDBVerInfo;
+      HostMachine := SCM2.scmConnection.ExecSQLScalar(
+        'SELECT CAST(SERVERPROPERTY(''MachineName'') AS VARCHAR(50)) AS MachineName;');
+      memoInfo.Lines.Append('Host Machine: ' + HostMachine);
 {$ENDIF}
-      end;
-
+      SCM2.ReadConnectionDef('MSSQL_SCM2', 'DataBase', DataBaseName);
+      memoInfo.Lines.Append('Database: ' + DataBaseName);
+      memoInfo.Lines.Append('DB Version: ' + SCM2.GetDBVerInfo);
     end
     else
-      lblConnectionInfo.Caption := '';
+      memoInfo.Lines.Append('NOT CONNECTED.');
+  finally
+    memoInfo.Lines.EndUpdate;
   end;
 end;
 
@@ -274,16 +245,16 @@ var
   iFile: TIniFile;
   iniFileName: string;
 begin
-  iniFileName := SCM2.scmFDManager.ActualConnectionDefFileName;
+  iniFileName := FDManager.ActualConnectionDefFileName;
   if not FileExists(iniFileName) then exit;
   iFile := TIniFile.Create(iniFileName);
   if chkbOSAuthent.Checked then
-    iFile.WriteString('MSSQL_SwimClubMeet', 'OSAuthent', 'Yes')
+    iFile.WriteString('MSSQL_SCM2', 'OSAuthent', 'Yes')
   else
-    iFile.WriteString('MSSQL_SwimClubMeet', 'OSAuthent', 'No');
-  iFile.WriteString('MSSQL_SwimClubMeet', 'Password', edtPassword.Text);
-  iFile.WriteString('MSSQL_SwimClubMeet', 'User_Name', edtUser_Name.Text);
-  iFile.WriteString('MSSQL_SwimClubMeet', 'Server', edtServer.Text);
+    iFile.WriteString('MSSQL_SCM2', 'OSAuthent', 'No');
+  iFile.WriteString('MSSQL_SCM2', 'Password', edtPassword.Text);
+  iFile.WriteString('MSSQL_SCM2', 'User_Name', edtUser_Name.Text);
+  iFile.WriteString('MSSQL_SCM2', 'Server', edtServer.Text);
   iFile.Free;
 end;
 

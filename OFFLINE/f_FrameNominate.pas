@@ -6,7 +6,7 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.StdCtrls,
   AdvUtil, Vcl.Grids, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
-  dmIMG, dmSCM, dmCORE, uSwimClub, uSession, uEvent, uHeat, ulane,
+  dmIMG, dmSCM2, dmCORE, uSwimClub, uSession, uEvent, uHeat, ulane,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
@@ -66,7 +66,7 @@ begin
       finally;
       end;
     end;
-		Nominate_ControlList.ItemCount := SCM.qryNominateEvent.RecordCount;
+		Nominate_ControlList.ItemCount := SCM2.qryNominateEvent.RecordCount;
     EnableControls;
   end;
 end;
@@ -87,7 +87,7 @@ begin
   // PERFORM THE TOGGLE
   DoNominate := not DoNominate;
   // Class to nominate/unnominate safely
-  nom := TSCMNom.CreateWithConnection(self, SCM.scmConnection);
+  nom := TSCMNom.CreateWithConnection(self, SCM2.scmConnection);
   if (DoNominate) then nom.NominateMember(MemberID, EventID)
   else
     // Returns true if member was unNominated.
@@ -97,9 +97,9 @@ begin
   nom.Free;
   // CLOSE, SET new PARMS and OPEN the database used by the controllist.
   // This is needed for images in event Nominate_ControlListBeforeDrawItem
-  SCM.Nominate_UpdateControlList(uSession.PK, MemberID);
+  SCM2.Nominate_UpdateControlList(uSession.PK, MemberID);
   // locate to the last selected ControlList record.
-  // SCM.Nominate_LocateEventNum(gridEvent.DataSet, EventNum);
+  // SCM2.Nominate_LocateEventNum(gridEvent.DataSet, EventNum);
   // paint the member tomatoe red in the nominate_grid
   Nominate_Grid.Invalidate;
 

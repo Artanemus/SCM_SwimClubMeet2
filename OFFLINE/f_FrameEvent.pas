@@ -491,7 +491,7 @@ begin
   if not AssertCORE then exit;
   CORE.dsEvent.DataSet.DisableControls;
 	EventID := uEvent.PK;
-  dlg := TAutoSchedule.CreateWithConnection(self, SCM.scmConnection);
+  dlg := TAutoSchedule.CreateWithConnection(self, SCM2.scmConnection);
 	dlg.SessionID := uSession.PK;
   rtnValue := dlg.ShowModal;
   dlg.Free;

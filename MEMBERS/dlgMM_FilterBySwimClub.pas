@@ -1,4 +1,4 @@
-unit dlgFilterBySwimClub;
+unit dlgMM_FilterBySwimClub;
 
 interface
 
@@ -18,6 +18,9 @@ uses
   Vcl.ExtCtrls,
   Vcl.CheckLst,
   Vcl.DBCtrls,
+  Vcl.WinXCtrls,
+  Vcl.Grids,
+
   FireDAC.Stan.Intf,
   FireDAC.Stan.Option,
   FireDAC.Stan.Param,
@@ -29,12 +32,15 @@ uses
   FireDAC.DApt,
   FireDAC.Comp.DataSet,
   FireDAC.Comp.Client,
-  uDefines, dmSCM2, dmIMG, Vcl.WinXCtrls, AdvUtil, Vcl.Grids, AdvObj, BaseGrid,
-  AdvGrid, DBAdvGrid;
 
+  AdvObj, BaseGrid,
+  AdvGrid, DBAdvGrid, AdvUtil,
+
+  uDefines,
+  dmSCM2, dmIMG;
 type
 
-  TFilterBySwimClub = class(TForm)
+  TMM_FilterBySwimClub = class(TForm)
     btnOk: TButton;
     dsSwimClub: TDataSource;
     qrySwimClub: TFDQuery;
@@ -48,6 +54,7 @@ type
     qrySwimClubLogoImg: TBlobField;
     qrySwimClubIsSelected: TIntegerField;
     qrySwimClubNickName: TWideStringField;
+    qry1: TFDQuery;
     procedure btnOkClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -58,18 +65,18 @@ type
   end;
 
 var
-  FilterBySwimClub: TFilterBySwimClub;
+  MM_FilterBySwimClub: TMM_FilterBySwimClub;
 
 implementation
 
 {$R *.dfm}
 
-procedure TFilterBySwimClub.btnOkClick(Sender: TObject);
+procedure TMM_FilterBySwimClub.btnOkClick(Sender: TObject);
 begin
     ModalResult := mrOK
 end;
 
-procedure TFilterBySwimClub.FormCreate(Sender: TObject);
+procedure TMM_FilterBySwimClub.FormCreate(Sender: TObject);
 begin
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
   begin
@@ -81,7 +88,7 @@ begin
     Close();
 end;
 
-procedure TFilterBySwimClub.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TMM_FilterBySwimClub.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if Key = VK_ESCAPE then
@@ -90,7 +97,7 @@ begin
   end;
 end;
 
-procedure TFilterBySwimClub.GridClickCell(Sender: TObject; ARow, ACol: Integer);
+procedure TMM_FilterBySwimClub.GridClickCell(Sender: TObject; ARow, ACol: Integer);
 var
   SelectState: integer;
 begin
@@ -103,7 +110,7 @@ begin
   end;
 end;
 
-procedure TFilterBySwimClub.GridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
+procedure TMM_FilterBySwimClub.GridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
     TRect; State: TGridDrawState);
 begin
   If not Assigned(IMG) then exit;
@@ -127,7 +134,7 @@ begin
   end;
 end;
 
-procedure TFilterBySwimClub.qrySwimClubAfterOpen(DataSet: TDataSet);
+procedure TMM_FilterBySwimClub.qrySwimClubAfterOpen(DataSet: TDataSet);
 begin
   // Iterate HERE, once, immediately after loading data
   DataSet.First;

@@ -1,4 +1,4 @@
-unit frmManagemember_Stats;
+unit frmMM_Stats;
 
 interface
 
@@ -90,7 +90,6 @@ type
   private
     fMemberID: integer;
     fMemberChartDataPoints: Integer;
-    fConnection: TFDConnection;
     fIsActive: Boolean;
     procedure ActivateMMS;
     procedure ChartReport();
@@ -117,14 +116,12 @@ var
 implementation
 
 uses
-  rptMemberChart, dlgMemberPicker;
+  rptMM_Chart, dlgMemberPicker;
 
 {$R *.dfm}
 
 procedure TManageMember_Stats.FormCreate(Sender: TObject);
 begin
-  fConnection := nil;
-  fMemberID := 0;
   if Assigned(Settings) then
     fMemberChartDataPoints := Settings.MemberChartDataPoints
   else

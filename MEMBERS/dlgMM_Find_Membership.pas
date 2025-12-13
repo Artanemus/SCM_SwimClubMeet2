@@ -1,4 +1,4 @@
-unit dlgFindMember_Membership;
+unit dlgMM_Find_Membership;
 
 interface
 
@@ -74,12 +74,12 @@ begin
   begin
     SQL := '''
       SELECT MemberID
-      FROM dbo.Member
+      FROM SwimClubMeet2.dbo.Member
       WHERE MembershipNum = :ID
       ''';
     try
       begin
-        v := SCM2.scmConnection.ExecSQL(SQL, [MembershipNum]);
+        v := SCM2.scmConnection.ExecSQLScalar(SQL, [MembershipNum]);
         if not VarIsClear(v) then
         begin
           fMemberID := v;
@@ -88,7 +88,7 @@ begin
       end;
     except
       on E: Exception do
-        lblErrMsg.Caption := 'SCM DB access error.';
+        lblErrMsg.Caption := 'SCM2 DB access error.';
     end;
   end;
 end;

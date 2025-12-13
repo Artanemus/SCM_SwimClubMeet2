@@ -722,7 +722,6 @@ object MemberDetail: TMemberDetail
   end
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'MemberID'
     Connection = FDConnection1
     SQL.Strings = (
@@ -795,7 +794,6 @@ object MemberDetail: TMemberDetail
   end
   object qryMemberContacts: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'ContactNumID'
     Connection = FDConnection1
     SQL.Strings = (
@@ -843,16 +841,14 @@ object MemberDetail: TMemberDetail
   end
   object FDConnection1: TFDConnection
     Params.Strings = (
-      'ConnectionDef=MSSQL_SwimClubMeet')
+      'ConnectionDef=MSSQL_SwimClubMeet2')
     ConnectedStoredUsage = [auDesignTime]
-    Connected = True
     LoginPrompt = False
     Left = 64
     Top = 16
   end
   object qryPB: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'MemberID'
     Connection = FDConnection1
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
@@ -958,7 +954,6 @@ object MemberDetail: TMemberDetail
   end
   object qryHistory: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     Connection = FDConnection1
     SQL.Strings = (
       'USE SwimClubMeet;'

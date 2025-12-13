@@ -14,6 +14,7 @@ object ManageMember: TManageMember
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   TextHeight = 19
   object Panel1: TPanel
     Left = 0
@@ -40,11 +41,11 @@ object ManageMember: TManageMember
     object DBTextFullName: TDBText
       Left = 21
       Top = 6
-      Width = 154
+      Width = 151
       Height = 25
       AutoSize = True
       DataField = 'FName'
-      DataSource = ManageMemberData.dsMember
+      DataSource = MM_CORE.dsMember
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -21
@@ -84,25 +85,26 @@ object ManageMember: TManageMember
       TabOrder = 2
       OnClick = btnGotoMembershipClick
     end
-    object btnFilter: TButton
+    object btnFilterByParam: TButton
       Left = 727
       Top = 9
       Width = 142
       Height = 34
       Action = actnFilter
+      Caption = 'Filter Param'
       ImageIndex = 8
       ImageMargins.Left = 4
       ImageMargins.Right = -16
       Images = BTNImageList32x32
       TabOrder = 3
     end
-    object btnFilterClub: TButton
-      Left = 536
+    object btnFilterBySwimClub: TButton
+      Left = 552
       Top = 9
-      Width = 185
+      Width = 169
       Height = 34
       Action = actnFilterClub
-      Caption = 'Filter by Swim Club'
+      Caption = 'Filter Swim Club'
       ImageIndex = 10
       ImageMargins.Left = 4
       ImageMargins.Right = -16
@@ -124,7 +126,7 @@ object ManageMember: TManageMember
       Top = 9
       Width = 648
       Height = 47
-      DataSource = ManageMemberData.dsMember
+      DataSource = MM_CORE.dsMember
       VisibleButtons = [nbFirst, nbPrior, nbNext, nbLast, nbInsert, nbDelete, nbPost, nbCancel, nbRefresh]
       ParentShowHint = False
       ConfirmDelete = False
@@ -133,12 +135,12 @@ object ManageMember: TManageMember
       BeforeAction = DBNavigator1BeforeAction
     end
   end
-  object PageControl1: TPageControl
+  object PageControl: TPageControl
     Left = 0
     Top = 76
     Width = 1370
     Height = 659
-    ActivePage = TabSheet1
+    ActivePage = TabSheet2
     Align = alClient
     MultiLine = True
     TabHeight = 40
@@ -184,7 +186,7 @@ object ManageMember: TManageMember
         end
         object Label2: TLabel
           Left = 42
-          Top = 143
+          Top = 167
           Width = 96
           Height = 19
           Alignment = taRightJustify
@@ -246,7 +248,7 @@ object ManageMember: TManageMember
           Width = 177
           Height = 30
           DataField = 'MemberID'
-          DataSource = ManageMemberData.dsMember
+          DataSource = MM_CORE.dsMember
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -19
@@ -351,13 +353,27 @@ object ManageMember: TManageMember
           OnClick = btnInfoContactClick
           OnMouseLeave = btnInfoMouseLeave
         end
+        object lblMiddleName: TLabel
+          Left = 32
+          Top = 137
+          Width = 106
+          Height = 19
+          Alignment = taRightJustify
+          Caption = 'Middle Name'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Tahoma'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
         object DBlucboGender: TDBLookupComboBox
           Left = 144
           Top = 344
           Width = 148
           Height = 27
           DataField = 'GenderID'
-          DataSource = ManageMemberData.dsMember
+          DataSource = MM_CORE.dsMember
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -16
@@ -365,7 +381,7 @@ object ManageMember: TManageMember
           Font.Style = []
           KeyField = 'GenderID'
           ListField = 'Caption'
-          ListSource = ManageMemberData.dsGender
+          ListSource = MM_CORE.dsGender
           NullValueKey = 32776
           ParentFont = False
           TabOrder = 5
@@ -376,16 +392,16 @@ object ManageMember: TManageMember
           Width = 292
           Height = 27
           DataField = 'FirstName'
-          DataSource = ManageMemberData.dsMember
+          DataSource = MM_CORE.dsMember
           TabOrder = 0
         end
         object DBedtLastName: TDBEdit
           Left = 144
-          Top = 140
+          Top = 164
           Width = 292
           Height = 27
           DataField = 'LastName'
-          DataSource = ManageMemberData.dsMember
+          DataSource = MM_CORE.dsMember
           TabOrder = 1
         end
         object DBedtMembershipNum: TDBEdit
@@ -394,7 +410,7 @@ object ManageMember: TManageMember
           Width = 70
           Height = 27
           DataField = 'MembershipNum'
-          DataSource = ManageMemberData.dsMember
+          DataSource = MM_CORE.dsMember
           TabOrder = 11
         end
         object DBchkIsActive: TDBCheckBox
@@ -404,7 +420,7 @@ object ManageMember: TManageMember
           Height = 17
           Caption = 'Is Active - Indicates full membership. '
           DataField = 'IsActive'
-          DataSource = ManageMemberData.dsMember
+          DataSource = MM_CORE.dsMember
           TabOrder = 8
         end
         object DBEdtEmail: TDBEdit
@@ -413,7 +429,7 @@ object ManageMember: TManageMember
           Width = 407
           Height = 27
           DataField = 'Email'
-          DataSource = ManageMemberData.dsMember
+          DataSource = MM_CORE.dsMember
           TabOrder = 12
         end
         object DBchkIsSwimmer: TDBCheckBox
@@ -423,7 +439,7 @@ object ManageMember: TManageMember
           Height = 17
           Caption = 'Is Swimmer - Participates in events.'
           DataField = 'IsSwimmer'
-          DataSource = ManageMemberData.dsMember
+          DataSource = MM_CORE.dsMember
           TabOrder = 9
         end
         object DBchkIsArchived: TDBCheckBox
@@ -433,7 +449,7 @@ object ManageMember: TManageMember
           Height = 17
           Caption = 'Is Archived - Retired from club.'
           DataField = 'IsArchived'
-          DataSource = ManageMemberData.dsMember
+          DataSource = MM_CORE.dsMember
           TabOrder = 7
         end
         object btnClearGender: TButton
@@ -455,7 +471,7 @@ object ManageMember: TManageMember
           Width = 184
           Height = 27
           DataField = 'MembershipStr'
-          DataSource = ManageMemberData.dsMember
+          DataSource = MM_CORE.dsMember
           TabOrder = 10
         end
         object btnClearDOB: TButton
@@ -492,7 +508,7 @@ object ManageMember: TManageMember
           Width = 140
           Height = 27
           DataField = 'DOB'
-          DataSource = ManageMemberData.dsMember
+          DataSource = MM_CORE.dsMember
           TabOrder = 2
         end
         object ListBox1: TListBox
@@ -509,7 +525,7 @@ object ManageMember: TManageMember
           Top = 246
           Width = 60
           Height = 176
-          DataSource = ManageMemberData.dsContactNum
+          DataSource = MM_CORE.dsContactNum
           VisibleButtons = [nbInsert, nbDelete, nbPost, nbCancel]
           Hints.Strings = (
             'First record'
@@ -528,6 +544,15 @@ object ManageMember: TManageMember
           ParentShowHint = False
           ShowHint = True
           TabOrder = 14
+        end
+        object DBedtMiddleName: TDBEdit
+          Left = 144
+          Top = 134
+          Width = 292
+          Height = 27
+          DataField = 'MiddleName'
+          DataSource = MM_CORE.dsMember
+          TabOrder = 15
         end
       end
     end
@@ -593,8 +618,8 @@ object ManageMember: TManageMember
         Layout = tlCenter
       end
       object Label15: TLabel
-        Left = 501
-        Top = 326
+        Left = 54
+        Top = 305
         Width = 21
         Height = 124
         Alignment = taRightJustify
@@ -608,8 +633,8 @@ object ManageMember: TManageMember
         ParentFont = False
       end
       object lblParaCodes: TLabel
-        Left = 54
-        Top = 326
+        Left = 501
+        Top = 305
         Width = 21
         Height = 159
         Alignment = taRightJustify
@@ -624,8 +649,8 @@ object ManageMember: TManageMember
         Layout = tlCenter
       end
       object vimgParaCodesInfo: TVirtualImage
-        Left = 408
-        Top = 295
+        Left = 1209
+        Top = 303
         Width = 25
         Height = 26
         ImageCollection = ImageCollectMember
@@ -641,7 +666,7 @@ object ManageMember: TManageMember
         Top = 7
         Width = 675
         Height = 282
-        DataSource = ManageMemberData.dsMemberRoleLnk
+        DataSource = MM_CORE.dsMemberRoleLnk
         DefaultDrawing = False
         Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
         TabOrder = 2
@@ -703,7 +728,7 @@ object ManageMember: TManageMember
         Top = 41
         Width = 60
         Height = 176
-        DataSource = ManageMemberData.dsMemberRoleLnk
+        DataSource = MM_CORE.dsMemberRoleLnk
         VisibleButtons = [nbInsert, nbDelete, nbPost, nbCancel]
         Hints.Strings = (
           'First record'
@@ -728,7 +753,7 @@ object ManageMember: TManageMember
         Top = 42
         Width = 60
         Height = 176
-        DataSource = ManageMemberData.dsContactNum
+        DataSource = MM_CORE.dsContactNum
         VisibleButtons = [nbInsert, nbDelete, nbPost, nbCancel]
         Hints.Strings = (
           'First record'
@@ -753,7 +778,7 @@ object ManageMember: TManageMember
         Top = 10
         Width = 321
         Height = 279
-        DataSource = ManageMemberData.dsContactNum
+        DataSource = MM_CORE.dsContactNum
         Options = [dgEditing, dgAlwaysShowEditor, dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
         TabOrder = 0
         TitleFont.Charset = DEFAULT_CHARSET
@@ -779,18 +804,18 @@ object ManageMember: TManageMember
           end>
       end
       object DBMemo1: TDBMemo
-        Left = 528
-        Top = 327
+        Left = 81
+        Top = 303
         Width = 321
         Height = 266
         DataField = 'TAGS'
-        DataSource = ManageMemberData.dsMember
+        DataSource = MM_CORE.dsMember
         TabOrder = 4
       end
       object dbgParaCode: TDBGrid
-        Left = 82
-        Top = 327
-        Width = 320
+        Left = 528
+        Top = 305
+        Width = 675
         Height = 266
         TabOrder = 5
         TitleFont.Charset = DEFAULT_CHARSET
@@ -800,11 +825,11 @@ object ManageMember: TManageMember
         TitleFont.Style = []
       end
       object navParaCodes: TDBNavigator
-        Left = 408
-        Top = 327
+        Left = 1209
+        Top = 335
         Width = 60
         Height = 176
-        DataSource = ManageMemberData.dsContactNum
+        DataSource = MM_CORE.dsContactNum
         VisibleButtons = [nbInsert, nbDelete, nbPost, nbCancel]
         Hints.Strings = (
           'First record'
@@ -836,18 +861,18 @@ object ManageMember: TManageMember
         Cursor = crDefault
         Align = alClient
         Color = clWhite
-        ColCount = 12
+        ColCount = 13
         DefaultRowHeight = 24
         DrawingStyle = gdsClassic
         FixedColor = clWhite
-        RowCount = 2
+        RowCount = 101
         FixedRows = 1
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -16
         Font.Name = 'Tahoma'
         Font.Style = []
-        Options = [goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
+        Options = [goVertLine, goHorzLine, goRangeSelect, goEditing, goAlwaysShowEditor, goFixedRowDefAlign]
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
@@ -1014,6 +1039,7 @@ object ManageMember: TManageMember
             HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
+            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clWindowText
@@ -1047,6 +1073,34 @@ object ManageMember: TManageMember
             PrintFont.Name = 'Tahoma'
             PrintFont.Style = []
             Width = 110
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'MiddleName'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Tahoma'
+            Font.Style = []
+            Header = 'Middle'
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Tahoma'
+            HeaderFont.Style = []
+            HeaderAlignment = taCenter
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Tahoma'
+            PrintFont.Style = []
+            Width = 64
           end
           item
             Borders = []
@@ -1090,11 +1144,13 @@ object ManageMember: TManageMember
             Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
+            Header = 'Gender'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
             HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
+            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clWindowText
@@ -1299,7 +1355,7 @@ object ManageMember: TManageMember
             PrintFont.Style = []
             Width = 105
           end>
-        DataSource = ManageMemberData.dsMember
+        DataSource = MM_CORE.dsMember
         InvalidPicture.Data = {
           055449636F6E0000010001002020200000000000A81000001600000028000000
           2000000040000000010020000000000000100000000000000000000000000000
@@ -1442,6 +1498,7 @@ object ManageMember: TManageMember
           20
           38
           110
+          64
           130
           74
           102
@@ -1452,6 +1509,105 @@ object ManageMember: TManageMember
           73
           105)
         RowHeights = (
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
           24
           24)
       end
@@ -1502,7 +1658,6 @@ object ManageMember: TManageMember
     Top = 0
     Width = 1370
     Height = 27
-    UseSystemFont = False
     ActionManager = ActnManagerMember
     Caption = 'Member Menu Bar'
     Color = clMenuBar
@@ -1511,8 +1666,8 @@ object ManageMember: TManageMember
     ColorMap.BtnSelectedFont = clBlack
     ColorMap.UnusedColor = clWhite
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
-    Font.Height = -12
+    Font.Color = clWindowText
+    Font.Height = -13
     Font.Name = 'Segoe UI'
     Font.Style = []
     HorzMargin = 10
@@ -1611,6 +1766,7 @@ object ManageMember: TManageMember
       ImageIndex = 4
       ImageName = 'filter_alt'
       OnExecute = actnFilterExecute
+      OnUpdate = actnFilterUpdate
     end
     object actnFilterClub: TAction
       Caption = 'Swim Club'
@@ -2107,8 +2263,8 @@ object ManageMember: TManageMember
               42A70000000049454E44AE426082}
           end>
       end>
-    Left = 496
-    Top = 472
+    Left = 184
+    Top = 616
   end
   object VirtlImageListMember: TVirtualImageList
     Images = <

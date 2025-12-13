@@ -130,7 +130,7 @@ begin
   ab_ExcludeOutsideLanes := false;
   ab_SeperateGender := false;
   ab_GroupByIndx := 0; // 0=none, 1=Entrant's Age, 2-Swimming category, 3=Division.
-  ab_SeedMethodIndx := 0; // 0=SCM Method 1=Circle Seeding
+  ab_SeedMethodIndx := 0; // 0=SCM2 Method 1=Circle Seeding
   ab_SeedDepth := 3; // Default.
 
   EnableDQcodes := false; // use simple DQ method. (not FINA Codes).

@@ -1,4 +1,4 @@
-unit dmManageMemberData;
+unit dmMM_CORE;
 
 interface
 
@@ -20,48 +20,18 @@ uses
   ;
 
 type
-  TManageMemberData = class(TDataModule)
+  TMM_CORE = class(TDataModule)
     dsContactNum: TDataSource;
-    dsFindMember: TDataSource;
     dsGender: TDataSource;
     dsluSwimClub: TDataSource;
     dsMember: TDataSource;
     dsMemberRoleLnk: TDataSource;
-    dsSwimClub: TDataSource;
     qryContactNum: TFDQuery;
     qryContactNumContactNumID: TFDAutoIncField;
     qryContactNumContactNumTypeID: TIntegerField;
     qryContactNumlu: TStringField;
     qryContactNumMemberID: TIntegerField;
     qryContactNumNumber: TWideStringField;
-    qryFindMember: TFDQuery;
-    qryFindMemberAge: TIntegerField;
-    qryFindMembercGender: TWideStringField;
-    qryFindMemberdtDOB: TWideStringField;
-    qryFindMemberFirstName: TWideStringField;
-    qryFindMemberFName: TWideStringField;
-    qryFindMemberGenderID: TIntegerField;
-    qryFindMemberIsActive: TBooleanField;
-    qryFindMemberIsSwimmer: TBooleanField;
-    qryFindMemberLastName: TWideStringField;
-    qryFindMemberMemberID: TFDAutoIncField;
-    qryFindMemberMembershipNum: TIntegerField;
-    qryMember: TFDQuery;
-    qryMemberArchivedOn: TSQLTimeStampField;
-    qryMemberCreatedOn: TSQLTimeStampField;
-    qryMemberDOB: TSQLTimeStampField;
-    qryMemberEmail: TWideStringField;
-    qryMemberFirstName: TWideStringField;
-    qryMemberFName: TWideStringField;
-    qryMemberGenderID: TIntegerField;
-    qryMemberIsActive: TBooleanField;
-    qryMemberIsArchived: TBooleanField;
-    qryMemberIsSwimmer: TBooleanField;
-    qryMemberLastName: TWideStringField;
-    qryMemberluGender: TStringField;
-    qryMemberMemberID: TFDAutoIncField;
-    qryMemberMembershipNum: TIntegerField;
-    qryMemberMembershipStr: TWideStringField;
     qryMemberRoleLnk: TFDQuery;
     qryMemberRoleLnkCreatedOn: TSQLTimeStampField;
     qryMemberRoleLnkElectedOn: TSQLTimeStampField;
@@ -71,8 +41,6 @@ type
     qryMemberRoleLnkMemberID: TIntegerField;
     qryMemberRoleLnkMemberRoleID: TIntegerField;
     qryMemberRoleLnkRetiredOn: TSQLTimeStampField;
-    qryMemberTAGS: TWideMemoField;
-    qrySwimClub: TFDQuery;
     tblContactNumType: TFDTable;
     tblContactNumTypeCaption: TWideStringField;
     tblContactNumTypeContactNumTypeID: TFDAutoIncField;
@@ -81,17 +49,31 @@ type
     tblMemberRole: TFDTable;
     tblStroke: TFDTable;
     tblSwimClub: TFDTable;
-    qryMemberMiddleName: TWideStringField;
+    qMember: TFDQuery;
+    qMemberMemberID: TFDAutoIncField;
+    qMemberMembershipNum: TIntegerField;
+    qMemberMembershipStr: TWideStringField;
+    qMemberFirstName: TWideStringField;
+    qMemberMiddleName: TWideStringField;
+    qMemberLastName: TWideStringField;
+    qMemberDOB: TSQLTimeStampField;
+    qMemberIsActive: TBooleanField;
+    qMemberIsSwimmer: TBooleanField;
+    qMemberIsArchived: TBooleanField;
+    qMemberEmail: TWideStringField;
+    qMemberGenderID: TIntegerField;
+    qMemberFName: TWideStringField;
+    qMemberCreatedOn: TSQLTimeStampField;
+    qMemberArchivedOn: TSQLTimeStampField;
+    qMemberTAGS: TWideMemoField;
+    qMemberluGender: TStringField;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
-    procedure qryMemberAfterInsert(DataSet: TDataSet);
-    procedure qryMemberAfterPost(DataSet: TDataSet);
-    procedure qryMemberAfterScroll(DataSet: TDataSet);
-    procedure qryMemberBeforeDelete(DataSet: TDataSet);
-    procedure qryMemberBeforeScroll(DataSet: TDataSet);
-    procedure qryMemberDOBGetText(Sender: TField; var Text: string; DisplayText:
+    procedure qDEPRECIATEDMemberOLDBeforeDelete(DataSet: TDataSet);
+    procedure qMemberIsActiveGetText(Sender: TField; var Text: string; DisplayText:
         Boolean);
-    procedure qryMemberDOBSetText(Sender: TField; const Text: string);
+    procedure qMemberIsActiveSetText(Sender: TField; const Text: string);
+    procedure qMemberNewRecord(DataSet: TDataSet);
     procedure qryMemberMETADATAGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
     procedure qryMemberMETADATASetText(Sender: TField; const Text: string);
@@ -104,7 +86,7 @@ type
   private
     fHandle: HWND;
     fIsActive: Boolean;
-    fRecordCount: Integer;
+    function GetRecCount: integer;
   protected
     procedure WndProc(var wndMsg: TMessage); virtual;
   public
@@ -114,15 +96,18 @@ type
     function LocateMember(MemberID: Integer): Boolean;
     procedure UpdateDOB(DOB: TDateTime);
     procedure UpdateElectedOn(aDate: TDate);
-    procedure UpdateMember(hideArchived, hideInactive, hideNonSwimmer: Boolean);
+    procedure UpdateFilterByParam(hideArchived, hideInactive, hideNonSwimmer:
+        Boolean);
     procedure UpdateRetiredOn(aDate: TDate);
+    procedure ClearDOB();
+
     property Handle: HWND read fHandle;
     property IsActive: boolean read FIsActive write FIsActive;
-    property RecordCount: Integer read fRecordCount;
+    property RecCount: integer read GetRecCount;
   end;
 
 var
-  ManageMemberData: TManageMemberData;
+  MM_CORE: TMM_CORE;
 
 implementation
 
@@ -133,17 +118,17 @@ uses
   System.IOUtils, IniFiles, SCMUtils,
   vcl.Dialogs, System.UITypes, vcl.Forms, System.DateUtils;
 
-procedure TManageMemberData.ActivateMMD;
+procedure TMM_CORE.ActivateMMD;
 begin
   fIsActive := false;
+
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
   begin
 
-    qryMember.Connection := SCM2.scmConnection;
+    qMember.Connection := SCM2.scmConnection;
     qryContactNum.Connection := SCM2.scmConnection;
     qryMemberRoleLnk.Connection := SCM2.scmConnection;
-
-    // prepare lookup tables.
+    // lookup tables.
     tblStroke.Connection := SCM2.scmConnection;
     tblDistance.Connection := SCM2.scmConnection;
     tblGender.Connection := SCM2.scmConnection;
@@ -151,9 +136,10 @@ begin
     tblMemberRole.Connection := SCM2.scmConnection;
     tblSwimClub.Connection := SCM2.scmConnection;
 
-        qryMember.DisableControls;
-        qryContactNum.DisableControls;
-        qryMemberRoleLnk.DisableControls;
+
+    qryContactNum.DisableControls;
+    qryMemberRoleLnk.DisableControls;
+    qMember.DisableControls;
     try
       try
         // Lookup tables...
@@ -163,32 +149,20 @@ begin
         tblContactNumType.Open;
         tblMemberRole.Open;
 
-        if Assigned(Settings) then
+        qMember.Open;
+        if qMember.Active then
         begin
-          qryMember.ParamByName('HIDE_INACTIVE').AsBoolean := Settings.mm_HideInActive;
-          qryMember.ParamByName('HIDE_ARCHIVED').AsBoolean := Settings.mm_HideArchived;
-          qryMember.ParamByName('HIDE_NONSWIMMERS').AsBoolean := Settings.mm_HideNonSwimmer;
-        end
-        else
-        begin
-          qryMember.ParamByName('HIDE_INACTIVE').AsBoolean := false;
-          qryMember.ParamByName('HIDE_ARCHIVED').AsBoolean := false;
-          qryMember.ParamByName('HIDE_NONSWIMMERS').AsBoolean := false;
+          qryContactNum.Open;
+          qryMemberRoleLnk.Open;
+          fIsActive := True;
         end;
-        qryMember.Prepare;
-        qryMember.Open;
-        fRecordCount := qryMember.RecordCount;
-        qryContactNum.Open;
-        qryMemberRoleLnk.Open;
-
-        fIsActive := True;
       except
         on E: EFDDBEngineException do
           SCM2.FDGUIxErrorDialog.Execute(E);
       end;
     finally
       begin
-        qryMember.EnableControls;
+        qMember.EnableControls;
         qryContactNum.EnableControls;
         qryMemberRoleLnk.EnableControls;
       end;
@@ -196,19 +170,38 @@ begin
   end;
 end;
 
+procedure TMM_CORE.ClearDOB;
+begin
+  if not fIsActive then exit;
+  if qMember.IsEmpty then exit;
+  qMember.CheckBrowseMode;
+  qMember.Edit;
+  qMember.FieldByName('DOB').Clear;
+  qMember.Post;
+end;
 
-procedure TManageMemberData.DataModuleCreate(Sender: TObject);
+procedure TMM_CORE.DataModuleCreate(Sender: TObject);
 begin
   FIsActive := false;
+  qMember.Connection := nil;
+  qryContactNum.Connection := nil;
+  qryMemberRoleLnk.Connection := nil;
+  tblStroke.Connection := nil;
+  tblDistance.Connection := nil;
+  tblGender.Connection := nil;
+  tblContactNumType.Connection := nil;
+  tblMemberRole.Connection := nil;
+  tblSwimClub.Connection := nil;
   fHandle := AllocateHWnd(WndProc);
 end;
 
-procedure TManageMemberData.DataModuleDestroy(Sender: TObject);
+procedure TMM_CORE.DataModuleDestroy(Sender: TObject);
 begin
+  DeActivateMMD;
   DeallocateHWND(fHandle);
 end;
 
-procedure TManageMemberData.DeActivateMMD;
+procedure TMM_CORE.DeActivateMMD;
 begin
   try
     tblStroke.Close;
@@ -218,36 +211,42 @@ begin
     tblMemberRole.Close;
     qryContactNum.Close;
     qryMemberRoleLnk.Close;
-    qryMember.Close;
+    qMember.Close;
   finally
     fIsActive := false;
   end;
 end;
 
-function TManageMemberData.GetMemberID: integer;
+function TMM_CORE.GetMemberID: integer;
 begin
   result := 0;
-  if dsMember.DataSet.Active then
-    if not dsMember.DataSet.IsEmpty then
-        result := dsMember.DataSet.FieldByName('MemberID').AsInteger;
+  if qMember.Active then
+    if not qMember.IsEmpty then
+        result := qMember.FieldByName('MemberID').AsInteger;
 end;
 
+function TMM_CORE.GetRecCount: integer;
+begin
+  result := 0;
+  if qMember.Active then
+    result := qMember.RecordCount;
+end;
 
-function TManageMemberData.LocateMember(MemberID: Integer): Boolean;
+function TMM_CORE.LocateMember(MemberID: Integer): Boolean;
 var
   SearchOptions: TLocateOptions;
 begin
   result := false;
   SearchOptions := [loPartialKey];
 
-  qryMember.DisableControls;
+  qMember.DisableControls;
   qryContactNum.DisableControls;
   qryMemberRoleLnk.DisableControls;
 
   try
     try
       begin
-        result := qryMember.Locate('MemberID', MemberID, SearchOptions);
+        result := qMember.Locate('MemberID', MemberID, SearchOptions);
         if result then
         begin
           qryContactNum.ApplyMaster;
@@ -259,59 +258,29 @@ begin
         // lblErrMsg.Caption := 'SCM2 DB access error.';
     end;
   finally
-    qryMember.EnableControls;
+    qMember.EnableControls;
     qryContactNum.EnableControls;
     qryMemberRoleLnk.EnableControls;
 
   end;
 end;
 
-
-procedure TManageMemberData.qryMemberAfterInsert(DataSet: TDataSet);
-var
-  fld: TField;
-begin
-  fld := DataSet.FieldByName('IsArchived');
-  if (fld.IsNull) then
-  begin
-    fld.AsBoolean := false;
-  end;
-  fld := DataSet.FieldByName('IsActive');
-  if (fld.IsNull) then
-  begin
-    fld.AsBoolean := True;
-  end;
-  fld := DataSet.FieldByName('IsSwimmer');
-  if (fld.IsNull) then
-  begin
-    fld.AsBoolean := True;
-  end;
-
-end;
-
-procedure TManageMemberData.qryMemberAfterPost(DataSet: TDataSet);
-begin
-{TODO -oBSA -cV2 : CHECK}
-
   // As there is a calculation field (FNAME) in this query - the call to
   // refresh ensures that the main forms header banner will display the new
   // member's name.
   // ie. frmManageMember.DBTextFullName uses field qrMember.FNAME.
-  qryMember.Refresh;
-  if Owner is TForm then
+//  qryMember.Refresh;
+//  if Owner is TForm then
 //     Updates the display of the member's age.
-    PostMessage(TForm(Owner).Handle, SCM_MEMBER_AFTERPOST, 0, 0);
-end;
 
-procedure TManageMemberData.qryMemberAfterScroll(DataSet: TDataSet);
-begin
-  qryMember.Refresh;
-  // Updates the display of the member's age.
-  if Owner is TForm then
-    PostMessage(TForm(Owner).Handle, SCM_MEMBER_SCROLL, 0, 0);
-end;
+//    PostMessage(TForm(Owner).Handle, SCM_MEMBER_AFTERPOST, 0, 0);
+//    qryMember.Refresh;
+    // Updates the display of the member's age.
+//    if Owner is TForm then
+//      PostMessage(TForm(Owner).Handle, SCM_MEMBER_SCROLL, 0, 0);procedure TMM_CORE.qDEPRECIATEDMemberOLDAfterPost(DataSet: TDataSet);
 
-procedure TManageMemberData.qryMemberBeforeDelete(DataSet: TDataSet);
+
+procedure TMM_CORE.qDEPRECIATEDMemberOLDBeforeDelete(DataSet: TDataSet);
 var
   SQL: string;
   MemberID: Integer;
@@ -416,24 +385,19 @@ begin
   end;
 end;
 
-procedure TManageMemberData.qryMemberBeforeScroll(DataSet: TDataSet);
-begin
-  if (DataSet.State = dsEdit) or (DataSet.State = dsInsert) then
-    DataSet.CheckBrowseMode; // auto-commit changes ...
-end;
-
-procedure TManageMemberData.qryMemberDOBGetText(Sender: TField;
-  var Text: string; DisplayText: Boolean);
+procedure TMM_CORE.qMemberIsActiveGetText(Sender: TField; var Text: string;
+    DisplayText: Boolean);
 var
   LFormatSettings: TFormatSettings;
 begin
   LFormatSettings := TFormatSettings.Create; // Use the system locale
-  if (Sender.IsNull) or (DateOf(Sender.AsDateTime) = 0) then Text := ''
-  else Text := FormatDateTime('ddddd', Sender.AsDateTime, LFormatSettings);
+  if (Sender.IsNull) or (DateOf(Sender.AsDateTime) = 0) then
+    Text := ''
+  else
+    Text := FormatDateTime('ddddd', Sender.AsDateTime, LFormatSettings);
 end;
 
-procedure TManageMemberData.qryMemberDOBSetText(Sender: TField;
-  const Text: string);
+procedure TMM_CORE.qMemberIsActiveSetText(Sender: TField; const Text: string);
 var
   dt: TDateTime;
   LFormatSettings: TFormatSettings;
@@ -454,19 +418,31 @@ begin
   end;
 end;
 
-procedure TManageMemberData.qryMemberMETADATAGetText(Sender: TField;
+procedure TMM_CORE.qMemberNewRecord(DataSet: TDataSet);
+var
+  fld: TField;
+begin
+  fld := DataSet.FieldByName('IsArchived');
+    if Assigned(fld) then fld.AsBoolean := false;
+  fld := DataSet.FieldByName('IsActive');
+    if Assigned(fld) then fld.AsBoolean := true;
+  fld := DataSet.FieldByName('IsSwimmer');
+    if Assigned(fld) then fld.AsBoolean := true;
+end;
+
+procedure TMM_CORE.qryMemberMETADATAGetText(Sender: TField;
   var Text: string; DisplayText: Boolean);
 begin
   Text := Sender.AsString;
 end;
 
-procedure TManageMemberData.qryMemberMETADATASetText(Sender: TField;
+procedure TMM_CORE.qryMemberMETADATASetText(Sender: TField;
   const Text: string);
 begin
   Sender.AsString := Text;
 end;
 
-procedure TManageMemberData.qryMemberRoleLnkBeforePost(DataSet: TDataSet);
+procedure TMM_CORE.qryMemberRoleLnkBeforePost(DataSet: TDataSet);
 var
   // SQL: string;
   // v: variant;
@@ -484,7 +460,7 @@ begin
     // test for duplicity ...
     SQL := 'SELECT COUNT(MemberRoleID) FROM dbo.MemberRoleLink WHERE MemberRoleID = '
     + IntToStr(fld.AsInteger);
-    v := FConnection.ExecSQLScalar(SQL);
+    v := SCM2.scmConnection.ExecSQLScalar(SQL);
     if (v <> 0) then
     begin
     // raise Exception.Create('A member cannot have the same role twice.');
@@ -507,7 +483,7 @@ begin
 
 end;
 
-procedure TManageMemberData.qryMemberRoleLnkElectedOnGetText(Sender: TField;
+procedure TMM_CORE.qryMemberRoleLnkElectedOnGetText(Sender: TField;
   var Text: string; DisplayText: Boolean);
 var
   LFormatSettings: TFormatSettings;
@@ -520,7 +496,7 @@ begin
     Text := FormatDateTime('dd.mm.yy', Sender.AsDateTime, LFormatSettings);
 end;
 
-procedure TManageMemberData.qryMemberRoleLnkElectedOnSetText(Sender: TField;
+procedure TMM_CORE.qryMemberRoleLnkElectedOnSetText(Sender: TField;
   const Text: string);
 var
   dt: TDateTime;
@@ -550,7 +526,7 @@ begin
   end;
 end;
 
-procedure TManageMemberData.qryMemberRoleLnkNewRecord(DataSet: TDataSet);
+procedure TMM_CORE.qryMemberRoleLnkNewRecord(DataSet: TDataSet);
 var
   fld: TField;
 begin
@@ -580,83 +556,84 @@ begin
 end;
 
 
-procedure TManageMemberData.UpdateDOB(DOB: TDateTime);
+
+procedure TMM_CORE.UpdateDOB(DOB: TDateTime);
 
 begin
-  if Assigned(qryMember.Connection) and (qryMember.Active) then
+  if Assigned(qMember.Connection) and (qMember.Active) then
   begin
-    qryMember.DisableControls;
-    qryMember.edit;
-    qryMember.FieldByName('DOB').AsDateTime := DOB;
-    qryMember.Post;
-    qryMember.EnableControls;
+    qMember.DisableControls;
+    qMember.edit;
+    qMember.FieldByName('DOB').AsDateTime := DOB;
+    qMember.Post;
+    qMember.EnableControls;
   end;
 end;
 
-procedure TManageMemberData.UpdateElectedOn(aDate: TDate);
+procedure TMM_CORE.UpdateElectedOn(aDate: TDate);
 begin
-  if Assigned(qryMember.Connection) and (qryMember.Active) then
+  if Assigned(qMember.Connection) and (qMember.Active) then
   begin
-    qryMember.DisableControls;
-    qryMember.edit;
-    qryMember.FieldByName('ElectedOn').AsDateTime := aDate;
-    qryMember.Post;
-    qryMember.EnableControls;
+    qMember.DisableControls;
+    qMember.edit;
+    qMember.FieldByName('ElectedOn').AsDateTime := aDate;
+    qMember.Post;
+    qMember.EnableControls;
   end;
 end;
 
-procedure TManageMemberData.UpdateMember(hideArchived, hideInactive,
-  hideNonSwimmer: Boolean);
+procedure TMM_CORE.UpdateFilterByParam(hideArchived, hideInactive,
+    hideNonSwimmer: Boolean);
 begin
-  if not fIsActive then exit;
-
-  qryMember.DisableControls;
-  qryMember.DisableControls;
   qryContactNum.DisableControls;
   qryMemberRoleLnk.DisableControls;
+  qMember.DisableControls;
+
+  if hideArchived and not hideInactive and not hideNonSwimmer then
+    qMember.IndexName := 'idxHideArchived';
+  if not hideArchived and hideInactive and not hideNonSwimmer then
+    qMember.IndexName := 'idxHideInActive';
+  if not hideArchived and not hideInactive and hideNonSwimmer then
+    qMember.IndexName := 'idxHideNonSwimmer';
+  if hideArchived and hideInactive and not hideNonSwimmer then
+    qMember.IndexName := 'idxArchivedInActive';
+  if hideArchived and hideInactive and hideNonSwimmer then
+    qMember.IndexName := 'idxArchivedInActiveNonSwimmer';
+  if not hideArchived and hideInactive and hideNonSwimmer then
+    qMember.IndexName := 'idxInActiveNonSwimmer';
+  if hideArchived and not hideInActive and hideNonSwimmer then
+    qMember.IndexName := 'idxArchivedNonSwimmer';
+  if not hideArchived and not hideInActive and not hideNonSwimmer then
+    qMember.IndexName := 'idxFilterOff';
   try
     begin
-      qryMember.Close;
-      qryMember.ParamByName('HIDE_ARCHIVED').AsBoolean := hideArchived;
-      qryMember.ParamByName('HIDE_INACTIVE').AsBoolean := hideInactive;
-      qryMember.ParamByName('HIDE_NONSWIMMERS').AsBoolean := hideNonSwimmer;
-      qryMember.Prepare;
-      qryMember.Open;
-
-      if qryMember.Active then
-      begin
-        fRecordCount := qryMember.RecordCount;
-        qryContactNum.ApplyMaster;
-        qryMemberRoleLnk.ApplyMaster;
-      end
-      else
-        fRecordCount := 0;
+      qryContactNum.ApplyMaster;
+      qryMemberRoleLnk.ApplyMaster;
     end;
   finally
     begin
-      qryContactNum.DisableControls;
-      qryMemberRoleLnk.DisableControls;
-
-      qryMember.EnableControls;
+      qMember.EnableControls;
+      qryContactNum.EnableControls;
+      qryMemberRoleLnk.EnableControls;
     end;
 
   end;
 end;
 
 
-procedure TManageMemberData.UpdateRetiredOn(aDate: TDate);
+procedure TMM_CORE.UpdateRetiredOn(aDate: TDate);
 begin
-  if Assigned(qryMember.Connection) and (qryMember.Active) then
+  if fIsActive then
   begin
-    qryMember.DisableControls;
-    qryMember.edit;
-    qryMember.FieldByName('RetiredOn').AsDateTime := aDate;
-    qryMember.Post;
-    qryMember.EnableControls;
+    qMember.DisableControls;
+    qMember.edit;
+    qMember.FieldByName('RetiredOn').AsDateTime := aDate;
+    qMember.Post;
+    qMember.EnableControls;
   end;
 end;
 
-procedure TManageMemberData.WndProc(var wndMsg: TMessage);
+procedure TMM_CORE.WndProc(var wndMsg: TMessage);
 var
   dt, currDt: TDateTime;
   fldName: string;
@@ -699,22 +676,22 @@ begin
         raise;
     end;
     {TODO -oBSA -cGeneral : IsNul?}
-    currDt := dsMember.DataSet.FieldByName(fldName).AsDateTime;
+    currDt := qMember.FieldByName(fldName).AsDateTime;
     if dt <> currDt then
     BEGIN
-      dsMember.DataSet.DisableControls;
-      if (dsMember.DataSet.State <> dsEdit) or
-        (dsMember.DataSet.State <> dsInsert) then
+      qMember.DisableControls;
+      if (qMember.State <> dsEdit) or
+        (qMember.State <> dsInsert) then
       begin
-        dsMember.DataSet.CheckBrowseMode;
-        dsMember.DataSet.edit;
+        qMember.CheckBrowseMode;
+        qMember.edit;
       end;
       if (dt = 0) then
-        dsMember.DataSet.FieldByName(fldName).Clear
+        qMember.FieldByName(fldName).Clear
       else
-        dsMember.DataSet.FieldByName(fldName).AsDateTime := dt;
-      dsMember.DataSet.Post;
-      dsMember.DataSet.EnableControls;
+        qMember.FieldByName(fldName).AsDateTime := dt;
+      qMember.Post;
+      qMember.EnableControls;
     END;
 
   END;

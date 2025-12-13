@@ -379,7 +379,7 @@ begin
     qry := TFDQuery.Create(CORE);
     qry.Connection := SCM2.scmConnection;
     {
-      SwimClubMeet2.dbo.Nominee joined on SwimClubMeet.dbo.Lane.NomineeID (FK).
+      SwimClubMeet2.dbo.Nominee joined on SwimClubMeet2.dbo.Lane.NomineeID (FK).
       If Lane.NomineeID is null then the lane is empty.
       If the Lane.NomineeID is not null then a swimmer has been assigned to lane.
       NOTE: Assumed: TTBs have been calculated.
@@ -466,7 +466,7 @@ begin
     qry := TFDQuery.Create(CORE);
     qry.Connection := SCM2.scmConnection;
     {
-      SwimClubMeet2.dbo.Nominee joined on SwimClubMeet.dbo.Lane.NomineeID (FK).
+      SwimClubMeet2.dbo.Nominee joined on SwimClubMeet2.dbo.Lane.NomineeID (FK).
       If Lane.NomineeID is null then the lane is empty.
       If the Lane.NomineeID is not null then a swimmer has been assigned to lane.
       NOTE: Assumed: TTBs have been calculated.

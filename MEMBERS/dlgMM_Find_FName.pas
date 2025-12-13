@@ -1,4 +1,4 @@
-unit dlgFindMember_FName;
+unit dlgMM_Find_FName;
 
 interface
 
@@ -47,15 +47,10 @@ type
     Panel2: TPanel;
     btnGotoMember: TButton;
     DBGrid1: TDBGrid;
-    ImageCollection1: TImageCollection;
     VirtualImage1: TVirtualImage;
     lblFound: TLabel;
     qryFindMember: TFDQuery;
     dsFindMember: TDataSource;
-    qryFindMemberMemberID: TFDAutoIncField;
-    qryFindMemberMembershipNum: TIntegerField;
-    qryFindMemberFName: TWideStringField;
-    qryFindMemberSwimClubID: TIntegerField;
     vimgClear: TVirtualImage;
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);

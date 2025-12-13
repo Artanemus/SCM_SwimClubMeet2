@@ -56,7 +56,7 @@ object FindMember_ID: TFindMember_ID
       Width = 263
       Height = 27
       AutoSize = False
-      Caption = 'The Member ID doesn'#39't exist.'
+      Caption = 'The member'#39's ID doesn'#39't exist.'
     end
     object vimgMember: TVirtualImage
       Left = 16

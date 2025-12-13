@@ -1,4 +1,4 @@
-unit dlgDeleteMember;
+unit dlgMM_Delete;
 
 interface
 
@@ -22,7 +22,7 @@ uses
   ;
 
 type
-  TDeleteMember = class(TForm)
+  TMM_Delete = class(TForm)
     VirtualImage1: TVirtualImage;
     RelativePanel1: TRelativePanel;
     lblTitle: TLabel;
@@ -46,7 +46,7 @@ type
   end;
 
 var
-  DeleteMember: TDeleteMember;
+  MM_Delete: TMM_Delete;
 
 implementation
 
@@ -54,29 +54,29 @@ implementation
 
 
 
-procedure TDeleteMember.FormCreate(Sender: TObject);
+procedure TMM_Delete.FormCreate(Sender: TObject);
 begin
   fMemberName := '';
 end;
 
-procedure TDeleteMember.btnNoClick(Sender: TObject);
+procedure TMM_Delete.btnNoClick(Sender: TObject);
 begin
   ModalResult := mrNo;
 end;
 
-procedure TDeleteMember.btnYesClick(Sender: TObject);
+procedure TMM_Delete.btnYesClick(Sender: TObject);
 begin
   ModalResult := mrYes;
 end;
 
-procedure TDeleteMember.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TMM_Delete.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if key = VK_ESCAPE then
     ModalResult := mrNo;
 end;
 
-procedure TDeleteMember.FormShow(Sender: TObject);
+procedure TMM_Delete.FormShow(Sender: TObject);
 begin
   if fMemberName.IsEmpty then
     lblTitle.Caption := 'Delete member from database?'

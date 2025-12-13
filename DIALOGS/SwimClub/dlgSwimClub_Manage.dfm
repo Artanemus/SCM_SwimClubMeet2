@@ -2711,7 +2711,7 @@ object SwimClubManage: TSwimClubManage
       DefaultRowHeight = 60
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 2
+      RowCount = 4
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -3167,6 +3167,8 @@ object SwimClubManage: TSwimClubManage
         0)
       RowHeights = (
         30
+        60
+        60
         60)
     end
   end
@@ -3551,7 +3553,7 @@ object SwimClubManage: TSwimClubManage
                 AlignVerticalCenterWithPanel = False
                 RightOf = CGFrame.lbxL
               end>
-            ExplicitHeight = 459
+            ExplicitHeight = 284
             inherited lbxL: TListBox
               Height = 459
               ExplicitHeight = 459
@@ -3692,7 +3694,7 @@ object SwimClubManage: TSwimClubManage
   end
   object OpenLogoDlg: TOpenPictureDialog
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
-    Title = 'Load SCM Club Logo'
+    Title = 'Load SCM2 Club Logo'
     Left = 48
     Top = 544
   end

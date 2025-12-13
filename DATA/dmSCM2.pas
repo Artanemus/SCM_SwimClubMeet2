@@ -21,7 +21,6 @@ type
   TSCM2 = class(TDataModule)
     scmConnection: TFDConnection;
     qrySCMSystem: TFDQuery;
-    scmFDManager: TFDManager;
     FDGUIxErrorDialog: TFDGUIxErrorDialog;
     procRenumberHeats: TFDStoredProc;
     procRenumberEvents: TFDStoredProc;
@@ -87,7 +86,7 @@ begin
       fDBMajor := qrySCMSystem.FieldByName('Major').AsInteger;
       fDBMinor := qrySCMSystem.FieldByName('Minor').AsInteger;
       fDBBuild := qrySCMSystem.FieldByName('Build').AsInteger;
-      result := 'V' + fDBVersion.ToString + ' ' + fDBMajor.ToString + '.' +
+      result := 'V' + fDBVersion.ToString + '.' + fDBMajor.ToString + '.' +
         fDBMinor.ToString + '.' + fDBBuild.ToString;
     end;
     qrySCMSystem.Close;
@@ -138,7 +137,7 @@ var
   ConnectionDef: IFDStanConnectionDef;
 begin
   // Check if the connection definition exists
-  ConnectionDef := SCM2.scmFDManager.ConnectionDefs.ConnectionDefByName(ConnectionName);
+  ConnectionDef := FDManager.ConnectionDefs.ConnectionDefByName(ConnectionName);
   if Assigned(ConnectionDef) then
   begin
     // Read the parameter value
@@ -160,7 +159,7 @@ var
   ConnectionDef: IFDStanConnectionDef;
 begin
   // Get the connection definition by name
-  ConnectionDef := SCM2.scmFDManager.ConnectionDefs.ConnectionDefByName(ConnectionName);
+  ConnectionDef := FDManager.ConnectionDefs.ConnectionDefByName(ConnectionName);
 
   if Assigned(ConnectionDef) then
   begin
@@ -168,7 +167,7 @@ begin
     ConnectionDef.Params.Values[ParamName] := ParamValue;
 
     // Save the changes to the FDConnectionDefs.ini file
-    SCM2.scmFDManager.ConnectionDefs.Save;
+    FDManager.ConnectionDefs.Save;
   end
   else
     raise Exception.CreateFmt('Connection definition "%s" not found.', [ConnectionName]);

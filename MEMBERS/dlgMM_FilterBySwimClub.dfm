@@ -1,4 +1,4 @@
-object FilterBySwimClub: TFilterBySwimClub
+object MM_FilterBySwimClub: TMM_FilterBySwimClub
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu]
@@ -25,7 +25,6 @@ object FilterBySwimClub: TFilterBySwimClub
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitHeight = 397
     object Grid: TDBAdvGrid
       Left = 0
       Top = 0
@@ -38,7 +37,7 @@ object FilterBySwimClub: TFilterBySwimClub
       DefaultRowHeight = 52
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 4
+      RowCount = 2
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -430,8 +429,6 @@ object FilterBySwimClub: TFilterBySwimClub
         350)
       RowHeights = (
         0
-        52
-        52
         52)
     end
   end
@@ -473,7 +470,6 @@ object FilterBySwimClub: TFilterBySwimClub
     BevelOuter = bvNone
     Padding.Top = 10
     TabOrder = 0
-    ExplicitHeight = 397
     DesignSize = (
       140
       812)
@@ -513,7 +509,6 @@ object FilterBySwimClub: TFilterBySwimClub
   end
   object qrySwimClub: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     AfterOpen = qrySwimClubAfterOpen
     Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
@@ -524,10 +519,10 @@ object FilterBySwimClub: TFilterBySwimClub
       ''
       'Select SwimClubID, '
       '  Caption,'
-      '  LogoImg,'
-      '  NickName'
+      '  NickName,'
+      '  LogoImg'
       ' '
-      'FROM SwimClub '
+      'FROM SwimClubMeet2.dbo.SwimClub '
       'WHERE SwimCLub.IsClubGroup = 0'
       'ORDER BY Caption ASC')
     Left = 368
@@ -564,5 +559,20 @@ object FilterBySwimClub: TFilterBySwimClub
     DataSet = qrySwimClub
     Left = 368
     Top = 16
+  end
+  object qry1: TFDQuery
+    Connection = SCM2.scmConnection
+    SQL.Strings = (
+      ''
+      'Select SwimClubID, '
+      '  Caption,'
+      '  NickName,'
+      '  LogoImg'
+      ' '
+      'FROM SwimClub '
+      'WHERE IsClubGroup = 0'
+      'ORDER BY Caption ASC')
+    Left = 144
+    Top = 160
   end
 end

@@ -1,4 +1,4 @@
-unit dlgFindMember_ID;
+unit dlgMM_Find_ID;
 
 interface
 
@@ -75,17 +75,17 @@ begin
   begin
     SQL := '''
       SELECT Count(MemberID)
-      FROM dbo.Member
+      FROM SwimClubMeet2.dbo.Member
       WHERE MemberID = :ID
       ''';
     try
       begin
-        v := SCM2.scmConnection.ExecSQL(SQL, [fMemberID]);
+        v := SCM2.scmConnection.ExecSQLScalar(SQL, [aMemberID]);
         if v = 1 then result := true;
       end;
     except
       on E: Exception do
-        lblErrMsg.Caption := 'SCM DB access error.';
+        lblErrMsg.Caption := 'SCM2 DB access error.';
     end;
   end;
 end;

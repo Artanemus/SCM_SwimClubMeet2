@@ -26,7 +26,7 @@ object ManageMember_CheckData: TManageMember_CheckData
       AlignWithMargins = True
       Left = 3
       Top = 10
-      Width = 547
+      Width = 219
       Height = 33
       Margins.Top = 10
       Align = alTop
@@ -38,7 +38,6 @@ object ManageMember_CheckData: TManageMember_CheckData
       Font.Name = 'Tahoma'
       Font.Style = []
       ParentFont = False
-      ExplicitWidth = 219
     end
     object DBGrid2: TDBGrid
       Left = 0

@@ -9,7 +9,7 @@ uses
   Vcl.ExtCtrls, Vcl.Buttons, Vcl.WinXCtrls, System.Actions,
   Vcl.ActnList, Vcl.StdCtrls, Vcl.WinXPanels,
   uDefines,
-  dmSCM,dmCORE, dmIMG,
+  dmSCM2,dmCORE, dmIMG,
   uSwimClub, uSession, uEvent, uHeat, uLane,
   Vcl.Menus
   ;
@@ -137,7 +137,7 @@ begin
   // -------------------------------------------------------
 	// Check for bad DOB and GENDER.
 	dlg2 := TCheckMemberRequisites.Create(Self);
-	IsErronous := dlg2.CheckExec(SCM.scmConnection, EventID);
+	IsErronous := dlg2.CheckExec(SCM2.scmConnection, EventID);
 	if IsErronous then dlg.ShowModal;
 	dlg2.Free;
 
@@ -330,7 +330,7 @@ begin
       ((GetKeyState(VK_SHIFT) and 128) = 128) then
     begin
       rptC := TMarshallReportC.Create(self);
-      rptC.Prepare(SCM.scmConnection, EventID);
+      rptC.Prepare(SCM2.scmConnection, EventID);
       rptC.RunReport;
       rptC.Free;
     end
@@ -338,14 +338,14 @@ begin
     else if ((GetKeyState(VK_CONTROL) and 128) = 128) then
     begin
       rptB := TMarshallReportB.Create(self);
-      rptB.Prepare(SCM.scmConnection, EventID);
+      rptB.Prepare(SCM2.scmConnection, EventID);
       rptB.RunReport;
       rptB.Free;
     end
     else
     begin
       rptA := TMarshallReportA.Create(self);
-      rptA.Prepare(SCM.scmConnection, EventID);
+      rptA.Prepare(SCM2.scmConnection, EventID);
       rptA.RunReport;
       rptA.Free;
     end;
@@ -419,7 +419,7 @@ begin
   while not CORE.dsHeat.DataSet.Eof do
   begin
     HeatID := CORE.dsHeat.DataSet.FieldByName('HeatID').AsInteger;
-    rptTimeKeeper.Prepare(SCM.scmConnection, HeatID);
+    rptTimeKeeper.Prepare(SCM2.scmConnection, HeatID);
     if rptTimeKeeper.qryReport.Active then
     begin
       rptTimeKeeper.frxReport1.PrepareReport;
@@ -476,7 +476,7 @@ begin
     // set printer-name
     rptMarshall.frxReport1.PrintOptions.Printer := printerName;
     EventID := CORE.dsEvent.DataSet.FieldByName('EventID').AsInteger;
-    rptMarshall.Prepare(SCM.scmConnection, EventID);
+    rptMarshall.Prepare(SCM2.scmConnection, EventID);
     if rptMarshall.qryReport.Active then
     begin
       rptMarshall.frxReport1.PrepareReport;
@@ -535,7 +535,7 @@ begin
     begin
       // displays stripe lines for cutting. compact. inc. PB.TTB.
       rptA := TTimeKeeperReportA.Create(self);
-      rptA.Prepare(SCM.scmConnection, HeatID);
+      rptA.Prepare(SCM2.scmConnection, HeatID);
       rptA.RunReport;
       rptA.Free;
     end
@@ -543,7 +543,7 @@ begin
     begin
       // basic - oversize racetime box. inc. PB.TTB
       rptB := TTimeKeeperReportB.Create(self);
-      rptB.Prepare(SCM.scmConnection, HeatID);
+      rptB.Prepare(SCM2.scmConnection, HeatID);
       rptB.RunReport;
       rptB.Free;
     end;
@@ -595,7 +595,7 @@ end;
 function TFrameHeat.AssertSCM: boolean;
 begin
   result := false;
-  if Assigned(SCM) and SCM.IsActive then
+  if Assigned(SCM2) and SCM2.IsActive then
     result := true;
 end;
 

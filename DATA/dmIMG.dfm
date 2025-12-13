@@ -2727,6 +2727,23 @@ object IMG: TIMG
           'olygon1-0-4-4-5"'#10'     d="m 895.16503,0.04468524 h 60.56923 l -56' +
           ',75.99999876 h -60.56933 z"'#10'     sodipodi:nodetypes="ccccc" /></' +
           'svg>'#10
+      end
+      item
+        IconName = 'filter'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M11 20q-.425 0' +
+          '-.712-.288T10 19v-6L4.2 5.6q-.375-.5-.112-1.05T5 4h14q.65 0 .913' +
+          '.55T19.8 5.6L14 13v6q0 .425-.288.713T13 20z"/></svg>'
+      end
+      item
+        IconName = 'filter-off'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M14.8 11.975L6' +
+          '.825 4H19q.625 0 .9.55t-.1 1.05zM19.775 22.6L14 16.825V19q0 .425' +
+          '-.288.713T13 20h-2q-.425 0-.712-.288T10 19v-6.175l-8.6-8.6L2.8 2' +
+          '.8l18.4 18.4z"/></svg>'
       end>
     Left = 320
     Top = 8

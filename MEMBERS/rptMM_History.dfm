@@ -1,5 +1,4 @@
 object MemberHistory: TMemberHistory
-  OldCreateOrder = False
   Height = 570
   Width = 479
   object frxReport1: TfrxReport
@@ -327,7 +326,7 @@ object MemberHistory: TMemberHistory
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'MemberID'
-    Connection = SCM.scmConnection
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayDateTime, fvFmtDisplayDate, fvFmtDisplayTime]
     FormatOptions.FmtDisplayDateTime = 'dd DDDD MMMM YYYY'
     FormatOptions.FmtDisplayDate = 'DDDD MMMM YYYY'
@@ -352,9 +351,7 @@ object MemberHistory: TMemberHistory
       #9',SwimClub.NickName AS ClubNickName'
       'FROM Member'
       'INNER JOIN Entrant ON Member.MemberID = Entrant.MemberID'
-      
-        'INNER JOIN Heat ON Entrant.HeatID = Heat.Hea' +
-        'tID'
+      'INNER JOIN Heat ON Entrant.HeatID = Heat.HeatID'
       'INNER JOIN Event ON Heat.EventID = Event.EventID'
       'INNER JOIN Distance ON Event.DistanceID = Distance.DistanceID'
       'INNER JOIN Stroke ON Event.StrokeID = Stroke.StrokeID'

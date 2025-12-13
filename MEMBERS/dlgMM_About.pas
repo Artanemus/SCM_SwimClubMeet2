@@ -1,4 +1,4 @@
-unit dlgAboutManageMember;
+unit dlgMM_About;
 
 interface
 
@@ -9,7 +9,7 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls;
 
 type
-  TAboutManageMember = class(TForm)
+  TMM_About = class(TForm)
     pnlHeader: TPanel;
     pnlFooter: TPanel;
     pnlBody: TPanel;
@@ -23,13 +23,13 @@ type
   end;
 
 var
-  AboutManageMember: TAboutManageMember;
+  MM_About: TMM_About;
 
 implementation
 
 {$R *.dfm}
 
-procedure TAboutManageMember.btnOKClick(Sender: TObject);
+procedure TMM_About.btnOKClick(Sender: TObject);
 begin
   ModalResult := mrOk;
 end;

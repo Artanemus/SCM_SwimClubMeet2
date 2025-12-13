@@ -207,36 +207,36 @@
             <Form>Preferences</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dlgDeleteMember.pas">
-            <Form>DeleteMember</Form>
+        <DCCReference Include="MEMBERS\dlgMM_Delete.pas">
+            <Form>MM_Delete</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dlgFindMember_FName.pas">
+        <DCCReference Include="MEMBERS\dlgMM_Find_FName.pas">
             <Form>FindMember_FName</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dlgFindMember_ID.pas">
+        <DCCReference Include="MEMBERS\dlgMM_Find_ID.pas">
             <Form>FindMember_ID</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dlgFindMember_Membership.pas">
+        <DCCReference Include="MEMBERS\dlgMM_Find_Membership.pas">
             <Form>FindMember_Membership</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dlgFilterBySwimClub.pas">
-            <Form>FilterBySwimClub</Form>
+        <DCCReference Include="MEMBERS\dlgMM_FilterBySwimClub.pas">
+            <Form>MM_FilterBySwimClub</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dlgFilterByParam.pas">
-            <Form>FilterByParam</Form>
+        <DCCReference Include="MEMBERS\dlgMM_FilterByParam.pas">
+            <Form>MM_FilterByParam</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dmManageMemberData.pas">
-            <Form>ManageMemberData</Form>
+        <DCCReference Include="MEMBERS\dmMM_CORE.pas">
+            <Form>MM_CORE</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dmMemberHouse.pas">
+        <DCCReference Include="MEMBERS\dmMMD_House.pas">
             <Form>MemberHouse</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
@@ -245,35 +245,35 @@
             <Form>ManageMember</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\rptMemberChart.pas">
+        <DCCReference Include="MEMBERS\rptMM_Chart.pas">
             <Form>MemberChart</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="MEMBERS\rptMemberCheckData.pas">
+        <DCCReference Include="MEMBERS\rptMM_CheckData.pas">
             <Form>MemberCheckData</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="MEMBERS\rptMemberDetail.pas">
+        <DCCReference Include="MEMBERS\rptMM_Detail.pas">
             <Form>MemberDetail</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="MEMBERS\rptMemberHistory.pas">
+        <DCCReference Include="MEMBERS\rptMM_History.pas">
             <Form>MemberHistory</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dlgAboutManageMember.pas">
-            <Form>AboutManageMember</Form>
+        <DCCReference Include="MEMBERS\dlgMM_About.pas">
+            <Form>MM_About</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="DIALOGS\Picker\dlgSwimClubPicker.pas">
             <Form>SwimClubPicker</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\frmManageMember_Stats.pas">
+        <DCCReference Include="MEMBERS\frmMM_Stats.pas">
             <Form>ManageMember_Stats</Form>
             <FormType>dfm</FormType>
         </DCCReference>
@@ -296,7 +296,7 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="MEMBERS\frmManageMember_CheckData.pas">
+        <DCCReference Include="MEMBERS\frmMM_CheckData.pas">
             <Form>ManageMember_CheckData</Form>
             <FormType>dfm</FormType>
         </DCCReference>

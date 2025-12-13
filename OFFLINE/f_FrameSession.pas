@@ -91,7 +91,7 @@ begin
   { TODO -oBSA -cGeneral :  Check abort method. }
   try
     dlg := TCloneSession.Create(self);
-    // raises exception if SCM not assigned.
+    // raises exception if SCM2 not assigned.
     if IsPositiveResult(dlg.ShowModal) then
     begin
       uSession.DetailTBLs_ApplyMaster;
@@ -200,7 +200,7 @@ var
 begin
   DT := CORE.qrySession.FieldByName('StartDT').AsDateTime;
   try
-  dlg := TNewSession.CreateWithConnection(self, SCM.scmConnection);
+  dlg := TNewSession.CreateWithConnection(self, SCM2.scmConnection);
   dlg.SessionMode := smEditSession;
   dlg.SessionID := uSession.PK;
   if IsPositiveResult(dlg.ShowModal) then
@@ -248,7 +248,7 @@ var
 begin
   { TODO -oBSA -cGeneral : Check overload, methods for insert or edit modes }
   // Exception raised if connection assigned.
-  dlg := TNewSession.CreateWithConnection(self, SCM.scmConnection);
+  dlg := TNewSession.CreateWithConnection(self, SCM2.scmConnection);
   dlg.SessionMode := smNewSession;
   if IsPositiveResult(dlg.ShowModal) then
   begin
@@ -281,14 +281,14 @@ begin
     if ((GetKeyState(VK_CONTROL) AND 128) = 128) then
     begin
       rpt2 := TSessionReportB.Create(self);
-      // raises exception if SCM not assigned.
+      // raises exception if SCM2 not assigned.
       rpt2.RunReport;
       rpt2.Free;
     end
     else
     begin
       rpt := TSessionReportA.Create(self);
-      // raises exception if SCM not assigned.
+      // raises exception if SCM2 not assigned.
       rpt.RunReport;
       rpt.Free;
     end;

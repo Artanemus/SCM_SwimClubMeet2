@@ -28,14 +28,7 @@ const
   SCM_MEMBER_UPDATE_RETIREDON = WM_USER +104;
   SCM_MEMBER_AFTERPOST = WM_USER +105;
   SCM_MEMBER_AFTERSCROLL = WM_USER +106;
-  SCM_MEMBER_CHANGE_SWIMCLUB = WM_USER +107;
-  SCM_MEMBER_FILTER_ACTIVATED = WM_USER +108;
-  SCM_MEMBER_FILTER_DEACTIVATED = WM_USER +109;
-  SCM_MEMBER_FILTER_CHANGED = WM_USER +110;
-  SCM_MEMBER_FILTER_SWIMCLUB = WM_USER +111;
-  SCM_MEMBER_FILTER_ARCHIVED = WM_USER +112;
-  SCM_MEMBER_FILTER_ISACTIVE = WM_USER +113;
-  SCM_MEMBER_FILTER_ISSWIMMER = WM_USER +114;
+  SCM_MEMBER_FILTER_CHANGED = WM_USER +108;
 
 
  type
@@ -53,7 +46,7 @@ const
 ///     - Times used originate from events held in current session
 /// </Remarks>
  seedMethod = (
-    smSCMSeeding = 0, // default SCM style of seeding.
+    smSCMSeeding = 0, // default SCM2 style of seeding.
     smCircleSeeding, // circle seeds to 'depth' then switches to smSCMSeeding.
     smTimedFinalsSeeding,
     smCircleSeedingTimed, // dummy placeholder.

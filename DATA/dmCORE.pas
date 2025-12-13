@@ -392,7 +392,7 @@ begin
     Text := Datetostr(DT, fs);
   end
   else
-    // custom format used by SCM.
+    // custom format used by SCM2.
     Text := FormatDateTime('yyyy-mm-dd hh:nn', Sender.AsDateTime, fs);
 end;
 
@@ -575,14 +575,14 @@ begin
 
   // INDV or TEAM
   SQL := 'SELECT EventTypeID FROM SwimClubMeet2.dbo.Distance WHERE [DistanceID] = :ID';
-	v1 := SCM.SCM.scmConnection.ExecSQLScalar(SQL, [Sender.CurValue], [ftInteger]);
-	v2 := SCM.SCM.scmConnection.ExecSQLScalar(SQL, [Sender.Value], [ftInteger]);
+	v1 := SCM2.scmConnection.ExecSQLScalar(SQL, [Sender.CurValue], [ftInteger]);
+	v2 := SCM2.scmConnection.ExecSQLScalar(SQL, [Sender.Value], [ftInteger]);
   if v1 <> v2 then // switching event type ...
   begin
     // test for Heats
     SQL := 'SELECT Count(HeatID) FROM SwimClubMeet2.dbo.Heat WHERE [EventID] = :ID';
     i := Event_ID;
-		v3 := SCM.SCM.scmConnection.ExecSQLScalar(SQL, [i]);
+		v3 := SCM2.scmConnection.ExecSQLScalar(SQL, [i]);
     if (v3 <> 0) then
     begin
       Raise Exception.Create

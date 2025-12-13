@@ -1,4 +1,4 @@
-object AboutManageMember: TAboutManageMember
+object MM_About: TMM_About
   Left = 0
   Top = 0
   BorderStyle = bsDialog
@@ -49,7 +49,7 @@ object AboutManageMember: TAboutManageMember
     BevelOuter = bvNone
     TabOrder = 2
     object lblDetails: TLabel
-      Left = 219
+      Left = 166
       Top = 153
       Width = 292
       Height = 21

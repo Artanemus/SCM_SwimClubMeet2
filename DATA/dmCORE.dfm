@@ -910,8 +910,8 @@ object CORE: TCORE
       '  FROM [SwimClubMeet2].[dbo].[Member]'
       '  ORDER BY [LastName]'
       '*/ ')
-    Left = 944
-    Top = 184
+    Left = 848
+    Top = 192
     ParamData = <
       item
         Name = 'SESSIONSTART'
@@ -933,8 +933,8 @@ object CORE: TCORE
   end
   object dsMember: TDataSource
     DataSet = qryMember
-    Left = 1024
-    Top = 184
+    Left = 944
+    Top = 192
   end
   object qryMemberLink: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -954,7 +954,7 @@ object CORE: TCORE
   end
   object TestConnection: TFDConnection
     Params.Strings = (
-      'ConnectionDef=MSSQL_SwimClubMeet2')
+      'ConnectionDef=MSSQL_SCM2')
     ConnectedStoredUsage = [auDesignTime]
     Connected = True
     LoginPrompt = False
@@ -1356,8 +1356,8 @@ object CORE: TCORE
         'LEFT JOIN dbo.PB ON m.MemberID = PB.MemberID AND PB.DistanceID =' +
         ' @DistanceID AND PB.StrokeID = @StrokeID'
       'WHERE m.MemberID = @MemberID;')
-    Left = 944
-    Top = 264
+    Left = 848
+    Top = 256
     ParamData = <
       item
         Name = 'MEMBERID'

@@ -606,7 +606,7 @@ object FrameNominate: TFrameNominate
   object qryNominate: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     Active = True
-    Connection = SCM.scmConnection
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False

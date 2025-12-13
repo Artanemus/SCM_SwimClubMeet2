@@ -7,7 +7,7 @@ interface
   settings stored in TIniFiles files.
 
   The location is given as...
-  $APPDATA$\Artanemus\SCM\$PREFFILENAME$.ini
+  $APPDATA$\Artanemus\SCM2\$PREFFILENAME$.ini
 
   $APPDATA$ exspands too...
   '%SYSTEMDRIVE%\Users\%USERNAME%\AppData\Roaming\'
@@ -54,8 +54,8 @@ procedure SaveSharedIniFileSetting(ASection, AName, AValue: string);
 const
   PrefFileName = 'SCMPref.ini';
   HelpPrefFileName = 'SCMHelpPref.ini';
-  SCMSubFolder = 'Artanemus\SCM\';
-  SCMSectionName = 'SCM';
+  SCMSubFolder = 'Artanemus\SCM2\';
+  SCMSectionName = 'SCM2';
 
 implementation
 
@@ -68,6 +68,26 @@ uses
   IdTCPClient; // for checkinternet
 
 // Winapi.ShLwApi;
+
+
+  //  css: TCustomStyleServices;
+  // Special color assignment - used in TDBGrid painting...
+  // -------------------------------------------
+  {
+  css := TStyleManager.Style[TStyleManager.ActiveStyle.Name];
+  if assigned(css) then
+  begin
+    fColorEditBoxFocused := css.GetStyleFontColor(sfEditBoxTextFocused);
+    fColorEditBoxNormal := css.GetStyleFontColor(sfEditBoxTextNormal);
+    fColorBgColor := css.GetStyleColor(scGrid);
+  end
+  else
+  begin
+    fColorEditBoxFocused := cardinal(clWebTomato); // TColors.Tomato;
+    fColorEditBoxNormal := cardinal(clWindowText); // TColors.SysWindowText;
+    fColorBgColor := cardinal(clAppWorkSpace); // TColors.SysAppWorkSpace;
+  end;
+  }
 
 function GetRecordPosition(ADataset: TDataSet): TRecordPos;
 begin
@@ -205,7 +225,7 @@ end;
 // D E P R E C A T E D .
 // ---------------------------------------------------------------------------
 function ExistsSCMConnectionDefs(): boolean;
-  deprecated 'SCM static connection definitions are no longer in used.';
+  deprecated 'SCM2 static connection definitions are no longer in used.';
 var
   str: string;
   szPath: array [0 .. Max_Path] of Char;
@@ -272,7 +292,7 @@ function GetSCMDocumentDir(): string;
 begin
   result := GetEnvironmentVariable('HOMEPATH');
   result := IncludeTrailingPathDelimiter(result);
-  result := result + 'SCM\';
+  result := result + 'SCM2\';
 end;
 
 function GetRegAppPath(appName: string): string;
@@ -320,7 +340,7 @@ end;
 
 // -----------------------------------------------------------
 // SHARED FUNCTION
-// Called by dmSCM and dmAutoBuildV2
+// Called by dmSCM2 and dmAutoBuildV2
 // -----------------------------------------------------------
 function ScatterLanes(index, NumOfPoolLanes: integer): integer;
 var

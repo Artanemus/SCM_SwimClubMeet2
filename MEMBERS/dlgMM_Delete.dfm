@@ -1,4 +1,4 @@
-object DeleteMember: TDeleteMember
+object MM_Delete: TMM_Delete
   Left = 0
   Top = 0
   BorderStyle = bsDialog
@@ -212,7 +212,6 @@ object DeleteMember: TDeleteMember
       ModalResult = 6
       TabOrder = 0
       OnClick = btnYesClick
-      ExplicitTop = 16
     end
     object btnNo: TButton
       Left = 283
@@ -225,7 +224,6 @@ object DeleteMember: TDeleteMember
       ModalResult = 7
       TabOrder = 1
       OnClick = btnNoClick
-      ExplicitTop = 16
     end
   end
 end

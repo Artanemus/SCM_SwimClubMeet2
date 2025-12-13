@@ -151,7 +151,7 @@ implementation
 
 uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
-  frmManageMember, dlgSwimClub_Reports, frmManageMember_Stats;
+  frmManageMember, dlgSwimClub_Reports, frmMM_Stats;
 
 procedure TMain2.DetailTBLs_ApplyMaster;
 begin
@@ -219,7 +219,7 @@ begin
   frEvent.grid.BeginUpdate;
   frSession.grid.BeginUpdate;
   try
-    dlg := TLogin.Create(Self); // dlg to connect to the SCM DB.
+    dlg := TLogin.Create(Self); // dlg to connect to the SCM2 DB.
     dlg.ShowModal;
     dlg.Free;
 
@@ -292,7 +292,7 @@ begin
   Screen.MenuFont.Name := 'Segoe UI Semibold';
   Screen.MenuFont.Size := 12;
 
-  // Database modules IMG, SCM and CORE have been set to AutoCreate
+  // Database modules IMG, SCM2 and CORE have been set to AutoCreate
   // prior to form creation. Kills the app if missing!
   if not (Assigned(IMG) and Assigned(SCM2) and Assigned(CORE)) then
   begin
@@ -404,20 +404,21 @@ begin
   begin
     dlg := TManageMember.Create(self);
     try
-      dlg.Prepare(fCueToMemberID);
+      if (fCueToMemberID > 0) then
+        dlg.Locate_MemberID(fCueToMemberID);
       dlg.ShowModal();
     finally
       dlg.Free;
     end;
     {
-      requery on dmSCM members
+      requery on dmSCM2 members
      count the number of members in DB prior to PostMessage
      Assert the 'No Members' Caption in TLabel lblNomWarning
      refresh all controls and labels on active tabsheet
      via page control - it also actions SCM_TABSHEETDISPLAYSTATE
     }
 //    Refresh_Nominate;
-//    fCountOfMembers := SCM.Members_Count;
+//    fCountOfMembers := SCM2.Members_Count;
 //    PageControl1Change(PageControl1);
   end;
 end;
@@ -517,8 +518,22 @@ end;
 
 procedure TMain2.PageControlChange(Sender: TObject);
 begin
-  if PageControl.ActivePageIndex = 1 then
-    frNominate.UpdateQryNominate;
+  case PageControl.ActivePageIndex of
+    0:  // Session - Event.
+      begin
+        ;
+      end;
+    1: // Nominate Tab-sheet.
+      begin
+        frNominate.UpdateQryNominate;
+        if frFilterMember.edtSearch.CanFocus then
+          frFilterMember.edtSearch.SetFocus;
+      end;
+    2: // Heat.Lane.INDV.RELAY...
+      begin
+        ;
+      end;
+  end;
 end;
 
 procedure TMain2.pnlTitleBarCustomButtons0Click(Sender: TObject);

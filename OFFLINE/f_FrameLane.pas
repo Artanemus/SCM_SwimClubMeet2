@@ -8,7 +8,7 @@ uses
   AdvObj, BaseGrid, AdvGrid, DBAdvGrid, Vcl.ExtCtrls, Vcl.WinXPanels,
 
   uDefines,
-  dmSCM,dmCORE, dmIMG,
+  dmSCM2,dmCORE, dmIMG,
   uSwimClub, uSession, uEvent, uHeat, uLane,
   Vcl.Menus, Vcl.Buttons, System.Actions, Vcl.ActnList
 
@@ -75,12 +75,12 @@ begin
 		SELECT MemberID FROM SwimClubMeet2.dbo.MemberLink
 		WHERE NomineeID = :ID
 		''';
-	v := SCM.scmConnection.ExecSQLScalar(aSQL, [NomineeID]);
+	v := SCM2.scmConnection.ExecSQLScalar(aSQL, [NomineeID]);
 	if not VarIsClear(v)  then // NULL or EMPTY.
 	begin
 			try
 				dlg := TManageMember.Create(self);
-				dlg.Prepare(SCM.scmConnection, 1, v);
+				dlg.Prepare(SCM2.scmConnection, 1, v);
 				dlg.ShowModal;
 			finally
 				dlg.Free;

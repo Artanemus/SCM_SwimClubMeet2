@@ -224,7 +224,7 @@ begin
       // includes deletion of club group and member link records.
       // false = ignore locked states.
       {$IFDEF DEBUG}
-        // ... DON'T DELETE THIS SWIMCLUB - used for demonstrating SCM.
+        // ... DON'T DELETE THIS SWIMCLUB - used for demonstrating SCM2.
         if PK = 1 then exit;
       {$ELSE}
         if PK = 1 then exit;
@@ -278,7 +278,7 @@ begin
   if (msgResults = IDYES) then
   begin
     {$IFDEF DEBUG}
-      // ... DON'T DELETE THIS SWIMCLUB - used for demonstrating SCM.
+      // ... DON'T DELETE THIS SWIMCLUB - used for demonstrating SCM2.
       if PK = 1 then exit;
     {$ELSE}
       if PK = 1 then exit;

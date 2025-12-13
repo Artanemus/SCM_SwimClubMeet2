@@ -7,7 +7,7 @@ object Main2: TMain2
   Color = clBtnFace
   CustomTitleBar.Control = pnlTitleBar
   CustomTitleBar.Enabled = True
-  CustomTitleBar.Height = 36
+  CustomTitleBar.Height = 38
   CustomTitleBar.SystemHeight = False
   CustomTitleBar.ShowCaption = False
   CustomTitleBar.ShowIcon = False
@@ -30,7 +30,7 @@ object Main2: TMain2
   Font.Name = 'Segoe UI'
   Font.Style = []
   GlassFrame.Enabled = True
-  GlassFrame.Top = 36
+  GlassFrame.Top = 38
   Icon.Data = {
     0000010005003030000001002000A8250000560000002020000001002000A810
     0000FE250000101000000100200068040000A636000018180000010020008809
@@ -2705,7 +2705,7 @@ object Main2: TMain2
     Left = 0
     Top = 0
     Width = 1109
-    Height = 35
+    Height = 37
     Margins.Top = 24
     OnPaint = pnlTitleBarPaint
     CustomButtons = <
@@ -2729,7 +2729,7 @@ object Main2: TMain2
       end>
     DesignSize = (
       1109
-      35)
+      37)
     object DBTextClubName: TDBText
       Left = 6
       Top = 0
@@ -2764,7 +2764,7 @@ object Main2: TMain2
   end
   object actnMainMenuBar: TActionMainMenuBar
     Left = 0
-    Top = 35
+    Top = 37
     Width = 1109
     Height = 42
     UseSystemFont = False
@@ -2825,11 +2825,11 @@ object Main2: TMain2
   object PageControl: TPageControl
     AlignWithMargins = True
     Left = 3
-    Top = 87
+    Top = 89
     Width = 1103
-    Height = 664
+    Height = 662
     Margins.Top = 10
-    ActivePage = tabNominate
+    ActivePage = tabSession
     Align = alClient
     TabOrder = 3
     OnChange = PageControlChange
@@ -2839,7 +2839,7 @@ object Main2: TMain2
         Left = 0
         Top = 0
         Width = 417
-        Height = 628
+        Height = 626
         Margins.Top = 10
         Align = alLeft
         BevelOuter = bvNone
@@ -2848,19 +2848,19 @@ object Main2: TMain2
           Left = 0
           Top = 0
           Width = 417
-          Height = 628
+          Height = 626
           Align = alClient
           TabOrder = 0
           ExplicitWidth = 417
-          ExplicitHeight = 628
+          ExplicitHeight = 626
           inherited pnlBody: TPanel
             Width = 359
-            Height = 628
+            Height = 626
             ExplicitWidth = 359
-            ExplicitHeight = 628
+            ExplicitHeight = 626
             inherited grid: TDBAdvGrid
               Width = 359
-              Height = 628
+              Height = 626
               Columns = <
                 item
                   Borders = []
@@ -2947,12 +2947,12 @@ object Main2: TMain2
                   Width = 0
                 end>
               ExplicitWidth = 359
-              ExplicitHeight = 628
+              ExplicitHeight = 626
             end
           end
           inherited pnlCntrl: TPanel
-            Height = 628
-            ExplicitHeight = 628
+            Height = 626
+            ExplicitHeight = 626
             inherited spbtnSessClone: TSpeedButton
               ImageIndex = 11
               Glyph.Data = {00000000}
@@ -2995,7 +2995,7 @@ object Main2: TMain2
         Left = 417
         Top = 0
         Width = 678
-        Height = 628
+        Height = 626
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
@@ -3003,29 +3003,29 @@ object Main2: TMain2
           Left = 0
           Top = 0
           Width = 678
-          Height = 628
+          Height = 626
           Align = alClient
           TabOrder = 0
           ExplicitWidth = 678
-          ExplicitHeight = 628
+          ExplicitHeight = 626
           inherited pnlBody: TPanel
             Width = 620
-            Height = 628
+            Height = 626
             ExplicitWidth = 620
-            ExplicitHeight = 628
+            ExplicitHeight = 626
             inherited grid: TDBAdvGrid
               Width = 620
-              Height = 628
+              Height = 626
               ExplicitLeft = 0
               ExplicitWidth = 620
-              ExplicitHeight = 628
+              ExplicitHeight = 626
               RowHeights = (
                 32
                 32)
             end
           end
           inherited rpnlCntrl: TRelativePanel
-            Height = 628
+            Height = 626
             ControlCollection = <
               item
                 Control = frEvent.ShapeEvBar1
@@ -3116,7 +3116,7 @@ object Main2: TMain2
                 AlignVerticalCenterWithPanel = False
                 Below = frEvent.spbtnEvDelete
               end>
-            ExplicitHeight = 628
+            ExplicitHeight = 626
           end
           inherited actnlstEvent: TActionList
             Left = 232
@@ -3139,7 +3139,7 @@ object Main2: TMain2
         Left = 0
         Top = 0
         Width = 433
-        Height = 628
+        Height = 626
         Align = alLeft
         BevelOuter = bvNone
         TabOrder = 0
@@ -3147,7 +3147,7 @@ object Main2: TMain2
           Left = 0
           Top = 0
           Width = 433
-          Height = 628
+          Height = 626
           Align = alClient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -3157,9 +3157,9 @@ object Main2: TMain2
           ParentFont = False
           TabOrder = 0
           ExplicitWidth = 433
-          ExplicitHeight = 628
+          ExplicitHeight = 626
           inherited rpnlCntrl: TRelativePanel
-            Height = 628
+            Height = 626
             ControlCollection = <
               item
                 Control = frFilterMember.ShapeMemBar1
@@ -3217,18 +3217,18 @@ object Main2: TMain2
                 AlignTopWithPanel = False
                 AlignVerticalCenterWithPanel = False
               end>
-            ExplicitHeight = 628
+            ExplicitHeight = 626
           end
           inherited pnlBody: TPanel
             Width = 375
-            Height = 628
+            Height = 626
             ExplicitWidth = 375
-            ExplicitHeight = 628
+            ExplicitHeight = 626
             inherited pnlList: TPanel
               Width = 375
-              Height = 628
+              Height = 626
               ExplicitWidth = 375
-              ExplicitHeight = 628
+              ExplicitHeight = 626
               inherited rpnlSearch: TRelativePanel
                 Width = 375
                 ControlCollection = <
@@ -3271,9 +3271,9 @@ object Main2: TMain2
               end
               inherited grid: TDBAdvGrid
                 Width = 375
-                Height = 579
+                Height = 577
                 ExplicitWidth = 375
-                ExplicitHeight = 579
+                ExplicitHeight = 577
               end
             end
           end
@@ -3283,7 +3283,7 @@ object Main2: TMain2
         Left = 433
         Top = 0
         Width = 662
-        Height = 628
+        Height = 626
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
@@ -3291,7 +3291,7 @@ object Main2: TMain2
           Left = 0
           Top = 0
           Width = 662
-          Height = 628
+          Height = 626
           Align = alClient
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -3301,9 +3301,9 @@ object Main2: TMain2
           ParentFont = False
           TabOrder = 0
           ExplicitWidth = 662
-          ExplicitHeight = 628
+          ExplicitHeight = 626
           inherited rpnlCntrl: TRelativePanel
-            Height = 628
+            Height = 626
             ControlCollection = <
               item
                 Control = frNominate.dbtxtNominateFullName
@@ -3314,18 +3314,18 @@ object Main2: TMain2
                 AlignTopWithPanel = True
                 AlignVerticalCenterWithPanel = False
               end>
-            ExplicitHeight = 628
+            ExplicitHeight = 626
           end
           inherited pnlBody: TPanel
             Width = 604
-            Height = 628
+            Height = 626
             ExplicitWidth = 604
-            ExplicitHeight = 628
+            ExplicitHeight = 626
             inherited grid: TDBAdvGrid
               Width = 604
-              Height = 628
+              Height = 626
               ExplicitWidth = 604
-              ExplicitHeight = 628
+              ExplicitHeight = 626
             end
           end
         end
@@ -3591,7 +3591,7 @@ object Main2: TMain2
               end
               item
                 Action = Help_Website
-                Caption = '&SCM Homepage...'
+                Caption = '&SCM2 Homepage...'
                 ImageName = 'home'
               end>
             Caption = 'He&lp'
@@ -4152,7 +4152,7 @@ object Main2: TMain2
               end
               item
                 Action = Help_Website
-                Caption = '&SCM Homepage...'
+                Caption = '&SCM2 Homepage...'
                 ImageName = 'home'
               end>
             Caption = 'Hel&p'
@@ -4282,7 +4282,7 @@ object Main2: TMain2
       ShortCut = 16429
     end
     object SCM_Refresh: TAction
-      Category = 'SCM'
+      Category = 'SCM2'
       Caption = 'Refresh'
       Hint = 'Refresh'
       ImageIndex = 5
@@ -4366,7 +4366,7 @@ object Main2: TMain2
       Caption = 'LeaderBoard...'
     end
     object SCM_ManageMembers: TAction
-      Category = 'SCM'
+      Category = 'SCM2'
       Caption = 'Manage Members...'
       Hint = 'Create, edit, delete, stats, reports for your club members.'
       ImageName = 'Members'
@@ -4385,7 +4385,7 @@ object Main2: TMain2
     end
     object Help_Website: TAction
       Category = 'Help'
-      Caption = 'SCM Homepage...'
+      Caption = 'SCM2 Homepage...'
       ImageName = 'home'
     end
     object Tools_DisqualifyCodes: TAction
@@ -4393,7 +4393,7 @@ object Main2: TMain2
       Caption = 'Disqualification Codes...'
     end
     object SCM_StatusBar: TAction
-      Category = 'SCM'
+      Category = 'SCM2'
       Caption = 'SCM_StatusBar'
     end
     object Team_ClearSlot: TAction

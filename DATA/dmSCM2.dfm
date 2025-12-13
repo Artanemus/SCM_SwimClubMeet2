@@ -5,8 +5,7 @@ object SCM2: TSCM2
   Width = 414
   object scmConnection: TFDConnection
     Params.Strings = (
-      'ApplicationName=SwimClubMeet2.exe'
-      'ConnectionDef=MSSQL_SwimClubMeet2')
+      'ConnectionDef=MSSQL_SCM2')
     ConnectedStoredUsage = [auDesignTime]
     Connected = True
     LoginPrompt = False
@@ -26,23 +25,15 @@ object SCM2: TSCM2
       '      ,[Minor]'
       '      ,[Build]'
       '  FROM [SwimClubMeet2].[dbo].[SCMSystem]')
-    Left = 80
-    Top = 104
-  end
-  object scmFDManager: TFDManager
-    FormatOptions.AssignedValues = [fvMapRules]
-    FormatOptions.OwnMapRules = True
-    FormatOptions.MapRules = <>
-    Active = True
-    Left = 80
-    Top = 184
+    Left = 272
+    Top = 216
   end
   object FDGUIxErrorDialog: TFDGUIxErrorDialog
     Provider = 'Forms'
     Caption = 'SwimClubMeet FireDAC Error'
     Enabled = False
-    Left = 72
-    Top = 264
+    Left = 80
+    Top = 112
   end
   object procRenumberHeats: TFDStoredProc
     Connection = scmConnection

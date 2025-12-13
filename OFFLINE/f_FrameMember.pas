@@ -8,7 +8,7 @@ uses
   Vcl.ExtCtrls, Vcl.Grids, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
   Vcl.VirtualImage, Vcl.StdCtrls,
 
-  dmIMG, dmSCM, dmCORE, uSwimClub, uSession, uEvent, uHeat, ulane,
+  dmIMG, dmSCM2, dmCORE, uSwimClub, uSession, uEvent, uHeat, ulane,
 
   Vcl.Buttons, Vcl.Menus, System.Actions, Vcl.ActnList;
 
@@ -71,7 +71,7 @@ begin
   dlg := TManageMember.Create(self);
   MemberID := CORE.qrymember.FieldByName('MemberID').AsInteger;
   try
-    dlg.Prepare(SCM.scmConnection, 1, MemberID);
+    dlg.Prepare(SCM2.scmConnection, 1, MemberID);
     dlg.ShowModal;
   finally
     dlg.Free;
@@ -161,7 +161,7 @@ begin
         INNER JOIN [SwimClubMeet2].[dbo].[Event] ON Nominee.EventID = [Event].EventID
         WHERE WHERE SessionID = :id1 AND MemberID = :id2;
       ''';
-    v := SCM.scmConnection.ExecSQLScalar(SQL, [SessionID, MemberID]);
+    v := SCM2.scmConnection.ExecSQLScalar(SQL, [SessionID, MemberID]);
     if not VarIsClear(v) and (v > 0) then
     begin
       AFont.Color := clWebTomato;
@@ -177,7 +177,7 @@ begin
   // TActionUpdate determines if this procedure can be called.
   actn := TAction(Sender);
   actn.Checked := not actn.Checked;
-  SCM.Nominate_SortMembers(actn.Checked);
+  SCM2.Nominate_SortMembers(actn.Checked);
   if Nominate_Grid.CanFocus then Nominate_Grid.SetFocus;
 end;
 
@@ -204,7 +204,7 @@ end;
     if not AssertConnection then exit;
 
     MemberID := CORE.dsNominee.DataSet.FieldByName('MemberID').AsInteger;
-    success := SCM.Nominate_UpdateControlList(uSession.PK, MemberID);
+    success := SCM2.Nominate_UpdateControlList(uSession.PK, MemberID);
 
     if success then Nominate_ControlList.Invalidate;
   end;
@@ -230,7 +230,7 @@ begin
         + '[SwimClubMeet2].[dbo].Nominee.EventID = [SwimClubMeet2].[dbo].[Event].EventID '
         + sLineBreak + 'WHERE SessionID = :id1 AND MemberID = :id2;';
       // run scalar function on DB
-      Count := SCM.scmConnection.ExecSQLScalar(SQL, [SessionID, MemberID],
+      Count := SCM2.scmConnection.ExecSQLScalar(SQL, [SessionID, MemberID],
         [ftInteger, ftInteger]);
       if (Count > 0) then
       begin

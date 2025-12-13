@@ -52,7 +52,7 @@ object FindMember_FName: TFindMember_FName
       Left = 48
       Top = 12
       Width = 265
-      Height = 30
+      Height = 27
       TabOrder = 0
       Text = 'Edit1'
       OnChange = Edit1Change
@@ -124,47 +124,13 @@ object FindMember_FName: TFindMember_FName
         Visible = True
       end>
   end
-  object ImageCollection1: TImageCollection
-    Images = <
-      item
-        Name = 'Search_48x48'
-        SourceImages = <
-          item
-            Image.Data = {
-              89504E470D0A1A0A0000000D49484452000000300000003008060000005702F9
-              87000000017352474200AECE1CE9000002B7494441546843ED988D6D14311046
-              BFAB8074005490A4024205400521150015905400540054105241A002920A0215
-              042A003DC9969CC15E7B3D5EDD46DC48A75C4EFE993733FE3CBB1BDD73DBDC73
-              FFB503D87606FFEB0CEC497A22E94012DFF9FB237C7E49BA08DF174D524F0670
-              F4ADA4E70D9E01742AE973C3D8AE21730088F23B492F3B7602E485A4AB8EB993
-              535A011E493A0F65E2F1E144D227CF02766E0B00CE7F0F756EE77F0B5125B244
-              193B0AA094DAC38CB36F24BD1F055103A06C2E3391BF0EA5345512CCA5FE5F65
-              9CA59CBE8C80A80190EE63B3D15970AC757F32C23A693650A9C3112A35054009
-              503AA9CD753ECEA50CC9D683643194A94710EE383405408A9F25A3291BA07AED
-              7550B174FE636F164A00D4EFADF194947B65F06BB8FCE2D2EE035D02E0924236
-              A3A136D4B2D786AF5B02403DB86DA37D904409782D77AE6A4232B96769323A9D
-              CADFC80BE88FF16811005BAB4F25F1DB08B36BBB0E7289DEEAFF4800C4019188
-              B64806EC19E8D57F9BB19CBA2D0260359BDEBEA57DAE95184A466B12CD7BB714
-              9F89B9396F928D68D4B80768013C66C5C1AD6E53E9C3E9B47FF16E969350F7D9
-              9A02A04FF968C2EDD990BE2A6D45865C8EB50364B3C0FF40C4DEBFB59C08846D
-              DC46B426D5F742B9B4730E50294AAA66CCC779DB047ACB719606E74A8905B890
-              38943F4D938754EE07D52AB51F04814C7A9BC36A062269AE15B6D10708F5E2D3
-              6243206A672075847B801B3A7D286971348EE1D0F21E293537C41C003626BAD4
-              BF7DCC9C02A1C4C8200F48B9727441CC05888E024246F8D8A83206A729293266
-              9BC0A110BD00B98803D52AAFC3204602CC390F8C2D41F0ECD1FCCA659B002508
-              7E6F7E80DA36801B620D002E88B5007443AC09A00B626D00B321D6089083F81D
-              5EACFDD3FCAD152085283ACFA035034408A25E6CBBD70E50BDDD7700D5102D3C
-              60978185035C5DFE2F24F88F31DE923FDD0000000049454E44AE426082}
-          end>
-      end>
-    Left = 232
-    Top = 112
-  end
   object qryFindMember: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     Filtered = True
     FilterOptions = [foCaseInsensitive]
     IndexFieldNames = 'MemberID'
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
@@ -177,41 +143,12 @@ object FindMember_FName: TFindMember_FName
       'FROM            '
       ' dbo.Member '
       'ORDER BY Member.LastName;')
-    Left = 97
-    Top = 176
-    object qryFindMemberMemberID: TFDAutoIncField
-      DisplayLabel = 'ID'
-      DisplayWidth = 5
-      FieldName = 'MemberID'
-      Origin = 'MemberID'
-      Visible = False
-    end
-    object qryFindMemberMembershipNum: TIntegerField
-      Alignment = taLeftJustify
-      DisplayLabel = 'Num'
-      DisplayWidth = 5
-      FieldName = 'MembershipNum'
-      Origin = 'MembershipNum'
-      Visible = False
-    end
-    object qryFindMemberFName: TWideStringField
-      DisplayLabel = 'Member'#39's Name'
-      DisplayWidth = 300
-      FieldName = 'FName'
-      Origin = 'FName'
-      ReadOnly = True
-      Required = True
-      Size = 258
-    end
-    object qryFindMemberSwimClubID: TIntegerField
-      FieldName = 'SwimClubID'
-      Origin = 'SwimClubID'
-      Visible = False
-    end
+    Left = 137
+    Top = 168
   end
   object dsFindMember: TDataSource
     DataSet = qryFindMember
-    Left = 193
-    Top = 176
+    Left = 233
+    Top = 168
   end
 end

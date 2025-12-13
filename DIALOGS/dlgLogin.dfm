@@ -3,7 +3,7 @@ object Login: TLogin
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Login to SwimClubMeet database server.'
-  ClientHeight = 413
+  ClientHeight = 424
   ClientWidth = 721
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -8979,7 +8979,7 @@ object Login: TLogin
     Left = 3
     Top = 3
     Width = 715
-    Height = 407
+    Height = 418
     ControlCollection = <
       item
         Control = pnlSideBar
@@ -9002,6 +9002,7 @@ object Login: TLogin
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitHeight = 407
     object pnlSideBar: TPanel
       Left = 0
       Top = 0
@@ -15892,13 +15893,6 @@ object Login: TLogin
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      object lblStatusMsg: TLabel
-        Left = 26
-        Top = 316
-        Width = 220
-        Height = 21
-        Caption = 'Status and Connection Message'
-      end
       object lblPassword: TLabel
         Left = 38
         Top = 120
@@ -15923,21 +15917,6 @@ object Login: TLogin
         Alignment = taRightJustify
         Caption = 'User Name'
       end
-      object lblConnectionInfo: TLabel
-        Left = 26
-        Top = 198
-        Width = 455
-        Height = 112
-        AutoSize = False
-        Caption = 'Connection information...'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -13
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        WordWrap = True
-      end
       object vimgVisibility: TVirtualImage
         Left = 379
         Top = 112
@@ -15952,7 +15931,7 @@ object Login: TLogin
       end
       object chkbOSAuthent: TCheckBox
         Left = 110
-        Top = 168
+        Top = 156
         Width = 206
         Height = 24
         Caption = 'Use OS Authentication'
@@ -15984,9 +15963,9 @@ object Login: TLogin
       end
       object Panel2: TPanel
         Left = 0
-        Top = 343
+        Top = 360
         Width = 498
-        Height = 70
+        Height = 53
         Align = alBottom
         BevelEdges = [beTop]
         BevelKind = bkFlat
@@ -15994,10 +15973,10 @@ object Login: TLogin
         TabOrder = 4
         DesignSize = (
           498
-          68)
+          51)
         object btnDisconnect: TButton
           Left = 136
-          Top = 19
+          Top = 11
           Width = 110
           Height = 32
           Anchors = [akTop, akRight]
@@ -16007,7 +15986,7 @@ object Login: TLogin
         end
         object btnConnect: TButton
           Left = 252
-          Top = 19
+          Top = 11
           Width = 110
           Height = 32
           Anchors = [akTop, akRight]
@@ -16017,7 +15996,7 @@ object Login: TLogin
         end
         object btnDone: TButton
           Left = 368
-          Top = 19
+          Top = 11
           Width = 110
           Height = 32
           Anchors = [akTop, akRight]
@@ -16027,6 +16006,16 @@ object Login: TLogin
           TabOrder = 2
           OnClick = btnDoneClick
         end
+      end
+      object memoInfo: TMemo
+        Left = 26
+        Top = 189
+        Width = 455
+        Height = 165
+        Lines.Strings = (
+          'memoInfo')
+        ScrollBars = ssVertical
+        TabOrder = 5
       end
     end
   end

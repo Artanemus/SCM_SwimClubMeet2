@@ -45,7 +45,7 @@ object CORE: TCORE
     MasterSource = dsSwimClub
     MasterFields = 'SwimClubID'
     DetailFields = 'SwimClubID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayDateTime]
     FormatOptions.FmtDisplayDateTime = 'YYYY-MM-DD hh:nn'
     UpdateOptions.AssignedValues = [uvEInsert]
@@ -165,7 +165,7 @@ object CORE: TCORE
     MasterSource = dsSession
     MasterFields = 'SessionID'
     DetailFields = 'SessionID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'hh:nn'
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Event'
@@ -199,7 +199,7 @@ object CORE: TCORE
         '       CONCAT('#39'#'#39', Event.EventNum, '#39' - '#39', Distance.Caption, '#39' '#39',' +
         ' Stroke.Caption)'
       '         ,0,24) AS ShortCaption'
-      'FROM dbo.[Event]'
+      'FROM [SwimClubMeet2].[dbo].[Event]'
       '    LEFT OUTER JOIN Stroke'
       '        ON Stroke.StrokeID = Event.StrokeID'
       '    LEFT OUTER JOIN Distance'
@@ -387,7 +387,7 @@ object CORE: TCORE
     MasterSource = dsEvent
     MasterFields = 'EventID'
     DetailFields = 'EventID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvCheckRequired]
     UpdateOptions.CheckRequired = False
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Heat'
@@ -466,7 +466,6 @@ object CORE: TCORE
   end
   object qrySwimClub: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     AfterScroll = qrySwimClubAfterScroll
     OnNewRecord = qrySwimClubNewRecord
     Filter = 'IsArchived <> 1'
@@ -484,7 +483,7 @@ object CORE: TCORE
         Fields = 'SwimClubID'
       end>
     IndexName = 'indxHideArchived'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..SwimClub'
     UpdateOptions.KeyFields = 'SwimClubID'
     SQL.Strings = (
@@ -510,7 +509,7 @@ object CORE: TCORE
       '      ,[IsClubGroup]'
       '      ,Cast([IsArchived] as integer) AS imgIndxArchived'
       '      ,Cast([IsClubGroup] as integer) AS imgIndGroup'
-      '  FROM [dbo].[SwimClub]'
+      '  FROM [SwimClubMeet2].[dbo].[SwimClub]'
       '  ORDER BY [SwimClubID];'
       ''
       ''
@@ -520,6 +519,7 @@ object CORE: TCORE
     Top = 40
   end
   object qryLane: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
     Indexes = <
       item
         Active = True
@@ -532,10 +532,12 @@ object CORE: TCORE
     MasterSource = dsHeat
     MasterFields = 'HeatID'
     DetailFields = 'HeatID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Lane'
     UpdateOptions.KeyFields = 'LaneID'
     SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
       'SELECT [LaneID]'
       '      ,[LaneNum]'
       '      ,[Lane].[RaceTime]'
@@ -573,7 +575,7 @@ object CORE: TCORE
       ''
       '       END AS Stat'
       '       '
-      '  FROM [dbo].[Lane]'
+      '  FROM [SwimClubMeet2].[dbo].[Lane]'
       '  LEFT JOIN Nominee ON Lane.NomineeID = Nominee.NomineeID'
       '  LEFT JOIN [Member] ON Nominee.MemberID = [Member].Memberid'
       '  LEFT JOIN [Team] ON Lane.Teamid = Team.teamid')
@@ -591,16 +593,12 @@ object CORE: TCORE
     Indexes = <
       item
         Active = True
-        Selected = True
         Name = 'indxEvent_DESC'
         Fields = 'EventID'
         DescFields = 'EventID'
       end>
-    IndexName = 'indxEvent_DESC'
-    MasterSource = dsEvent
-    MasterFields = 'EventID'
-    DetailFields = 'EventID'
-    Connection = TestConnection
+    IndexFieldNames = 'NomineeID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn.ss.zzz'
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Nominee'
@@ -615,25 +613,25 @@ object CORE: TCORE
       '      ,[IsEntrant]'
       '      ,[SeedTime]'
       '      ,[AutoBuildFlag]'
-      '      ,[EventID]'
+      '      ,[Nominee].[EventID]'
       '      ,[Nominee].[MemberID]'
       '      ,SUBSTRING(CONCAT ('
       #9'[FirstName]'
       #9','#39', '#39
       #9',UPPER([LastName])'
-      #9'), 0, 48) AS FullName      '
+      #9'), 0, 48) AS FullName '
       '  FROM [SwimClubMeet2].[dbo].[Nominee]'
       
         '  LEFT JOIN [Member] ON [Nominee].[MemberID] = [Member].[MemberI' +
-        'D];'
+        'D]'
       '')
-    Left = 296
-    Top = 160
+    Left = 848
+    Top = 216
   end
   object dsNominee: TDataSource
     DataSet = qryNominee
-    Left = 368
-    Top = 160
+    Left = 960
+    Top = 216
   end
   object qryTeam: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -649,7 +647,7 @@ object CORE: TCORE
     MasterSource = dsLane
     MasterFields = 'LaneID'
     DetailFields = 'LaneID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayDateTime, fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
     UpdateOptions.AssignedValues = [uvEInsert, uvCheckRequired]
@@ -688,6 +686,7 @@ object CORE: TCORE
     Top = 280
   end
   object qrySplitTime: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
     Indexes = <
       item
         Active = True
@@ -700,7 +699,7 @@ object CORE: TCORE
     MasterSource = dsLane
     MasterFields = 'LaneID'
     DetailFields = 'LaneID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     SQL.Strings = (
       'SELECT [SplitTimeID]'
       '      ,[WatchNum]'
@@ -716,6 +715,7 @@ object CORE: TCORE
     Top = 336
   end
   object qryWatchTime: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
     Indexes = <
       item
         Active = True
@@ -728,7 +728,7 @@ object CORE: TCORE
     MasterSource = dsLane
     MasterFields = 'LaneID'
     DetailFields = 'LaneID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     SQL.Strings = (
       ''
       ''
@@ -756,7 +756,7 @@ object CORE: TCORE
         DescFields = 'TeamID'
       end>
     IndexName = 'mcTeam_DESC'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     SQL.Strings = (
       'DECLARE @TeamID AS INTEGER;'
       'SET @TeamID = :TEAMID;'
@@ -782,7 +782,7 @@ object CORE: TCORE
   object tblStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'StrokeID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Stroke'
     UpdateOptions.KeyFields = 'StrokeID'
@@ -793,7 +793,7 @@ object CORE: TCORE
   object tblDistance: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'DistanceID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Distance'
     UpdateOptions.KeyFields = 'DistanceID'
@@ -829,7 +829,7 @@ object CORE: TCORE
     MasterSource = dsMemberLink
     MasterFields = 'MemberID'
     DetailFields = 'MemberID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Member'
     UpdateOptions.KeyFields = 'MemberID'
     SQL.Strings = (
@@ -910,8 +910,8 @@ object CORE: TCORE
       '  FROM [SwimClubMeet2].[dbo].[Member]'
       '  ORDER BY [LastName]'
       '*/ ')
-    Left = 848
-    Top = 192
+    Left = 384
+    Top = 136
     ParamData = <
       item
         Name = 'SESSIONSTART'
@@ -928,20 +928,20 @@ object CORE: TCORE
   end
   object dsMemberLink: TDataSource
     DataSet = qryMemberLink
-    Left = 944
-    Top = 128
+    Left = 448
+    Top = 72
   end
   object dsMember: TDataSource
     DataSet = qryMember
-    Left = 944
-    Top = 192
+    Left = 480
+    Top = 136
   end
   object qryMemberLink: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     MasterSource = dsSwimClub
     MasterFields = 'SwimClubID'
     DetailFields = 'SwimClubID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.MemberLink'
     UpdateOptions.KeyFields = 'SwimClubID;MemberID'
     SQL.Strings = (
@@ -949,22 +949,13 @@ object CORE: TCORE
       '      ,[SwimClubID]'
       '      ,[HouseID]'
       '  FROM [SwimClubMeet2].[dbo].[MemberLink]')
-    Left = 848
-    Top = 128
-  end
-  object TestConnection: TFDConnection
-    Params.Strings = (
-      'ConnectionDef=MSSQL_SCM2')
-    ConnectedStoredUsage = [auDesignTime]
-    Connected = True
-    LoginPrompt = False
-    Left = 496
-    Top = 40
+    Left = 352
+    Top = 72
   end
   object tblEventType: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'EventTypeID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'SwimClubMeet2.dbo.EventType'
     Left = 72
@@ -978,7 +969,7 @@ object CORE: TCORE
   object tblGender: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'GenderID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'SwimClubMeet2.dbo.Gender'
     Left = 72
@@ -987,7 +978,7 @@ object CORE: TCORE
   object tblRound: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'RoundID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'SwimClubMeet2.dbo.Round'
     Left = 72
@@ -996,7 +987,7 @@ object CORE: TCORE
   object tblEventCat: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'EventCategoryID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'SwimClubMeet2.dbo.EventCategory'
     Left = 72
@@ -1005,7 +996,7 @@ object CORE: TCORE
   object tblParalympicType: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'ParalympicTypeID'
-    Connection = TestConnection
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     TableName = 'SwimClubMeet2.dbo.ParalympicType'
     Left = 72
@@ -1032,10 +1023,17 @@ object CORE: TCORE
     Top = 584
   end
   object qryFilterMember: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
     AfterScroll = qryFilterMemberAfterScroll
     FilterOptions = [foCaseInsensitive]
-    Connection = TestConnection
+    IndexFieldNames = 'MemberID'
+    Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
     SQL.Strings = (
+      'USE SwimClubMeet2;'
       ''
       '-- create temporary table to hold results'
       'IF OBJECT_ID('#39'tempdb..#SwimClubMembers'#39') IS NOT NULL'
@@ -1059,7 +1057,7 @@ object CORE: TCORE
         'ID already in temp)'
       'INSERT INTO #SwimClubMembers (SwimClubID, MemberID)'
       'SELECT DISTINCT sc.SwimClubID, mm.MemberID'
-      'FROM dbo.SwimClub AS sc'
+      'FROM SWimClubMeet2.dbo.SwimClub AS sc'
       'INNER JOIN dbo.MemberLink AS ml ON sc.SwimClubID = ml.SwimClubID'
       'INNER JOIN dbo.Member AS mm ON ml.MemberID = mm.MemberID'
       'WHERE sc.SwimClubID = @SwimClubID'
@@ -1072,7 +1070,7 @@ object CORE: TCORE
         'lready in temp)'
       'INSERT INTO #SwimClubMembers (SwimClubID, MemberID)'
       'SELECT DISTINCT sg.ChildClubID, mm.MemberID'
-      'FROM dbo.SwimClubGroup AS sg'
+      'FROM SwimClubMeet2.dbo.SwimClubGroup AS sg'
       
         'INNER JOIN dbo.MemberLink AS ml ON sg.ChildClubID = ml.SwimClubI' +
         'D'
@@ -1108,7 +1106,7 @@ object CORE: TCORE
       #9#9'ELSE'
       
         #9#9#9'CONCAT(UPPER(mm.LastName), '#39', '#39', mm.FirstName, '#39' .'#39', LEFT(mm.' +
-        'MiddleName, 0) )'
+        'MiddleName, 1) )'
       #9#9'END '#9
       #9'END'#9'as FName '
       'FROM #SwimClubMembers AS mlist'
@@ -1122,7 +1120,87 @@ object CORE: TCORE
       ';'
       ''
       'DROP TABLE #SwimClubMembers;'
-      '-- ...existing code...')
+      ''
+      ''
+      ''
+      '/*'
+      ''
+      ''
+      'DECLARE @SwimClubID AS INT = 1 ;'
+      'DECLARE @SortON AS INT = 0;'
+      'DECLARE @SeedDate AS DATETIME = GETDATE();'
+      ''
+      ''
+      ''
+      '-- DECLARE @SwimClubID INT = :SWIMCLUBID;'
+      '-- DECLARE @SortOn INT = :SORTON;'
+      '-- DECLARE @SeedDate DATETIME = :SEEDDATE;'
+      ''
+      'IF @SortOn IS NULL SET @SortOn = 0; '
+      'IF @SeedDate IS NULL SET @SeedDate = GETDATE();'
+      ''
+      'WITH'
+      'Clubs AS ( '
+      #9'-- parent club + direct child clubs '
+      #9'SELECT @SwimClubID AS SwimClubID  '
+      ''
+      #9'UNION ALL '
+      ''
+      #9'SELECT sg.ChildClubID '
+      #9'FROM dbo.SwimClubGroup AS sg '
+      #9'WHERE sg.ParentClubID = @SwimClubID ),'
+      ''
+      'ClubMembers AS ( '
+      #9'-- distinct MemberIDs for any of the clubs above '
+      #9'SELECT DISTINCT '
+      #9#9'c.SwimClubID, '
+      #9#9'ml.MemberID '
+      #9'FROM Clubs c '
+      
+        #9'INNER JOIN dbo.MemberLink AS ml ON ml.SwimClubID = c.SwimClubID' +
+        ' ) '
+      ''
+      ''
+      'SELECT cm.SwimClubID, '
+      'cm.MemberID, '
+      'mm.FirstName, '
+      'mm.MiddleName, '
+      'mm.LastName, '
+      'scc.NickName, '
+      'dbo.SwimmerAge(@SeedDate, mm.DOB) AS Age, '
+      'g.ABREV AS GenderAbbrev, '
+      'CASE WHEN @SortOn = 0 THEN '
+      #9'CASE WHEN mm.MiddleName IS NULL OR mm.MiddleName = '#39#39' THEN '
+      #9#9'CONCAT(mm.FirstName, '#39' '#39', UPPER(mm.LastName)) ELSE '
+      
+        #9#9'CONCAT(mm.FirstName, '#39' '#39', LEFT(mm.MiddleName,1), '#39'. '#39', UPPER(m' +
+        'm.LastName)) '
+      #9#9'END '
+      #9'ELSE '
+      #9'CASE WHEN mm.MiddleName IS NULL OR mm.MiddleName = '#39#39' THEN '
+      #9#9'CONCAT(UPPER(mm.LastName), '#39', '#39', mm.FirstName) ELSE '
+      
+        #9#9'CONCAT(UPPER(mm.LastName), '#39', '#39', mm.FirstName, '#39' '#39', LEFT(mm.Mi' +
+        'ddleName,1), '#39'.'#39') '
+      #9#9'END '
+      #9'END AS FName'
+      #9#9
+      'FROM ClubMembers AS cm '
+      'INNER JOIN dbo.Member AS mm ON cm.MemberID = mm.MemberID '
+      
+        'INNER JOIN dbo.SwimClub AS scc ON cm.SwimClubID = scc.SwimClubID' +
+        ' '
+      'INNER JOIN dbo.Gender AS g ON mm.GenderID = g.GenderID '
+      'ORDER BY '
+      #9'CASE WHEN (@SortOn = 1) THEN '
+      #9'mm.LastName '
+      #9'ELSE '
+      #9'mm.FirstName '
+      #9'END '
+      ''
+      ''
+      ''
+      '*/')
     Left = 848
     Top = 72
     ParamData = <
@@ -1197,7 +1275,8 @@ object CORE: TCORE
   end
   object qryNominate: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Connection = TestConnection
+    Active = True
+    Connection = SCM2.scmConnection
     SQL.Strings = (
       'USE SwimClubMeet2;'
       ''
@@ -1208,8 +1287,10 @@ object CORE: TCORE
       'DECLARE @MemberID integer = :MEMBERID; --108;'
       'DECLARE @SessionID integer = :SESSIONID; --144;'
       'DECLARE @SeedDate DateTime = :SEEDDATE;'
+      'DECLARE @IsShortCourse BIT = :ISSHORTCOURSE;'
       ''
       'IF @SeedDate IS NULL SET @SeedDate = GETDATE();'
+      'IF @IsShortCourse IS NULL SET @IsShortCourse = 0;'
       ''
       '--  check if temporary table exists and drop it'
       'IF OBJECT_ID('#39'tempdb..#ev'#39') IS NOT NULL'
@@ -1220,16 +1301,19 @@ object CORE: TCORE
       '    Caption nvarchar(100),'
       '    EventNum integer,'
       '    EventTypeID integer,'
-      '    SubText nvarchar(200),'
+      '    SubText nvarchar(40),'
       '    SessionID integer,'
       '    Nominated integer,'
-      '    Qualified integer'
+      '    Qualified integer,'
+      '    StrokeID integer,'
+      '    DistanceID integer,'
+      '    Meters integer'
       ');  '
       ''
       'INSERT INTO #ev '
       
         '   (EventID, Caption, EventNum, EventTypeID, SubText, SessionID,' +
-        ' Nominated, Qualified)'
+        ' Nominated, Qualified, StrokeID, DistanceID, Meters)'
       'SELECT ee.EventID,  '
       '    ee.Caption,'
       '    ee.EventNum,'
@@ -1238,8 +1322,11 @@ object CORE: TCORE
       '    ee.SessionID,'
       '    CASE WHEN n.MemberID = @MemberID then 1 else 0 end,'
       
-        #9'dbo.IsMemberQualified(n.MemberID, @SeedDate, ee.DistanceID, ee.' +
-        'StrokeID)'
+        '  dbo.IsMemberQualified(@MemberID, @SeedDate, ee.DistanceID, ee.' +
+        'StrokeID, @IsShortCourse),'
+      '   s.StrokeID,'
+      '   d.DistanceID,'
+      '   d.Meters'
       ''
       'FROM [dbo].[EVENT] ee '
       'INNER JOIN [dbo].[Distance] d ON ee.DistanceID = d.DistanceID'
@@ -1277,6 +1364,12 @@ object CORE: TCORE
         DataType = ftDateTime
         ParamType = ptInput
         Value = Null
+      end
+      item
+        Name = 'ISSHORTCOURSE'
+        DataType = ftByte
+        ParamType = ptInput
+        Value = 0
       end>
     object qryNominateEventID: TIntegerField
       FieldName = 'EventID'
@@ -1312,6 +1405,18 @@ object CORE: TCORE
       FieldName = 'Qualified'
       Origin = 'Qualified'
     end
+    object qryNominateStrokeID: TIntegerField
+      FieldName = 'StrokeID'
+      Origin = 'StrokeID'
+    end
+    object qryNominateDistanceID: TIntegerField
+      FieldName = 'DistanceID'
+      Origin = 'DistanceID'
+    end
+    object qryNominateMeters: TIntegerField
+      FieldName = 'Meters'
+      Origin = 'Meters'
+    end
   end
   object dsNominate: TDataSource
     DataSet = qryNominate
@@ -1319,8 +1424,10 @@ object CORE: TCORE
     Top = 24
   end
   object qryMemberStats: TFDQuery
-    Connection = TestConnection
+    ActiveStoredUsage = [auDesignTime]
+    Connection = SCM2.scmConnection
     SQL.Strings = (
+      'USE SwimClubMeet2;'
       ''
       'DECLARE @MemberID INTEGER = :MEMBERID;  -- :MEMBERID'
       'DECLARE @SeedDate DATETIME = :SeedDate;'
@@ -1341,23 +1448,23 @@ object CORE: TCORE
       ''
       'if @SeedDate IS NULL SET @SeedDate = GETDATE();'
       ''
-      ''
       'SELECT m.MemberID,'
-      #9'dbo.SwimmerAge(@SeedDate, m.DOB) AS DOB,'
+      '  dbo.SwimmerAge(@SeedDate, m.DOB) AS DOB,'
       
-        #9'dbo.TimeToBeat(@Algorithm, @CalcDefRT, @Percent, m.MemberID, @D' +
-        'istanceID, @StrokeID, @SeedDate) AS TTB,'
+        '  dbo.TimeToBeat(@Algorithm, @CalcDefRT, @Percent, m.MemberID, @' +
+        'DistanceID, @StrokeID, @SeedDate) AS TTB,'
       
-        #9'dbo.PersonalBest(m.MemberID, @DistanceID, @StrokeID, @SeedDate)' +
-        ' AS PB,'
-      #9'PB.RaceTime AS SeedTime'
-      'FROM dbo.Member m'
+        '  dbo.PersonalBest(m.MemberID, @DistanceID, @StrokeID, @SeedDate' +
+        ') AS PB,'
+      '  dbo.SwimmerAge(@SeedDate,m.DOB) AS Age, '
+      '  PBT.[RaceTime] AS SeedTime'
+      'FROM [SwimClubMeet2].[dbo].[Member] m'
       
-        'LEFT JOIN dbo.PB ON m.MemberID = PB.MemberID AND PB.DistanceID =' +
-        ' @DistanceID AND PB.StrokeID = @StrokeID'
+        'LEFT JOIN [dbo].[PB] AS PBT ON m.MemberID = PBT.MemberID AND PBT' +
+        '.DistanceID = @DistanceID AND PBT.StrokeID = @StrokeID'
       'WHERE m.MemberID = @MemberID;')
     Left = 848
-    Top = 256
+    Top = 152
     ParamData = <
       item
         Name = 'MEMBERID'

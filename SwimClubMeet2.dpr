@@ -29,7 +29,7 @@ uses
   dlgSwimClub_Manage in 'DIALOGS\SwimClub\dlgSwimClub_Manage.pas' {SwimClubManage},
   frFrameNominate in 'FRAMES\frFrameNominate.pas' {FrameNominate: TFrame},
   frFrameFilterMember in 'FRAMES\frFrameFilterMember.pas' {FrameFilterMember: TFrame},
-  uNominate in 'DATA_Helper\uNominate.pas',
+  uNominee in 'DATA_Helper\uNominee.pas',
   dlgPreferences in 'TOOLS\dlgPreferences.pas' {Preferences},
   dlgMM_Delete in 'MEMBERS\dlgMM_Delete.pas' {MM_Delete},
   dlgMM_Find_FName in 'MEMBERS\dlgMM_Find_FName.pas' {FindMember_FName},

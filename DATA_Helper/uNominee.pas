@@ -1,4 +1,4 @@
-unit uNominate;
+unit uNominee;
 
 interface
 
@@ -11,13 +11,13 @@ uses
 
   Data.DB,
 
-  FireDAC.Comp.Client, FireDAC.Stan.Param ;
+  FireDAC.Comp.Client, FireDAC.Stan.Param, FireDAC.Stan.Error ;
 
   function Locate_FilterMember(aMemberID: integer): Boolean;
   function Locate_Nominee(aMemberID, aEventID: integer): Boolean;
   function GetSeedDate(): TDate;
-  function NewNominee(aMemberID: integer): integer; // current event (PARENT)
-  function DeleteNominee(aMemberID: integer): boolean; // current event (PARENT)
+  function NewNominee(aMemberID, aEventID: integer): integer;
+  function DeleteNominee(aMemberID, aEventID: integer): boolean;
 
 
 implementation
@@ -26,49 +26,63 @@ uses
 
 dmCORE, dmSCM2, uDefines, uSettings, uSwimClub, uSession, uEvent ;
 
-function DeleteNominee(aMemberID: integer): boolean;
+function DeleteNominee(aMemberID, aEventID: integer): boolean;
 var
   SQL: string;
   v: variant;
+//  NomineeID: integer;
 begin
   result := false;
-  // Clear any lane assignement....
-  // uEvent.ClearEntrant(aMemberID);
-  SQL := '''
-    UPDATE SwimClubMeet2.dbo.Lane SET(NomineeID) = NULL
-    INNER JOIN dbo.Heat ON Lane.HeatID = Heat.HeatID
-    INNER JOIN dbo.Event ON heat.EventID = Event.EventID
-    INNER JOIN dbo.Nominee ON dbo.Event.EventID = Nominee.EventID
-    WHERE dbo.Event.EventID = :ID1 AND NomineeID.MemberID = :ID2
-    ''';
-
 
   // Clear any team assignment...
-  // uTeam.ClearTeamMember();
   SQL := '''
-      DELETE FROM SwimClubMeet2.dbo.TeamLink
-      INNER JOIN dbo.Nominee ON TeamLink.NomineeID = Nominee.NomineeID
-      WHERE Nominee.EventID := ID1 AND Nominee.MemberID := ID2
+      DELETE TL
+      FROM SwimClubMeet2.dbo.TeamLink AS TL
+      INNER JOIN dbo.Nominee AS N ON TL.NomineeID = N.NomineeID
+      WHERE N.EventID = :ID1 AND N.MemberID = :ID2
       ''';
   try
+    v := SCM2.scmConnection.ExecSQL(SQL, [aEventID, aMemberID]);
+  except
+    on E: EFDDBEngineException do
+      SCM2.FDGUIxErrorDialog.Execute(E);
+  end;
+
+  // Clear any lane assignement given to the swimmer (nominee)
+  SQL := '''
+    UPDATE L
+    SET NomineeID = NULL
+    FROM SwimClubMeet2.dbo.Lane AS L
+    INNER JOIN dbo.Nominee AS N ON L.NomineeID = N.NomineeID
+    WHERE N.EventID = :ID1 AND N.MemberID = :ID2;
+    ''';
+  try
+    v := SCM2.scmConnection.ExecSQL(SQL, [aEventID, aMemberID]);
+  except
+    on E: EFDDBEngineException do
+      SCM2.FDGUIxErrorDialog.Execute(E);
+  end;
+
+  try
     begin
-      v := SCM2.scmConnection.ExecSQL(SQL, [uEvent.PK, aMemberID]);
-      if uNominate.Locate_Nominee(aMemberID, uEvent.PK) then
+      if uNominee.Locate_Nominee(aMemberID, aEventID) then
       begin
         // finally delete the nominee.
         CORE.qryNominee.Delete;
         result := true;
       end;
     end;
-  except on E: Exception do
+  except
+    on E: EFDDBEngineException do
+      begin
+        CORE.qryNominee.Cancel;
+        SCM2.FDGUIxErrorDialog.Execute(E);
+      end;
   end;
 
 end;
 
-
-
-
-function NewNominee(aMemberID: integer): integer;
+function NewNominee(aMemberID, aEventID: integer): integer;
 begin
   result := 0;
 
@@ -85,11 +99,11 @@ begin
         CORE.qryMemberStats.Connection := SCM2.scmConnection;
         CORE.qryMemberStats.Close;
         CORE.qryMemberStats.ParamByName('MEMBERID').AsInteger := aMemberID;
-        CORE.qryMemberStats.ParamByName('EVENTID').AsInteger := uEvent.PK;
+        CORE.qryMemberStats.ParamByName('EVENTID').AsInteger := aEventID;
 
         // SeedDate - Used to calculate AGE.
         // StartOfSeason, StartOfSession, Today's Date.
-        CORE.qryMemberStats.ParamByName('SEEDDATE').AsDateTime := uNominate.GetSeedDate();
+        CORE.qryMemberStats.ParamByName('SEEDDATE').AsDateTime := uNominee.GetSeedDate();
 
         if Assigned(Settings) then     //Algorithm
         begin
@@ -113,8 +127,11 @@ begin
         CORE.qryMemberStats.Prepare;
         CORE.qryMemberStats.Open;
       end;
-      except on E: Exception do
+      except
+        on E: EFDDBEngineException do
+            SCM2.FDGUIxErrorDialog.Execute(E);
       end;
+
       try
         CORE.qryNominee.Insert;
         CORE.qryNominee.FieldByName('AGE').AsInteger := CORE.qryMemberStats.FieldByName('AGE').AsInteger;
@@ -122,6 +139,7 @@ begin
         CORE.qryNominee.FieldByName('PB').AsDateTime :=CORE.qryMemberStats.FieldByName('PB').AsDateTime;
         CORE.qryNominee.FieldByName('SeedTime').AsDateTime := CORE.qryMemberStats.FieldByName('SeedTime').AsDateTime;
         CORE.qryNominee.FieldByName('MemberID').AsInteger := aMemberID;
+        CORE.qryNominee.FieldByName('EventID').AsInteger := aEventID;
         CORE.qryNominee.Post;
 
         // Get the newly created nominee ID.. Safe to do in FireDAC.
@@ -132,8 +150,12 @@ begin
       if not VarIsClear(v) and (v=0) then  NomineeID := v;
       }
 
-      except on E: Exception do
+      except
+      on E: EFDDBEngineException do
+        begin
           CORE.qryNominee.Cancel;
+          SCM2.FDGUIxErrorDialog.Execute(E);
+        end;
       end;
     end;
 
@@ -162,7 +184,8 @@ begin
   if CORE.qryNominee.IsEmpty then exit;
   if (aMemberID = 0) or (aEventID = 0) then exit;
   SearchOptions := [];
-  result := CORE.qryFilterMember.Locate('MemberID;EventID', VarArrayOf([aMemberID, aEventID]),  SearchOptions);
+  result := CORE.qryNominee.Locate('MemberID;EventID', VarArrayOf([aMemberID,
+    aEventID]), SearchOptions);
 end;
 
 function GetSeedDate(): TDate;

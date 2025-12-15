@@ -2733,7 +2733,7 @@ object Main2: TMain2
     object DBTextClubName: TDBText
       Left = 6
       Top = 0
-      Width = 159
+      Width = 116
       Height = 20
       AutoSize = True
       DataField = 'Caption'
@@ -2749,7 +2749,7 @@ object Main2: TMain2
     object DBTextNickName: TDBText
       Left = 6
       Top = 18
-      Width = 102
+      Width = 91
       Height = 15
       AutoSize = True
       DataField = 'NickName'
@@ -2829,7 +2829,7 @@ object Main2: TMain2
     Width = 1103
     Height = 662
     Margins.Top = 10
-    ActivePage = tabSession
+    ActivePage = tabHeats
     Align = alClient
     TabOrder = 3
     OnChange = PageControlChange
@@ -4061,7 +4061,6 @@ object Main2: TMain2
               end
               item
                 Action = Member_Stats
-                Caption = 'Mem&ber'#39's Dashboard...'
               end
               item
                 Caption = '-'
@@ -4492,7 +4491,7 @@ object Main2: TMain2
     end
     object Member_Stats: TAction
       Category = 'Members'
-      Caption = 'Member'#39's Dashboard...'
+      Caption = 'Member'#39's Stats...'
       OnExecute = Member_StatsExecute
       OnUpdate = GenericActionUpdate
     end

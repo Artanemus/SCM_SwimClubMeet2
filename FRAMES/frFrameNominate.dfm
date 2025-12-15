@@ -67,11 +67,11 @@ object FrameNominate: TFrameNominate
       Cursor = crDefault
       Align = alClient
       Color = clWhite
-      ColCount = 6
+      ColCount = 8
       DefaultRowHeight = 46
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 2
+      RowCount = 6
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -86,6 +86,7 @@ object FrameNominate: TFrameNominate
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
       OnClickCell = gridClickCell
+      OnCanEditCell = gridCanEditCell
       HTMLKeepLineBreak = False
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
@@ -284,6 +285,33 @@ object FrameNominate: TFrameNominate
           PrintFont.Style = []
         end
         item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          DataImageField = True
+          FieldName = 'StrokeID'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          Images = IMG.imglstNomStroke
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+        end
+        item
           Alignment = taCenter
           Borders = []
           BorderPen.Color = clSilver
@@ -340,7 +368,7 @@ object FrameNominate: TFrameNominate
           PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 290
+          Width = 250
         end
         item
           Alignment = taRightJustify
@@ -370,6 +398,32 @@ object FrameNominate: TFrameNominate
           PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          FieldName = 'Meters'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 0
         end>
       DataSource = CORE.dsNominate
       InvalidPicture.Data = {
@@ -514,11 +568,17 @@ object FrameNominate: TFrameNominate
         20
         50
         50
+        50
         48
-        290
-        50)
+        250
+        50
+        0)
       RowHeights = (
         0
+        46
+        46
+        46
+        46
         46)
     end
   end
@@ -527,7 +587,7 @@ object FrameNominate: TFrameNominate
     Top = 312
   end
   object pumenuNominate: TPopupMenu
-    Left = 242
-    Top = 400
+    Left = 258
+    Top = 392
   end
 end

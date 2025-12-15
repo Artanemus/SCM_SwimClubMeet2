@@ -21,11 +21,16 @@ uses
 
   FireDAC.Stan.Option,
 
-  dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub, AdvUtil, AdvObj,
-  BaseGrid, AdvGrid, DBAdvGrid, frFrameSession, frFrameEvent,
-  frFrameNominate, frFrameFilterMember
+  dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub,
 
-  ;
+  { TMS }
+  AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
+
+  { FRAMES }
+  frFrameSession,
+  frFrameEvent,
+  frFrameNominate,
+  frFrameFilterMember;
 
 type
   TMain2 = class(TForm)
@@ -97,11 +102,11 @@ type
     frEvent: TFrameEvent;
     pnlMem: TPanel;
     pnlNominate: TPanel;
-    frNominate: TFrameNominate;
     frFilterMember: TFrameFilterMember;
     Member_Stats: TAction;
     Member_CheckData: TAction;
     SwimClub_Reports: TAction;
+    frNominate: TFrameNominate;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);

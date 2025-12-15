@@ -1,7 +1,7 @@
 object ManageMember_Stats: TManageMember_Stats
   Left = 0
   Top = 0
-  Caption = 'Member'#39's dashboard...'
+  Caption = 'Member'#39's Stats...'
   ClientHeight = 791
   ClientWidth = 1102
   Color = clBtnFace

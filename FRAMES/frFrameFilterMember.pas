@@ -66,6 +66,8 @@ type
     procedure edtSearchChange(Sender: TObject);
     procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
+  private
+
   public
     procedure Initialise();
   end;
@@ -76,7 +78,7 @@ implementation
 
 uses
 
-uNominate;
+uNominee;
 
 
 procedure TFrameFilterMember.actnNom_ClearFilterExecute(Sender: TObject);
@@ -163,7 +165,7 @@ begin
     CORE.qryFilterMember.Prepare;
     CORE.qryFilterMember.Open;
 
-    uNominate.Locate_FilterMember(PK); // re-locate to last member selected.
+    uNominee.Locate_FilterMember(PK); // re-locate to last member selected.
 
   finally
     CORE.qryFilterMember.EnableControls;
@@ -271,6 +273,7 @@ begin
   CORE.qryFilterMember.Filter := '';
 
   grid.BeginUpdate;
+  CORE.qryFilterMember.DisableControls;
   try
     begin
       if SCM2.scmConnection.Connected and CORE.IsActive then
@@ -305,6 +308,7 @@ begin
         grid.PageMode := false; // read-only
     end;
   finally
+    CORE.qryFilterMember.EnableControls;
     grid.EndUpdate;
   end;
 end;

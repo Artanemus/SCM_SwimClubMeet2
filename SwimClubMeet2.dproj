@@ -202,7 +202,7 @@
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="DATA_Helper\uNominate.pas"/>
+        <DCCReference Include="DATA_Helper\uNominee.pas"/>
         <DCCReference Include="TOOLS\dlgPreferences.pas">
             <Form>Preferences</Form>
             <FormType>dfm</FormType>

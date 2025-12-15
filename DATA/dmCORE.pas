@@ -90,7 +90,6 @@ type
     qrySessionModifiedOn: TSQLTimeStampField;
     qrySessionSwimClubID: TIntegerField;
     qrySessionSessionStatusID: TIntegerField;
-    TestConnection: TFDConnection;
     tblEventType: TFDTable;
     luEventType: TDataSource;
     LookUpEventType: TStringField;
@@ -128,6 +127,9 @@ type
     qryNominateQualified: TIntegerField;
     qryMemberStats: TFDQuery;
     qryFilterMemberMiddleName: TWideStringField;
+    qryNominateStrokeID: TIntegerField;
+    qryNominateDistanceID: TIntegerField;
+    qryNominateMeters: TIntegerField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterEdit(DataSet: TDataSet);
@@ -248,9 +250,6 @@ procedure TCORE.DataModuleCreate(Sender: TObject);
 begin
 	FIsActive := false;
   // SET ConnectionStoredUsage correctly : use only auDesignTime
-  // Problems with deleting records on the DB server - maybe
-  // this connection was still running?..
-  if TestConnection.Connected then TestConnection.Close;
 end;
 
 procedure TCORE.DataModuleDestroy(Sender: TObject);
@@ -300,7 +299,8 @@ procedure TCORE.qryEventAfterScroll(DataSet: TDataSet);
 begin
   if (msgHandle <> 0) then
   begin
-    PostMessage(msgHandle, SCM_SCROLL_EVENT, 0,0);
+    if not (qryEvent.State in [dsOpening]) then
+      PostMessage(msgHandle, SCM_SCROLL_EVENT, 0,0);
   end;
 end;
 
@@ -325,9 +325,12 @@ var
 begin
   if (msgHandle <> 0) then
   begin
-    WP := qryFilterMember.FieldByName('MemberID').AsInteger;
-    LP := qrySession.FieldByName('SessionID').AsInteger;
-    PostMessage(msgHandle, SCM_SCROLL_NOMINATE_FILTERMEMBER, WP, LP);
+    if not (qryFilterMember.State in [dsOpening]) then
+    begin
+      WP := qryFilterMember.FieldByName('MemberID').AsInteger;
+      LP := qrySession.FieldByName('SessionID').AsInteger;
+      PostMessage(msgHandle, SCM_SCROLL_NOMINATE_FILTERMEMBER, WP, LP);
+    end;
   end;
 end;
 
@@ -335,7 +338,8 @@ procedure TCORE.qryHeatAfterScroll(DataSet: TDataSet);
 begin
   if (msgHandle <> 0) then
   begin
-    PostMessage(msgHandle, SCM_SCROLL_HEAT, 0,0);
+    if not (qryHeat.State in [dsOpening]) then
+      PostMessage(msgHandle, SCM_SCROLL_HEAT, 0,0);
   end;
 end;
 
@@ -351,7 +355,8 @@ procedure TCORE.qrySessionAfterScroll(DataSet: TDataSet);
 begin
   if (msgHandle <> 0) then
   begin
-    PostMessage(msgHandle, SCM_SCROLL_SESSION, 0,0);
+    if not (qrySession.State in [dsOpening]) then
+      PostMessage(msgHandle, SCM_SCROLL_SESSION, 0,0);
   end;
 end;
 

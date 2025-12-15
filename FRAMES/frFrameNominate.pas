@@ -17,7 +17,7 @@ uses
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
-  uDefines, uSettings
+  uDefines, uSettings, dmIMG
 
   ;
 
@@ -30,6 +30,8 @@ type
     grid: TDBAdvGrid;
     actnlistNominate: TActionList;
     pumenuNominate: TPopupMenu;
+    procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
+        Boolean);
     procedure gridClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
@@ -60,7 +62,18 @@ implementation
 
 
 uses
-  dmSCM2, dmCORE, uSwimClub, uSession, uNominate;
+  dmSCM2, dmCORE, uSwimClub, uSession, uNominee;
+
+procedure TFrameNominate.gridCanEditCell(Sender: TObject; ARow, ACol: Integer;
+    var CanEdit: Boolean);
+begin
+  CanEdit := false;
+  if ARow > TDBAdvGrid(Sender).HeaderRow then
+  begin
+    if (ACol = 1) then
+      CanEdit := true; // nominate/un-nominate member from event.
+  end;
+end;
 
 procedure TFrameNominate.gridClickCell(Sender: TObject; ARow, ACol: Integer);
 var
@@ -77,15 +90,15 @@ begin
         aEventID := CORE.qryNominate.FieldByName('EventID').AsInteger;
         if (aMemberID=0) or (aEventID=0)  then exit;
         // is the member nominate?
-        if uNominate.Locate_Nominee(aMemberID, aEventID) then
+        if uNominee.Locate_Nominee(aMemberID, aEventID) then
         begin
           // UN-NOMINATE the member. (in the current event)
-          uNominate.DeleteNominee(aMemberID);
+          uNominee.DeleteNominee(aMemberID, aEventID);
         end
         else
         begin
           // NOMINATE the member. (for the current event)
-          uNominate.NewNominee(aMemberID);
+          uNominee.NewNominee(aMemberID, aEventID);
         end;
       finally
         CORE.qryNominate.Refresh; // redraws (icon) checkbox state.
@@ -95,6 +108,7 @@ begin
     end;
   end;
 end;
+
 
 procedure TFrameNominate.gridGetHTMLTemplate(Sender: TObject; ACol, ARow:
     Integer; var HTMLTemplate: string; Fields: TFields);
@@ -120,7 +134,8 @@ begin
         CORE.qryNominate.Close;
         CORE.qryNominate.ParamByName('MEMBERID').AsInteger := 0;
         CORE.qryNominate.ParamByName('SESSIONID').AsInteger := uSession.PK;
-        CORE.qryNominate.ParamByName('SEEDDATE').AsDateTime := uNominate.GetSeedDate();
+        CORE.qryNominate.ParamByName('SEEDDATE').AsDateTime := uNominee.GetSeedDate();
+        CORE.qryNominate.ParamByName('ISSHORTCOURSE').AsByte := 0;
         CORE.qryNominate.Prepare;
         CORE.qryNominate.Open;
 
@@ -165,7 +180,8 @@ begin
         CORE.qryNominate.Close;
         CORE.qryNominate.ParamByName('MEMBERID').AsInteger := CORE.qryFilterMember.FieldByName('MemberID').AsInteger;
         CORE.qryNominate.ParamByName('SESSIONID').AsInteger := uSession.PK;
-        CORE.qryNominate.ParamByName('SEEDDATE').AsDateTime := uNominate.GetSeedDate();
+        CORE.qryNominate.ParamByName('SEEDDATE').AsDateTime := uNominee.GetSeedDate();
+        CORE.qryNominate.ParamByName('ISSHORTCOURSE').AsByte := ORD(uSwimClub.IsShortCourse);
         CORE.qryNominate.Prepare;
         CORE.qryNominate.Open;
       end;
@@ -176,4 +192,8 @@ begin
   end;
 end;
 
+
 end.
+
+
+

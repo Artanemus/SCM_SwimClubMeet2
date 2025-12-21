@@ -23,7 +23,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 496
-    Top = 144
+    Top = 136
   end
   object CollectionCore: TSVGIconImageCollection
     SVGIconItems = <
@@ -1526,6 +1526,7 @@ object IMG: TIMG
           '47 0,4.060887 2.8738,6.926548 2.8739,2.865661 6.9464,2.865661 z ' +
           'm 0,-9.792209 z"'#10'           id="path2-3-0-9-1"'#10'           style=' +
           '"display:inline;stroke-width:0.57684" /></g></g></g></svg>'#10
+        FixedColor = clDarkgoldenrod
       end
       item
         IconName = 'new'
@@ -13192,7 +13193,7 @@ object IMG: TIMG
     Height = 48
     Size = 48
     Left = 616
-    Top = 128
+    Top = 136
   end
   object imglstHeatStroke: TSVGIconVirtualImageList
     Images = <
@@ -13231,59 +13232,59 @@ object IMG: TIMG
     Height = 48
     Size = 48
     Left = 616
-    Top = 176
+    Top = 192
   end
   object imglstHeatCntrl: TSVGIconVirtualImageList
     Images = <
       item
         CollectionIndex = 26
         CollectionName = 'up'
-        Name = 'up'
+        Name = 'ht-up'
       end
       item
         CollectionIndex = 27
         CollectionName = 'down'
-        Name = 'down'
+        Name = 'ht-down'
       end
       item
         CollectionIndex = 28
         CollectionName = 'ToggleStatus'
-        Name = 'ToggleStatus'
+        Name = 'ht-ToggleStatus'
       end
       item
         CollectionIndex = 29
         CollectionName = 'new'
-        Name = 'new'
+        Name = 'ht-new'
       end
       item
         CollectionIndex = 30
         CollectionName = 'delete'
-        Name = 'delete'
+        Name = 'ht-delete'
       end
       item
         CollectionIndex = 32
         CollectionName = 'build'
-        Name = 'build'
+        Name = 'ht-build'
       end
       item
         CollectionIndex = 33
         CollectionName = 'marshall'
-        Name = 'marshall'
+        Name = 'ht-marshall'
       end
       item
         CollectionIndex = 34
         CollectionName = 'stopwatch'
-        Name = 'timer'
+        Name = 'ht-timer'
       end
       item
         CollectionIndex = 35
         CollectionName = 'print'
-        Name = 'print'
+        Name = 'ht-print'
       end
       item
         CollectionIndex = 36
         CollectionName = 'report'
-        Name = 'report'
+        Name = 'ht-report'
       end>
     ImageCollection = CollectionCore
     Width = 48
@@ -13371,42 +13372,42 @@ object IMG: TIMG
       item
         CollectionIndex = 22
         CollectionName = 'grid-off'
-        Name = 'grid-off'
+        Name = 'Ev-grid-off'
       end
       item
         CollectionIndex = 21
         CollectionName = 'grid-on'
-        Name = 'grid-on'
+        Name = 'Ev-grid-on'
       end
       item
         CollectionIndex = 26
         CollectionName = 'up'
-        Name = 'up'
+        Name = 'Ev-up'
       end
       item
         CollectionIndex = 27
         CollectionName = 'down'
-        Name = 'down'
+        Name = 'Ev-down'
       end
       item
         CollectionIndex = 29
         CollectionName = 'new'
-        Name = 'new'
+        Name = 'Ev-new'
       end
       item
         CollectionIndex = 30
         CollectionName = 'delete'
-        Name = 'delete'
+        Name = 'Ev-delete'
       end
       item
         CollectionIndex = 36
         CollectionName = 'report'
-        Name = 'report'
+        Name = 'Ev-report'
       end
       item
         CollectionIndex = 102
         CollectionName = 'INDV_RELAY'
-        Name = 'INDV_RELAY'
+        Name = 'Ev-INDV_RELAY'
       end>
     ImageCollection = CollectionCore
     Width = 48
@@ -13516,7 +13517,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 368
-    Top = 144
+    Top = 136
   end
   object imglstMiscButtons: TSVGIconVirtualImageList
     Images = <
@@ -13869,7 +13870,7 @@ object IMG: TIMG
       end>
     ImageCollection = CollectionCore
     Left = 368
-    Top = 208
+    Top = 192
   end
   object imglstTitleBar: TSVGIconVirtualImageList
     Images = <
@@ -13971,7 +13972,7 @@ object IMG: TIMG
     Height = 30
     Size = 30
     Left = 224
-    Top = 144
+    Top = 136
   end
   object imglstSwimClubGroup: TSVGIconVirtualImageList
     Images = <
@@ -13990,7 +13991,7 @@ object IMG: TIMG
     Height = 30
     Size = 30
     Left = 224
-    Top = 208
+    Top = 192
   end
   object imglstSwimClubCell: TSVGIconVirtualImageList
     Images = <
@@ -14014,7 +14015,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 224
-    Top = 272
+    Top = 248
   end
   object imglstClubGroup: TSVGIconVirtualImageList
     Images = <
@@ -14112,7 +14113,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 616
-    Top = 232
+    Top = 248
   end
   object imglstStatusPanel: TSVGIconVirtualImageList
     Images = <
@@ -14141,7 +14142,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 64
-    Top = 208
+    Top = 192
   end
   object imglstMenuBar: TSVGIconVirtualImageList
     Images = <
@@ -14340,7 +14341,7 @@ object IMG: TIMG
     Height = 32
     Size = 32
     Left = 64
-    Top = 144
+    Top = 136
   end
   object imglstEventType: TSVGIconVirtualImageList
     Images = <
@@ -14364,7 +14365,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 496
-    Top = 208
+    Top = 192
   end
   object imglstEventCell: TSVGIconVirtualImageList
     Images = <
@@ -14393,7 +14394,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 496
-    Top = 264
+    Top = 248
   end
   object imglstEventPopupMenu: TSVGIconVirtualImageList
     Images = <
@@ -14447,6 +14448,6 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 496
-    Top = 320
+    Top = 304
   end
 end

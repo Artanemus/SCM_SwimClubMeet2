@@ -82,6 +82,7 @@ object FrameNominate: TFrameNominate
       ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
+      OnKeyDown = gridKeyDown
       GridLineColor = 15987699
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]

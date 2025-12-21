@@ -15,8 +15,8 @@ type
     procedure DataModuleDestroy(Sender: TObject);
     procedure DataModuleCreate(Sender: TObject);
   private
-    fManageHouseDataActive: Boolean;
-    function MinHouse(AConnection: TFDConnection; ASwimClubID: integer): integer;
+//    fManageHouseDataActive: Boolean;
+//    function MinHouse(AConnection: TFDConnection; ASwimClubID: integer): integer;
 
   public
     { Public declarations }
@@ -38,25 +38,25 @@ begin
   inherited;
 end;
 
-function TMemberHouse.MinHouse(AConnection: TFDConnection;
-  ASwimClubID: integer): integer;
-begin
-  with qryMinHouse do
-  begin
-    result := 0;
-    if Active then
-      Close;
-    Connection := SCM2.scmConnection;
-    ParamByName('SWIMCLUBID').AsInteger := ASwimClubID;
-    Prepare;
-    Open;
-    if Active then
-    begin
-      if not FieldByName('HouseID').IsNull then
-        result := FieldByName('HouseID').AsInteger;
-    end;
-  end;
-end;
+//function TMemberHouse.MinHouse(AConnection: TFDConnection;
+//  ASwimClubID: integer): integer;
+//begin
+//  with qryMinHouse do
+//  begin
+//    result := 0;
+//    if Active then
+//      Close;
+//    Connection := SCM2.scmConnection;
+//    ParamByName('SWIMCLUBID').AsInteger := ASwimClubID;
+//    Prepare;
+//    Open;
+//    if Active then
+//    begin
+//      if not FieldByName('HouseID').IsNull then
+//        result := FieldByName('HouseID').AsInteger;
+//    end;
+//  end;
+//end;
 
 procedure TMemberHouse.DataModuleCreate(Sender: TObject);
 //var

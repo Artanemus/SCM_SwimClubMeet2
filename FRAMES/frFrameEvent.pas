@@ -16,10 +16,15 @@ uses
 
   dmSCM2, dmIMG, dmCORE, uDefines,
 
-  uSettings, uSession, uEvent
+  uSettings, uSession, uEvent,
+
+  // INTERCEPTOR must be last in list ...
+  // deals with Action imagelist and TSpeedButton imagelist issues.
+  UIntercepters
   ;
 
 type
+
   TFrameEvent = class(TFrame)
     actnEv_Delete: TAction;
     actnEv_EventType: TAction;
@@ -77,7 +82,7 @@ type
         State: TGridDrawState);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
   private
-    procedure FixedEventCntrlIcons();
+//    procedure FixedEventCntrlIcons();
     procedure SetGridView_ColVisibility;
     procedure SetGridView_IconIndex;
   public
@@ -110,7 +115,7 @@ var
 begin
   DoEnable := false;
     // fix RAD STUDIO icon re-assignment issue.
-  if (spbtnEvDelete.imageindex <> 5) then spbtnEvDelete.imageindex := 5;
+//  if (spbtnEvDelete.imageindex <> 5) then spbtnEvDelete.imageindex := 5;
 
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive and
@@ -131,7 +136,7 @@ var
 begin
   DoEnable := false;
   // fix RAD STUDIO icon re-assignment issue.
-  if (spbtnEvIndvTeam.imageindex <> 7) then spbtnEvDelete.imageindex := 7;
+//  if (spbtnEvIndvTeam.imageindex <> 7) then spbtnEvDelete.imageindex := 7;
 
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive and
@@ -161,7 +166,8 @@ var
 begin
   DoEnable := false;
   // fix RAD STUDIO icon re-assignment issue.
-  SetGridView_IconIndex; // uses actnEv_GridView.Checked state.
+//  SetGridView_IconIndex; // uses actnEv_GridView.Checked state.
+
   // grid view is enabled when events table is empty.
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive then DoEnable := true;
@@ -194,11 +200,14 @@ var
   DoEnable: boolean;
 begin
   DoEnable := false;
+
   // fix RAD STUDIO icon re-assignment issue.
+  {
   if (spbtnEvDown.imageindex <> 3) then
       spbtnEvDown.imageindex := 3;
   if (spbtnEvUp.imageindex <> 2) then
       spbtnEvUp.imageindex := 2;
+  }
 
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive and
@@ -220,7 +229,8 @@ var
 begin
   DoEnable := false;
   // fix RAD STUDIO icon re-assignment issue.
-  if (spbtnEvNew.imageindex <> 4) then spbtnEvNew.imageindex := 4;
+//  if (spbtnEvNew.imageindex <> 4) then spbtnEvNew.imageindex := 4;
+
   // new is enabled when events table is empty
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive then DoEnable := true;
@@ -247,12 +257,14 @@ var
   DoEnable: boolean;
 begin
   DoEnable := false;
+
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive and
     not CORE.qryEvent.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
 
+{
 procedure TFrameEvent.FixedEventCntrlIcons;
 var
   i: integer;
@@ -260,6 +272,7 @@ begin
   for I := 0 to actnlstEvent.ActionCount - 1 do
     TAction(actnlstEvent.Actions[i]).Update;
 end;
+}
 
 procedure TFrameEvent.gridCanEditCell(Sender: TObject; ARow, ACol: Integer;
     var CanEdit: Boolean);
@@ -336,8 +349,14 @@ procedure TFrameEvent.Initialise;
 begin
   // GridView button icon index is depenandt on checked state.
   actnEv_GridView.Checked := false; // Collapsed grid view.
-  FixedEventCntrlIcons; // Fix RAD Studio erronous icon re-assignment.
+
+  //  FixedEventCntrlIcons; // Fix RAD Studio erronous icon re-assignment.
+
+  // ASSERT grid expand/collapse UI state.
+  SetGridView_IconIndex;
   SetGridView_ColVisibility;
+
+  // ASSERT TMS UI STATE...
   grid.RowCount := grid.FixedRows + 1; // TMS rule: row count > fixed row.
 
   if SCM2.scmConnection.Connected and CORE.IsActive then
@@ -392,7 +411,7 @@ begin
   else // Collapsed view - icon contains a slash.
   begin
     if (spbtnEvGridView.ImageIndex <> 0) then
-       else spbtnEvGridView.ImageIndex := 0;
+       spbtnEvGridView.ImageIndex := 0;
   end;
 end;
 

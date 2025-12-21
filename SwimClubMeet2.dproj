@@ -129,13 +129,13 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="frmMain2.pas">
-            <Form>Main2</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="JSON\XSuperJSON.pas"/>
         <DCCReference Include="JSON\XSuperObject.pas"/>
         <DCCReference Include="TOOLS\scmUtils.pas"/>
+        <DCCReference Include="DATA\dmSCM2.pas">
+            <Form>SCM2</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
         <DCCReference Include="DATA\dmCORE.pas">
             <Form>CORE</Form>
             <FormType>dfm</FormType>
@@ -146,25 +146,20 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="DATA\dmSCM2.pas">
-            <Form>SCM2</Form>
-            <FormType>dfm</FormType>
+        <DCCReference Include="MEMBERS\dmMM_CORE.pas">
+            <Form>MM_CORE</Form>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\dmMMD_House.pas">
+            <Form>MemberHouse</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="DATA\uDefines.pas"/>
         <DCCReference Include="DATA\uSettings.pas"/>
-        <DCCReference Include="DIALOGS\SwimClub\dlgSwimClub_Switch.pas">
-            <Form>SwimClubSwitch</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="DIALOGS\dlgLogin.pas">
-            <Form>Login</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="TOOLS\SCMSimpleConnect.pas"/>
         <DCCReference Include="DATA_Helper\uSwimClub.pas"/>
         <DCCReference Include="DATA_Helper\uSession.pas"/>
         <DCCReference Include="DATA_Helper\uEvent.pas"/>
+        <DCCReference Include="DATA_Helper\uNominee.pas"/>
         <DCCReference Include="FRAMES\frFrameSession.pas">
             <Form>FrameSession</Form>
             <DesignClass>TFrame</DesignClass>
@@ -176,6 +171,37 @@
         <DCCReference Include="FRAMES\frFrameClubGroup.pas">
             <Form>FrameClubGroup</Form>
             <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="FRAMES\frFrameNominate.pas">
+            <Form>FrameNominate</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="FRAMES\frFrameFilterMember.pas">
+            <Form>FrameFilterMember</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="FRAMES\frFrameNavEvent.pas">
+            <Form>FrameNavEvent</Form>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
+        <DCCReference Include="frmMain2.pas">
+            <Form>Main2</Form>
+        </DCCReference>
+        <DCCReference Include="TOOLS\SCMSimpleConnect.pas"/>
+        <DCCReference Include="MEMBERS\frmMM_Stats.pas">
+            <Form>ManageMember_Stats</Form>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\frmMM_CheckData.pas">
+            <Form>ManageMember_CheckData</Form>
+        </DCCReference>
+        <DCCReference Include="MEMBERS\frmManageMember.pas">
+            <Form>ManageMember</Form>
+        </DCCReference>
+        <DCCReference Include="DIALOGS\SwimClub\dlgSwimClub_Switch.pas">
+            <Form>SwimClubSwitch</Form>
+        </DCCReference>
+        <DCCReference Include="DIALOGS\dlgLogin.pas">
+            <Form>Login</Form>
         </DCCReference>
         <DCCReference Include="DIALOGS\SwimClub\dlgSwimClubGroup_View.pas">
             <Form>SwimClubGroup_View</Form>
@@ -192,118 +218,74 @@
         <DCCReference Include="DIALOGS\SwimClub\dlgSwimClub_Manage.pas">
             <Form>SwimClubManage</Form>
         </DCCReference>
-        <DCCReference Include="FRAMES\frFrameNominate.pas">
-            <Form>FrameNominate</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="FRAMES\frFrameFilterMember.pas">
-            <Form>FrameFilterMember</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="DATA_Helper\uNominee.pas"/>
         <DCCReference Include="TOOLS\dlgPreferences.pas">
             <Form>Preferences</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="MEMBERS\dlgMM_Delete.pas">
             <Form>MM_Delete</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="MEMBERS\dlgMM_Find_FName.pas">
             <Form>FindMember_FName</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="MEMBERS\dlgMM_Find_ID.pas">
             <Form>FindMember_ID</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="MEMBERS\dlgMM_Find_Membership.pas">
             <Form>FindMember_Membership</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="MEMBERS\dlgMM_FilterBySwimClub.pas">
             <Form>MM_FilterBySwimClub</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="MEMBERS\dlgMM_FilterByParam.pas">
             <Form>MM_FilterByParam</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dmMM_CORE.pas">
-            <Form>MM_CORE</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
+        <DCCReference Include="MEMBERS\dlgMM_About.pas">
+            <Form>MM_About</Form>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dmMMD_House.pas">
-            <Form>MemberHouse</Form>
-            <FormType>dfm</FormType>
-            <DesignClass>TDataModule</DesignClass>
+        <DCCReference Include="DIALOGS\Picker\dlgSwimClubPicker.pas">
+            <Form>SwimClubPicker</Form>
         </DCCReference>
-        <DCCReference Include="MEMBERS\frmManageMember.pas">
-            <Form>ManageMember</Form>
-            <FormType>dfm</FormType>
+        <DCCReference Include="DIALOGS\SwimClub\dlgSwimClub_Reports.pas">
+            <Form>SwimClub_Reports</Form>
+        </DCCReference>
+        <DCCReference Include="DIALOGS\Picker\dlgMemberPicker.pas">
+            <Form>MemberPicker</Form>
         </DCCReference>
         <DCCReference Include="MEMBERS\rptMM_Chart.pas">
             <Form>MemberChart</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="MEMBERS\rptMM_CheckData.pas">
             <Form>MemberCheckData</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="MEMBERS\rptMM_Detail.pas">
             <Form>MemberDetail</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="MEMBERS\rptMM_History.pas">
             <Form>MemberHistory</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
-        <DCCReference Include="MEMBERS\dlgMM_About.pas">
-            <Form>MM_About</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="DIALOGS\Picker\dlgSwimClubPicker.pas">
-            <Form>SwimClubPicker</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="MEMBERS\frmMM_Stats.pas">
-            <Form>ManageMember_Stats</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="DIALOGS\SwimClub\dlgSwimClub_Reports.pas">
-            <Form>SwimClub_Reports</Form>
-            <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="REPORTS\SwimClub\rptClub_MembersDetail.pas">
             <Form>Club_MembersDetail</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="REPORTS\SwimClub\rptClub_MembersList.pas">
             <Form>Club_MembersList</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="REPORTS\SwimClub\rptClub_MembersSummary.pas">
             <Form>Club_MembersSummary</Form>
-            <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="MEMBERS\frmMM_CheckData.pas">
-            <Form>ManageMember_CheckData</Form>
+        <DCCReference Include="FRAMES\frFrameHeat.pas">
+            <Form>FrameHeat</Form>
             <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="DIALOGS\Picker\dlgMemberPicker.pas">
-            <Form>MemberPicker</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
+        <DCCReference Include="TOOLS\UIntercepters.pas"/>
+        <DCCReference Include="DATA_Helper\uHeat.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -2,7 +2,7 @@ unit uDefines;
 
 interface
 uses
-  Winapi.Messages;
+  Winapi.Messages, Vcl.Graphics;
 
 const
    SCM_SWIMCLUB_UI = WM_USER + 1;
@@ -63,6 +63,7 @@ const
  scmSendToFileTypes: scmSendToFileType;
  scmSendToDevices: scmSendToDevice;
  scmRptTypes: scmRptType;
+
 
 implementation
 

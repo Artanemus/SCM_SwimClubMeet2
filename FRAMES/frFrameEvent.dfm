@@ -12,7 +12,6 @@ object FrameEvent: TFrameEvent
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 574
     object grid: TDBAdvGrid
       Left = 0
       Top = 0
@@ -696,7 +695,6 @@ object FrameEvent: TFrameEvent
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
-      ExplicitLeft = 1
       ColWidths = (
         20
         0
@@ -849,6 +847,7 @@ object FrameEvent: TFrameEvent
       Align = alTop
       Anchors = []
       ImageIndex = 5
+      ImageName = 'Ev-delete'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -865,7 +864,8 @@ object FrameEvent: TFrameEvent
       Action = actnEv_MoveDown
       Align = alTop
       Anchors = []
-      ImageName = 'INDV_RELAY'
+      ImageIndex = 3
+      ImageName = 'Ev-down'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -882,6 +882,7 @@ object FrameEvent: TFrameEvent
       Action = actnEv_GridView
       Align = alTop
       Anchors = []
+      ImageName = 'Ev-grid-on'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -899,6 +900,7 @@ object FrameEvent: TFrameEvent
       Align = alTop
       Anchors = []
       ImageIndex = 4
+      ImageName = 'Ev-new'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -916,6 +918,7 @@ object FrameEvent: TFrameEvent
       Align = alTop
       Anchors = []
       ImageIndex = 6
+      ImageName = 'Ev-report'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -932,7 +935,8 @@ object FrameEvent: TFrameEvent
       Action = actnEv_MoveUp
       Align = alTop
       Anchors = []
-      ImageName = 'report'
+      ImageIndex = 2
+      ImageName = 'Ev-up'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -952,6 +956,7 @@ object FrameEvent: TFrameEvent
       Anchors = []
       Caption = ' '
       ImageIndex = 7
+      ImageName = 'Ev-INDV_RELAY'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop

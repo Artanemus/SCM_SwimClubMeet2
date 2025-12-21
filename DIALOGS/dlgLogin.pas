@@ -171,7 +171,7 @@ var
   iniFileName, UseOsAuthentication: string;
 begin
   // FDManager SHOULD point to this connection definition file...
-  // %AppData%\Artanemus\scm\FDConnectionDefs.ini
+  // %AppData%\Artanemus\scm2\FDConnectionDefs.ini
   iniFileName := FDManager.ActualConnectionDefFileName;
   if not FileExists(iniFileName) then exit;
   iFile := TIniFile.Create(iniFileName);

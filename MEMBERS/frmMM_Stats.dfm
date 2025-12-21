@@ -821,20 +821,34 @@ object ManageMember_Stats: TManageMember_Stats
   end
   object tblDistance: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'DistanceID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Distance'
+    UpdateOptions.KeyFields = 'DistanceID'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
     TableName = 'SwimClubMeet2.dbo.Distance'
     Left = 360
     Top = 416
   end
   object tblStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'StrokeID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Stroke'
+    UpdateOptions.KeyFields = 'StrokeID'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
     TableName = 'SwimClubMeet2.dbo.Stroke'
     Left = 360
     Top = 472

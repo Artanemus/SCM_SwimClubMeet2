@@ -54,7 +54,6 @@ type
     qrySwimClubLogoImg: TBlobField;
     qrySwimClubIsSelected: TIntegerField;
     qrySwimClubNickName: TWideStringField;
-    qry1: TFDQuery;
     procedure btnOkClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -141,8 +140,7 @@ begin
   while not DataSet.Eof do
   begin
     DataSet.Edit;
-    // a default expression has been defined (1) for field IsSelected
-    // and the following line may be redundant.
+    // Assert field IsSelected - redundant?
     DataSet.FieldByName('IsSelected').AsInteger := 1; // Set default
     DataSet.Post;
     DataSet.Next;

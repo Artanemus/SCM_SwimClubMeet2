@@ -6,11 +6,14 @@ object MM_CORE: TMM_CORE
   object tblContactNumType: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'ContactNumTypeID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
     TableName = 'SwimClubMeet2..ContactNumType'
     Left = 88
     Top = 472
@@ -28,8 +31,11 @@ object MM_CORE: TMM_CORE
   object tblStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'StrokeID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Stroke'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
     TableName = 'SwimClubMeet2..Stroke'
     Left = 88
     Top = 352
@@ -37,8 +43,11 @@ object MM_CORE: TMM_CORE
   object tblDistance: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'DistanceID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Distance'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
     TableName = 'SwimClubMeet2..Distance'
     Left = 88
     Top = 400
@@ -50,11 +59,11 @@ object MM_CORE: TMM_CORE
   end
   object tblGender: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
-    IndexFieldNames = 'GenderID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Gender'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
     TableName = 'SwimClubMeet2..Gender'
     Left = 88
     Top = 304
@@ -83,6 +92,7 @@ object MM_CORE: TMM_CORE
     MasterSource = dsMember
     MasterFields = 'MemberID'
     DetailFields = 'MemberID'
+    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.ContactNum'
     UpdateOptions.KeyFields = 'ContactNumID'
     SQL.Strings = (
@@ -131,6 +141,7 @@ object MM_CORE: TMM_CORE
     MasterSource = dsMember
     MasterFields = 'MemberID'
     DetailFields = 'MemberID'
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.MemberRoleLink'
     UpdateOptions.KeyFields = 'MemberRoleID;MemberID'
@@ -210,7 +221,10 @@ object MM_CORE: TMM_CORE
   object tblMemberRole: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'MemberRoleID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
     TableName = 'SwimClubMeet2.dbo.MemberRole'
     Left = 88
     Top = 528
@@ -219,8 +233,11 @@ object MM_CORE: TMM_CORE
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'SwimClubID'
     DetailFields = 'SwimClubID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
     TableName = 'SwimClubMeet2..SwimClub'
     Left = 88
     Top = 592
@@ -232,7 +249,6 @@ object MM_CORE: TMM_CORE
   end
   object qMember: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     OnNewRecord = qMemberNewRecord
     Indexes = <
       item
@@ -403,6 +419,7 @@ object MM_CORE: TMM_CORE
       LookupKeyFields = 'GenderID'
       LookupResultField = 'Caption'
       KeyFields = 'GenderID'
+      LookupCache = True
       Lookup = True
     end
   end

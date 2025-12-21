@@ -21,7 +21,7 @@ uses
 
   FireDAC.Stan.Option,
 
-  dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub,
+  dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub, scmUtils,
 
   { TMS }
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
@@ -30,7 +30,7 @@ uses
   frFrameSession,
   frFrameEvent,
   frFrameNominate,
-  frFrameFilterMember;
+  frFrameFilterMember, frFrameNavEvent, frFrameHeat;
 
 type
   TMain2 = class(TForm)
@@ -107,6 +107,14 @@ type
     Member_CheckData: TAction;
     SwimClub_Reports: TAction;
     frNominate: TFrameNominate;
+    pnlNavEvent: TPanel;
+    pnlHeader: TPanel;
+    pnlBody: TPanel;
+    dbtxtNavEvCaption: TDBText;
+    dbtxtNavEvDesc: TDBText;
+    frNavEvent: TFrameNavEvent;
+    pnlHeat: TPanel;
+    TFrameHeat1: TFrameHeat;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -135,7 +143,7 @@ type
     fscmIsConnecting: boolean;
     fCueToMemberID: integer;
 
-    procedure DetailTBLs_ApplyMaster;
+//    procedure DetailTBLs_ApplyMaster;
     procedure DetailTBLs_DisableCNTRLs;
     procedure DetailTBLs_EnableCNTRLs;
   protected
@@ -158,32 +166,34 @@ uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
   frmManageMember, dlgSwimClub_Reports, frmMM_Stats;
 
-procedure TMain2.DetailTBLs_ApplyMaster;
-begin
-  // FireDAC throws exception error if Master is empty?
-  if CORE.qrySwimClub.RecordCount <> 0 then
+{
+  procedure TMain2.DetailTBLs_ApplyMaster;
   begin
-    CORE.qrySession.ApplyMaster;
-    if CORE.qrySession.RecordCount <> 0 then
+    // FireDAC throws exception error if Master is empty?
+    if CORE.qrySwimClub.RecordCount <> 0 then
     begin
-      CORE.qryEvent.ApplyMaster;
-      if CORE.qryEvent.RecordCount <> 0 then
+      CORE.qrySession.ApplyMaster;
+      if CORE.qrySession.RecordCount <> 0 then
       begin
-        CORE.qryHeat.ApplyMaster;
-        if CORE.qryHeat.RecordCount <> 0 then
+        CORE.qryEvent.ApplyMaster;
+        if CORE.qryEvent.RecordCount <> 0 then
         begin
-          CORE.qryLane.ApplyMaster;
-          if CORE.qryLane.RecordCount <> 0 then
+          CORE.qryHeat.ApplyMaster;
+          if CORE.qryHeat.RecordCount <> 0 then
           begin
-            CORE.qryWatchTime.ApplyMaster;
-            CORE.qrySplitTime.ApplyMaster;
-            CORE.qryTeam.ApplyMaster;
+            CORE.qryLane.ApplyMaster;
+            if CORE.qryLane.RecordCount <> 0 then
+            begin
+              CORE.qryWatchTime.ApplyMaster;
+              CORE.qrySplitTime.ApplyMaster;
+              CORE.qryTeam.ApplyMaster;
+            end;
           end;
         end;
       end;
     end;
   end;
-end;
+}
 
 procedure TMain2.DetailTBLs_DisableCNTRLs;
 begin
@@ -289,6 +299,8 @@ begin
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
     SCM2.scmConnection.Close;
 end;
+
+
 
 procedure TMain2.FormCreate(Sender: TObject);
 begin

@@ -92,7 +92,7 @@ type
     fMemberChartDataPoints: Integer;
     fIsActive: Boolean;
     procedure ActivateMMS;
-    procedure ChartReport();
+//    procedure ChartReport();
     procedure ChartPrepare(aMemberID, aDistanceID, aStrokeID: integer; DoCurrSeason: boolean = true);
     procedure UpdateChart();
     function LocateChart(ChartX: Integer): Boolean;
@@ -236,20 +236,20 @@ begin
   qryChart.EnableControls;
 end;
 
-procedure TManageMember_Stats.ChartReport;
-var
-  s, s2: string;
-  rpt: TMemberChart;
-begin
-  // Distance
-  s := cmboDistance.Text;
-  // Stroke
-  s2 := cmboStroke.Text;
-  rpt := TMemberChart.Create(Self);
-  // params ... MemberID
-  rpt.RunReport(fMemberID, DBChart, s, s2);
-  rpt.Free;
-end;
+//procedure TManageMember_Stats.ChartReport;
+//var
+//  s, s2: string;
+//  rpt: TMemberChart;
+//begin
+//  // Distance
+//  s := cmboDistance.Text;
+//  // Stroke
+//  s2 := cmboStroke.Text;
+//  rpt := TMemberChart.Create(Self);
+//  // params ... MemberID
+//  rpt.RunReport(fMemberID, DBChart, s, s2);
+//  rpt.Free;
+//end;
 
 procedure TManageMember_Stats.chkbDoCurrSeasonClick(Sender: TObject);
 begin

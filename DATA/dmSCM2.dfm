@@ -17,6 +17,12 @@ object SCM2: TSCM2
   object qrySCMSystem: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     Connection = scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.SCMSystem'
+    UpdateOptions.KeyFields = 'SCMSystemID'
     SQL.Strings = (
       'SELECT '
       '  [SCMSystemID]'
@@ -37,6 +43,9 @@ object SCM2: TSCM2
   end
   object procRenumberHeats: TFDStoredProc
     Connection = scmConnection
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Heat'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
     StoredProcName = 'SwimClubMeet2.dbo.RenumberHeats'
     Left = 280
     Top = 85
@@ -56,6 +65,9 @@ object SCM2: TSCM2
   end
   object procRenumberEvents: TFDStoredProc
     Connection = scmConnection
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Event'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
     StoredProcName = 'SwimClubMeet2.dbo.RenumberEvents'
     Left = 280
     Top = 29
@@ -65,6 +77,7 @@ object SCM2: TSCM2
         Name = '@RETURN_VALUE'
         DataType = ftInteger
         ParamType = ptResult
+        Value = 0
       end
       item
         Position = 2
@@ -75,6 +88,9 @@ object SCM2: TSCM2
   end
   object procRenumberLanes: TFDStoredProc
     Connection = scmConnection
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Lane'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
     StoredProcName = 'SwimClubMeet2.dbo.RenumberLanes'
     Left = 280
     Top = 149

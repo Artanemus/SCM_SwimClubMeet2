@@ -2733,7 +2733,7 @@ object Main2: TMain2
     object DBTextClubName: TDBText
       Left = 6
       Top = 0
-      Width = 116
+      Width = 159
       Height = 20
       AutoSize = True
       DataField = 'Caption'
@@ -2749,7 +2749,7 @@ object Main2: TMain2
     object DBTextNickName: TDBText
       Left = 6
       Top = 18
-      Width = 91
+      Width = 102
       Height = 15
       AutoSize = True
       DataField = 'NickName'
@@ -2829,7 +2829,7 @@ object Main2: TMain2
     Width = 1103
     Height = 662
     Margins.Top = 10
-    ActivePage = tabHeats
+    ActivePage = tabNominate
     Align = alClient
     TabOrder = 3
     OnChange = PageControlChange
@@ -3016,7 +3016,6 @@ object Main2: TMain2
             inherited grid: TDBAdvGrid
               Width = 620
               Height = 626
-              ExplicitLeft = 0
               ExplicitWidth = 620
               ExplicitHeight = 626
               RowHeights = (
@@ -3334,6 +3333,237 @@ object Main2: TMain2
     object tabHeats: TTabSheet
       Caption = 'Heats'
       ImageIndex = 2
+      object pnlHeader: TPanel
+        Left = 0
+        Top = 0
+        Width = 1095
+        Height = 65
+        Align = alTop
+        BevelOuter = bvNone
+        TabOrder = 0
+        object dbtxtNavEvCaption: TDBText
+          Left = 0
+          Top = 0
+          Width = 1095
+          Height = 41
+          Align = alTop
+          Alignment = taCenter
+          DataField = 'ShortCaption'
+          DataSource = CORE.dsEvent
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -32
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
+        end
+        object dbtxtNavEvDesc: TDBText
+          Left = 0
+          Top = 41
+          Width = 1095
+          Height = 24
+          Align = alBottom
+          Alignment = taCenter
+          DataField = 'Caption'
+          DataSource = CORE.dsEvent
+        end
+      end
+      object pnlBody: TPanel
+        Left = 0
+        Top = 65
+        Width = 1095
+        Height = 561
+        Align = alClient
+        BevelOuter = bvNone
+        TabOrder = 1
+        object pnlNavEvent: TPanel
+          Left = 0
+          Top = 0
+          Width = 158
+          Height = 561
+          Align = alLeft
+          BevelOuter = bvNone
+          TabOrder = 0
+          inline frNavEvent: TFrameNavEvent
+            Left = 0
+            Top = 0
+            Width = 158
+            Height = 561
+            Align = alClient
+            TabOrder = 0
+            ExplicitWidth = 158
+            ExplicitHeight = 561
+            inherited pnlBody: TPanel
+              Height = 561
+              ExplicitHeight = 561
+              inherited grid: TDBAdvGrid
+                Height = 561
+                ExplicitHeight = 561
+              end
+            end
+          end
+        end
+        object pnlHeat: TPanel
+          Left = 158
+          Top = 0
+          Width = 219
+          Height = 561
+          Align = alLeft
+          BevelOuter = bvNone
+          TabOrder = 1
+          inline TFrameHeat1: TFrameHeat
+            Left = 0
+            Top = 0
+            Width = 219
+            Height = 561
+            Align = alClient
+            TabOrder = 0
+            ExplicitLeft = 42
+            ExplicitTop = 85
+            inherited rpnlCntrl: TRelativePanel
+              Height = 561
+              ControlCollection = <
+                item
+                  Control = TFrameHeat1.spbtnMoveUp
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = True
+                  AlignVerticalCenterWithPanel = False
+                end
+                item
+                  Control = TFrameHeat1.spbtnMoveDown
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = TFrameHeat1.spbtnMoveUp
+                end
+                item
+                  Control = TFrameHeat1.spbtnToggleStatus
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = TFrameHeat1.spbtnMoveDown
+                end
+                item
+                  Control = TFrameHeat1.spbtnNew
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = TFrameHeat1.spbtnToggleStatus
+                end
+                item
+                  Control = TFrameHeat1.spbtnDelete
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = TFrameHeat1.spbtnNew
+                end
+                item
+                  Control = TFrameHeat1.ShapeHtBar1
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = TFrameHeat1.spbtnDelete
+                end
+                item
+                  Control = TFrameHeat1.spbtnAutoBuild
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = TFrameHeat1.ShapeHtBar1
+                end
+                item
+                  Control = TFrameHeat1.ShapeHtBar2
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = TFrameHeat1.spbtnAutoBuild
+                end
+                item
+                  Control = TFrameHeat1.spbtnMarshall
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = TFrameHeat1.ShapeHtBar2
+                end
+                item
+                  Control = TFrameHeat1.spbtnTimeKeeper
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = TFrameHeat1.spbtnMarshall
+                end
+                item
+                  Control = TFrameHeat1.spbtnAllLogs
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = TFrameHeat1.spbtnTimeKeeper
+                end
+                item
+                  Control = TFrameHeat1.ShapeHtBar3
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = TFrameHeat1.spbtnAllLogs
+                end
+                item
+                  Control = TFrameHeat1.spbtnReport
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = TFrameHeat1.ShapeHtBar3
+                end>
+            end
+            inherited pnlBody: TPanel
+              Width = 161
+              Height = 561
+              inherited grid: TDBAdvGrid
+                Width = 161
+                Height = 561
+              end
+            end
+          end
+        end
+      end
     end
   end
   object actnManager: TActionManager
@@ -4061,6 +4291,7 @@ object Main2: TMain2
               end
               item
                 Action = Member_Stats
+                Caption = 'Mem&ber'#39's Stats...'
               end
               item
                 Caption = '-'

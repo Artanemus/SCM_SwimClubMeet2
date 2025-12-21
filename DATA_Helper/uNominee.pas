@@ -18,6 +18,7 @@ uses
   function GetSeedDate(): TDate;
   function NewNominee(aMemberID, aEventID: integer): integer;
   function DeleteNominee(aMemberID, aEventID: integer): boolean;
+  procedure ToogleNomination();
 
 
 implementation
@@ -96,36 +97,36 @@ begin
     begin
       try
       begin
-        CORE.qryMemberStats.Connection := SCM2.scmConnection;
-        CORE.qryMemberStats.Close;
-        CORE.qryMemberStats.ParamByName('MEMBERID').AsInteger := aMemberID;
-        CORE.qryMemberStats.ParamByName('EVENTID').AsInteger := aEventID;
+        CORE.qryMemberMetrics.Connection := SCM2.scmConnection;
+        CORE.qryMemberMetrics.Close;
+        CORE.qryMemberMetrics.ParamByName('MEMBERID').AsInteger := aMemberID;
+        CORE.qryMemberMetrics.ParamByName('EVENTID').AsInteger := aEventID;
 
         // SeedDate - Used to calculate AGE.
         // StartOfSeason, StartOfSession, Today's Date.
-        CORE.qryMemberStats.ParamByName('SEEDDATE').AsDateTime := uNominee.GetSeedDate();
+        CORE.qryMemberMetrics.ParamByName('SEEDDATE').AsDateTime := uNominee.GetSeedDate();
 
         if Assigned(Settings) then     //Algorithm
         begin
-           CORE.qryMemberStats.ParamByName('ALGORITHM').AsInteger := Settings.ttb_algorithmIndx;
-           CORE.qryMemberStats.ParamByName('CALCDEFRT').AsInteger := ORD(Settings.ttb_calcDefRT);
-           CORE.qryMemberStats.ParamByName('PERCENT').AsFloat := Settings.ttb_calcDefRTpercent;
+           CORE.qryMemberMetrics.ParamByName('ALGORITHM').AsInteger := Settings.ttb_algorithmIndx;
+           CORE.qryMemberMetrics.ParamByName('CALCDEFRT').AsInteger := ORD(Settings.ttb_calcDefRT);
+           CORE.qryMemberMetrics.ParamByName('PERCENT').AsFloat := Settings.ttb_calcDefRTpercent;
         end
         else
         begin
           // Calculate the entrant's average RT from top 3 race-times
-          CORE.qryMemberStats.ParamByName('ALGORITHM').AsInteger := 1;
+          CORE.qryMemberMetrics.ParamByName('ALGORITHM').AsInteger := 1;
           // If no RT exists ...
           // 0 - ignore
           // 1 - Calculate race-time from the average times of (filtered) swimmers
           // 2 - use SeedTime
-          CORE.qryMemberStats.ParamByName('CALCDEFRT').AsInteger := 1;
+          CORE.qryMemberMetrics.ParamByName('CALCDEFRT').AsInteger := 1;
            // The (bottom) percent to select from ... default is 50%.
-          CORE.qryMemberStats.ParamByName('PERCENT').AsFloat := 50.0;
+          CORE.qryMemberMetrics.ParamByName('PERCENT').AsFloat := 50.0;
         end;
 
-        CORE.qryMemberStats.Prepare;
-        CORE.qryMemberStats.Open;
+        CORE.qryMemberMetrics.Prepare;
+        CORE.qryMemberMetrics.Open;
       end;
       except
         on E: EFDDBEngineException do
@@ -134,10 +135,10 @@ begin
 
       try
         CORE.qryNominee.Insert;
-        CORE.qryNominee.FieldByName('AGE').AsInteger := CORE.qryMemberStats.FieldByName('AGE').AsInteger;
-        CORE.qryNominee.FieldByName('TTB').AsDateTime := CORE.qryMemberStats.FieldByName('TTB').AsDateTime;
-        CORE.qryNominee.FieldByName('PB').AsDateTime :=CORE.qryMemberStats.FieldByName('PB').AsDateTime;
-        CORE.qryNominee.FieldByName('SeedTime').AsDateTime := CORE.qryMemberStats.FieldByName('SeedTime').AsDateTime;
+        CORE.qryNominee.FieldByName('AGE').AsInteger := CORE.qryMemberMetrics.FieldByName('AGE').AsInteger;
+        CORE.qryNominee.FieldByName('TTB').AsDateTime := CORE.qryMemberMetrics.FieldByName('TTB').AsDateTime;
+        CORE.qryNominee.FieldByName('PB').AsDateTime :=CORE.qryMemberMetrics.FieldByName('PB').AsDateTime;
+        CORE.qryNominee.FieldByName('SeedTime').AsDateTime := CORE.qryMemberMetrics.FieldByName('SeedTime').AsDateTime;
         CORE.qryNominee.FieldByName('MemberID').AsInteger := aMemberID;
         CORE.qryNominee.FieldByName('EventID').AsInteger := aEventID;
         CORE.qryNominee.Post;
@@ -208,5 +209,33 @@ begin
   end;
 
 end;
+
+
+procedure ToogleNomination();
+var
+ aMemberID, aEventID: integer;
+begin
+  CORE.qryNominate.DisableControls;
+  try
+    aMemberID := CORE.qryFilterMember.FieldByName('MemberID').AsInteger;
+    aEventID := CORE.qryNominate.FieldByName('EventID').AsInteger;
+    if (aMemberID=0) or (aEventID=0)  then exit;
+    // is the member nominate?
+    if uNominee.Locate_Nominee(aMemberID, aEventID) then
+    begin
+      // UN-NOMINATE the member. (in the current event)
+      uNominee.DeleteNominee(aMemberID, aEventID);
+    end
+    else
+    begin
+      // NOMINATE the member. (for the current event)
+      uNominee.NewNominee(aMemberID, aEventID);
+    end;
+  finally
+    CORE.qryNominate.Refresh; // redraws (icon) checkbox state.
+    CORE.qryNominate.EnableControls;
+  end;
+end;
+
 
 end.

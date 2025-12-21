@@ -35,6 +35,7 @@ type
     procedure gridClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
+    procedure gridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
   public
@@ -67,23 +68,31 @@ uses
 procedure TFrameNominate.gridCanEditCell(Sender: TObject; ARow, ACol: Integer;
     var CanEdit: Boolean);
 begin
+{
+    No editing allowed within this grid. To toggle nomination...
+      - Click on nominate check box.
+      - Press space bar.
+}
   CanEdit := false;
-  if ARow > TDBAdvGrid(Sender).HeaderRow then
-  begin
-    if (ACol = 1) then
-      CanEdit := true; // nominate/un-nominate member from event.
-  end;
 end;
 
 procedure TFrameNominate.gridClickCell(Sender: TObject; ARow, ACol: Integer);
 var
-  aEventID, amemberID: integer;
+//  aEventID, amemberID: integer;
+  G: TDBAdvGrid;
 begin
-  if ARow >= grid.FixedRows then
+  G := TDBAdvGrid(Sender);
+  if ARow >= G.FixedRows then
   begin
     if ACol = 1 then
     begin
-      grid.BeginUpdate;
+      G.BeginUpdate;
+      try
+        uNominee.ToogleNomination(); // current active reccord?
+      finally
+        G.EndUpdate;
+      end;
+      {
       CORE.qryNominate.DisableControls;
       try
         aMemberID := CORE.qryFilterMember.FieldByName('MemberID').AsInteger;
@@ -103,8 +112,8 @@ begin
       finally
         CORE.qryNominate.Refresh; // redraws (icon) checkbox state.
         CORE.qryNominate.EnableControls;
-        grid.EndUpdate;
       end;
+      }
     end;
   end;
 end;
@@ -120,6 +129,32 @@ begin
     <#Caption></P></FONT>
     ''';
   HTMLTemplate := s;
+end;
+
+procedure TFrameNominate.gridKeyDown(Sender: TObject; var Key: Word; Shift:
+    TShiftState);
+var
+  ARow: integer;
+//  ACol: integer;
+  G: TDBAdvGrid;
+begin
+  if Key = VK_SPACE then
+  begin
+    // get the current row and col
+    ARow := grid.GetRealRow;
+//    ACol := grid.GetRealCol;
+    G := TDBAdvGrid(Sender);
+    if ARow >= G.FixedRows then
+    begin
+      G.BeginUpdate;
+      try
+        uNominee.ToogleNomination(); // current active reccord?
+      finally
+        G.EndUpdate;
+        Key := 0;
+      end;
+    end;
+  end;
 end;
 
 procedure TFrameNominate.Initialise;

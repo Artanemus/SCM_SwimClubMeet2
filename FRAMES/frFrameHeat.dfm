@@ -1,59 +1,364 @@
-object MM_FilterBySwimClub: TMM_FilterBySwimClub
+object FrameHeat: TFrameHeat
   Left = 0
   Top = 0
-  BorderIcons = [biSystemMenu]
-  BorderStyle = bsDialog
-  Caption = 'Filter members by swimming club.'
-  ClientHeight = 812
-  ClientWidth = 660
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -16
-  Font.Name = 'Segoe UI'
-  Font.Style = []
-  KeyPreview = True
-  Position = poOwnerFormCenter
-  OnCreate = FormCreate
-  OnKeyDown = FormKeyDown
-  TextHeight = 21
-  object pnlBody: TPanel
+  Width = 212
+  Height = 624
+  TabOrder = 0
+  object rpnlCntrl: TRelativePanel
     Left = 0
     Top = 0
-    Width = 520
-    Height = 812
+    Width = 58
+    Height = 624
+    ControlCollection = <
+      item
+        Control = spbtnMoveUp
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = True
+        AlignVerticalCenterWithPanel = False
+      end
+      item
+        Control = spbtnMoveDown
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnMoveUp
+      end
+      item
+        Control = spbtnToggleStatus
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnMoveDown
+      end
+      item
+        Control = spbtnNew
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnToggleStatus
+      end
+      item
+        Control = spbtnDelete
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnNew
+      end
+      item
+        Control = ShapeHtBar1
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnDelete
+      end
+      item
+        Control = spbtnAutoBuild
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = ShapeHtBar1
+      end
+      item
+        Control = ShapeHtBar2
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnAutoBuild
+      end
+      item
+        Control = spbtnMarshall
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = ShapeHtBar2
+      end
+      item
+        Control = spbtnTimeKeeper
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnMarshall
+      end
+      item
+        Control = spbtnAllLogs
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnTimeKeeper
+      end
+      item
+        Control = ShapeHtBar3
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnAllLogs
+      end
+      item
+        Control = spbtnReport
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = ShapeHtBar3
+      end>
+    Align = alLeft
+    BevelOuter = bvNone
+    TabOrder = 0
+    DesignSize = (
+      58
+      624)
+    object spbtnMoveUp: TSpeedButton
+      Left = 5
+      Top = 0
+      Width = 48
+      Height = 48
+      Action = actnHt_MoveUp
+      ImageIndex = 0
+      ImageName = 'ht-up'
+      Images = IMG.imglstHeatCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object spbtnMoveDown: TSpeedButton
+      Left = 5
+      Top = 48
+      Width = 48
+      Height = 48
+      Action = actnHt_MoveDown
+      Anchors = []
+      ImageIndex = 1
+      ImageName = 'ht-down'
+      Images = IMG.imglstHeatCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object spbtnToggleStatus: TSpeedButton
+      Left = 5
+      Top = 96
+      Width = 48
+      Height = 48
+      Action = actnHt_ToggleStatus
+      Anchors = []
+      ImageIndex = 2
+      ImageName = 'ht-ToggleStatus'
+      Images = IMG.imglstHeatCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object spbtnNew: TSpeedButton
+      Left = 5
+      Top = 144
+      Width = 48
+      Height = 48
+      Action = actnHt_New
+      Anchors = []
+      ImageIndex = 3
+      ImageName = 'ht-new'
+      Images = IMG.imglstHeatCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object spbtnDelete: TSpeedButton
+      Left = 5
+      Top = 192
+      Width = 48
+      Height = 48
+      Action = actnHt_Delete
+      Anchors = []
+      ImageIndex = 4
+      ImageName = 'ht-delete'
+      Images = IMG.imglstHeatCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object ShapeHtBar1: TShape
+      AlignWithMargins = True
+      Left = 2
+      Top = 246
+      Width = 54
+      Height = 4
+      Margins.Left = 0
+      Margins.Top = 6
+      Margins.Right = 0
+      Margins.Bottom = 6
+      Align = alTop
+      Anchors = []
+      Brush.Color = 8421631
+    end
+    object spbtnAutoBuild: TSpeedButton
+      Left = 5
+      Top = 256
+      Width = 48
+      Height = 48
+      Action = actnHt_AutoBuild
+      Anchors = []
+      ImageIndex = 5
+      ImageName = 'ht-build'
+      Images = IMG.imglstHeatCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object ShapeHtBar2: TShape
+      AlignWithMargins = True
+      Left = 2
+      Top = 310
+      Width = 54
+      Height = 4
+      Margins.Left = 0
+      Margins.Top = 6
+      Margins.Right = 0
+      Margins.Bottom = 6
+      Align = alTop
+      Anchors = []
+      Brush.Color = 8421631
+    end
+    object spbtnMarshall: TSpeedButton
+      Left = 5
+      Top = 320
+      Width = 48
+      Height = 48
+      Action = actnHt_MarshallSheet
+      Anchors = []
+      ImageIndex = 6
+      ImageName = 'ht-marshall'
+      Images = IMG.imglstHeatCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object spbtnTimeKeeper: TSpeedButton
+      Left = 5
+      Top = 368
+      Width = 48
+      Height = 48
+      Action = actnHt_TimeKeeperSheets
+      Anchors = []
+      ImageIndex = 7
+      ImageName = 'ht-timer'
+      Images = IMG.imglstHeatCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object spbtnAllLogs: TSpeedButton
+      Left = 5
+      Top = 416
+      Width = 48
+      Height = 48
+      Action = actnHt_SheetSet
+      Anchors = []
+      ImageIndex = 8
+      ImageName = 'ht-print'
+      Images = IMG.imglstHeatCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object ShapeHtBar3: TShape
+      AlignWithMargins = True
+      Left = 2
+      Top = 470
+      Width = 54
+      Height = 4
+      Margins.Left = 0
+      Margins.Top = 6
+      Margins.Right = 0
+      Margins.Bottom = 6
+      Align = alTop
+      Anchors = []
+      Brush.Color = 8421631
+    end
+    object spbtnReport: TSpeedButton
+      Left = 5
+      Top = 480
+      Width = 48
+      Height = 48
+      Action = actnHt_Report
+      Anchors = []
+      ImageIndex = 9
+      ImageName = 'ht-report'
+      Images = IMG.imglstHeatCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+  end
+  object pnlBody: TPanel
+    Left = 58
+    Top = 0
+    Width = 154
+    Height = 624
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    object Grid: TDBAdvGrid
+    object grid: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 520
-      Height = 812
+      Width = 154
+      Height = 624
       Cursor = crDefault
       Align = alClient
-      Color = clWhite
+      Color = 4800817
       ColCount = 4
-      DefaultRowHeight = 52
+      DefaultRowHeight = 64
       DrawingStyle = gdsClassic
-      FixedColor = clWhite
-      RowCount = 2
+      FixedColor = 4800817
+      RowCount = 101
       FixedRows = 1
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlack
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
-      ParentFont = False
+      Options = [goRangeSelect, goRowSelect, goFixedRowDefAlign]
       ScrollBars = ssBoth
       TabOrder = 0
-      OnDrawCell = GridDrawCell
-      GridLineColor = 15987699
-      GridFixedLineColor = 15987699
+      StyleElements = [seFont, seBorder]
+      OnDrawCell = gridDrawCell
+      GridLineColor = 13948116
+      GridFixedLineColor = 11250603
       HoverRowCells = [hcNormal, hcSelected]
-      OnClickCell = GridClickCell
-      HTMLKeepLineBreak = False
+      OnGetCellColor = gridGetCellColor
+      OnCanEditCell = gridCanEditCell
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
       ActiveCellFont.Height = -12
@@ -109,10 +414,10 @@ object MM_FilterBySwimClub: TMM_FilterBySwimClub
         'Larger than'
         'Smaller than'
         'Clear')
-      FixedColWidth = 20
+      FixedColWidth = 0
       FixedRowHeight = 0
       FixedFont.Charset = DEFAULT_CHARSET
-      FixedFont.Color = clBlack
+      FixedFont.Color = 3881787
       FixedFont.Height = -12
       FixedFont.Name = 'Tahoma'
       FixedFont.Style = [fsBold]
@@ -166,8 +471,8 @@ object MM_FilterBySwimClub: TMM_FilterBySwimClub
       SortSettings.HeaderMirrorColor = clWhite
       SortSettings.HeaderMirrorColorTo = clWhite
       Version = '2.5.1.3'
-      AutoCreateColumns = True
-      AutoRemoveColumns = True
+      AutoCreateColumns = False
+      AutoRemoveColumns = False
       Columns = <
         item
           Borders = []
@@ -176,10 +481,10 @@ object MM_FilterBySwimClub: TMM_FilterBySwimClub
           CheckFalse = 'N'
           CheckTrue = 'Y'
           Color = clWindow
-          FieldName = 'SwimClubID'
+          FieldName = 'HeatID'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -16
+          Font.Height = -12
           Font.Name = 'Segoe UI'
           Font.Style = []
           HeaderFont.Charset = DEFAULT_CHARSET
@@ -193,34 +498,60 @@ object MM_FilterBySwimClub: TMM_FilterBySwimClub
           PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 20
+          Width = 0
         end
         item
+          Alignment = taCenter
           Borders = []
           BorderPen.Color = clSilver
           ButtonHeight = 18
           CheckFalse = 'N'
           CheckTrue = 'Y'
-          Color = clWhite
+          Color = clWindow
+          FieldName = 'HeatNum'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = 3881787
+          HeaderFont.Height = -12
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clWindowText
+          PrintFont.Height = -12
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 0
+        end
+        item
+          Alignment = taRightJustify
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = 4800817
           DataImageField = True
-          FieldName = 'IsSelected'
+          FieldName = 'StrokeID'
           Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -16
+          Font.Color = clWindowText
+          Font.Height = -12
           Font.Name = 'Segoe UI'
           Font.Style = []
-          Header = ' '
           HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = clBlack
-          HeaderFont.Height = -16
+          HeaderFont.Color = 3881787
+          HeaderFont.Height = -12
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
-          HeaderAlignment = taCenter
-          Images = IMG.imglstNomCheckBox
+          Images = IMG.imglstHeatStroke
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clBlack
-          PrintFont.Height = -16
+          PrintFont.Color = clWindowText
+          PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
           Width = 64
@@ -231,59 +562,29 @@ object MM_FilterBySwimClub: TMM_FilterBySwimClub
           ButtonHeight = 18
           CheckFalse = 'N'
           CheckTrue = 'Y'
-          Color = clWindow
-          DataPictureField = True
-          FieldName = 'LogoImg'
+          Color = 4800817
+          DataImageField = True
+          FieldName = 'HeatStatusID'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
-          Font.Height = -16
+          Font.Height = -12
           Font.Name = 'Segoe UI'
           Font.Style = []
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = clWindowText
-          HeaderFont.Height = -16
+          HeaderFont.Height = -12
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
-          HeaderAlignment = taCenter
-          PictureField = True
+          Images = IMG.imglstHeatStatus
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
           PrintFont.Color = clWindowText
-          PrintFont.Height = -16
+          PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
           Width = 64
-        end
-        item
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWindow
-          FieldName = 'Caption'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = clWindowText
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          HTMLTemplate = 
-            '<FONT size="10"><B><#Caption></B></FONT><BR><FONT size="10"><#Ni' +
-            'ckName></FONT>'
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -16
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 350
         end>
-      DataSource = dsSwimClub
+      DataSource = CORE.dsHeat
       InvalidPicture.Data = {
         055449636F6E0000010001002020200000000000A81000001600000028000000
         2000000040000000010020000000000000100000000000000000000000000000
@@ -420,146 +721,247 @@ object MM_FilterBySwimClub: TMM_FilterBySwimClub
         0000000000000000000000000000000000000000000000000000000080000001
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
-      ShowPictureFields = True
       ShowUnicode = False
       ColWidths = (
-        20
+        0
+        0
         64
-        64
-        350)
+        64)
       RowHeights = (
         0
-        52)
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64
+        64)
     end
   end
-  object pnlCNTRL: TRelativePanel
-    Left = 520
-    Top = 0
-    Width = 140
-    Height = 812
-    ControlCollection = <
-      item
-        Control = btnOk
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = False
-      end
-      item
-        Control = btnSelectAll
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = False
-        Below = btnSelectNone
-      end
-      item
-        Control = btnSelectNone
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = True
-        AlignVerticalCenterWithPanel = False
-      end>
-    Align = alRight
-    BevelOuter = bvNone
-    Padding.Top = 10
-    TabOrder = 0
-    DesignSize = (
-      140
-      812)
-    object btnOk: TButton
-      Left = 8
-      Top = 755
-      Width = 123
-      Height = 34
-      Anchors = []
-      Caption = 'CLOSE'
-      TabOrder = 0
-      OnClick = btnOkClick
+  object actnlistHeat: TActionList
+    Images = IMG.imglstMenuBar
+    Left = 96
+    Top = 296
+    object actnHt_MoveUp: TAction
+      Category = 'Heats'
+      Caption = 'Move Up'
+      ImageIndex = 6
+      ImageName = 'up'
+      ShortCut = 16422
+      OnUpdate = actnHt_GenericUpdate
     end
-    object btnSelectAll: TButton
-      AlignWithMargins = True
-      Left = 8
-      Top = 54
-      Width = 123
-      Height = 34
-      Margins.Left = 0
-      Margins.Top = 10
-      Margins.Right = 0
-      Margins.Bottom = 0
-      Anchors = []
-      Caption = 'Select ALL'
-      TabOrder = 1
+    object actnHt_MoveDown: TAction
+      Category = 'Heats'
+      Caption = 'Move Down'
+      ImageIndex = 7
+      ImageName = 'down'
+      ShortCut = 16424
+      OnUpdate = actnHt_GenericUpdate
     end
-    object btnSelectNone: TButton
-      Left = 8
-      Top = 10
-      Width = 123
-      Height = 34
-      Anchors = []
-      Caption = 'Select NONE'
-      TabOrder = 2
+    object actnHt_ToggleStatus: TAction
+      Category = 'Heats'
+      Caption = 'Toggle Status'
+      ImageIndex = 0
+      ImageName = 'empty'
+      ShortCut = 16468
+      OnExecute = actnHt_ToggleStatusExecute
+      OnUpdate = actnHt_GenericUpdate
     end
-  end
-  object qrySwimClub: TFDQuery
-    ActiveStoredUsage = [auDesignTime]
-    AfterOpen = qrySwimClubAfterOpen
-    Connection = SCM2.scmConnection
-    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
-    UpdateOptions.EnableDelete = False
-    UpdateOptions.EnableInsert = False
-    UpdateOptions.EnableUpdate = False
-    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.SwimClub'
-    UpdateOptions.KeyFields = 'SwimClubID'
-    SQL.Strings = (
-      ''
-      'Select SwimClubID, '
-      '  Caption,'
-      '  NickName,'
-      '  LogoImg'
-      ' '
-      'FROM SwimClubMeet2.dbo.SwimClub '
-      'WHERE SwimCLub.IsClubGroup = 0'
-      'ORDER BY Caption ASC')
-    Left = 272
-    Top = 64
-    object qrySwimClubSwimClubID: TFDAutoIncField
-      FieldName = 'SwimClubID'
-      Origin = 'SwimClubID'
-      ProviderFlags = [pfInWhere, pfInKey]
+    object actnHt_New: TAction
+      Category = 'Heats'
+      Caption = 'New'
+      ImageIndex = 8
+      ImageName = 'new'
+      ShortCut = 16429
     end
-    object qrySwimClubCaption: TWideStringField
-      DisplayLabel = 'Club Name'
-      DisplayWidth = 128
-      FieldName = 'Caption'
-      Origin = 'Caption'
-      Size = 128
+    object actnHt_Delete: TAction
+      Category = 'Heats'
+      Caption = 'Delete'
+      ImageIndex = 9
+      ImageName = 'delete'
+      ShortCut = 16430
     end
-    object qrySwimClubLogoImg: TBlobField
-      DisplayLabel = 'Logo'
-      FieldName = 'LogoImg'
-      Origin = 'LogoImg'
+    object actnHt_AutoBuild: TAction
+      Category = 'Heats'
+      Caption = 'Auto-Build'
+      ImageIndex = 11
+      ImageName = 'tool'
     end
-    object qrySwimClubIsSelected: TIntegerField
-      DefaultExpression = '1'
-      FieldKind = fkInternalCalc
-      FieldName = 'IsSelected'
+    object actnHt_MarshallSheet: TAction
+      Category = 'Heats'
+      Caption = 'Marshall Sheet'
+      ImageIndex = 12
+      ImageName = 'marshall'
     end
-    object qrySwimClubNickName: TWideStringField
-      FieldName = 'NickName'
-      Origin = 'NickName'
-      Size = 128
+    object actnHt_TimeKeeperSheets: TAction
+      Category = 'Heats'
+      Caption = 'Timekeeper Sheets'
+      ImageIndex = 13
+      ImageName = 'time-keeper'
+    end
+    object actnHt_SheetSet: TAction
+      Category = 'Heats'
+      Caption = 'Sheet Set'
+      ImageIndex = 14
+      ImageName = 'print'
+    end
+    object actnHt_Report: TAction
+      Category = 'Heats'
+      Caption = 'Heat Report'
+      ImageIndex = 15
+      ImageName = 'report'
+    end
+    object actnHt_AutoBuildAll: TAction
+      Category = 'Heats'
+      Caption = 'Auto Build ALL...'
+    end
+    object actnHt_AllMarshallSheets: TAction
+      Category = 'Heats'
+      Caption = 'ALL Marshall Sets...'
+    end
+    object actnHt_AllTimeKeeperSheets: TAction
+      Category = 'Heats'
+      Caption = 'ALL TimeKeeper Sets...'
+    end
+    object actnHt_Renumber: TAction
+      Category = 'Heats'
+      Caption = 'Renumber'
     end
   end
-  object dsSwimClub: TDataSource
-    DataSet = qrySwimClub
-    Left = 360
-    Top = 64
+  object pumenuHeat: TPopupMenu
+    Left = 98
+    Top = 360
+    object MoveUp1: TMenuItem
+      Action = actnHt_MoveUp
+    end
+    object MoveDown1: TMenuItem
+      Action = actnHt_MoveDown
+    end
+    object oggleStatus1: TMenuItem
+      Action = actnHt_ToggleStatus
+    end
+    object New1: TMenuItem
+      Action = actnHt_New
+    end
+    object Delete1: TMenuItem
+      Action = actnHt_Delete
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+    object AutoBuild1: TMenuItem
+      Action = actnHt_AutoBuild
+    end
+    object N2: TMenuItem
+      Caption = '-'
+    end
+    object MarshallSheet1: TMenuItem
+      Action = actnHt_MarshallSheet
+    end
+    object ALLTimeKeeperSets1: TMenuItem
+      Action = actnHt_TimeKeeperSheets
+    end
+    object SheetSet1: TMenuItem
+      Action = actnHt_SheetSet
+    end
+    object N3: TMenuItem
+      Caption = '-'
+    end
+    object HeatReport1: TMenuItem
+      Action = actnHt_Report
+    end
   end
 end

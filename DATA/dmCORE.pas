@@ -125,11 +125,12 @@ type
     qryNominateSessionID: TIntegerField;
     qryNominateNominated: TIntegerField;
     qryNominateQualified: TIntegerField;
-    qryMemberStats: TFDQuery;
+    qryMemberMetrics: TFDQuery;
     qryFilterMemberMiddleName: TWideStringField;
     qryNominateStrokeID: TIntegerField;
     qryNominateDistanceID: TIntegerField;
     qryNominateMeters: TIntegerField;
+    qryEventMeters: TIntegerField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterEdit(DataSet: TDataSet);
@@ -171,7 +172,7 @@ implementation
 procedure TCORE.ActivateCore;
 begin
   FIsActive := false;
-  if Assigned(SCM2) and SCM2.scmConnection.Connected then
+  if Assigned(SCM2) then
   begin
     // Reassigning the connection string automatically closes the table/query.
     // If the connection definition has changed, this reassignment updates
@@ -205,43 +206,46 @@ begin
     qryNominate.Connection := SCM2.scmConnection;
     // ------------------------------------------
 
-    {  if any table fails to open - a EFDDBEngineException occurs
-      and FIsActive returns false.}
-    try
-      // MASTER.
-      qrySwimClub.Open;
-//      qrySession.IndexName := 'indxHideArchived';
-      qrySwimClub.First;
+    if SCM2.scmConnection.Connected then
+    begin
+      {  if any table fails to open - a EFDDBEngineException occurs
+        and FIsActive returns false.}
+      try
+        // MASTER.
+        qrySwimClub.Open;
+  //      qrySession.IndexName := 'indxHideArchived';
+        qrySwimClub.First;
 
-      // lookup tables.
-      tblStroke.Open;
-      tblDistance.Open;
-      tblEventType.Open;
-      tblEventCat.Open;
-      tblRound.Open;
-      tblGender.Open;
-      tblParalympicType.Open;
+        // lookup tables.
+        tblStroke.Open;
+        tblDistance.Open;
+        tblEventType.Open;
+        tblEventCat.Open;
+        tblRound.Open;
+        tblGender.Open;
+        tblParalympicType.Open;
 
-      // members
-      qryMemberLink.Open;
-      qryMember.Open;
-      // DETAILED TABLES.
-      // NOTE: indexes are used to toogle the visibility of locked sessions.
-      qrySession.IndexName := 'indxShowAll';
-      qrySession.Open;
-      qryEvent.Open;
-      qryNominee.Open;
-      qryHeat.Open;
-      qryLane.Open;
-      qryWatchTime.Open;
-      qrySplitTime.open;
-      {TODO -oBSA -cException : EXCEPTION HERE TO FIX Field - LaneID }
-//       qryTeam.Open;
-//       qryTeamLink.Open;
-      FIsActive := true;
-    except
-      on E: EFDDBEngineException do
-        SCM2.FDGUIxErrorDialog.Execute(E);
+        // members
+        qryMemberLink.Open;
+        qryMember.Open;
+        // DETAILED TABLES.
+        // NOTE: indexes are used to toogle the visibility of locked sessions.
+        qrySession.IndexName := 'indxShowAll';
+        qrySession.Open;
+        qryEvent.Open;
+        qryNominee.Open;
+        qryHeat.Open;
+        qryLane.Open;
+        qryWatchTime.Open;
+        qrySplitTime.open;
+        {TODO -oBSA -cException : EXCEPTION HERE TO FIX Field - LaneID }
+  //       qryTeam.Open;
+  //       qryTeamLink.Open;
+        FIsActive := true;
+      except
+        on E: EFDDBEngineException do
+          SCM2.FDGUIxErrorDialog.Execute(E);
+      end;
     end;
   end;
 end;

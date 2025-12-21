@@ -19,6 +19,9 @@ uses
 {$IFDEF MSWINDOWS}
   System.Win.Registry,
 {$IFEND}
+  Vcl.Graphics, Vcl.Controls,
+  Vcl.Themes,
+  Vcl.Styles,
   shlobj;
 
 
@@ -44,6 +47,10 @@ function ScatterLanes(index, NumOfPoolLanes: integer): integer;
 function CheckInternetA: boolean;
 function CheckInternetB: boolean;
 
+function GetStyleTabSheetElementColor: TColor;
+function GetStyledPanelColor: TColor;
+function GetStyledPanelElementColor: TColor;
+
 {$IFDEF MSWINDOWS}
 function LoadSharedIniFileSetting(ASection, AName: string): string;
 procedure SaveSharedIniFileSetting(ASection, AName, AValue: string);
@@ -57,6 +64,7 @@ const
   SCMSubFolder = 'Artanemus\SCM2\';
   SCMSectionName = 'SCM2';
 
+
 implementation
 
 uses
@@ -65,29 +73,71 @@ uses
 {$IFEND}
   System.Math,
   WinInet, // for interenet
-  IdTCPClient; // for checkinternet
+  IdTCPClient // for checkinternet
+;
 
-// Winapi.ShLwApi;
 
 
-  //  css: TCustomStyleServices;
-  // Special color assignment - used in TDBGrid painting...
-  // -------------------------------------------
-  {
-  css := TStyleManager.Style[TStyleManager.ActiveStyle.Name];
-  if assigned(css) then
+function GetStyledPanelColor: TColor;
+var
+  LStyle: TCustomStyleServices;
+begin
+  result := $00494131; // matches perfectly the UI schema
+  // Check if styles are enabled
+  if TStyleManager.IsCustomStyleActive then
   begin
-    fColorEditBoxFocused := css.GetStyleFontColor(sfEditBoxTextFocused);
-    fColorEditBoxNormal := css.GetStyleFontColor(sfEditBoxTextNormal);
-    fColorBgColor := css.GetStyleColor(scGrid);
+    LStyle := TStyleManager.ActiveStyle;
+    // scPanel is the specific color constant for Panel backgrounds
+    if Assigned(LStyle) then
+      result := LStyle.GetStyleColor(scPanel);
+  end;
+end;
+
+function GetStyledPanelElementColor: TColor;
+var
+  LDetails: TThemedElementDetails;
+  LColor: TColor;
+begin
+  result := $00494131; // matches perfectly the UI schema
+  // Check if styles are enabled
+  if TStyleManager.IsCustomStyleActive then
+  begin
+    // tpPanelBackground is the standard element for the body of a TPanel
+    LDetails := TStyleManager.ActiveStyle.GetElementDetails(tpPanelBackground);
+    // Attempt to get the Fill Color of that specific element
+    if TStyleManager.ActiveStyle.GetElementColor(LDetails, ecFillColor, LColor)
+      and (LColor <> clNone) then
+      Result := LColor
+    else
+      // Fallback if the style doesn't define a specific fill color for panels
+      Result := TStyleManager.ActiveStyle.GetStyleColor(scPanel);
+  end;
+end;
+
+function GetStyleTabSheetElementColor: TColor;
+var
+  LDetails: TThemedElementDetails;
+  LColor: TColor;
+begin
+  result := $00494131; // matches perfectly the UI schema
+  // Check if styles are enabled
+  if TStyleManager.IsCustomStyleActive then
+  begin
+    // ttPane represents the background "body" area of a PageControl/TabSheet
+    LDetails := TStyleManager.ActiveStyle.GetElementDetails(ttPane);
+    // Attempt to get the Fill Color of that specific element
+  // Attempt to get the Fill Color of that specific element
+  if TStyleManager.ActiveStyle.GetElementColor(LDetails, ecFillColor, LColor) and (LColor <> clNone) then
+    Result := LColor
+  else
+    // Fallback 1: Many modern styles map the TabSheet background to scGenericBackground
+    Result := TStyleManager.ActiveStyle.GetStyleColor(scGenericBackground);
   end
   else
   begin
-    fColorEditBoxFocused := cardinal(clWebTomato); // TColors.Tomato;
-    fColorEditBoxNormal := cardinal(clWindowText); // TColors.SysWindowText;
-    fColorBgColor := cardinal(clAppWorkSpace); // TColors.SysAppWorkSpace;
+    Result := clBtnFace; // Fallback 2: Standard Windows (No Style)
   end;
-  }
+end;
 
 function GetRecordPosition(ADataset: TDataSet): TRecordPos;
 begin

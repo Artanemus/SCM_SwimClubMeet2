@@ -7,8 +7,10 @@ uses
   System.Variants, System.VarUtils,
   System.StrUtils,
   vcl.Dialogs, Data.DB,
+  FireDAC.Comp.Client, FireDAC.Stan.Error,
+
   dmCORE, dmSCM2, uDefines,
-	FireDAC.Comp.Client, scmUtils;
+  scmUtils;
 
 
 function Assert: boolean;
@@ -36,39 +38,37 @@ procedure NewHeat();
 procedure ToggleStatus(); // current heat
 
 
-type
-  T_Heat = class
-  public
-    constructor Create;
-    destructor Destroy;
-  end;
-
-var
-  scmHeat: T_Heat;
-
 implementation
 
 uses
-	uSwimClub, uSession, uEvent, uLane;
+	uSwimClub, uSession, uEvent; //, uLane;
 
 
-constructor T_Heat.Create;
+procedure DetailTBLs_DisableCNTRLs;
 begin
-  inherited;
-  if not Assigned(SCM2) then
-    raise Exception.Create('Data module SCM2 not assigned.');
-  if not SCM2.scmConnection.Connected then
-    raise Exception.Create('Data module SCM2 tables are offline.');
-  if not Assigned(CORE) then
-    raise Exception.Create('Core data module not assigned.');
-  if not CORE.IsActive then
-    raise Exception.Create('Core data module tables are offline.');
+  CORE.qrySplitTime.DisableControls;
+  CORE.qryWatchTime.DisableControls;
+  CORE.qryLane.DisableControls;
 end;
 
-destructor T_Heat.Destroy;
+procedure DetailTBLs_EnableCNTRLs;
 begin
-  // do cleanup...
-  inherited;
+  CORE.qryLane.DisableControls;
+  CORE.qrySplitTime.DisableControls;
+  CORE.qryWatchTime.DisableControls;
+end;
+
+procedure DetailTBLs_ApplyMaster;
+begin
+  if CORE.qryHeat.RecordCount <> 0 then
+  begin
+    CORE.qryLane.ApplyMaster;
+    if CORE.qryLane.RecordCount <> 0 then
+    begin
+      CORE.qryWatchTime.ApplyMaster;
+      CORE.qrySplitTime.ApplyMaster;
+    end;
+  end;
 end;
 
 function Assert(): boolean;
@@ -122,9 +122,13 @@ begin
     while not eof do
     begin
       // deletes watch-times and split-times and finally the lane.
-      done := uLane.DeleteLane();
-      if done then continue
-      else CORE.qryLane.Next;
+      {
+        done := uLane.DeleteLane();
+      }
+      if done then
+        continue
+      else
+        CORE.qryLane.Next;
     end;
   finally
     if CORE.qryLane.IsEmpty then result := true;
@@ -145,6 +149,8 @@ begin
   if (uHeat.HeatStatusID() = 1) or (DoExclude = false) then
   begin
     //if (uHeat.HeatStatusID() = 1) or (DoExclude = false) then
+
+
     CORE.qryLane.DisableControls;
     try
       doRenumber := uHeat.DeleteLanes();
@@ -232,7 +238,9 @@ begin
   if laneCount < uSwimClub.NumberOfLanes() then
   begin
     repeat
-      uLane.NewLane();
+      {
+        uLane.NewLane();
+      }
       Inc(laneCount);
     until laneCount = uSwimClub.NumberOfLanes();
   end;
@@ -341,6 +349,7 @@ end;
 function RenumberLanesAdv(DoLocate: Boolean = true): integer;
 var
 aLaneID: integer;
+evType: scmEventType;
 begin
   result := 0;
   if not Assigned(SCM2) or not SCM2.scmConnection.Connected then exit;
@@ -350,14 +359,15 @@ begin
   CORE.qryLane.DisableControls;
   CORE.qryHeat.DisableControls;
   try
-  if DoLocate then aLaneID := uLane.PK;
-  if uEvent.EventType = scmEventType.etINDV then
+  { if DoLocate then aLaneID := uLane.PK; }
+  evType := uEvent.getEventType;
+  if evType = scmEventType.etINDV then
     result := uHeat.RenumberLanesAdvINDV(true) // do relocate.
-  else if uEvent.EventType = scmEventType.etTeam then
+  else if evType = scmEventType.etTeam then
     result := uHeat.RenumberLanesAdvTEAM(true) // do relocate.
   finally
-    if DoLocate then
-      uLane.Locate(aLaneID);
+    {if DoLocate then
+      uLane.Locate(aLaneID); }
     CORE.qryWatchTime.ApplyMaster;
     CORE.qrySplitTime.ApplyMaster;
     CORE.qryHeat.EnableControls;
@@ -375,7 +385,7 @@ var
 begin
   result := 0;
   try
-    if DoLocate then aLaneID := uLane.PK;
+    {if DoLocate then aLaneID := uLane.PK;}
     qry := TFDQuery.Create(CORE);
     qry.Connection := SCM2.scmConnection;
     {
@@ -432,6 +442,7 @@ begin
     while not qry.Eof do
     begin
       laneNum := scmUtils.ScatterLanes(i, uSwimClub.NumberOfLanes);
+      {
       if uLane.Locate(qry.FieldByName('LaneID').AsInteger) then
       begin
         try
@@ -443,6 +454,7 @@ begin
             CORE.qryLane.Cancel;
         end;
       end;
+      }
       i := i + 1;
       qry.Next;
     end;
@@ -462,7 +474,7 @@ var
 begin
   result := 0;
   try
-    if DoLocate then aLaneID := uLane.PK;
+    {if DoLocate then aLaneID := uLane.PK;}
     qry := TFDQuery.Create(CORE);
     qry.Connection := SCM2.scmConnection;
     {
@@ -519,6 +531,7 @@ begin
     while not qry.Eof do
     begin
       laneNum := scmUtils.ScatterLanes(i, uSwimClub.NumberOfLanes);
+      {
       if uLane.Locate(qry.FieldByName('LaneID').AsInteger) then
       begin
         try
@@ -530,6 +543,7 @@ begin
             CORE.qryLane.Cancel;
         end;
       end;
+      }
       i := i + 1;
       qry.Next;
     end;
@@ -543,40 +557,45 @@ end;
 
 procedure ToggleStatus;
 var
-  //  bm: TBookMark;
-  i, aHeatID: integer;
+  i: integer;
 begin
-  with CORE.qryHeat do
-  begin
-    DisableControls;
-    CheckBrowseMode;
-    aHeatID := GetHeatID;
-    //    bm := GetBookmark;
-    i := FieldByName('HeatStatusID').AsInteger;
-    Edit;
-    case i of
-      1:
-        // toggle to RACED ...
-        FieldByName('HeatStatusID').AsInteger := 2;
-      2:
+  DetailTBLs_DisableCNTRLs;
+  CORE.qryHeat.DisableControls;
+  try
+    begin
+      CORE.qryHeat.CheckBrowseMode;
+      i := CORE.qryHeat.FieldByName('HeatStatusID').AsInteger;
+      try
         begin
-          // toggle to CLOSED ...
-          FieldByName('HeatStatusID').AsInteger := 3;
-          // 22.09.2020 TimeStamp
-          FieldByName('CloseDT').AsDateTime := Now;
+          CORE.qryHeat.Edit;
+          case i of
+            1:
+              // toggle to RACED ...
+              CORE.qryHeat.FieldByName('HeatStatusID').AsInteger := 2;
+            2:
+              begin
+                // toggle to CLOSED ...
+                CORE.qryHeat.FieldByName('HeatStatusID').AsInteger := 3;
+                // 22.09.2020 TimeStamp
+                CORE.qryHeat.FieldByName('CloseDT').AsDateTime := Now;
+              end;
+          else
+            // toggle to OPEN ...
+            CORE.qryHeat.FieldByName('HeatStatusID').AsInteger := 1;
+          end;
+          CORE.qryHeat.Post;
+          // CHECK .... CORE.qryEvent.Refresh; // updates icons?
         end;
-    else
-      // toggle to OPEN ...
-      FieldByName('HeatStatusID').AsInteger := 1;
+      except on E: EFDDBEngineException do
+        begin
+          CORE.qryEvent.Cancel;
+          SCM2.FDGUIxErrorDialog.Execute(E);
+        end;
+      end;
     end;
-    Post;
-    Refresh;
-    try
-      uHeat.Locate(aHeatID);
-      //      GotoBookmark(bm);
-    finally
-      EnableControls;
-    end;
+  finally
+    CORE.qryHeat.EnableControls;
+    DetailTBLs_EnableCNTRLs;
   end;
 end;
 
@@ -603,6 +622,7 @@ begin
           if CORE.qryLane.FieldByName('TeamID').IsNull and
           CORE.qryLane.FieldByName('NomineeID').IsNull then
           begin
+            {
             if uLane.DeleteLane() then // candidate for delete.
             begin
               Dec(Lanes);
@@ -613,6 +633,7 @@ begin
             end
             else
               CORE.qryLane.next;
+            }
           end
           else
             CORE.qryLane.next;

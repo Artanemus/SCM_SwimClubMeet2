@@ -71,7 +71,7 @@ implementation
 
 {$R *.dfm}
 
-uses SCMUtils, System.UITypes;
+uses uUtility, System.UITypes;
 
 
 procedure TPreferences.btnCloseClick(Sender: TObject);

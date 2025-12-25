@@ -21,7 +21,7 @@ uses
 
   FireDAC.Stan.Option,
 
-  dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub, scmUtils,
+  dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub, uUtility,
 
   { TMS }
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
@@ -42,7 +42,6 @@ type
     File_Exit: TAction;
     File_ExportClub: TAction;
     File_ImportClub: TAction;
-    frSession: TFrameSession;
     Heat_AutoBuild: TAction;
     Heat_BatchBuildHeats: TAction;
     Heat_BatchMarshallReport: TAction;
@@ -100,7 +99,7 @@ type
     Tools_Swimmercategory: TAction;
     pnlEvent: TPanel;
     frEvent: TFrameEvent;
-    pnlMem: TPanel;
+    pnlFilterMember: TPanel;
     pnlNominate: TPanel;
     frFilterMember: TFrameFilterMember;
     Member_Stats: TAction;
@@ -114,7 +113,8 @@ type
     dbtxtNavEvDesc: TDBText;
     frNavEvent: TFrameNavEvent;
     pnlHeat: TPanel;
-    TFrameHeat1: TFrameHeat;
+    frHeat: TFrameHeat;
+    frSession: TFrameSession;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -146,11 +146,15 @@ type
 //    procedure DetailTBLs_ApplyMaster;
     procedure DetailTBLs_DisableCNTRLs;
     procedure DetailTBLs_EnableCNTRLs;
+
+    procedure UpdateFrameVisibility();
+
   protected
     // Note: don't name procedure same as winapi.message name.
     procedure Msg_SCM_Connect(var Msg: TMessage); message SCM_Connect;
     procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
     procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
+    procedure Msg_SCM_Scroll_Heat(var Msg: TMessage); message SCM_SCROLL_HEAT;
     procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage); message SCM_SCROLL_NOMINATE_FILTERMEMBER;
 
   end;
@@ -229,8 +233,11 @@ begin
   // store connection state..
   cState := SCM2.scmConnection.Connected;
   fscmIsConnecting := true;
-
+  frNominate.grid.BeginUpdate;
   frFilterMember.grid.BeginUpdate;
+   {frLane.grid.BeginUpdate;}
+  frHeat.grid.BeginUpdate;
+  frNavEvent.grid.BeginUpdate;
   frEvent.grid.BeginUpdate;
   frSession.grid.BeginUpdate;
   try
@@ -249,6 +256,11 @@ begin
       frEvent.Initialise;
       frFilterMember.Initialise;
       frNominate.Initialise;
+      {
+        frNavEvent.Initialise;
+        frHeat.Initialise;
+        frLane.Initialise;
+      }
     end;
 
     // connection state changed?
@@ -259,7 +271,6 @@ begin
         PageControl.ActivePageIndex := 0;
       if frEvent.actnEv_GridView.Checked then
         frEvent.actnEv_GridView.Checked := false; // Collapsed grid view.
-      pnlSession.Visible := true;
     end;
 
     // UI changes needed to track connection state.
@@ -279,7 +290,12 @@ begin
   finally
     frSession.grid.EndUpdate;
     frEvent.grid.EndUpdate;
+    frNavEvent.grid.EndUpdate;
+    frHeat.grid.EndUpdate;
+    {frLane.grid.EndUpdate;}
     frFilterMember.grid.EndUpdate;
+    frNominate.grid.EndUpdate;
+    UpdateFrameVisibility;
     fscmIsConnecting := false;
   end;
 
@@ -299,8 +315,6 @@ begin
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
     SCM2.scmConnection.Close;
 end;
-
-
 
 procedure TMain2.FormCreate(Sender: TObject);
 begin
@@ -354,10 +368,10 @@ begin
   frFilterMember.Initialise;
   frNominate.Initialise;
 
-  // initialize UI state tabsheet 0 and Collapsed grid view.
-  PageControl.ActivePageIndex := 0;
-  frEvent.actnEv_GridView.Checked := false;
-  pnlSession.Visible := true;
+  // No connection established ...initialize UI state...
+  PageControl.ActivePageIndex := 0; // tabsheet 0
+  frEvent.actnEv_GridView.Checked := false; // default: collapsed gridview.
+  UpdateFrameVisibility(); // hide all panels displaying frames.
 
 end;
 
@@ -373,7 +387,6 @@ end;
 
 procedure TMain2.FormShow(Sender: TObject);
 begin
-
   if Assigned(Settings) and Settings.DoLoginOnBoot then
   begin
     // fix UI repaint issues with the TMS grids (held within frames).
@@ -390,8 +403,9 @@ begin
         );
       end
     ).Start;
-  end;
-
+  end
+  else
+    UpdateFrameVisibility;
 end;
 
 procedure TMain2.frEventactnEv_GridViewExecute(Sender: TObject);
@@ -479,9 +493,15 @@ end;
 procedure TMain2.Msg_SCM_Connect(var Msg: TMessage);
 begin
   // already connected.. NOTE: Use TMessage SCM_DISCONNECT to disconnect.
-  if SCM2.scmConnection.Connected then exit;
-  //  actnManager.ExecuteAction(File_Connection); // doesn't work
-  File_Connection.Execute;
+  if Assigned(SCM2) and not SCM2.scmConnection.Connected then
+  begin
+    //  actnManager.ExecuteAction(File_Connection); // doesn't work
+    File_Connection.Execute;
+    exit;
+  end;
+
+  UpdateFrameVisibility;
+
 end;
 
 procedure TMain2.Msg_SCM_Scroll_Event(var Msg: TMessage);
@@ -489,6 +509,7 @@ begin
   // pass message forward to event frame...
   if fscmIsConnecting then exit;
   SendMessage(frEvent.Handle, SCM_SCROLL_EVENT, Msg.WParam, Msg.LParam);
+  PostMessage(frHeat.Handle, SCM_SCROLL_EVENT, Msg.WParam, Msg.LParam);
 end;
 
 procedure TMain2.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
@@ -496,6 +517,13 @@ begin
   // forward message to nominate frame.
   if fscmIsConnecting then exit;
   SendMessage(frNominate.Handle, SCM_SCROLL_NOMINATE_FILTERMEMBER, Msg.WParam, Msg.LParam);
+end;
+
+procedure TMain2.Msg_SCM_Scroll_Heat(var Msg: TMessage);
+begin
+  // pass message forward to Heat frame...
+  if fscmIsConnecting then exit;
+  SendMessage(frHeat.Handle, SCM_SCROLL_HEAT, Msg.WParam, Msg.LParam);
 end;
 
 procedure TMain2.Msg_SCM_Scroll_Session(var Msg: TMessage);
@@ -740,10 +768,12 @@ begin
 
     if (PK1 <> PK2) then // switched to different club..
     begin
-      frSession.Initialise;
+      uSwimClub.SwitchClubs(PK1, PK2);
+      frSession.Initialise; // adjusts the grid.PageMode - grid visibility..
       frEvent.Initialise;
       frFilterMember.Initialise;
       frNominate.Initialise;
+      frHeat.Initialise;
       // initialize UI state tabsheet 0 and Collapsed grid view.
       PageControl.ActivePageIndex := 0;
       frEvent.actnEv_GridView.Checked := false;
@@ -769,6 +799,34 @@ begin
   // enable/disable FINA codes....
   // show/hide debug info.
 
+end;
+
+procedure TMain2.UpdateFrameVisibility;
+begin
+  {
+    All frames are hidden when there is no database connection.
+    STACK ORDER is important when making visible panels.
+  }
+  pnlSession.Visible := false;
+  pnlEvent.Visible := false;
+  pnlNominate.Visible := false;
+  pnlFilterMember.Visible := false;
+  pnlNavEvent.Visible := false;
+  pnlHeat.Visible := False;
+
+  if Assigned(SCM2) and SCM2.scmConnection.Connected then
+  begin
+    if frEvent.actnEv_GridView.Checked then
+      pnlSession.Visible := false
+    else
+      pnlSession.Visible := true;
+
+    pnlEvent.Visible := true;
+    pnlFilterMember.Visible := true;
+    pnlNominate.Visible := true;
+    pnlHeat.Visible := true;
+    pnlNavEvent.Visible := true;
+  end;
 end;
 
 end.

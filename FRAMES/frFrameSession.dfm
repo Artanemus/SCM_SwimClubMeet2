@@ -28,7 +28,7 @@ object FrameSession: TFrameSession
       DefaultRowHeight = 58
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 2
+      RowCount = 101
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -394,17 +394,242 @@ object FrameSession: TFrameSession
         0)
       RowHeights = (
         24
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
+        58
         58)
     end
   end
-  object pnlCntrl: TPanel
+  object rpnlCntrl: TRelativePanel
     Left = 0
     Top = 0
     Width = 58
     Height = 698
+    ControlCollection = <
+      item
+        Control = spbtnSessLockedVisible
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+      end
+      item
+        Control = spbtnSessLock
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnSessLockedVisible
+      end
+      item
+        Control = ShapeSessBar1
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnSessLock
+      end
+      item
+        Control = spbtnSessEdit
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = ShapeSessBar1
+      end
+      item
+        Control = spbtnSessNew
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnSessEdit
+      end
+      item
+        Control = spbtnSessClone
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnSessNew
+      end
+      item
+        Control = spbtnSessDelete
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnSessClone
+      end
+      item
+        Control = ShapeSessBar2
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnSessDelete
+      end
+      item
+        Control = spbtnSessReport
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = ShapeSessBar2
+      end>
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
+    object spbtnSessLockedVisible: TSpeedButton
+      Tag = 1
+      Left = 0
+      Top = 0
+      Width = 58
+      Height = 48
+      Action = actnSess_IsLocked
+      Align = alTop
+      Anchors = []
+      ImageName = 'se-visible_on'
+      Images = IMG.imglstSessCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
+    end
+    object spbtnSessLock: TSpeedButton
+      Tag = 6
+      Left = 0
+      Top = 48
+      Width = 58
+      Height = 48
+      Action = actnSess_Lock
+      Align = alTop
+      Anchors = []
+      ImageName = 'se-lock2'
+      Images = IMG.imglstSessCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
+    end
     object ShapeSessBar1: TShape
       AlignWithMargins = True
       Left = 0
@@ -416,9 +641,80 @@ object FrameSession: TFrameSession
       Margins.Right = 0
       Margins.Bottom = 6
       Align = alTop
+      Anchors = []
       Brush.Color = 8421631
-      ExplicitTop = 99
-      ExplicitWidth = 89
+    end
+    object spbtnSessEdit: TSpeedButton
+      Tag = 8
+      Left = 0
+      Top = 112
+      Width = 58
+      Height = 48
+      Action = actnSess_Edit
+      Align = alTop
+      Anchors = []
+      ImageName = 'se-edit'
+      Images = IMG.imglstSessCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
+    end
+    object spbtnSessNew: TSpeedButton
+      Tag = 3
+      Left = 0
+      Top = 160
+      Width = 58
+      Height = 48
+      Action = actnSess_New
+      Align = alTop
+      Anchors = []
+      ImageName = 'se-new'
+      Images = IMG.imglstSessCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
+    end
+    object spbtnSessClone: TSpeedButton
+      Tag = 11
+      Left = 0
+      Top = 208
+      Width = 58
+      Height = 48
+      Action = actnSess_Clone
+      Align = alTop
+      Anchors = []
+      ImageName = 'se-clone'
+      Images = IMG.imglstSessCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
+    end
+    object spbtnSessDelete: TSpeedButton
+      Tag = 4
+      Left = 0
+      Top = 256
+      Width = 58
+      Height = 48
+      Action = actnSess_Delete
+      Align = alTop
+      Anchors = []
+      ImageName = 'se-in'
+      Images = IMG.imglstSessCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
     end
     object ShapeSessBar2: TShape
       AlignWithMargins = True
@@ -431,86 +727,19 @@ object FrameSession: TFrameSession
       Margins.Right = 0
       Margins.Bottom = 6
       Align = alTop
+      Anchors = []
       Brush.Color = 8421631
-      ExplicitTop = 308
-      ExplicitWidth = 89
-    end
-    object spbtnSessClone: TSpeedButton
-      Left = 0
-      Top = 208
-      Width = 58
-      Height = 48
-      Action = actnSess_Clone
-      Align = alTop
-      Images = IMG.imglstSessCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      ParentShowHint = False
-      ShowHint = True
-      Spacing = 5
-      ExplicitTop = 192
-      ExplicitWidth = 89
-    end
-    object spbtnSessDelete: TSpeedButton
-      Left = 0
-      Top = 256
-      Width = 58
-      Height = 48
-      Action = actnSess_Delete
-      Align = alTop
-      Images = IMG.imglstSessCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      ParentShowHint = False
-      ShowHint = True
-      Spacing = 5
-      ExplicitTop = 144
-      ExplicitWidth = 89
-    end
-    object spbtnSessLock: TSpeedButton
-      Left = 0
-      Top = 48
-      Width = 58
-      Height = 48
-      Action = actnSess_Lock
-      Align = alTop
-      ImageName = 'lock2-open'
-      Images = IMG.imglstSessCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      ParentShowHint = False
-      ShowHint = True
-      Spacing = 5
-      ExplicitTop = 40
-      ExplicitWidth = 89
-    end
-    object spbtnSessNew: TSpeedButton
-      Left = 0
-      Top = 160
-      Width = 58
-      Height = 48
-      Action = actnSess_New
-      Align = alTop
-      Images = IMG.imglstSessCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      ParentShowHint = False
-      ShowHint = True
-      Spacing = 5
-      ExplicitTop = 128
-      ExplicitWidth = 89
     end
     object spbtnSessReport: TSpeedButton
+      Tag = 5
       Left = 0
       Top = 320
       Width = 58
       Height = 48
       Action = actnSess_Report
       Align = alTop
+      Anchors = []
+      ImageName = 'se-report'
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -518,45 +747,6 @@ object FrameSession: TFrameSession
       ParentShowHint = False
       ShowHint = True
       Spacing = 5
-      ExplicitTop = 374
-      ExplicitWidth = 89
-    end
-    object spbtnSessLockedVisible: TSpeedButton
-      Left = 0
-      Top = 0
-      Width = 58
-      Height = 48
-      Action = actnSess_IsLocked
-      Align = alTop
-      ImageName = 'visible_on'
-      Images = IMG.imglstSessCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      ParentShowHint = False
-      ShowHint = True
-      Spacing = 5
-      ExplicitLeft = 8
-      ExplicitTop = 1
-      ExplicitWidth = 48
-    end
-    object spbtnSessEdit: TSpeedButton
-      Left = 0
-      Top = 112
-      Width = 58
-      Height = 48
-      Action = actnSess_Edit
-      Align = alTop
-      Images = IMG.imglstSessCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      ParentShowHint = False
-      ShowHint = True
-      Spacing = 5
-      ExplicitLeft = -3
-      ExplicitTop = 115
-      ExplicitWidth = 54
     end
   end
   object actnlstSession: TActionList
@@ -580,12 +770,6 @@ object FrameSession: TFrameSession
       ImageName = 'lock2'
       OnExecute = actnSess_LockExecute
       OnUpdate = actnSess_LockUpdate
-    end
-    object actnSess_Search: TAction
-      Category = 'Session'
-      Caption = 'Search...'
-      ImageIndex = 33
-      ImageName = 'search'
     end
     object actnSess_Edit: TAction
       Category = 'Session'
@@ -641,6 +825,12 @@ object FrameSession: TFrameSession
       Caption = 'Import...'
       ImageIndex = 21
       ImageName = 'in'
+    end
+    object actnSess_Search: TAction
+      Category = 'Session'
+      Caption = 'Search...'
+      ImageIndex = 33
+      ImageName = 'search'
     end
     object actnSess_Sort: TAction
       Category = 'Session'

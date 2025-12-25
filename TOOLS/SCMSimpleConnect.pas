@@ -40,7 +40,7 @@ type
 implementation
 
 uses
-  SysUtils, scmUtils, System.IniFiles, System.IOUtils;
+  SysUtils, uUtility, System.IniFiles, System.IOUtils;
 
 constructor TSimpleConnect.Create(AOwner: TComponent);
 begin

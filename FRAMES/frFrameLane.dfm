@@ -1,14 +1,14 @@
-object FrameHeat: TFrameHeat
+object FrameLane: TFrameLane
   Left = 0
   Top = 0
-  Width = 212
-  Height = 624
+  Width = 640
+  Height = 480
   TabOrder = 0
   object rpnlCntrl: TRelativePanel
     Left = 0
     Top = 0
     Width = 58
-    Height = 624
+    Height = 480
     ControlCollection = <
       item
         Control = spbtnMoveUp
@@ -30,7 +30,7 @@ object FrameHeat: TFrameHeat
         Below = spbtnMoveUp
       end
       item
-        Control = spbtnToggleStatus
+        Control = spbtnSwitch
         AlignBottomWithPanel = False
         AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
@@ -40,16 +40,6 @@ object FrameHeat: TFrameHeat
         Below = spbtnMoveDown
       end
       item
-        Control = spbtnNew
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = False
-        Below = spbtnToggleStatus
-      end
-      item
         Control = spbtnDelete
         AlignBottomWithPanel = False
         AlignHorizontalCenterWithPanel = True
@@ -57,10 +47,10 @@ object FrameHeat: TFrameHeat
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
-        Below = spbtnNew
+        Below = spbtnSwitch
       end
       item
-        Control = ShapeHtBar1
+        Control = spbtnDeleteForever
         AlignBottomWithPanel = False
         AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
@@ -70,64 +60,14 @@ object FrameHeat: TFrameHeat
         Below = spbtnDelete
       end
       item
-        Control = spbtnAutoBuild
+        Control = ShapeLnBar1
         AlignBottomWithPanel = False
         AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
-        Below = ShapeHtBar1
-      end
-      item
-        Control = ShapeHtBar2
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = False
-        Below = spbtnAutoBuild
-      end
-      item
-        Control = spbtnMarshall
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = False
-        Below = ShapeHtBar2
-      end
-      item
-        Control = spbtnTimeKeeper
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = False
-        Below = spbtnMarshall
-      end
-      item
-        Control = spbtnAllLogs
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = False
-        Below = spbtnTimeKeeper
-      end
-      item
-        Control = ShapeHtBar3
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = False
-        Below = spbtnAllLogs
+        Below = spbtnDeleteForever
       end
       item
         Control = spbtnReport
@@ -137,23 +77,23 @@ object FrameHeat: TFrameHeat
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
-        Below = ShapeHtBar3
+        Below = ShapeLnBar1
       end>
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
     DesignSize = (
       58
-      624)
+      480)
     object spbtnMoveUp: TSpeedButton
       Left = 5
       Top = 0
       Width = 48
       Height = 48
-      Action = actnHt_MoveUp
+      Anchors = []
       ImageIndex = 0
       ImageName = 'ht-up'
-      Images = IMG.imglstHeatCntrl
+      Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
       Spacing = 5
@@ -164,41 +104,24 @@ object FrameHeat: TFrameHeat
       Top = 48
       Width = 48
       Height = 48
-      Action = actnHt_MoveDown
       Anchors = []
       ImageIndex = 1
-      ImageName = 'ht-down'
-      Images = IMG.imglstHeatCntrl
+      ImageName = 'ln-down'
+      Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
       Spacing = 5
     end
-    object spbtnToggleStatus: TSpeedButton
-      Tag = 2
+    object spbtnSwitch: TSpeedButton
+      Tag = 9
       Left = 5
       Top = 96
       Width = 48
       Height = 48
-      Action = actnHt_ToggleStatus
       Anchors = []
-      ImageIndex = 2
-      ImageName = 'ht-ToggleStatus'
-      Images = IMG.imglstHeatCntrl
-      Layout = blGlyphTop
-      Margin = 0
-      Spacing = 5
-    end
-    object spbtnNew: TSpeedButton
-      Tag = 3
-      Left = 5
-      Top = 144
-      Width = 48
-      Height = 48
-      Action = actnHt_New
-      Anchors = []
-      ImageIndex = 3
-      ImageName = 'ht-new'
-      Images = IMG.imglstHeatCntrl
+      ImageIndex = 9
+      ImageName = 'ln-swap'
+      Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
       Spacing = 5
@@ -206,19 +129,32 @@ object FrameHeat: TFrameHeat
     object spbtnDelete: TSpeedButton
       Tag = 4
       Left = 5
-      Top = 192
+      Top = 144
       Width = 48
       Height = 48
-      Action = actnHt_Delete
       Anchors = []
       ImageIndex = 4
-      ImageName = 'ht-delete'
-      Images = IMG.imglstHeatCntrl
+      ImageName = 'ln-delete'
+      Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
       Spacing = 5
     end
-    object ShapeHtBar1: TShape
+    object spbtnDeleteForever: TSpeedButton
+      Tag = 5
+      Left = 5
+      Top = 192
+      Width = 48
+      Height = 48
+      Anchors = []
+      ImageIndex = 5
+      ImageName = 'ln-delete-forever'
+      Images = IMG.imglstLaneCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object ShapeLnBar1: TShape
       AlignWithMargins = True
       Left = 2
       Top = 246
@@ -232,105 +168,16 @@ object FrameHeat: TFrameHeat
       Anchors = []
       Brush.Color = 8421631
     end
-    object spbtnAutoBuild: TSpeedButton
-      Tag = 5
+    object spbtnReport: TSpeedButton
+      Tag = 8
       Left = 5
       Top = 256
       Width = 48
       Height = 48
-      Action = actnHt_AutoBuild
-      Anchors = []
-      ImageIndex = 5
-      ImageName = 'ht-build'
-      Images = IMG.imglstHeatCntrl
-      Layout = blGlyphTop
-      Margin = 0
-      Spacing = 5
-    end
-    object ShapeHtBar2: TShape
-      AlignWithMargins = True
-      Left = 2
-      Top = 310
-      Width = 54
-      Height = 4
-      Margins.Left = 0
-      Margins.Top = 6
-      Margins.Right = 0
-      Margins.Bottom = 6
-      Align = alTop
-      Anchors = []
-      Brush.Color = 8421631
-    end
-    object spbtnMarshall: TSpeedButton
-      Tag = 6
-      Left = 5
-      Top = 320
-      Width = 48
-      Height = 48
-      Action = actnHt_MarshallSheet
-      Anchors = []
-      ImageIndex = 6
-      ImageName = 'ht-marshall'
-      Images = IMG.imglstHeatCntrl
-      Layout = blGlyphTop
-      Margin = 0
-      Spacing = 5
-    end
-    object spbtnTimeKeeper: TSpeedButton
-      Tag = 7
-      Left = 5
-      Top = 368
-      Width = 48
-      Height = 48
-      Action = actnHt_TimeKeeperSheets
-      Anchors = []
-      ImageIndex = 7
-      ImageName = 'ht-timer'
-      Images = IMG.imglstHeatCntrl
-      Layout = blGlyphTop
-      Margin = 0
-      Spacing = 5
-    end
-    object spbtnAllLogs: TSpeedButton
-      Tag = 8
-      Left = 5
-      Top = 416
-      Width = 48
-      Height = 48
-      Action = actnHt_SheetSet
       Anchors = []
       ImageIndex = 8
-      ImageName = 'ht-print'
-      Images = IMG.imglstHeatCntrl
-      Layout = blGlyphTop
-      Margin = 0
-      Spacing = 5
-    end
-    object ShapeHtBar3: TShape
-      AlignWithMargins = True
-      Left = 2
-      Top = 470
-      Width = 54
-      Height = 4
-      Margins.Left = 0
-      Margins.Top = 6
-      Margins.Right = 0
-      Margins.Bottom = 6
-      Align = alTop
-      Anchors = []
-      Brush.Color = 8421631
-    end
-    object spbtnReport: TSpeedButton
-      Tag = 9
-      Left = 5
-      Top = 480
-      Width = 48
-      Height = 48
-      Action = actnHt_Report
-      Anchors = []
-      ImageIndex = 9
-      ImageName = 'ht-report'
-      Images = IMG.imglstHeatCntrl
+      ImageName = 'ln-report'
+      Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
       Spacing = 5
@@ -339,35 +186,36 @@ object FrameHeat: TFrameHeat
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 154
-    Height = 624
+    Width = 582
+    Height = 480
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
     object grid: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 154
-      Height = 624
+      Width = 582
+      Height = 480
       Cursor = crDefault
       Align = alClient
-      Color = 4800817
-      ColCount = 4
-      DefaultRowHeight = 64
+      Color = clWhite
+      ColCount = 2
       DrawingStyle = gdsClassic
-      FixedColor = 4800817
-      RowCount = 101
+      FixedColor = clWhite
+      RowCount = 2
       FixedRows = 1
-      Options = [goRangeSelect, goRowSelect, goFixedRowDefAlign]
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
+      ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
-      StyleElements = [seFont, seBorder]
-      OnDrawCell = gridDrawCell
-      GridLineColor = 13948116
-      GridFixedLineColor = 11250603
+      GridLineColor = 15987699
+      GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
-      OnGetCellColor = gridGetCellColor
-      OnCanEditCell = gridCanEditCell
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
       ActiveCellFont.Height = -12
@@ -423,10 +271,10 @@ object FrameHeat: TFrameHeat
         'Larger than'
         'Smaller than'
         'Clear')
-      FixedColWidth = 0
-      FixedRowHeight = 0
+      FixedColWidth = 20
+      FixedRowHeight = 22
       FixedFont.Charset = DEFAULT_CHARSET
-      FixedFont.Color = 3881787
+      FixedFont.Color = clBlack
       FixedFont.Height = -12
       FixedFont.Name = 'Tahoma'
       FixedFont.Style = [fsBold]
@@ -480,8 +328,8 @@ object FrameHeat: TFrameHeat
       SortSettings.HeaderMirrorColor = clWhite
       SortSettings.HeaderMirrorColorTo = clWhite
       Version = '2.5.1.3'
-      AutoCreateColumns = False
-      AutoRemoveColumns = False
+      AutoCreateColumns = True
+      AutoRemoveColumns = True
       Columns = <
         item
           Borders = []
@@ -490,7 +338,6 @@ object FrameHeat: TFrameHeat
           CheckFalse = 'N'
           CheckTrue = 'Y'
           Color = clWindow
-          FieldName = 'HeatID'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -12
@@ -507,17 +354,15 @@ object FrameHeat: TFrameHeat
           PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 0
+          Width = 20
         end
         item
-          Alignment = taCenter
           Borders = []
           BorderPen.Color = clSilver
           ButtonHeight = 18
           CheckFalse = 'N'
           CheckTrue = 'Y'
           Color = clWindow
-          FieldName = 'HeatNum'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -12
@@ -528,63 +373,6 @@ object FrameHeat: TFrameHeat
           HeaderFont.Height = -12
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 0
-        end
-        item
-          Alignment = taRightJustify
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = 4800817
-          DataImageField = True
-          FieldName = 'StrokeID'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -12
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          Images = IMG.imglstHeatStroke
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 64
-        end
-        item
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = 4800817
-          DataImageField = True
-          FieldName = 'HeatStatusID'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = clWindowText
-          HeaderFont.Height = -12
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          Images = IMG.imglstHeatStatus
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
           PrintFont.Color = clWindowText
@@ -593,7 +381,6 @@ object FrameHeat: TFrameHeat
           PrintFont.Style = []
           Width = 64
         end>
-      DataSource = CORE.dsHeat
       InvalidPicture.Data = {
         055449636F6E0000010001002020200000000000A81000001600000028000000
         2000000040000000010020000000000000100000000000000000000000000000
@@ -732,245 +519,53 @@ object FrameHeat: TFrameHeat
         FFC003FF}
       ShowUnicode = False
       ColWidths = (
-        0
-        0
-        64
-        64)
-      RowHeights = (
-        0
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
+        20
         64)
     end
   end
-  object actnlistHeat: TActionList
+  object actnlistLane: TActionList
     Images = IMG.imglstMenuBar
-    Left = 96
-    Top = 296
-    object actnHt_MoveUp: TAction
-      Category = 'Heats'
+    Left = 520
+    Top = 224
+    object actnMoveUp: TAction
+      Category = 'Lanes'
       Caption = 'Move Up'
       ImageIndex = 6
       ImageName = 'up'
-      ShortCut = 16422
-      OnUpdate = actnHt_GenericUpdate
     end
-    object actnHt_MoveDown: TAction
-      Category = 'Heats'
+    object actnMoveDown: TAction
+      Category = 'Lanes'
       Caption = 'Move Down'
       ImageIndex = 7
       ImageName = 'down'
-      ShortCut = 16424
-      OnUpdate = actnHt_GenericUpdate
     end
-    object actnHt_ToggleStatus: TAction
-      Category = 'Heats'
-      Caption = 'Toggle Status'
-      ImageIndex = 0
-      ImageName = 'empty'
-      ShortCut = 16468
-      OnExecute = actnHt_ToggleStatusExecute
-      OnUpdate = actnHt_GenericUpdate
+    object actnSwap: TAction
+      Category = 'Lanes'
+      Caption = 'Swap Lanes'
+      ImageIndex = 38
+      ImageName = 'swap2'
     end
-    object actnHt_New: TAction
-      Category = 'Heats'
-      Caption = 'New'
-      ImageIndex = 8
-      ImageName = 'new'
-      ShortCut = 16429
-    end
-    object actnHt_Delete: TAction
-      Category = 'Heats'
-      Caption = 'Delete'
+    object actnDelete: TAction
+      Category = 'Lanes'
+      Caption = 'Empty Lane'
       ImageIndex = 9
       ImageName = 'delete'
-      ShortCut = 16430
     end
-    object actnHt_AutoBuild: TAction
-      Category = 'Heats'
-      Caption = 'Auto-Build'
-      ImageIndex = 11
-      ImageName = 'tool'
+    object actnDeleteForever: TAction
+      Category = 'Lanes'
+      Caption = 'Remove Nomination'
+      ImageIndex = 10
+      ImageName = 'delete-forever'
     end
-    object actnHt_MarshallSheet: TAction
-      Category = 'Heats'
-      Caption = 'Marshall Sheet'
-      ImageIndex = 12
-      ImageName = 'marshall'
-    end
-    object actnHt_TimeKeeperSheets: TAction
-      Category = 'Heats'
-      Caption = 'Timekeeper Sheets'
-      ImageIndex = 13
-      ImageName = 'time-keeper'
-    end
-    object actnHt_SheetSet: TAction
-      Category = 'Heats'
-      Caption = 'Sheet Set'
-      ImageIndex = 14
-      ImageName = 'print'
-    end
-    object actnHt_Report: TAction
-      Category = 'Heats'
-      Caption = 'Heat Report'
+    object actnReport: TAction
+      Category = 'Lanes'
+      Caption = 'Lane Report'
       ImageIndex = 15
       ImageName = 'report'
     end
-    object actnHt_AutoBuildAll: TAction
-      Category = 'Heats'
-      Caption = 'Auto Build ALL...'
-    end
-    object actnHt_AllMarshallSheets: TAction
-      Category = 'Heats'
-      Caption = 'ALL Marshall Sets...'
-    end
-    object actnHt_AllTimeKeeperSheets: TAction
-      Category = 'Heats'
-      Caption = 'ALL TimeKeeper Sets...'
-    end
-    object actnHt_Renumber: TAction
-      Category = 'Heats'
-      Caption = 'Renumber'
-    end
   end
-  object pumenuHeat: TPopupMenu
-    Left = 98
-    Top = 360
-    object MoveUp1: TMenuItem
-      Action = actnHt_MoveUp
-    end
-    object MoveDown1: TMenuItem
-      Action = actnHt_MoveDown
-    end
-    object oggleStatus1: TMenuItem
-      Action = actnHt_ToggleStatus
-    end
-    object New1: TMenuItem
-      Action = actnHt_New
-    end
-    object Delete1: TMenuItem
-      Action = actnHt_Delete
-    end
-    object N1: TMenuItem
-      Caption = '-'
-    end
-    object AutoBuild1: TMenuItem
-      Action = actnHt_AutoBuild
-    end
-    object N2: TMenuItem
-      Caption = '-'
-    end
-    object MarshallSheet1: TMenuItem
-      Action = actnHt_MarshallSheet
-    end
-    object ALLTimeKeeperSets1: TMenuItem
-      Action = actnHt_TimeKeeperSheets
-    end
-    object SheetSet1: TMenuItem
-      Action = actnHt_SheetSet
-    end
-    object N3: TMenuItem
-      Caption = '-'
-    end
-    object HeatReport1: TMenuItem
-      Action = actnHt_Report
-    end
+  object pumenuLane: TPopupMenu
+    Left = 520
+    Top = 304
   end
 end

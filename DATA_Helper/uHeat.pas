@@ -10,7 +10,7 @@ uses
   FireDAC.Comp.Client, FireDAC.Stan.Error,
 
   dmCORE, dmSCM2, uDefines,
-  scmUtils;
+  uUtility;
 
 
 function Assert: boolean;
@@ -41,7 +41,7 @@ procedure ToggleStatus(); // current heat
 implementation
 
 uses
-	uSwimClub, uSession, uEvent; //, uLane;
+	uSwimClub, uSession, uEvent, uLane; //, uLane;
 
 
 procedure DetailTBLs_DisableCNTRLs;
@@ -112,6 +112,7 @@ var
   done: boolean;
 begin
   result := false;
+  done := false;
   // Not permitted to delete anything if session is locked.
   if uSession.IsLocked() then exit;
   CORE.qryLane.DisableControls;
@@ -122,9 +123,7 @@ begin
     while not eof do
     begin
       // deletes watch-times and split-times and finally the lane.
-      {
-        done := uLane.DeleteLane();
-      }
+      done := uLane.DeleteLane();
       if done then
         continue
       else
@@ -441,7 +440,7 @@ begin
     i := 0; // NOTE: ScatterLanes is based 0
     while not qry.Eof do
     begin
-      laneNum := scmUtils.ScatterLanes(i, uSwimClub.NumberOfLanes);
+      laneNum := uUtility.ScatterLanes(i, uSwimClub.NumberOfLanes);
       {
       if uLane.Locate(qry.FieldByName('LaneID').AsInteger) then
       begin
@@ -530,7 +529,7 @@ begin
     i := 0; // NOTE: ScatterLanes is based 0
     while not qry.Eof do
     begin
-      laneNum := scmUtils.ScatterLanes(i, uSwimClub.NumberOfLanes);
+      laneNum := uUtility.ScatterLanes(i, uSwimClub.NumberOfLanes);
       {
       if uLane.Locate(qry.FieldByName('LaneID').AsInteger) then
       begin

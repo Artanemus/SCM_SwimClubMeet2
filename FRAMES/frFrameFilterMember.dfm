@@ -73,13 +73,14 @@ object FrameFilterMember: TFrameFilterMember
         AlignVerticalCenterWithPanel = False
       end>
     Align = alLeft
+    BevelOuter = bvNone
     TabOrder = 0
     DesignSize = (
       58
       480)
     object ShapeMemBar1: TShape
       AlignWithMargins = True
-      Left = 4
+      Left = 5
       Top = 155
       Width = 48
       Height = 4
@@ -92,7 +93,7 @@ object FrameFilterMember: TFrameFilterMember
     end
     object lblNomWarning: TLabel
       AlignWithMargins = True
-      Left = 5
+      Left = 6
       Top = 237
       Width = 45
       Height = 187
@@ -117,7 +118,8 @@ object FrameFilterMember: TFrameFilterMember
       StyleElements = [seClient, seBorder]
     end
     object spbtnMemDetails: TSpeedButton
-      Left = 4
+      Tag = 2
+      Left = 5
       Top = 49
       Width = 48
       Height = 48
@@ -132,7 +134,8 @@ object FrameFilterMember: TFrameFilterMember
       NumGlyphs = 2
     end
     object spbtnPB: TSpeedButton
-      Left = 4
+      Tag = 3
+      Left = 5
       Top = 97
       Width = 48
       Height = 48
@@ -148,8 +151,9 @@ object FrameFilterMember: TFrameFilterMember
       NumGlyphs = 2
     end
     object spbtnReport: TSpeedButton
+      Tag = 1
       Left = 4
-      Top = 169
+      Top = 166
       Width = 48
       Height = 48
       Hint = 'Create and display a nominee'#39's report.'
@@ -227,6 +231,7 @@ object FrameFilterMember: TFrameFilterMember
             AlignVerticalCenterWithPanel = True
           end>
         Align = alTop
+        BevelOuter = bvNone
         TabOrder = 0
         DesignSize = (
           582
@@ -234,8 +239,8 @@ object FrameFilterMember: TFrameFilterMember
         object btnClearSearch: TButton
           Tag = 1
           AlignWithMargins = True
-          Left = 482
-          Top = 7
+          Left = 483
+          Top = 8
           Width = 89
           Height = 32
           Margins.Left = 10
@@ -252,9 +257,9 @@ object FrameFilterMember: TFrameFilterMember
         end
         object edtSearch: TEdit
           AlignWithMargins = True
-          Left = 51
-          Top = 9
-          Width = 420
+          Left = 50
+          Top = 10
+          Width = 422
           Height = 29
           Margins.Left = 50
           Margins.Top = 0
@@ -266,8 +271,8 @@ object FrameFilterMember: TFrameFilterMember
         end
         object vimgSearch: TVirtualImage
           AlignWithMargins = True
-          Left = 11
-          Top = 6
+          Left = 10
+          Top = 7
           Width = 34
           Height = 34
           Margins.Left = 10
@@ -280,6 +285,7 @@ object FrameFilterMember: TFrameFilterMember
           ImageHeight = 0
           ImageIndex = 67
           ImageName = 'Search'
+          Enabled = False
         end
       end
       object grid: TDBAdvGrid

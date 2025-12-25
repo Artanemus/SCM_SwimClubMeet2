@@ -34,7 +34,7 @@ uses
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
   dmMM_CORE, uDefines, uSettings,
-  uSwimClub, SCMUtils, dmSCM2
+  uSwimClub, uUtility, dmSCM2
 
   ;
 

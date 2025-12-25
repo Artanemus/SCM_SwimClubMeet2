@@ -457,6 +457,7 @@ end;
 
 
 
+
 (*
 procedure T_Event.qryEventAfterDelete(DataSet: TDataSet);
 begin

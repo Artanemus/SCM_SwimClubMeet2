@@ -1,4 +1,4 @@
-unit UIntercepters;
+unit uIntercepters;
 {
 One Unit Rule: If you have multiple Frames, you don't want to copy-paste the
 intercepter into every unit. You can create a "Base" unit
@@ -18,6 +18,8 @@ uses
 type
   // 1. THE INTERCEPTER MUST GO HERE (Before the TFrame declaration)
   TSpeedButton = class(Vcl.Buttons.TSpeedButton)
+  private
+    procedure FixSessionBtns();
   protected
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
   end;
@@ -30,21 +32,43 @@ procedure TSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 var
   SavedImages: TCustomImageList;
   SavedIndex: Integer;
-  SavedName: string;
+  SavedName, objName, imglstName: string;
 begin
   // Save local state
-  SavedImages := Self.Images;
-  SavedIndex := Self.ImageIndex;
-  SavedName  := Self.ImageName; // Important for TVirtualImageList
+  if Assigned(Self.Images) then
+  begin
+    SavedImages := Self.Images;
+    SavedIndex := Self.ImageIndex;
+    SavedName  := Self.ImageName; // Important for TVirtualImageList
+    objName := Self.Name;
+    imglstName := SavedImages.Name;
 
-  inherited ActionChange(Sender, CheckDefaults);
+    inherited ActionChange(Sender, CheckDefaults);
 
-  // Restore local state
-  Self.Images := SavedImages;
-  if SavedName <> '' then
-    Self.ImageName := SavedName
+    // Restore local state
+    Self.Images := SavedImages;
+
+    if objName.Contains('spbtnSess')  then
+      FixSessionBtns
+    else
+      begin
+      if SavedName <> '' then
+        Self.ImageName := SavedName
+      else
+        if Self.ImageIndex = -1 then
+          Self.ImageIndex := TSpeedButton(Sender).Tag
+        else
+          Self.ImageIndex := SavedIndex;
+      end;
+  end
   else
-    Self.ImageIndex := SavedIndex;
+    inherited ActionChange(Sender, CheckDefaults);
+
+end;
+
+procedure TSpeedButton.FixSessionBtns();
+begin
+  Self.ImageIndex := Self.Tag;
 end;
 
 end.

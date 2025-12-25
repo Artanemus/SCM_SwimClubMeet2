@@ -60,7 +60,7 @@ implementation
 
 {$R *.dfm}
 
-uses exeinfo, System.IniFiles, scmUtils;   //frmMain2,
+uses exeinfo, System.IniFiles, uUtility;   //frmMain2,
 
 
 procedure TLogin.btnDisconnectClick(Sender: TObject);

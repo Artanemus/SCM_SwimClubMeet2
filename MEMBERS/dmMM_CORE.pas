@@ -115,7 +115,7 @@ implementation
 {$R *.dfm}
 
 uses
-  System.IOUtils, IniFiles, SCMUtils,
+  System.IOUtils, IniFiles, uUtility,
   vcl.Dialogs, System.UITypes, vcl.Forms, System.DateUtils;
 
 procedure TMM_CORE.ActivateMMD;

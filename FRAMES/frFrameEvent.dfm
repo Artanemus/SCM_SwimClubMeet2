@@ -839,6 +839,7 @@ object FrameEvent: TFrameEvent
       Brush.Color = 8421631
     end
     object spbtnEvDelete: TSpeedButton
+      Tag = 5
       Left = 2
       Top = 208
       Width = 54
@@ -857,6 +858,7 @@ object FrameEvent: TFrameEvent
       Spacing = 5
     end
     object spbtnEvDown: TSpeedButton
+      Tag = 3
       Left = 2
       Top = 112
       Width = 54
@@ -875,6 +877,7 @@ object FrameEvent: TFrameEvent
       Spacing = 5
     end
     object spbtnEvGridView: TSpeedButton
+      Tag = 1
       Left = 2
       Top = 0
       Width = 54
@@ -892,6 +895,7 @@ object FrameEvent: TFrameEvent
       Spacing = 5
     end
     object spbtnEvNew: TSpeedButton
+      Tag = 4
       Left = 2
       Top = 160
       Width = 54
@@ -910,6 +914,7 @@ object FrameEvent: TFrameEvent
       Spacing = 5
     end
     object spbtnEvReport: TSpeedButton
+      Tag = 6
       Left = 2
       Top = 320
       Width = 54
@@ -928,6 +933,7 @@ object FrameEvent: TFrameEvent
       Spacing = 5
     end
     object spbtnEvUp: TSpeedButton
+      Tag = 2
       Left = 2
       Top = 64
       Width = 54
@@ -946,6 +952,7 @@ object FrameEvent: TFrameEvent
       Spacing = 5
     end
     object spbtnEvIndvTeam: TSpeedButton
+      Tag = 7
       Left = 2
       Top = 256
       Width = 54

@@ -27,7 +27,7 @@ uses
   SVGIconVirtualImageList,
 
   dmIMG,
-  SCMUtils,
+  uUtility,
   uDefines,
   uSettings;
 

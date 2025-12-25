@@ -10,7 +10,7 @@ uses
   SVGIconImage,
   dmIMG, dmSCM2, dmCORE, Vcl.StdCtrls, AdvUtil, Vcl.Grids, AdvObj, BaseGrid,
   AdvGrid, DBAdvGrid, Vcl.ExtCtrls,
-  scmUtils, uDefines,
+  uUtility, uDefines,
   UIntercepters
   ;
 
@@ -78,7 +78,7 @@ end;
 procedure TFrameNavEvent.gridGetCellColor(Sender: TObject; ARow, ACol: Integer;
     AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
 begin
-  ABrush.Color := scmUtils.GetStyledPanelColor; // a little light - Why?
+  ABrush.Color := uUtility.GetStyledPanelColor; // a little light - Why?
 end;
 
 end.

@@ -26,11 +26,12 @@ object FrameNominate: TFrameNominate
         AlignVerticalCenterWithPanel = False
       end>
     Align = alLeft
+    BevelOuter = bvNone
     TabOrder = 0
     object dbtxtNominateFullName: TDBText
       AlignWithMargins = True
-      Left = 5
-      Top = 41
+      Left = 6
+      Top = 40
       Width = 45
       Height = 351
       Margins.Left = 0

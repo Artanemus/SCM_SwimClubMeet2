@@ -24,10 +24,34 @@ function HasRaceData(): Boolean;
 function Delete_SwimClub(DoExclude: boolean = true): boolean;
 function TestForSwimClubID(SwimCLubID: integer): boolean;
 
+
+procedure SwitchClubs(FromClubID, ToClubID: integer);
+
 // procedure RenumberSessions();
 
 
 implementation
+
+procedure SwitchClubs(FromClubID, ToClubID: integer);
+var
+  ID: integer;
+begin
+  if SCM2.scmConnection.Connected and CORE.IsActive then
+  begin
+    if (FromClubID <> ToClubID) then
+    begin
+      ID := uSwimClub.PK;
+      DetailTBLs_DisableCNTRLs;
+      try
+        if ToClubID <> ID then
+          uSwimClub.Locate(ID); // go find the SwimClub.
+        DetailTBLs_ApplyMaster;
+      finally
+        DetailTBLs_EnableCNTRLs
+      end;
+    end;
+  end;
+end;
 
 procedure DetailTBLs_DisableCNTRLs;
 begin

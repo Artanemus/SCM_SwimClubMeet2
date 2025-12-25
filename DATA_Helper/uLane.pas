@@ -28,39 +28,11 @@ uses
   function DeleteAllWatches(DoExclude: Boolean = true): integer;
   procedure NewLane();
 
-type
-  T_Lane = class
-  public
-    constructor Create;
-    destructor Destroy;
-  end;
-
-var
-  scmLane: T_Lane;
 
 implementation
 
 uses
- uSwimClub, uSession, uEvent, uHeat, uTeam;
-
-constructor T_Lane.Create;
-begin
-  inherited;
-  if not Assigned(SCM2) then
-    raise Exception.Create('Data module SCM2 not assigned.');
-  if not SCM2.scmConnection.Connected then
-    raise Exception.Create('Data module SCM2 tables are offline.');
-  if not Assigned(CORE) then
-    raise Exception.Create('Core data module not assigned.');
-  if not CORE.IsActive then
-    raise Exception.Create('Core data module tables are offline.');
-end;
-
-destructor T_Lane.Destroy;
-begin
-  // do cleanup...
-  inherited;
-end;
+ uSwimClub, uSession, uEvent, uHeat;
 
 
 function Assert: Boolean;
@@ -172,7 +144,7 @@ begin
       recCount := SCM2.scmConnection.ExecSQL( SQL,[aNomineeID, uEvent.PK()] );
     end;
     if aTeamID <> 0 then // Deletes dbo.teamlink and removes nominee from dbo.Nominee.
-      uTeam.StrikeTeam(aTeamID, DoExclude);
+//      uTeam.StrikeTeam(aTeamID, DoExclude);
   end;
 end;
 

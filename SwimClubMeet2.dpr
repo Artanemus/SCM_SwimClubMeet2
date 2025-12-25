@@ -6,7 +6,7 @@ uses
   Vcl.Styles,
   XSuperJSON in 'JSON\XSuperJSON.pas',
   XSuperObject in 'JSON\XSuperObject.pas',
-  scmUtils in 'TOOLS\scmUtils.pas',
+  uUtility in 'TOOLS\uUtility.pas',
   dmSCM2 in 'DATA\dmSCM2.pas' {SCM2: TDataModule},
   dmCORE in 'DATA\dmCORE.pas' {CORE: TDataModule},
   dmIMG in 'DATA\dmIMG.pas' {IMG: TDataModule},
@@ -55,8 +55,10 @@ uses
   rptClub_MembersList in 'REPORTS\SwimClub\rptClub_MembersList.pas' {Club_MembersList: TDataModule},
   rptClub_MembersSummary in 'REPORTS\SwimClub\rptClub_MembersSummary.pas' {Club_MembersSummary: TDataModule},
   frFrameHeat in 'FRAMES\frFrameHeat.pas' {FrameHeat: TFrame},
-  UIntercepters in 'TOOLS\UIntercepters.pas',
-  uHeat in 'DATA_Helper\uHeat.pas';
+  uIntercepters in 'TOOLS\uIntercepters.pas',
+  uHeat in 'DATA_Helper\uHeat.pas',
+  frFrameLane in 'FRAMES\frFrameLane.pas' {FrameLane: TFrame},
+  uLane in 'DATA_Helper\uLane.pas';
 
 {$R *.res}
 

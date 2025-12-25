@@ -9,17 +9,20 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.WinXCtrls, Vcl.Grids, Vcl.ImgList,
 
-  AdvUtil,
-  AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
+  AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
   dmIMG, dmSCM2, dmCORE, System.Actions, Vcl.ActnList, Vcl.Menus, Vcl.Buttons,
 
-  uSession, uEvent, uHeat,
-
-  // THE INTERCEPTER MUST GO HERE - last in uses list
-  UIntercepters;
+  uSession, uEvent, uHeat, uDefines;
 
 type
+
+  // 1. THE INTERCEPTER MUST GO HERE (Before the TFrame declaration)
+  TSpeedButton = class(Vcl.Buttons.TSpeedButton)
+  protected
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
+  end;
+
 
   TFrameHeat = class(TFrame)
     rpnlCntrl: TRelativePanel;
@@ -78,12 +81,87 @@ type
   private
     { Private declarations }
   public
-    { Public declarations }
+    procedure Initialise();
+    // messages must be forwarded by main form.
+    procedure Msg_SCM_Scroll_Heat(var Msg: TMessage); message SCM_SCROLL_HEAT;
+    procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_Event;
+
   end;
 
 implementation
 
 {$R *.dfm}
+
+// I N T E R C E P T E R ...
+procedure TSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+var
+  SavedImages: TCustomImageList;
+begin
+  // Save local state
+  if Assigned(Self.Images) then
+  begin
+    SavedImages := Self.Images;
+    inherited ActionChange(Sender, CheckDefaults);
+    // Restore local state
+    Self.Images := SavedImages;
+    Self.ImageIndex := Self.Tag;
+  end;
+end;
+
+
+procedure TFrameHeat.Initialise;
+begin
+  grid.BeginUpdate; // forces a repaint of the frame...
+  try
+    begin
+      grid.RowCount := grid.FixedRows + 1; // TMS rule: row count > fixed row.
+      if SCM2.scmConnection.Connected and CORE.IsActive then
+      begin
+        if CORE.qryEvent.IsEmpty then
+        begin
+          // setting pagemode to false clears grid of text. (it appears empty)
+          grid.PageMode := false;
+          pnlBody.Visible := false;
+        end
+        else
+        begin
+          // Set pagemode to the default 'editable' fetch records mode.
+          grid.PageMode := true;
+          pnlBody.Visible := true;
+        end;
+      end
+      else
+        grid.PageMode := false; // read-only
+    end;
+  finally
+    grid.EndUpdate;
+  end;
+end;
+
+
+procedure TFrameHeat.Msg_SCM_Scroll_Event(var Msg: TMessage);
+begin
+  grid.BeginUpdate; // forces a repaint of the frame...
+  if SCM2.scmConnection.Connected and CORE.IsActive then
+    pnlBody.Visible := not CORE.qryEvent.IsEmpty
+  else
+    pnlBody.Visible := false; // read-only
+  grid.PageMode := not CORE.qryHeat.IsEmpty;
+  grid.EndUpdate;
+end;
+
+procedure TFrameHeat.Msg_SCM_Scroll_Heat(var Msg: TMessage);
+begin
+  // setting pagemode to false clears grid of text. (it appears empty)
+  // Set pagemode to the default 'editable' fetch records mode.
+  grid.beginUpdate; // forces a repaint of the frame...
+  if SCM2.scmConnection.Connected and CORE.IsActive then
+    grid.PageMode := not CORE.qryHeat.IsEmpty
+  else
+    grid.PageMode := false; // state unknown - read-only
+  pnlBody.Visible := not CORE.qryHeat.IsEmpty;
+  grid.EndUpdate;
+end;
 
 procedure TFrameHeat.actnHt_GenericUpdate(Sender: TObject);
 var
@@ -94,7 +172,7 @@ begin
     Assigned(CORE) and CORE.IsActive and
     not CORE.qryHeat.IsEmpty then
   begin
-    if not uSession.IsLocked then
+//    if not uSession.IsLocked then
       DoEnable := true;
   end;
   TAction(Sender).Enabled := DoEnable;
@@ -122,6 +200,10 @@ var
   htStr: string;
 begin
   G := TDBAdvGrid(Sender);
+
+  if not CORE.IsActive then exit;
+  if CORE.qryHeat.IsEmpty then exit;
+
 
   if (ARow > G.HeaderRow) and (ACol = 2) then
   begin

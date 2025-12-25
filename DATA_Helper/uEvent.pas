@@ -51,7 +51,7 @@ procedure MoveUpDown(MoveDirection: scmMoveDirection);
 implementation
 
 uses
-	uSession, scmUtils; // , uHeat, uLane;
+	uSession, uUtility; // , uHeat, uLane;
 
 
 procedure DetailTBLs_DisableCNTRLs;
@@ -588,7 +588,7 @@ begin
 
   if not ORD(MoveDirection) in [1,2] then exit;
   if CORE.qryEvent.RecordCount = 1 then exit;
-  recPos := scmUtils.GetRecordPosition(CORE.qryEvent);
+  recPos := uUtility.GetRecordPosition(CORE.qryEvent);
   // written this was to clearly state logic...
   if (recPos = rpFirst) and (MoveDirection = mdDown) then
     DoMove := true;

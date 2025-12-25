@@ -2829,7 +2829,7 @@ object Main2: TMain2
     Width = 1103
     Height = 662
     Margins.Top = 10
-    ActivePage = tabNominate
+    ActivePage = tabHeats
     Align = alClient
     TabOrder = 3
     OnChange = PageControlChange
@@ -2861,133 +2861,130 @@ object Main2: TMain2
             inherited grid: TDBAdvGrid
               Width = 359
               Height = 626
-              Columns = <
-                item
-                  Borders = []
-                  BorderPen.Color = clSilver
-                  ButtonHeight = 18
-                  CheckFalse = 'N'
-                  CheckTrue = 'Y'
-                  Color = clWindow
-                  FieldName = 'SessionID'
-                  Font.Charset = DEFAULT_CHARSET
-                  Font.Color = clWindowText
-                  Font.Height = -12
-                  Font.Name = 'Segoe UI'
-                  Font.Style = []
-                  HeaderFont.Charset = DEFAULT_CHARSET
-                  HeaderFont.Color = 3881787
-                  HeaderFont.Height = -12
-                  HeaderFont.Name = 'Segoe UI'
-                  HeaderFont.Style = []
-                  PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-                  PrintFont.Charset = DEFAULT_CHARSET
-                  PrintFont.Color = clWindowText
-                  PrintFont.Height = -12
-                  PrintFont.Name = 'Segoe UI'
-                  PrintFont.Style = []
-                  Width = 0
-                end
-                item
-                  Borders = []
-                  BorderPen.Color = clSilver
-                  ButtonHeight = 18
-                  CheckFalse = 'N'
-                  CheckTrue = 'Y'
-                  Color = clWindow
-                  FieldName = 'SessionID'
-                  Font.Charset = DEFAULT_CHARSET
-                  Font.Color = clWindowText
-                  Font.Height = -12
-                  Font.Name = 'Segoe UI'
-                  Font.Style = []
-                  Header = 'SESSIONS'
-                  HeaderFont.Charset = DEFAULT_CHARSET
-                  HeaderFont.Color = 3881787
-                  HeaderFont.Height = -12
-                  HeaderFont.Name = 'Segoe UI'
-                  HeaderFont.Style = []
-                  HTMLTemplate = 
-                    '<IND x="2"><FONT Size="9"<B><#SessionDT></B><br><IND x="2"><FONT' +
-                    ' Size="10"><#Caption><br><IND x="4"><FONT Size="9"><IMG src="idx' +
-                    ':6" align="middle">'
-                  Images = IMG.imglstSessGrid
-                  PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-                  PrintFont.Charset = DEFAULT_CHARSET
-                  PrintFont.Color = clWindowText
-                  PrintFont.Height = -12
-                  PrintFont.Name = 'Segoe UI'
-                  PrintFont.Style = []
-                  Width = 340
-                end
-                item
-                  Borders = []
-                  BorderPen.Color = clSilver
-                  ButtonHeight = 18
-                  CheckFalse = 'N'
-                  CheckTrue = 'Y'
-                  Color = clWhite
-                  FieldName = 'SessionStatusID'
-                  Font.Charset = DEFAULT_CHARSET
-                  Font.Color = clBlack
-                  Font.Height = -16
-                  Font.Name = 'Segoe UI'
-                  Font.Style = []
-                  HeaderFont.Charset = DEFAULT_CHARSET
-                  HeaderFont.Color = clBlack
-                  HeaderFont.Height = -16
-                  HeaderFont.Name = 'Segoe UI'
-                  HeaderFont.Style = []
-                  PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-                  PrintFont.Charset = DEFAULT_CHARSET
-                  PrintFont.Color = clBlack
-                  PrintFont.Height = -16
-                  PrintFont.Name = 'Segoe UI'
-                  PrintFont.Style = []
-                  Width = 0
-                end>
               ExplicitWidth = 359
               ExplicitHeight = 626
             end
           end
-          inherited pnlCntrl: TPanel
+          inherited rpnlCntrl: TRelativePanel
             Height = 626
+            ControlCollection = <
+              item
+                Control = frSession.spbtnSessLockedVisible
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+              end
+              item
+                Control = frSession.spbtnSessLock
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frSession.spbtnSessLockedVisible
+              end
+              item
+                Control = frSession.ShapeSessBar1
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frSession.spbtnSessLock
+              end
+              item
+                Control = frSession.spbtnSessEdit
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frSession.ShapeSessBar1
+              end
+              item
+                Control = frSession.spbtnSessNew
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frSession.spbtnSessEdit
+              end
+              item
+                Control = frSession.spbtnSessClone
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frSession.spbtnSessNew
+              end
+              item
+                Control = frSession.spbtnSessDelete
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frSession.spbtnSessClone
+              end
+              item
+                Control = frSession.ShapeSessBar2
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frSession.spbtnSessDelete
+              end
+              item
+                Control = frSession.spbtnSessReport
+                AlignBottomWithPanel = False
+                AlignHorizontalCenterWithPanel = True
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = False
+                AlignTopWithPanel = False
+                AlignVerticalCenterWithPanel = False
+                Below = frSession.ShapeSessBar2
+              end>
             ExplicitHeight = 626
-            inherited spbtnSessClone: TSpeedButton
-              ImageIndex = 11
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessDelete: TSpeedButton
-              ImageName = 'in'
+            inherited spbtnSessLockedVisible: TSpeedButton
+              ImageName = 'se-new'
               Glyph.Data = {00000000}
             end
             inherited spbtnSessLock: TSpeedButton
-              ImageIndex = 6
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessNew: TSpeedButton
-              ImageName = 'edit'
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessReport: TSpeedButton
-              ImageIndex = 5
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessLockedVisible: TSpeedButton
-              ImageName = 'new'
+              ImageIndex = -1
               Glyph.Data = {00000000}
             end
             inherited spbtnSessEdit: TSpeedButton
-              ImageIndex = 8
+              ImageIndex = -1
               Glyph.Data = {00000000}
             end
-          end
-          inherited actnlstSession: TActionList
-            Left = 240
-            Top = 184
-          end
-          inherited pumenuSession: TPopupMenu
-            Top = 224
+            inherited spbtnSessNew: TSpeedButton
+              ImageName = 'se-edit'
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessClone: TSpeedButton
+              ImageIndex = -1
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessDelete: TSpeedButton
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessReport: TSpeedButton
+              ImageIndex = -1
+              Glyph.Data = {00000000}
+            end
           end
         end
       end
@@ -3134,7 +3131,7 @@ object Main2: TMain2
     object tabNominate: TTabSheet
       Caption = 'Nominate'
       ImageIndex = 1
-      object pnlMem: TPanel
+      object pnlFilterMember: TPanel
         Left = 0
         Top = 0
         Width = 433
@@ -3260,12 +3257,12 @@ object Main2: TMain2
                   end>
                 ExplicitWidth = 375
                 inherited btnClearSearch: TButton
-                  Left = 275
-                  ExplicitLeft = 275
+                  Left = 276
+                  ExplicitLeft = 276
                 end
                 inherited edtSearch: TEdit
-                  Width = 213
-                  ExplicitWidth = 213
+                  Width = 215
+                  ExplicitWidth = 215
                 end
               end
               inherited grid: TDBAdvGrid
@@ -3411,20 +3408,20 @@ object Main2: TMain2
           Align = alLeft
           BevelOuter = bvNone
           TabOrder = 1
-          inline TFrameHeat1: TFrameHeat
+          inline frHeat: TFrameHeat
             Left = 0
             Top = 0
             Width = 219
             Height = 561
             Align = alClient
             TabOrder = 0
-            ExplicitLeft = 42
-            ExplicitTop = 85
+            ExplicitWidth = 219
+            ExplicitHeight = 561
             inherited rpnlCntrl: TRelativePanel
               Height = 561
               ControlCollection = <
                 item
-                  Control = TFrameHeat1.spbtnMoveUp
+                  Control = frHeat.spbtnMoveUp
                   AlignBottomWithPanel = False
                   AlignHorizontalCenterWithPanel = True
                   AlignLeftWithPanel = False
@@ -3433,132 +3430,139 @@ object Main2: TMain2
                   AlignVerticalCenterWithPanel = False
                 end
                 item
-                  Control = TFrameHeat1.spbtnMoveDown
+                  Control = frHeat.spbtnMoveDown
                   AlignBottomWithPanel = False
                   AlignHorizontalCenterWithPanel = True
                   AlignLeftWithPanel = False
                   AlignRightWithPanel = False
                   AlignTopWithPanel = False
                   AlignVerticalCenterWithPanel = False
-                  Below = TFrameHeat1.spbtnMoveUp
+                  Below = frHeat.spbtnMoveUp
                 end
                 item
-                  Control = TFrameHeat1.spbtnToggleStatus
+                  Control = frHeat.spbtnToggleStatus
                   AlignBottomWithPanel = False
                   AlignHorizontalCenterWithPanel = True
                   AlignLeftWithPanel = False
                   AlignRightWithPanel = False
                   AlignTopWithPanel = False
                   AlignVerticalCenterWithPanel = False
-                  Below = TFrameHeat1.spbtnMoveDown
+                  Below = frHeat.spbtnMoveDown
                 end
                 item
-                  Control = TFrameHeat1.spbtnNew
+                  Control = frHeat.spbtnNew
                   AlignBottomWithPanel = False
                   AlignHorizontalCenterWithPanel = True
                   AlignLeftWithPanel = False
                   AlignRightWithPanel = False
                   AlignTopWithPanel = False
                   AlignVerticalCenterWithPanel = False
-                  Below = TFrameHeat1.spbtnToggleStatus
+                  Below = frHeat.spbtnToggleStatus
                 end
                 item
-                  Control = TFrameHeat1.spbtnDelete
+                  Control = frHeat.spbtnDelete
                   AlignBottomWithPanel = False
                   AlignHorizontalCenterWithPanel = True
                   AlignLeftWithPanel = False
                   AlignRightWithPanel = False
                   AlignTopWithPanel = False
                   AlignVerticalCenterWithPanel = False
-                  Below = TFrameHeat1.spbtnNew
+                  Below = frHeat.spbtnNew
                 end
                 item
-                  Control = TFrameHeat1.ShapeHtBar1
+                  Control = frHeat.ShapeHtBar1
                   AlignBottomWithPanel = False
                   AlignHorizontalCenterWithPanel = True
                   AlignLeftWithPanel = False
                   AlignRightWithPanel = False
                   AlignTopWithPanel = False
                   AlignVerticalCenterWithPanel = False
-                  Below = TFrameHeat1.spbtnDelete
+                  Below = frHeat.spbtnDelete
                 end
                 item
-                  Control = TFrameHeat1.spbtnAutoBuild
+                  Control = frHeat.spbtnAutoBuild
                   AlignBottomWithPanel = False
                   AlignHorizontalCenterWithPanel = True
                   AlignLeftWithPanel = False
                   AlignRightWithPanel = False
                   AlignTopWithPanel = False
                   AlignVerticalCenterWithPanel = False
-                  Below = TFrameHeat1.ShapeHtBar1
+                  Below = frHeat.ShapeHtBar1
                 end
                 item
-                  Control = TFrameHeat1.ShapeHtBar2
+                  Control = frHeat.ShapeHtBar2
                   AlignBottomWithPanel = False
                   AlignHorizontalCenterWithPanel = True
                   AlignLeftWithPanel = False
                   AlignRightWithPanel = False
                   AlignTopWithPanel = False
                   AlignVerticalCenterWithPanel = False
-                  Below = TFrameHeat1.spbtnAutoBuild
+                  Below = frHeat.spbtnAutoBuild
                 end
                 item
-                  Control = TFrameHeat1.spbtnMarshall
+                  Control = frHeat.spbtnMarshall
                   AlignBottomWithPanel = False
                   AlignHorizontalCenterWithPanel = True
                   AlignLeftWithPanel = False
                   AlignRightWithPanel = False
                   AlignTopWithPanel = False
                   AlignVerticalCenterWithPanel = False
-                  Below = TFrameHeat1.ShapeHtBar2
+                  Below = frHeat.ShapeHtBar2
                 end
                 item
-                  Control = TFrameHeat1.spbtnTimeKeeper
+                  Control = frHeat.spbtnTimeKeeper
                   AlignBottomWithPanel = False
                   AlignHorizontalCenterWithPanel = True
                   AlignLeftWithPanel = False
                   AlignRightWithPanel = False
                   AlignTopWithPanel = False
                   AlignVerticalCenterWithPanel = False
-                  Below = TFrameHeat1.spbtnMarshall
+                  Below = frHeat.spbtnMarshall
                 end
                 item
-                  Control = TFrameHeat1.spbtnAllLogs
+                  Control = frHeat.spbtnAllLogs
                   AlignBottomWithPanel = False
                   AlignHorizontalCenterWithPanel = True
                   AlignLeftWithPanel = False
                   AlignRightWithPanel = False
                   AlignTopWithPanel = False
                   AlignVerticalCenterWithPanel = False
-                  Below = TFrameHeat1.spbtnTimeKeeper
+                  Below = frHeat.spbtnTimeKeeper
                 end
                 item
-                  Control = TFrameHeat1.ShapeHtBar3
+                  Control = frHeat.ShapeHtBar3
                   AlignBottomWithPanel = False
                   AlignHorizontalCenterWithPanel = True
                   AlignLeftWithPanel = False
                   AlignRightWithPanel = False
                   AlignTopWithPanel = False
                   AlignVerticalCenterWithPanel = False
-                  Below = TFrameHeat1.spbtnAllLogs
+                  Below = frHeat.spbtnAllLogs
                 end
                 item
-                  Control = TFrameHeat1.spbtnReport
+                  Control = frHeat.spbtnReport
                   AlignBottomWithPanel = False
                   AlignHorizontalCenterWithPanel = True
                   AlignLeftWithPanel = False
                   AlignRightWithPanel = False
                   AlignTopWithPanel = False
                   AlignVerticalCenterWithPanel = False
-                  Below = TFrameHeat1.ShapeHtBar3
+                  Below = frHeat.ShapeHtBar3
                 end>
+              ExplicitHeight = 561
             end
             inherited pnlBody: TPanel
               Width = 161
               Height = 561
+              ExplicitWidth = 161
+              ExplicitHeight = 561
               inherited grid: TDBAdvGrid
                 Width = 161
                 Height = 561
+                ExplicitLeft = 1
+                ExplicitTop = 4
+                ExplicitWidth = 161
+                ExplicitHeight = 561
               end
             end
           end
@@ -3914,15 +3918,6 @@ object Main2: TMain2
                 ImageName = 'lock2'
               end
               item
-                Action = frSession.actnSess_Search
-                Caption = 'Se&arch...'
-                ImageIndex = 33
-                ImageName = 'search'
-              end
-              item
-                Caption = '-'
-              end
-              item
                 Action = frSession.actnSess_Edit
                 Caption = '&Edit Session...'
                 ImageIndex = 20
@@ -3948,22 +3943,9 @@ object Main2: TMain2
               end
               item
                 Action = frSession.actnSess_Report
-                Caption = '&Session Report...'
+                Caption = 'Sess&ion Report...'
                 ImageIndex = 15
                 ImageName = 'report'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = frSession.actnSess_Stats
-                Caption = 'Sessi&on Statistics...'
-                ImageIndex = 28
-                ImageName = 'stats'
-              end
-              item
-                Action = frSession.actnSess_Schedule
-                Caption = 'Sc&hedule Session...'
               end
               item
                 Action = frSession.actnSess_Export
@@ -3973,11 +3955,34 @@ object Main2: TMain2
               end
               item
                 Action = frSession.actnSess_Import
-                Caption = '&Import...'
+                Caption = 'I&mport...'
                 ImageIndex = 21
                 ImageName = 'in'
+              end
+              item
+                Action = frSession.actnSess_Search
+                Caption = '&Search...'
+                ImageIndex = 33
+                ImageName = 'search'
+              end
+              item
+                Action = frSession.actnSess_Sort
+                Caption = 'S&ort...'
+                ImageIndex = 24
+                ImageName = 'sort'
+              end
+              item
+                Action = frSession.actnSess_Stats
+                Caption = 'Session St&atistics...'
+                ImageIndex = 28
+                ImageName = 'stats'
+              end
+              item
+                Action = frSession.actnSess_Schedule
+                Caption = 'Sc&hedule Session...'
               end>
             Caption = 'S&ession'
+            ImageName = 'empty'
           end
           item
             Items = <
@@ -4393,15 +4398,16 @@ object Main2: TMain2
       end>
     LinkedActionLists = <
       item
-        ActionList = frSession.actnlstSession
-        Caption = 'Session'
-      end
-      item
         ActionList = frEvent.actnlstEvent
         Caption = 'Events'
       end
       item
-        Caption = 'NomMember'
+        ActionList = frFilterMember.actnlistNomMember
+        Caption = 'Nominate'
+      end
+      item
+        ActionList = frSession.actnlstSession
+        Caption = 'Session'
       end>
     Images = IMG.imglstMenuBar
     Left = 704

@@ -23,7 +23,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 496
-    Top = 136
+    Top = 168
   end
   object CollectionCore: TSVGIconImageCollection
     SVGIconItems = <
@@ -2737,8 +2737,8 @@ object IMG: TIMG
           '-.288.713T13 20h-2q-.425 0-.712-.288T10 19v-6.175l-8.6-8.6L2.8 2' +
           '.8l18.4 18.4z"/></svg>'
       end>
-    Left = 320
-    Top = 8
+    Left = 496
+    Top = 16
   end
   object PNGCollection: TImageCollection
     Images = <
@@ -13164,7 +13164,7 @@ object IMG: TIMG
           end>
       end>
     Left = 56
-    Top = 504
+    Top = 536
   end
   object imglstHeatStatus: TSVGIconVirtualImageList
     Images = <
@@ -13193,7 +13193,7 @@ object IMG: TIMG
     Height = 48
     Size = 48
     Left = 616
-    Top = 136
+    Top = 168
   end
   object imglstHeatStroke: TSVGIconVirtualImageList
     Images = <
@@ -13232,7 +13232,7 @@ object IMG: TIMG
     Height = 48
     Size = 48
     Left = 616
-    Top = 192
+    Top = 224
   end
   object imglstHeatCntrl: TSVGIconVirtualImageList
     Images = <
@@ -13291,7 +13291,7 @@ object IMG: TIMG
     Height = 48
     Size = 48
     Left = 616
-    Top = 80
+    Top = 112
   end
   object imglstSessCntrl: TSVGIconVirtualImageList
     Images = <
@@ -13303,69 +13303,69 @@ object IMG: TIMG
       item
         CollectionIndex = 23
         CollectionName = 'visible_on'
-        Name = 'visible_on'
+        Name = 'se-visible_on'
       end
       item
         CollectionIndex = 24
         CollectionName = 'visible_off'
-        Name = 'visible_off'
+        Name = 'se-visible_off'
       end
       item
         CollectionIndex = 29
         CollectionName = 'new'
-        Name = 'new'
+        Name = 'se-new'
       end
       item
         CollectionIndex = 30
         CollectionName = 'delete'
-        Name = 'delete'
+        Name = 'se-delete'
       end
       item
         CollectionIndex = 36
         CollectionName = 'report'
-        Name = 'report'
+        Name = 'se-report'
       end
       item
         CollectionIndex = 39
         CollectionName = 'lock2'
-        Name = 'lock2'
+        Name = 'se-lock2'
       end
       item
         CollectionIndex = 40
         CollectionName = 'lock2-open'
-        Name = 'lock2-open'
+        Name = 'se-lock2-open'
       end
       item
         CollectionIndex = 48
         CollectionName = 'edit'
-        Name = 'edit'
+        Name = 'se-edit'
       end
       item
         CollectionIndex = 49
         CollectionName = 'in'
-        Name = 'in'
+        Name = 'se-in'
       end
       item
         CollectionIndex = 50
         CollectionName = 'out'
-        Name = 'out'
+        Name = 'se-out'
       end
       item
         CollectionIndex = 51
         CollectionName = 'clone'
-        Name = 'clone'
+        Name = 'se-clone'
       end
       item
         CollectionIndex = 52
         CollectionName = 'sort'
-        Name = 'sort'
+        Name = 'se-sort'
       end>
     ImageCollection = CollectionCore
     Width = 48
     Height = 48
     Size = 48
     Left = 368
-    Top = 80
+    Top = 112
   end
   object imglstEventCntrl: TSVGIconVirtualImageList
     Images = <
@@ -13414,7 +13414,7 @@ object IMG: TIMG
     Height = 48
     Size = 48
     Left = 496
-    Top = 80
+    Top = 112
   end
   object imglstNomCntrl: TSVGIconVirtualImageList
     Images = <
@@ -13443,7 +13443,7 @@ object IMG: TIMG
     Height = 48
     Size = 48
     Left = 760
-    Top = 80
+    Top = 112
   end
   object imglstSessPopupMenu: TSVGIconVirtualImageList
     Images = <
@@ -13517,7 +13517,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 368
-    Top = 136
+    Top = 168
   end
   object imglstMiscButtons: TSVGIconVirtualImageList
     Images = <
@@ -13614,66 +13614,66 @@ object IMG: TIMG
     ApplyFixedColorToRootOnly = True
     Size = 36
     Left = 1000
-    Top = 80
+    Top = 112
   end
   object imglstLaneCntrl: TSVGIconVirtualImageList
     Images = <
       item
         CollectionIndex = 26
         CollectionName = 'up'
-        Name = 'up'
+        Name = 'ln-up'
       end
       item
         CollectionIndex = 27
         CollectionName = 'down'
-        Name = 'down'
+        Name = 'ln-down'
       end
       item
         CollectionIndex = 48
         CollectionName = 'edit'
-        Name = 'edit'
+        Name = 'ln-edit'
       end
       item
         CollectionIndex = 41
         CollectionName = 'switch'
-        Name = 'switch'
+        Name = 'ln-switch'
       end
       item
         CollectionIndex = 30
         CollectionName = 'delete'
-        Name = 'delete'
+        Name = 'ln-delete'
       end
       item
         CollectionIndex = 31
         CollectionName = 'delete-forever'
-        Name = 'delete-forever'
+        Name = 'ln-delete-forever'
       end
       item
         CollectionIndex = 64
         CollectionName = 'minus-box'
-        Name = 'minus-box'
+        Name = 'ln-minus-box'
       end
       item
         CollectionIndex = 65
         CollectionName = 'plus-box'
-        Name = 'plus-box'
+        Name = 'ln-plus-box'
       end
       item
         CollectionIndex = 36
         CollectionName = 'report'
-        Name = 'report'
+        Name = 'ln-report'
       end
       item
         CollectionIndex = 66
         CollectionName = 'swap'
-        Name = 'swap'
+        Name = 'ln-swap'
       end>
     ImageCollection = CollectionCore
     Width = 48
     Height = 48
     Size = 48
     Left = 880
-    Top = 80
+    Top = 112
   end
   object imglstNomCheckBox: TSVGIconVirtualImageList
     Images = <
@@ -13692,7 +13692,7 @@ object IMG: TIMG
     Height = 38
     Size = 38
     Left = 760
-    Top = 136
+    Top = 168
   end
   object imglstNomQualified: TSVGIconVirtualImageList
     Images = <
@@ -13711,7 +13711,7 @@ object IMG: TIMG
     Height = 38
     Size = 38
     Left = 760
-    Top = 192
+    Top = 224
   end
   object imglstNomStroke: TSVGIconVirtualImageList
     Images = <
@@ -13750,7 +13750,7 @@ object IMG: TIMG
     Height = 38
     Size = 38
     Left = 760
-    Top = 248
+    Top = 280
   end
   object imglstNomEventType: TSVGIconVirtualImageList
     Images = <
@@ -13774,7 +13774,7 @@ object IMG: TIMG
     Height = 38
     Size = 38
     Left = 760
-    Top = 304
+    Top = 336
   end
   object imglstSessGrid: TSVGIconVirtualImageList
     Images = <
@@ -13870,7 +13870,7 @@ object IMG: TIMG
       end>
     ImageCollection = CollectionCore
     Left = 368
-    Top = 192
+    Top = 224
   end
   object imglstTitleBar: TSVGIconVirtualImageList
     Images = <
@@ -13899,7 +13899,7 @@ object IMG: TIMG
     Height = 30
     Size = 30
     Left = 64
-    Top = 80
+    Top = 112
   end
   object imglstSwimClubCntrl: TSVGIconVirtualImageList
     Images = <
@@ -13953,7 +13953,7 @@ object IMG: TIMG
     Height = 48
     Size = 48
     Left = 224
-    Top = 80
+    Top = 112
   end
   object imglstSwimClubArchived: TSVGIconVirtualImageList
     Images = <
@@ -13972,7 +13972,7 @@ object IMG: TIMG
     Height = 30
     Size = 30
     Left = 224
-    Top = 136
+    Top = 168
   end
   object imglstSwimClubGroup: TSVGIconVirtualImageList
     Images = <
@@ -13991,7 +13991,7 @@ object IMG: TIMG
     Height = 30
     Size = 30
     Left = 224
-    Top = 192
+    Top = 224
   end
   object imglstSwimClubCell: TSVGIconVirtualImageList
     Images = <
@@ -14015,7 +14015,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 224
-    Top = 248
+    Top = 280
   end
   object imglstClubGroup: TSVGIconVirtualImageList
     Images = <
@@ -14049,7 +14049,7 @@ object IMG: TIMG
     Height = 48
     Size = 48
     Left = 1120
-    Top = 80
+    Top = 112
   end
   object imglstHeatStrokeEx: TSVGIconVirtualImageList
     Images = <
@@ -14113,7 +14113,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 616
-    Top = 248
+    Top = 280
   end
   object imglstStatusPanel: TSVGIconVirtualImageList
     Images = <
@@ -14142,7 +14142,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 64
-    Top = 192
+    Top = 224
   end
   object imglstMenuBar: TSVGIconVirtualImageList
     Images = <
@@ -14335,13 +14335,18 @@ object IMG: TIMG
         CollectionIndex = 105
         CollectionName = 'Members'
         Name = 'Member'
+      end
+      item
+        CollectionIndex = 66
+        CollectionName = 'swap'
+        Name = 'swap2'
       end>
     ImageCollection = CollectionCore
     Width = 32
     Height = 32
     Size = 32
     Left = 64
-    Top = 136
+    Top = 168
   end
   object imglstEventType: TSVGIconVirtualImageList
     Images = <
@@ -14365,7 +14370,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 496
-    Top = 192
+    Top = 224
   end
   object imglstEventCell: TSVGIconVirtualImageList
     Images = <
@@ -14394,7 +14399,7 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 496
-    Top = 248
+    Top = 280
   end
   object imglstEventPopupMenu: TSVGIconVirtualImageList
     Images = <
@@ -14448,6 +14453,6 @@ object IMG: TIMG
     Height = 24
     Size = 24
     Left = 496
-    Top = 304
+    Top = 336
   end
 end

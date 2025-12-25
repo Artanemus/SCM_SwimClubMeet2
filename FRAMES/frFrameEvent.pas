@@ -10,20 +10,23 @@ uses
   Data.DB, BaseGrid,
 
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
-  Vcl.Grids, Vcl.Menus, Vcl.ActnList, Vcl.Buttons,
+  Vcl.Grids, Vcl.Menus, Vcl.ActnList, Vcl.Buttons, vcl.ImgList,
 
   AdvUtil, AdvObj, AdvGrid, DBAdvGrid, Vcl.WinXCtrls,
 
   dmSCM2, dmIMG, dmCORE, uDefines,
 
-  uSettings, uSession, uEvent,
+  uSettings, uSession, uEvent;
 
-  // INTERCEPTOR must be last in list ...
-  // deals with Action imagelist and TSpeedButton imagelist issues.
-  UIntercepters
-  ;
 
 type
+
+  // 1. THE INTERCEPTER MUST GO HERE (Before the TFrame declaration)
+  TSpeedButton = class(Vcl.Buttons.TSpeedButton)
+  protected
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
+  end;
+
 
   TFrameEvent = class(TFrame)
     actnEv_Delete: TAction;
@@ -94,6 +97,24 @@ type
 implementation
 
 {$R *.dfm}
+
+// I N T E R C E P T E R ...
+procedure TSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+var
+  SavedImages: TCustomImageList;
+begin
+  // Save local state
+  if Assigned(Self.Images) then
+  begin
+    SavedImages := Self.Images;
+    inherited ActionChange(Sender, CheckDefaults);
+    // Restore local state
+    Self.Images := SavedImages;
+    Self.ImageIndex := Self.Tag;
+  end;
+end;
+
+
 
 procedure TFrameEvent.actnEv_DeleteExecute(Sender: TObject);
 begin
@@ -375,8 +396,21 @@ end;
 
 procedure TFrameEvent.Msg_SCM_Scroll_Event(var Msg: TMessage);
 begin
-  // ...
-  ;
+  // ASSERT TMS UI STATE...
+  grid.BeginUpdate;
+//  grid.RowCount := grid.FixedRows + 1; // TMS rule: row count > fixed row.
+  if SCM2.scmConnection.Connected and CORE.IsActive then
+  begin
+    if CORE.qrySession.IsEmpty then
+      // setting pagemode to false clears grid of text. (it appears empty)
+      grid.PageMode := false
+    else
+      // Set pagemode to the default 'editable' fetch records mode.
+      grid.PageMode := true;
+  end
+  else
+    grid.PageMode := false; // read-only
+  grid.EndUpdate;
 end;
 
 procedure TFrameEvent.SetGridView_ColVisibility;

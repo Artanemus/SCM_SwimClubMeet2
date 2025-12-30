@@ -848,7 +848,6 @@ object FrameEvent: TFrameEvent
       Align = alTop
       Anchors = []
       ImageIndex = 5
-      ImageName = 'Ev-delete'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -867,7 +866,6 @@ object FrameEvent: TFrameEvent
       Align = alTop
       Anchors = []
       ImageIndex = 3
-      ImageName = 'Ev-down'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -885,7 +883,6 @@ object FrameEvent: TFrameEvent
       Action = actnEv_GridView
       Align = alTop
       Anchors = []
-      ImageName = 'Ev-grid-on'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -904,7 +901,6 @@ object FrameEvent: TFrameEvent
       Align = alTop
       Anchors = []
       ImageIndex = 4
-      ImageName = 'Ev-new'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -923,7 +919,6 @@ object FrameEvent: TFrameEvent
       Align = alTop
       Anchors = []
       ImageIndex = 6
-      ImageName = 'Ev-report'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -942,7 +937,6 @@ object FrameEvent: TFrameEvent
       Align = alTop
       Anchors = []
       ImageIndex = 2
-      ImageName = 'Ev-up'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -963,7 +957,6 @@ object FrameEvent: TFrameEvent
       Anchors = []
       Caption = ' '
       ImageIndex = 7
-      ImageName = 'Ev-INDV_RELAY'
       Images = IMG.imglstEventCntrl
       Flat = True
       Layout = blGlyphTop
@@ -980,7 +973,7 @@ object FrameEvent: TFrameEvent
     object actnEv_GridView: TAction
       Category = 'Events'
       Caption = 'Toogle Grid View'
-      Hint = 'Toggle grid. Expand or collapse it'#39's view.'
+      Hint = 'Toggle grid. Expand-collapse it'#39's view.'
       ImageIndex = 1
       ImageName = 'grid-on'
       OnExecute = actnEv_GridViewExecute
@@ -1007,7 +1000,7 @@ object FrameEvent: TFrameEvent
     object actnEv_New: TAction
       Category = 'Events'
       Caption = 'New Event'
-      Hint = 'Creat new event'
+      Hint = 'Create event'
       ImageIndex = 8
       ImageName = 'new'
       OnExecute = actnEv_NewExecute
@@ -1025,7 +1018,7 @@ object FrameEvent: TFrameEvent
     object actnEv_EventType: TAction
       Category = 'Events'
       Caption = 'Event Type'
-      Hint = 'Toggle Event Type'
+      Hint = 'Toggle event type. INDV-RELAY'
       ImageIndex = 35
       ImageName = 'INDV_RELAY'
       OnExecute = actnEv_EventTypeExecute
@@ -1034,7 +1027,7 @@ object FrameEvent: TFrameEvent
     object actnEv_Report: TAction
       Category = 'Events'
       Caption = 'Event Report...'
-      Hint = 'Display the event report.'
+      Hint = 'Select an event report to display and print.'
       ImageIndex = 15
       ImageName = 'report'
     end
@@ -1043,19 +1036,19 @@ object FrameEvent: TFrameEvent
       Caption = 'Build Event Finals...'
       Hint = 'Build an event finals.'
       ImageIndex = 11
-      ImageName = 'tool'
+      ImageName = 'build'
     end
     object actnEv_SemiFinals: TAction
       Category = 'Events'
       Caption = 'Build Semi-Finals...'
       ImageIndex = 11
-      ImageName = 'tool'
+      ImageName = 'build'
     end
     object actnEv_QuartFinals: TAction
       Category = 'Events'
       Caption = 'Build Quater Finals...'
       ImageIndex = 11
-      ImageName = 'tool'
+      ImageName = 'build'
     end
     object actnEv_Renumber: TAction
       Category = 'Events'
@@ -1069,7 +1062,7 @@ object FrameEvent: TFrameEvent
       Category = 'Events'
       Caption = 'Event Statistics...'
       ImageIndex = 28
-      ImageName = 'stats'
+      ImageName = 'query-stats'
     end
     object actnEv_Schedule: TAction
       Category = 'Events'

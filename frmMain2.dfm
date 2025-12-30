@@ -2733,7 +2733,7 @@ object Main2: TMain2
     object DBTextClubName: TDBText
       Left = 6
       Top = 0
-      Width = 159
+      Width = 116
       Height = 20
       AutoSize = True
       DataField = 'Caption'
@@ -2749,7 +2749,7 @@ object Main2: TMain2
     object DBTextNickName: TDBText
       Left = 6
       Top = 18
-      Width = 102
+      Width = 91
       Height = 15
       AutoSize = True
       DataField = 'NickName'
@@ -2781,6 +2781,7 @@ object Main2: TMain2
     Font.Name = 'Segoe UI'
     Font.Style = []
     Spacing = 6
+    OnClick = actnMainMenuBarClick
   end
   object StatusBar: TStatusBar
     AlignWithMargins = True
@@ -2869,7 +2870,7 @@ object Main2: TMain2
             Height = 626
             ControlCollection = <
               item
-                Control = frSession.spbtnSessLockedVisible
+                Control = frSession.spbtnSessVisiblity
                 AlignBottomWithPanel = False
                 AlignHorizontalCenterWithPanel = True
                 AlignLeftWithPanel = False
@@ -2878,14 +2879,14 @@ object Main2: TMain2
                 AlignVerticalCenterWithPanel = False
               end
               item
-                Control = frSession.spbtnSessLock
+                Control = frSession.spbtnSessLockState
                 AlignBottomWithPanel = False
                 AlignHorizontalCenterWithPanel = True
                 AlignLeftWithPanel = False
                 AlignRightWithPanel = False
                 AlignTopWithPanel = False
                 AlignVerticalCenterWithPanel = False
-                Below = frSession.spbtnSessLockedVisible
+                Below = frSession.spbtnSessVisiblity
               end
               item
                 Control = frSession.ShapeSessBar1
@@ -2895,7 +2896,7 @@ object Main2: TMain2
                 AlignRightWithPanel = False
                 AlignTopWithPanel = False
                 AlignVerticalCenterWithPanel = False
-                Below = frSession.spbtnSessLock
+                Below = frSession.spbtnSessLockState
               end
               item
                 Control = frSession.spbtnSessEdit
@@ -2958,33 +2959,37 @@ object Main2: TMain2
                 Below = frSession.ShapeSessBar2
               end>
             ExplicitHeight = 626
-            inherited spbtnSessLockedVisible: TSpeedButton
-              ImageName = 'se-new'
+            inherited spbtnSessVisiblity: TSpeedButton
+              ImageName = 'lock2'
               Glyph.Data = {00000000}
             end
-            inherited spbtnSessLock: TSpeedButton
-              ImageIndex = -1
+            inherited spbtnSessLockState: TSpeedButton
+              ImageIndex = 3
               Glyph.Data = {00000000}
             end
             inherited spbtnSessEdit: TSpeedButton
-              ImageIndex = -1
+              ImageIndex = 5
               Glyph.Data = {00000000}
             end
             inherited spbtnSessNew: TSpeedButton
-              ImageName = 'se-edit'
+              ImageName = 'delete'
               Glyph.Data = {00000000}
             end
             inherited spbtnSessClone: TSpeedButton
-              ImageIndex = -1
+              ImageIndex = 7
               Glyph.Data = {00000000}
             end
             inherited spbtnSessDelete: TSpeedButton
+              ImageName = 'report'
               Glyph.Data = {00000000}
             end
             inherited spbtnSessReport: TSpeedButton
-              ImageIndex = -1
+              ImageIndex = 9
               Glyph.Data = {00000000}
             end
+          end
+          inherited actnlstSession: TActionList
+            Top = 272
           end
         end
       end
@@ -3115,15 +3120,15 @@ object Main2: TMain2
             ExplicitHeight = 626
           end
           inherited actnlstEvent: TActionList
-            Left = 232
-            Top = 184
+            Left = 248
+            Top = 176
             inherited actnEv_GridView: TAction
               OnExecute = frEventactnEv_GridViewExecute
             end
           end
           inherited pumenuEvent: TPopupMenu
-            Left = 194
-            Top = 224
+            Left = 250
+            Top = 256
           end
         end
       end
@@ -3320,8 +3325,12 @@ object Main2: TMain2
             inherited grid: TDBAdvGrid
               Width = 604
               Height = 626
+              RowCount = 2
               ExplicitWidth = 604
               ExplicitHeight = 626
+              RowHeights = (
+                0
+                46)
             end
           end
         end
@@ -3334,91 +3343,87 @@ object Main2: TMain2
         Left = 0
         Top = 0
         Width = 1095
-        Height = 65
+        Height = 81
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
-        object dbtxtNavEvCaption: TDBText
+        inline frNavEv: TFrameNavEv
           Left = 0
           Top = 0
           Width = 1095
-          Height = 41
-          Align = alTop
-          Alignment = taCenter
-          DataField = 'ShortCaption'
-          DataSource = CORE.dsEvent
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -32
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          ParentFont = False
-        end
-        object dbtxtNavEvDesc: TDBText
-          Left = 0
-          Top = 41
-          Width = 1095
-          Height = 24
-          Align = alBottom
-          Alignment = taCenter
-          DataField = 'Caption'
-          DataSource = CORE.dsEvent
+          Height = 81
+          Align = alClient
+          TabOrder = 0
+          StyleElements = [seClient, seBorder]
+          ExplicitWidth = 1095
+          ExplicitHeight = 81
+          inherited rpnlBody: TRelativePanel
+            Width = 1095
+            Height = 81
+            ControlCollection = <
+              item
+                Control = frNavEv.spbtnNavLeft
+                AlignBottomWithPanel = True
+                AlignHorizontalCenterWithPanel = False
+                AlignLeftWithPanel = True
+                AlignRightWithPanel = False
+                AlignTopWithPanel = True
+                AlignVerticalCenterWithPanel = True
+              end
+              item
+                Control = frNavEv.spbtnNavRight
+                AlignBottomWithPanel = True
+                AlignHorizontalCenterWithPanel = False
+                AlignLeftWithPanel = False
+                AlignRightWithPanel = True
+                AlignTopWithPanel = True
+                AlignVerticalCenterWithPanel = True
+              end>
+            ExplicitWidth = 1095
+            ExplicitHeight = 81
+            inherited spbtnNavLeft: TSpeedButton
+              Height = 81
+            end
+            inherited spbtnNavRight: TSpeedButton
+              Left = 1047
+              Height = 81
+            end
+          end
+          inherited scrBox: TScrollBox
+            Width = 999
+            Height = 81
+            ExplicitWidth = 999
+            ExplicitHeight = 81
+          end
         end
       end
       object pnlBody: TPanel
         Left = 0
-        Top = 65
+        Top = 81
         Width = 1095
-        Height = 561
+        Height = 545
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
-        object pnlNavEvent: TPanel
+        object pnlHeat: TPanel
           Left = 0
           Top = 0
-          Width = 158
-          Height = 561
+          Width = 219
+          Height = 545
           Align = alLeft
           BevelOuter = bvNone
           TabOrder = 0
-          inline frNavEvent: TFrameNavEvent
-            Left = 0
-            Top = 0
-            Width = 158
-            Height = 561
-            Align = alClient
-            TabOrder = 0
-            ExplicitWidth = 158
-            ExplicitHeight = 561
-            inherited pnlBody: TPanel
-              Height = 561
-              ExplicitHeight = 561
-              inherited grid: TDBAdvGrid
-                Height = 561
-                ExplicitHeight = 561
-              end
-            end
-          end
-        end
-        object pnlHeat: TPanel
-          Left = 158
-          Top = 0
-          Width = 219
-          Height = 561
-          Align = alLeft
-          BevelOuter = bvNone
-          TabOrder = 1
           inline frHeat: TFrameHeat
             Left = 0
             Top = 0
             Width = 219
-            Height = 561
+            Height = 545
             Align = alClient
             TabOrder = 0
             ExplicitWidth = 219
-            ExplicitHeight = 561
+            ExplicitHeight = 545
             inherited rpnlCntrl: TRelativePanel
-              Height = 561
+              Height = 545
               ControlCollection = <
                 item
                   Control = frHeat.spbtnMoveUp
@@ -3549,20 +3554,126 @@ object Main2: TMain2
                   AlignVerticalCenterWithPanel = False
                   Below = frHeat.ShapeHtBar3
                 end>
-              ExplicitHeight = 561
+              ExplicitHeight = 545
             end
             inherited pnlBody: TPanel
               Width = 161
-              Height = 561
+              Height = 545
               ExplicitWidth = 161
-              ExplicitHeight = 561
+              ExplicitHeight = 545
               inherited grid: TDBAdvGrid
                 Width = 161
-                Height = 561
-                ExplicitLeft = 1
-                ExplicitTop = 4
+                Height = 545
                 ExplicitWidth = 161
-                ExplicitHeight = 561
+                ExplicitHeight = 545
+              end
+            end
+          end
+        end
+        object pnlLane: TPanel
+          Left = 219
+          Top = 0
+          Width = 876
+          Height = 545
+          Align = alClient
+          BevelOuter = bvNone
+          TabOrder = 1
+          inline frLane: TFrameLane
+            Left = 0
+            Top = 0
+            Width = 876
+            Height = 545
+            Align = alClient
+            TabOrder = 0
+            ExplicitWidth = 876
+            ExplicitHeight = 545
+            inherited rpnlCntrl: TRelativePanel
+              Height = 545
+              ControlCollection = <
+                item
+                  Control = frLane.spbtnMoveUp
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = True
+                  AlignVerticalCenterWithPanel = False
+                end
+                item
+                  Control = frLane.spbtnMoveDown
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = frLane.spbtnMoveUp
+                end
+                item
+                  Control = frLane.spbtnSwitch
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = frLane.spbtnMoveDown
+                end
+                item
+                  Control = frLane.spbtnDelete
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = frLane.spbtnSwitch
+                end
+                item
+                  Control = frLane.spbtnDeleteForever
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = frLane.spbtnDelete
+                end
+                item
+                  Control = frLane.ShapeLnBar1
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = frLane.spbtnDeleteForever
+                end
+                item
+                  Control = frLane.spbtnReport
+                  AlignBottomWithPanel = False
+                  AlignHorizontalCenterWithPanel = True
+                  AlignLeftWithPanel = False
+                  AlignRightWithPanel = False
+                  AlignTopWithPanel = False
+                  AlignVerticalCenterWithPanel = False
+                  Below = frLane.ShapeLnBar1
+                end>
+              ExplicitHeight = 545
+            end
+            inherited pnlBody: TPanel
+              Width = 818
+              Height = 545
+              ExplicitWidth = 818
+              ExplicitHeight = 545
+              inherited grid: TDBAdvGrid
+                Width = 818
+                Height = 545
+                ExplicitWidth = 818
+                ExplicitHeight = 545
+                RowHeights = (
+                  32
+                  32)
               end
             end
           end
@@ -3874,7 +3985,8 @@ object Main2: TMain2
               item
                 Action = SwimClub_Stats
                 Caption = 'C&lub Dashboard...'
-                ImageName = 'Query-Stats'
+                ImageIndex = 28
+                ImageName = 'query-stats'
               end
               item
                 Action = SwimClub_Reports
@@ -3906,10 +4018,10 @@ object Main2: TMain2
           item
             Items = <
               item
-                Action = frSession.actnSess_IsLocked
+                Action = frSession.actnSess_Visibilty
                 Caption = '&Toggle Visibility'
                 ImageIndex = 3
-                ImageName = 'locked-show'
+                ImageName = 'visible_on'
               end
               item
                 Action = frSession.actnSess_Lock
@@ -3943,7 +4055,7 @@ object Main2: TMain2
               end
               item
                 Action = frSession.actnSess_Report
-                Caption = 'Sess&ion Report...'
+                Caption = '&Session Report...'
                 ImageIndex = 15
                 ImageName = 'report'
               end
@@ -3955,13 +4067,13 @@ object Main2: TMain2
               end
               item
                 Action = frSession.actnSess_Import
-                Caption = 'I&mport...'
+                Caption = '&Import...'
                 ImageIndex = 21
                 ImageName = 'in'
               end
               item
                 Action = frSession.actnSess_Search
-                Caption = '&Search...'
+                Caption = 'Se&arch...'
                 ImageIndex = 33
                 ImageName = 'search'
               end
@@ -3973,16 +4085,14 @@ object Main2: TMain2
               end
               item
                 Action = frSession.actnSess_Stats
-                Caption = 'Session St&atistics...'
-                ImageIndex = 28
                 ImageName = 'stats'
               end
               item
                 Action = frSession.actnSess_Schedule
                 Caption = 'Sc&hedule Session...'
               end>
-            Caption = 'S&ession'
-            ImageName = 'empty'
+            Caption = 'S&essions'
+            ImageName = 'EmptyFrame'
           end
           item
             Items = <
@@ -4035,19 +4145,16 @@ object Main2: TMain2
               item
                 Action = frEvent.actnEv_Final
                 Caption = '&Build Event Finals...'
-                ImageIndex = 11
                 ImageName = 'tool'
               end
               item
                 Action = frEvent.actnEv_SemiFinals
                 Caption = 'B&uild Semi-Finals...'
-                ImageIndex = 11
                 ImageName = 'tool'
               end
               item
                 Action = frEvent.actnEv_QuartFinals
                 Caption = 'Bu&ild Quater Finals...'
-                ImageIndex = 11
                 ImageName = 'tool'
               end
               item
@@ -4062,7 +4169,6 @@ object Main2: TMain2
               item
                 Action = frEvent.actnEv_Stats
                 Caption = 'E&vent Statistics...'
-                ImageIndex = 28
                 ImageName = 'stats'
               end
               item
@@ -4100,12 +4206,10 @@ object Main2: TMain2
               end
               item
                 Caption = '&Member'#39's Details...'
-                ImageIndex = 37
                 ImageName = 'Member'
               end
               item
                 Caption = '&Quick view PBs...'
-                ImageIndex = 37
                 ImageName = 'Member'
               end
               item
@@ -4292,6 +4396,7 @@ object Main2: TMain2
               item
                 Action = Members_Manage
                 Caption = '&Manage Members...'
+                ImageIndex = 37
                 ImageName = 'Members'
               end
               item
@@ -4399,19 +4504,19 @@ object Main2: TMain2
     LinkedActionLists = <
       item
         ActionList = frEvent.actnlstEvent
-        Caption = 'Events'
+        Caption = 'actnlstEvents'
       end
       item
-        ActionList = frFilterMember.actnlistNomMember
-        Caption = 'Nominate'
+        ActionList = frHeat.actnlistHeat
+        Caption = 'actnlstHeats'
       end
       item
         ActionList = frSession.actnlstSession
-        Caption = 'Session'
+        Caption = 'actnlstSession'
       end>
     Images = IMG.imglstMenuBar
-    Left = 704
-    Top = 224
+    Left = 672
+    Top = 56
     StyleName = 'Platform Default'
     object Help_About: TAction
       Category = 'Help'
@@ -4605,6 +4710,7 @@ object Main2: TMain2
       Category = 'SCM2'
       Caption = 'Manage Members...'
       Hint = 'Create, edit, delete, stats, reports for your club members.'
+      ImageIndex = 37
       ImageName = 'Members'
     end
     object Help_LocalHelp: TAction
@@ -4682,6 +4788,7 @@ object Main2: TMain2
     object Members_Manage: TAction
       Category = 'Members'
       Caption = 'Manage Members...'
+      ImageIndex = 37
       ImageName = 'Members'
       OnExecute = Members_ManageExecute
       OnUpdate = Members_ManageUpdate
@@ -4705,6 +4812,7 @@ object Main2: TMain2
     object SwimClub_Stats: TAction
       Category = 'SwimClub'
       Caption = 'Club Dashboard...'
+      ImageIndex = 28
       ImageName = 'Query-Stats'
     end
     object File_ExportClub: TAction

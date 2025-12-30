@@ -23,7 +23,6 @@ uses
   frFrameClubGroup in 'FRAMES\frFrameClubGroup.pas' {FrameClubGroup: TFrame},
   frFrameNominate in 'FRAMES\frFrameNominate.pas' {FrameNominate: TFrame},
   frFrameFilterMember in 'FRAMES\frFrameFilterMember.pas' {FrameFilterMember: TFrame},
-  frFrameNavEvent in 'FRAMES\frFrameNavEvent.pas' {FrameNavEvent: TFrame},
   frmMain2 in 'frmMain2.pas' {Main2},
   SCMSimpleConnect in 'TOOLS\SCMSimpleConnect.pas',
   frmMM_Stats in 'MEMBERS\frmMM_Stats.pas' {ManageMember_Stats},
@@ -58,7 +57,9 @@ uses
   uIntercepters in 'TOOLS\uIntercepters.pas',
   uHeat in 'DATA_Helper\uHeat.pas',
   frFrameLane in 'FRAMES\frFrameLane.pas' {FrameLane: TFrame},
-  uLane in 'DATA_Helper\uLane.pas';
+  uLane in 'DATA_Helper\uLane.pas',
+  frFrameNavEv in 'FRAMES\frFrameNavEv.pas' {FrameNavEv: TFrame},
+  frFrameNavEvItem in 'FRAMES\frFrameNavEvItem.pas' {FrameNavEvItem: TFrame};
 
 {$R *.res}
 

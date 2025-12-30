@@ -9,6 +9,8 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.WinXCtrls, Vcl.Grids, Vcl.ImgList,
 
+  Data.DB,
+
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
   dmIMG, dmSCM2, dmCORE, System.Actions, Vcl.ActnList, Vcl.Menus, Vcl.Buttons,
@@ -16,13 +18,13 @@ uses
   uSession, uEvent, uHeat, uDefines;
 
 type
-
+{
   // 1. THE INTERCEPTER MUST GO HERE (Before the TFrame declaration)
   TSpeedButton = class(Vcl.Buttons.TSpeedButton)
   protected
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
   end;
-
+}
 
   TFrameHeat = class(TFrame)
     rpnlCntrl: TRelativePanel;
@@ -91,7 +93,7 @@ type
 implementation
 
 {$R *.dfm}
-
+{
 // I N T E R C E P T E R ...
 procedure TSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 var
@@ -107,7 +109,7 @@ begin
     Self.ImageIndex := Self.Tag;
   end;
 end;
-
+}
 
 procedure TFrameHeat.Initialise;
 begin
@@ -179,8 +181,6 @@ begin
 end;
 
 procedure TFrameHeat.actnHt_ToggleStatusExecute(Sender: TObject);
-var
-  i: integer;
 begin
   uHeat.ToggleStatus;
 end;

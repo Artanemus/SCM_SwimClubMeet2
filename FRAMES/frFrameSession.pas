@@ -17,17 +17,11 @@ uses
 
   AdvUtil, AdvObj, AdvGrid, DBAdvGrid,
 
-  dmSCM2, dmIMG, dmCORE, uSettings, uSession, uDefines
+  dmSCM2, dmIMG, dmCORE, uSettings, uDefines
 
   ;
 
 type
-
-  // 1. THE INTERCEPTER MUST GO HERE (Before the TFrame declaration)
-  TSpeedButton = class(Vcl.Buttons.TSpeedButton)
-  protected
-    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
-  end;
 
   TFrameSession = class(TFrame)
     actnlstSession: TActionList;
@@ -36,7 +30,7 @@ type
     actnSess_Edit: TAction;
     actnSess_Export: TAction;
     actnSess_Import: TAction;
-    actnSess_IsLocked: TAction;
+    actnSess_Visibilty: TAction;
     actnSess_Lock: TAction;
     actnSess_New: TAction;
     actnSess_Report: TAction;
@@ -61,8 +55,8 @@ type
     spbtnSessClone: TSpeedButton;
     spbtnSessDelete: TSpeedButton;
     spbtnSessEdit: TSpeedButton;
-    spbtnSessLock: TSpeedButton;
-    spbtnSessLockedVisible: TSpeedButton;
+    spbtnSessLockState: TSpeedButton;
+    spbtnSessVisiblity: TSpeedButton;
     spbtnSessNew: TSpeedButton;
     spbtnSessReport: TSpeedButton;
     rpnlCntrl: TRelativePanel;
@@ -72,8 +66,8 @@ type
     procedure actnSess_DeleteUpdate(Sender: TObject);
     procedure actnSess_EditExecute(Sender: TObject);
     procedure actnSess_EditUpdate(Sender: TObject);
-    procedure actnSess_IsLockedExecute(Sender: TObject);
-    procedure actnSess_IsLockedUpdate(Sender: TObject);
+    procedure actnSess_VisibiltyExecute(Sender: TObject);
+    procedure actnSess_VisibiltyUpdate(Sender: TObject);
     procedure actnSess_LockExecute(Sender: TObject);
     procedure actnSess_LockUpdate(Sender: TObject);
     procedure actnSess_NewExecute(Sender: TObject);
@@ -87,10 +81,10 @@ type
     procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
   private
-//    procedure FixedSessCntrlIcons;
-    { Private declarations }
-    procedure SetIsLockedIcon;
-    procedure SetLockIcon;
+    procedure SetVisibilityIcon;
+    procedure SetLockStateIcon;
+  protected
+    procedure Loaded; override;
   public
     procedure Initialise();
     // messages must be forwarded by main form.
@@ -100,26 +94,10 @@ type
 implementation
 
 uses
-  dlgEditSession, dlgNewSession;
+  uSession, dlgEditSession, dlgNewSession;
 
 {$R *.dfm}
 
-
-// I N T E R C E P T E R ...
-procedure TSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
-var
-  SavedImages: TCustomImageList;
-begin
-  // Save local state
-  if Assigned(Self.Images) then
-  begin
-    SavedImages := Self.Images;
-    inherited ActionChange(Sender, CheckDefaults);
-    // Restore local state
-    Self.Images := SavedImages;
-    Self.ImageIndex := Self.Tag;
-  end;
-end;
 
 procedure TFrameSession.actnSess_CheckLockUpdate(Sender: TObject);
 var
@@ -139,11 +117,6 @@ var
   DoEnable: boolean;
 begin
   DoEnable := false;
-{
-    // fix RAD STUDIO icon re-assignment issue.
-    if (spbtnSessClone.imageindex <> 11) then
-      spbtnSessClone.imageindex := 11;
-}
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive and
     not CORE.qrySession.IsEmpty then DoEnable := true;
@@ -194,11 +167,6 @@ var
   DoEnable: boolean;
 begin
   DoEnable := false;
-{
-    // fix RAD STUDIO icon re-assignment issue.
-    if (spbtnSessDelete.imageindex <> 4) then
-      spbtnSessDelete.imageindex := 4;
-}
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive and not CORE.qrySession.IsEmpty then
   begin
@@ -222,11 +190,6 @@ var
   DoEnable: boolean;
 begin
   DoEnable := false;
-{
-    // fix RAD STUDIO icon re-assignment issue.
-    if (spbtnSessEdit.imageindex <> 8) then
-      spbtnSessEdit.imageindex := 8;
-}
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive and not CORE.qrySession.IsEmpty then
   begin
@@ -236,12 +199,12 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameSession.actnSess_IsLockedExecute(Sender: TObject);
+procedure TFrameSession.actnSess_VisibiltyExecute(Sender: TObject);
 begin
     grid.BeginUpdate;
     TAction(Sender).Checked := not TAction(Sender).Checked;
     try
-      SetIsLockedIcon;
+      SetVisibilityIcon;
       // Assign index ... ApplyMaster.
       // true - indxShowAll , false indxHideLocked.
       uSession.SetIndexName(TAction(Sender).Checked);
@@ -250,16 +213,11 @@ begin
     end;
 end;
 
-procedure TFrameSession.actnSess_IsLockedUpdate(Sender: TObject);
+procedure TFrameSession.actnSess_VisibiltyUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
   DoEnable := false;
-{
-    // fix RAD STUDIO icon re-assignment issue.
-    if (not spbtnSessLockedVisible.imageindex in [1,2]) then
-      spbtnSessLockedVisible.imageindex := 1; // eye icon - no slash.
-}
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive and
     not CORE.qrySession.IsEmpty then DoEnable := true;
@@ -284,14 +242,14 @@ begin
         uSession.SetSess_EntrantCount; // SwimClubMeet2.dbo.SessionEntrantCount
       finally
         actnSess_Lock.Checked := true; // syncronize to equal db state
-        SetLockIcon;
+        SetLockStateIcon;
       end;
     end
     else
     begin
       uSession.SetSessionStatusID(1); // OPEN ie.UN-LOCKED.
       actnSess_Lock.Checked := false; // syncronize to equal db state
-      SetLockIcon;
+      SetLockStateIcon;
     end;
   finally
     grid.endUpdate;
@@ -303,9 +261,6 @@ var
   DoEnable: boolean;
 begin
   DoEnable := false;
-{  // fix RAD STUDIO icon re-assignment issue.
-  if (not spbtnSessLock.imageindex in [6,7]) then
-      spbtnSessLock.imageindex := 7; // lock icon is open.}
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive and
     not CORE.qrySession.IsEmpty then DoEnable := true;
@@ -328,9 +283,6 @@ procedure TFrameSession.actnSess_NewUpdate(Sender: TObject);
 var
   DoEnable: boolean;
 begin
-{  // fix RAD STUDIO icon re-assignment issue.
-  if (spbtnSessNew.imageindex <> 3) then
-      spbtnSessNew.imageindex := 3;}
   DoEnable := false;
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive then DoEnable := true;
@@ -342,9 +294,6 @@ var
   DoEnable: boolean;
 begin
   DoEnable := false;
-{  // fix RAD STUDIO icon re-assignment issue.
-  if (spbtnSessReport.imageindex <> 5) then
-      spbtnSessReport.imageindex := 5;}
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive and
     not CORE.qrySession.IsEmpty then DoEnable := true;
@@ -370,15 +319,6 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-{
-procedure TFrameSession.FixedSessCntrlIcons;
-var
-  i: integer;
-begin
-  for I := 0 to actnlstSession.ActionCount - 1 do
-    TAction(actnlstSession.Actions[i]).Update;
-end;
-}
 
 procedure TFrameSession.gridDblClickCell(Sender: TObject; ARow, ACol:
     Integer);
@@ -483,38 +423,64 @@ end;
 
 procedure TFrameSession.Initialise;
 begin
-//  FixedSessCntrlIcons; // Fix RAD Studio erronous icon assignment.
-
-  grid.RowCount := grid.FixedRows + 1; // rule: row count > fixed row.
-
-  if SCM2.scmConnection.Connected and CORE.IsActive then
+  //  grid.RowCount := grid.FixedRows + 1; // rule: row count > fixed row.
+  grid.BeginUpdate; // Assures grid.Paint..
+  try
   begin
-    if CORE.qrySession.IsEmpty then
+    if SCM2.scmConnection.Connected and CORE.IsActive then
     begin
-      // setting pagemode to false clears grid of text. (it appears empty)
-      grid.PageMode := false;
-    end
-    else
-    begin
-      // Set pagemode to the default 'editable' fetch records mode.
-      grid.PageMode := true;
 
-      if Assigned(Settings) then
-        actnSess_IsLocked.Checked := Settings.HideLockedSessions
+      if CORE.qrySession.IsEmpty then
+      begin
+        // setting pagemode to false clears grid of text. (it appears empty)
+        grid.PageMode := false;
+      end
       else
-        actnSess_IsLocked.Checked := false;
+      begin
+        // Set pagemode to the default 'editable' fetch records mode.
+        grid.PageMode := true;
 
-      SetIsLockedIcon; // uses actnSess_Visible.Checked state.
+        if Assigned(Settings) then
+          actnSess_Visibilty.Checked := Settings.HideLockedSessions
+        else
+          actnSess_Visibilty.Checked := false;
 
-      grid.BeginUpdate;
-        // FILTER TABLE CONTENTS: false - indxShowAll , true indxHideLocked.
-        uSession.SetIndexName(actnSess_IsLocked.Checked);
-      grid.EndUpdate;
-    end;
-  end
+        SetVisibilityIcon; // uses actnSess_Visible.Checked state.
+
+        grid.BeginUpdate;
+          // FILTER TABLE CONTENTS: false - indxShowAll , true indxHideLocked.
+          uSession.SetIndexName(actnSess_Visibilty.Checked);
+        grid.EndUpdate;
+      end;
+    end
   else
     grid.PageMode := false; // read-only
+  end;
+  finally
+    grid.EndUpdate;
+  end;
 
+end;
+
+procedure TFrameSession.Loaded;
+begin
+  inherited Loaded;
+  // This executes after the DFM has loaded and ActionLinks have synced.
+  // Manually re-apply your 48x48 indices here.
+//  spbtnSessVisiblity.ImageIndex := 1;
+  spbtnSessVisiblity.ImageName := 'visible-on';
+//  spbtnSessLockState.ImageIndex := 3;
+  spbtnSessLockState.ImageName := 'lock2';
+//  spbtnSessEdit.ImageIndex := 5;
+  spbtnSessEdit.ImageName := 'edit';
+//  spbtnSessNew.ImageIndex := 6;
+  spbtnSessNew.ImageName := 'new';
+//  spbtnSessClone.ImageIndex := 7;
+  spbtnSessClone.ImageName := 'clone';
+//  spbtnSessDelete.ImageIndex := 8;
+  spbtnSessDelete.ImageName := 'delete';
+//  spbtnSessReport.ImageIndex := 9;
+  spbtnSessReport.ImageName := 'report';
 end;
 
 procedure TFrameSession.Msg_SCM_Scroll_Session(var Msg: TMessage);
@@ -533,12 +499,12 @@ begin
         if (i=2) and not actnSess_Lock.Checked then
         begin
           actnSess_Lock.Checked := true; // syncronize to equal db state
-          SetLockIcon;
+          SetLockStateIcon;
         end;
         if (i=1) and actnSess_Lock.Checked then
         begin
           actnSess_Lock.Checked := false; // syncronize to equal db state
-          SetLockIcon;
+          SetLockStateIcon;
         end;
       end;
     end;
@@ -547,36 +513,33 @@ begin
   end;
 end;
 
-procedure TFrameSession.SetIsLockedIcon;
+procedure TFrameSession.SetVisibilityIcon;
 begin
-    if actnSess_IsLocked.Checked then
+    if actnSess_Visibilty.Checked then
     begin
-      actnSess_IsLocked.ImageIndex := 4; // Eye+line - HIDE locked sessions.
-      if (spbtnSessLockedVisible.ImageIndex <> 2) then // saves a repaint..
-        spbtnSessLockedVisible.ImageIndex := 2;
+      actnSess_Visibilty.ImageName := 'visible-off'; // Eye+line - HIDE locked sessions.
+      spbtnSessVisiblity.ImageIndex := 2;
+
     end
     else
     begin
-      actnSess_IsLocked.ImageIndex := 3; // Eye - SHOW ALL sessions.
-      if (spbtnSessLockedVisible.ImageIndex <> 1) then // saves a repaint..
-        spbtnSessLockedVisible.ImageIndex := 1;
+      actnSess_Visibilty.ImageName := 'visible-on'; // Eye - SHOW ALL sessions.
+      spbtnSessVisiblity.ImageIndex := 1;
     end;
 end;
 
-procedure TFrameSession.SetLockIcon;
+procedure TFrameSession.SetLockStateIcon;
 begin
   if actnSess_Lock.Checked then
   begin
-    actnSess_Lock.ImageIndex := 16; // lock2 icon
-    if (spbtnSessLock.ImageIndex <> 6) then // saves a repaint..
-      spbtnSessLock.ImageIndex := 6;
-  end
+    actnSess_Lock.ImageName := 'lock2' ;// lock2 icon
+    spbtnSessLockState.ImageIndex := 3;
+   end
   else
   begin
-    actnSess_Lock.ImageIndex := 17; // lock2-open icon
-    if (spbtnSessLock.ImageIndex <> 7) then // saves a repaint..
-      spbtnSessLock.ImageIndex := 7;
-  end;
+    actnSess_Lock.ImageName := 'lock2-open'; // lock2-open icon
+    spbtnSessLockState.ImageIndex := 4;
+  end
 end;
 
 end.

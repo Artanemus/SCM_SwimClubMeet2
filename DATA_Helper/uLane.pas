@@ -47,7 +47,7 @@ end;
 function DeleteLane: boolean;
 var
   SQL: string;
-  done, doRenumber: boolean;
+  doRenumber: boolean;
 begin
   result := false;
   doRenumber := false;
@@ -77,11 +77,17 @@ begin
     // F I N A L L Y   D E L E T E   L A N E .
     try
       CORE.qryLane.Delete;
+      doRenumber := true;
       result := true;
     except on E: Exception do
         // handle error
     end;
   finally
+    if doRenumber then
+    begin
+      ; //nop
+    end;
+
     CORE.qryWatchTime.ApplyMaster; // ASSERT MASTER-DETAILED.
     CORE.qrySplitTime.ApplyMaster; // ASSERT MASTER-DETAILED.
     CORE.qryLane.EnableControls;
@@ -245,7 +251,6 @@ end;
 procedure NewLane;
 var
   aLaneNum: integer;
-  SQL: string;
 begin
   if CORE.qryHeat.IsEmpty then exit;
   // NOTE: renumbering must be done by caller.
@@ -321,9 +326,6 @@ end;
 function LocateNominee(aNomineeID: integer): boolean;
 var
   SearchOptions: TLocateOptions;
-  found: boolean;
-  SQL: string;
-  v: variant;
 begin
   result := false;
   SearchOptions := [];
@@ -350,9 +352,6 @@ end;
 function LocateTeam(aTeamID: integer): boolean;
 var
   SearchOptions: TLocateOptions;
-  found: boolean;
-  SQL: string;
-  v: variant;
 begin
   result := false;
   SearchOptions := [];
@@ -384,11 +383,13 @@ end;
 function MoveDownLane(ADataSet: TDataSet): Boolean;
 begin
 //  result := SCM2.MoveDownLane(ADataSet);
+  result := true;
 end;
 
 function MoveUpLane(ADataSet: TDataSet): Boolean;
 begin
 //  result := SCM2.MoveUpLane(ADataSet);
+  result := true;
 end;
 
 

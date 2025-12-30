@@ -9,15 +9,11 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.WinXCtrls, Vcl.Grids, Vcl.ImgList,
 
-  AdvUtil,
-  AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
+  Data.DB,
 
-  dmIMG, dmSCM2, dmCORE, System.Actions, Vcl.ActnList, Vcl.Menus, Vcl.Buttons,
+  AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
-  uSession, uEvent, uHeat,
-
-  // THE INTERCEPTER MUST GO HERE - last in uses list
-  UIntercepters;
+  dmIMG, dmSCM2, dmCORE, System.Actions, Vcl.ActnList, Vcl.Menus, Vcl.Buttons;
 
 type
   TFrameLane = class(TFrame)
@@ -31,14 +27,15 @@ type
     spbtnSwitch: TSpeedButton;
     spbtnDelete: TSpeedButton;
     spbtnDeleteForever: TSpeedButton;
-    actnMoveUp: TAction;
-    actnMoveDown: TAction;
-    actnSwap: TAction;
-    actnDelete: TAction;
-    actnDeleteForever: TAction;
-    actnReport: TAction;
+    actnLn_MoveUp: TAction;
+    actnLn_MoveDown: TAction;
+    actnLn_Swap: TAction;
+    actnLn_Delete: TAction;
+    actnLn_DeleteForever: TAction;
+    actnln_Report: TAction;
     ShapeLnBar1: TShape;
     spbtnReport: TSpeedButton;
+    procedure actnLn_GenericUpdate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -48,5 +45,23 @@ type
 implementation
 
 {$R *.dfm}
+
+uses
+  uSession, uEvent, uHeat;
+
+procedure TFrameLane.actnLn_GenericUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+  Assigned(CORE) and CORE.IsActive and
+  not CORE.qryHeat.IsEmpty then
+  begin
+    if uSession.IsUnLocked and uHeat.IsOpened then
+      DoEnable := true;
+  end;
+  TAction(Sender).Enabled := DoEnable;
+end;
 
 end.

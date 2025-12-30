@@ -20,14 +20,13 @@ uses
 
 
 type
-
-  // 1. THE INTERCEPTER MUST GO HERE (Before the TFrame declaration)
-  TSpeedButton = class(Vcl.Buttons.TSpeedButton)
-  protected
-    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
-  end;
-
-
+{
+    // 1. THE INTERCEPTER MUST GO HERE (Before the TFrame declaration)
+    TSpeedButton = class(Vcl.Buttons.TSpeedButton)
+    protected
+      procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
+    end;
+}
   TFrameEvent = class(TFrame)
     actnEv_Delete: TAction;
     actnEv_EventType: TAction;
@@ -98,6 +97,7 @@ implementation
 
 {$R *.dfm}
 
+{
 // I N T E R C E P T E R ...
 procedure TSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
 var
@@ -113,7 +113,7 @@ begin
     Self.ImageIndex := Self.Tag;
   end;
 end;
-
+}
 
 
 procedure TFrameEvent.actnEv_DeleteExecute(Sender: TObject);

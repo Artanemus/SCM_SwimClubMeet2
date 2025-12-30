@@ -30,6 +30,9 @@ const
   SCM_MEMBER_AFTERSCROLL = WM_USER +106;
   SCM_MEMBER_FILTER_CHANGED = WM_USER +108;
 
+  SCM_FRAME_SELECTED = WM_USER +109; // NavEv Clicked...
+  SCM_FRAME_RESET = WM_USER +110; // Fill NavEv with NavEvItems...
+
 
  type
  scmSendToFileType = (sftPDF, sftXLS, sftHTML, sftIMG, sftNA);

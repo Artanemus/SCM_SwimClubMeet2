@@ -7,7 +7,7 @@ uses
   System.Variants, System.VarUtils,
   System.StrUtils,
   vcl.Dialogs, Data.DB,
-  FireDAC.Comp.Client, FireDAC.Stan.Error,
+  FireDAC.Comp.Client, FireDAC.Stan.Error, FireDAC.Stan.Param,
 
   dmCORE, dmSCM2, uDefines,
   uUtility;
@@ -22,6 +22,7 @@ function GetHeatID: integer; // Assert - SAFE.
 function HeatStatusID: integer;
 function IsClosed(): Boolean;
 function IsRaced(): Boolean;
+function IsOpened(): Boolean;
 function LastHeatNum: integer;
 function Locate(aHeatID: integer): Boolean;
 function NextID(aHeatID: integer): integer; // uses HeatNum
@@ -97,7 +98,6 @@ function CountLanes: integer;
 var
   SQL: string;
   v: variant;
-  aEventType: scmEventType;
 begin
   result := 0;
   // Count number of lanes ....
@@ -108,11 +108,9 @@ end;
 
 function DeleteLanes: boolean;
 var
-  SQL: string;
   done: boolean;
 begin
   result := false;
-  done := false;
   // Not permitted to delete anything if session is locked.
   if uSession.IsLocked() then exit;
   CORE.qryLane.DisableControls;
@@ -137,7 +135,6 @@ end;
 
 function DeleteHeat(DoExclude: Boolean = true): boolean;
 var
-  SQL: string;
   doRenumber: boolean;
 begin
   result := false;
@@ -167,7 +164,7 @@ begin
       end
     finally
       if doRenumber then
-        uHeat.RenumberLanes(false); // don't relocate
+        uHeat.RenumberLanes(false); // don't relocate  ... depreciated
       CORE.qryLane.ApplyMaster;
       CORE.qryLane.EnableControls;
     end;
@@ -192,7 +189,7 @@ var
 begin
   result := false;
   HeatStatusID := CORE.qryHeat.FieldByName('HeatStatusID').AsInteger;
-  if (HeatStatusID = 3) or (HeatStatusID = 0) then result := true;
+  if (HeatStatusID = 3) then result := true;
 end;
 
 function IsRaced: Boolean;
@@ -203,6 +200,16 @@ begin
   HeatStatusID := CORE.qryHeat.FieldByName('HeatStatusID').AsInteger;
   if (HeatStatusID = 2) then result := true;
 end;
+
+function IsOpened(): Boolean;
+var
+  HeatStatusID: integer;
+begin
+  result := false;
+  HeatStatusID := CORE.qryHeat.FieldByName('HeatStatusID').AsInteger;
+  if (HeatStatusID = 1)  or (HeatStatusID = 0) then result := true;
+end;
+
 
 function LastHeatNum: integer;
 var
@@ -285,6 +292,7 @@ var
   fld: TField;
   aHeatNum: integer;
 begin
+  fld := nil;
   if CORE.qryEvent.IsEmpty then exit;
   try
     aHeatNum := uHeat.LastHeatNum();
@@ -323,6 +331,7 @@ var
   aLaneID: integer;
 begin
   result := 0;
+  aLaneID := 0;
   if not Assigned(SCM2) or not SCM2.scmConnection.Connected then exit;
   if CORE.dsHeat.DataSet.IsEmpty then exit;
   CORE.qryLane.DisableControls;
@@ -347,7 +356,6 @@ end;
 
 function RenumberLanesAdv(DoLocate: Boolean = true): integer;
 var
-aLaneID: integer;
 evType: scmEventType;
 begin
   result := 0;
@@ -378,11 +386,12 @@ end;
 
 function RenumberLanesAdvINDV(DoLocate: Boolean = true): integer;
 var
-  aLaneID, laneNum, i: integer;
+  laneNum, i: integer;
   qry: TFDQuery;
   SQL: string;
 begin
   result := 0;
+  i := 0;
   try
     {if DoLocate then aLaneID := uLane.PK;}
     qry := TFDQuery.Create(CORE);
@@ -472,6 +481,7 @@ var
   SQL: string;
 begin
   result := 0;
+  i := 0;
   try
     {if DoLocate then aLaneID := uLane.PK;}
     qry := TFDQuery.Create(CORE);
@@ -600,7 +610,7 @@ end;
 
 function TrimLanes(DoExclude: Boolean = true): integer;
 var
-  NumOfLanes, Lanes, i, aHeatStatusID: integer;
+  NumOfLanes, Lanes, aHeatStatusID: integer;
 begin
   // NOTE: if renumbering is needed, this must be done by caller.
   result := 0;

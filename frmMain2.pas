@@ -30,7 +30,11 @@ uses
   frFrameSession,
   frFrameEvent,
   frFrameNominate,
-  frFrameFilterMember, frFrameNavEvent, frFrameHeat;
+  frFrameFilterMember,
+  frFrameNavEv,
+  frFrameNavEvItem,
+  frFrameHeat,
+  frFrameLane;
 
 type
   TMain2 = class(TForm)
@@ -106,15 +110,15 @@ type
     Member_CheckData: TAction;
     SwimClub_Reports: TAction;
     frNominate: TFrameNominate;
-    pnlNavEvent: TPanel;
     pnlHeader: TPanel;
     pnlBody: TPanel;
-    dbtxtNavEvCaption: TDBText;
-    dbtxtNavEvDesc: TDBText;
-    frNavEvent: TFrameNavEvent;
     pnlHeat: TPanel;
     frHeat: TFrameHeat;
     frSession: TFrameSession;
+    pnlLane: TPanel;
+    frLane: TFrameLane;
+    frNavEv: TFrameNavEv;
+    procedure actnMainMenuBarClick(Sender: TObject);
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -144,8 +148,12 @@ type
     fCueToMemberID: integer;
 
 //    procedure DetailTBLs_ApplyMaster;
+
     procedure DetailTBLs_DisableCNTRLs;
     procedure DetailTBLs_EnableCNTRLs;
+
+    procedure HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
+      EvItem: TFrameNavEvItem);
 
     procedure UpdateFrameVisibility();
 
@@ -155,8 +163,8 @@ type
     procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
     procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
     procedure Msg_SCM_Scroll_Heat(var Msg: TMessage); message SCM_SCROLL_HEAT;
-    procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage); message SCM_SCROLL_NOMINATE_FILTERMEMBER;
-
+    procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
+      message SCM_SCROLL_NOMINATE_FILTERMEMBER;
   end;
 
 var
@@ -168,7 +176,22 @@ implementation
 
 uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
-  frmManageMember, dlgSwimClub_Reports, frmMM_Stats;
+  frmManageMember, dlgSwimClub_Reports, frmMM_Stats, uEvent;
+
+// Add handler:
+procedure TMain2.HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
+    EvItem: TFrameNavEvItem);
+begin
+  // The navigation frame on the heat's tabsheet has changed.
+  // re-locate to the event Msg.WParam.
+  if (EventID <> 0) then
+    uEvent.Locate(EventID);
+end;  
+
+procedure TMain2.actnMainMenuBarClick(Sender: TObject);
+begin
+
+end;
 
 {
   procedure TMain2.DetailTBLs_ApplyMaster;
@@ -237,7 +260,6 @@ begin
   frFilterMember.grid.BeginUpdate;
    {frLane.grid.BeginUpdate;}
   frHeat.grid.BeginUpdate;
-  frNavEvent.grid.BeginUpdate;
   frEvent.grid.BeginUpdate;
   frSession.grid.BeginUpdate;
   try
@@ -251,7 +273,7 @@ begin
     begin
       if Assigned(Settings) and (Settings.LastSwimClubPK <> 0) then
         uSwimClub.Locate(Settings.LastSwimClubPK); // restore swim club.
-      // sets table indexname, icon imageindexes and gird pagemode
+      // gird pagemode - amoung other things
       frSession.Initialise;
       frEvent.Initialise;
       frFilterMember.Initialise;
@@ -290,7 +312,6 @@ begin
   finally
     frSession.grid.EndUpdate;
     frEvent.grid.EndUpdate;
-    frNavEvent.grid.EndUpdate;
     frHeat.grid.EndUpdate;
     {frLane.grid.EndUpdate;}
     frFilterMember.grid.EndUpdate;
@@ -367,6 +388,7 @@ begin
   frEvent.Initialise;
   frFilterMember.Initialise;
   frNominate.Initialise;
+  frNavEv.FOnNavEvItemSelected := Self.HandleNavEvItemSelected;
 
   // No connection established ...initialize UI state...
   PageControl.ActivePageIndex := 0; // tabsheet 0
@@ -507,9 +529,11 @@ end;
 procedure TMain2.Msg_SCM_Scroll_Event(var Msg: TMessage);
 begin
   // pass message forward to event frame...
+  // Msg.WParam contains Event.EventID - used by frNavEv.
   if fscmIsConnecting then exit;
   SendMessage(frEvent.Handle, SCM_SCROLL_EVENT, Msg.WParam, Msg.LParam);
   PostMessage(frHeat.Handle, SCM_SCROLL_EVENT, Msg.WParam, Msg.LParam);
+  PostMessage(frNavEv.Handle, SCM_SCROLL_EVENT, Msg.WParam, Msg.LParam);
 end;
 
 procedure TMain2.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
@@ -558,7 +582,8 @@ begin
       StatusBar.Panels[3].Text := 'ERR';
     end;
   end;
-
+  // Manually re-fill the NavEv with NavEvItems...
+  PostMessage(frNavEv.Handle, SCM_FRAME_RESET, 0, 0);
 end;
 
 procedure TMain2.PageControlChange(Sender: TObject);
@@ -811,7 +836,6 @@ begin
   pnlEvent.Visible := false;
   pnlNominate.Visible := false;
   pnlFilterMember.Visible := false;
-  pnlNavEvent.Visible := false;
   pnlHeat.Visible := False;
 
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
@@ -825,7 +849,6 @@ begin
     pnlFilterMember.Visible := true;
     pnlNominate.Visible := true;
     pnlHeat.Visible := true;
-    pnlNavEvent.Visible := true;
   end;
 end;
 

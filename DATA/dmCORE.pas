@@ -20,7 +20,7 @@ uses
 
 	SVGIconVirtualImageList, SVGIconImageCollection,
 
-  uSettings, uDefines, dmSCM2
+  dmSCM2 ,uSettings, uDefines
   ;
 
 type
@@ -131,6 +131,22 @@ type
     qryNominateDistanceID: TIntegerField;
     qryNominateMeters: TIntegerField;
     qryEventMeters: TIntegerField;
+    qryLaneLaneID: TFDAutoIncField;
+    qryLaneLaneNum: TIntegerField;
+    qryLaneRaceTime: TTimeField;
+    qryLaneClubRecord: TTimeField;
+    qryLaneIsDisqualified: TBooleanField;
+    qryLaneIsScratched: TBooleanField;
+    qryLaneHeatID: TIntegerField;
+    qryLaneDisqualifyCodeID: TIntegerField;
+    qryLaneTeamID: TIntegerField;
+    qryLaneNomineeID: TIntegerField;
+    qryLaneFullName: TWideStringField;
+    qryLaneStat: TWideStringField;
+    tblDisqualifyCode: TFDTable;
+    luDisqualifyCode: TDataSource;
+    qryLaneluDQ: TStringField;
+    qryEventABREV: TWideStringField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterEdit(DataSet: TDataSet);
@@ -187,6 +203,7 @@ begin
     tblRound.Connection := SCM2.scmConnection;
     tblGender.Connection := SCM2.scmConnection;
     tblParalympicType.Connection := SCM2.scmConnection;
+    tblDisqualifyCode.Connection := SCM2.scmConnection;
 
     qryMemberLink.Connection := SCM2.scmConnection;
     qryMember.Connection := SCM2.scmConnection;
@@ -224,6 +241,7 @@ begin
         tblRound.Open;
         tblGender.Open;
         tblParalympicType.Open;
+        tblDisqualifyCode.Open;
 
         // members
         qryMemberLink.Open;
@@ -300,11 +318,16 @@ begin
 end;
 
 procedure TCORE.qryEventAfterScroll(DataSet: TDataSet);
+var
+  PK: integer;
 begin
   if (msgHandle <> 0) then
   begin
     if not (qryEvent.State in [dsOpening]) then
-      PostMessage(msgHandle, SCM_SCROLL_EVENT, 0,0);
+    begin
+      PK := DataSet.FieldByName('EventID').AsInteger;
+      PostMessage(msgHandle, SCM_SCROLL_EVENT, PK,0);
+    end;
   end;
 end;
 

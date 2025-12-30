@@ -1,7 +1,7 @@
 object FrameLane: TFrameLane
   Left = 0
   Top = 0
-  Width = 640
+  Width = 818
   Height = 480
   TabOrder = 0
   object rpnlCntrl: TRelativePanel
@@ -92,7 +92,7 @@ object FrameLane: TFrameLane
       Height = 48
       Anchors = []
       ImageIndex = 0
-      ImageName = 'ht-up'
+      ImageName = 'up'
       Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -106,7 +106,7 @@ object FrameLane: TFrameLane
       Height = 48
       Anchors = []
       ImageIndex = 1
-      ImageName = 'ln-down'
+      ImageName = 'down'
       Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -120,7 +120,7 @@ object FrameLane: TFrameLane
       Height = 48
       Anchors = []
       ImageIndex = 9
-      ImageName = 'ln-swap'
+      ImageName = 'swap'
       Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -134,7 +134,7 @@ object FrameLane: TFrameLane
       Height = 48
       Anchors = []
       ImageIndex = 4
-      ImageName = 'ln-delete'
+      ImageName = 'delete'
       Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -148,7 +148,7 @@ object FrameLane: TFrameLane
       Height = 48
       Anchors = []
       ImageIndex = 5
-      ImageName = 'ln-delete-forever'
+      ImageName = 'delete-forever'
       Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -176,7 +176,7 @@ object FrameLane: TFrameLane
       Height = 48
       Anchors = []
       ImageIndex = 8
-      ImageName = 'ln-report'
+      ImageName = 'report'
       Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -186,27 +186,29 @@ object FrameLane: TFrameLane
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 582
+    Width = 760
     Height = 480
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitWidth = 393
     object grid: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 582
+      Width = 760
       Height = 480
       Cursor = crDefault
       Align = alClient
       Color = clWhite
-      ColCount = 2
+      ColCount = 9
+      DefaultRowHeight = 32
       DrawingStyle = gdsClassic
       FixedColor = clWhite
       RowCount = 2
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
-      Font.Height = -12
+      Font.Height = -16
       Font.Name = 'Segoe UI'
       Font.Style = []
       Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
@@ -272,7 +274,7 @@ object FrameLane: TFrameLane
         'Smaller than'
         'Clear')
       FixedColWidth = 20
-      FixedRowHeight = 22
+      FixedRowHeight = 32
       FixedFont.Charset = DEFAULT_CHARSET
       FixedFont.Color = clBlack
       FixedFont.Height = -12
@@ -328,8 +330,8 @@ object FrameLane: TFrameLane
       SortSettings.HeaderMirrorColor = clWhite
       SortSettings.HeaderMirrorColorTo = clWhite
       Version = '2.5.1.3'
-      AutoCreateColumns = True
-      AutoRemoveColumns = True
+      AutoCreateColumns = False
+      AutoRemoveColumns = False
       Columns = <
         item
           Borders = []
@@ -338,6 +340,7 @@ object FrameLane: TFrameLane
           CheckFalse = 'N'
           CheckTrue = 'Y'
           Color = clWindow
+          FieldName = 'LaneID'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -12
@@ -357,30 +360,222 @@ object FrameLane: TFrameLane
           Width = 20
         end
         item
+          Alignment = taCenter
           Borders = []
           BorderPen.Color = clSilver
           ButtonHeight = 18
           CheckFalse = 'N'
           CheckTrue = 'Y'
-          Color = clWindow
+          Color = clWhite
+          FieldName = 'LaneNum'
           Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
+          Font.Color = clBlack
+          Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
+          Header = 'Lane#'
           HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -12
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 57
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          FieldName = 'FullName'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = 'Swimmer...Team'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 168
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          FieldName = 'RaceTime'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 112
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = 'TTB'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 112
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = 'PB'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 112
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckBoxField = True
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          FieldName = 'IsScratched'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = 'S'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 39
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckBoxField = True
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          FieldName = 'IsDisqualified'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = 'D'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 36
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          FieldName = 'luDQ'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = 'DQ'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
+          PrintFont.Height = -16
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
           Width = 64
         end>
+      DataSource = CORE.dsLane
       InvalidPicture.Data = {
         055449636F6E0000010001002020200000000000A81000001600000028000000
         2000000040000000010020000000000000100000000000000000000000000000
@@ -517,9 +712,18 @@ object FrameLane: TFrameLane
         0000000000000000000000000000000000000000000000000000000080000001
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
+      ShowBooleanFields = True
       ShowUnicode = False
+      ExplicitWidth = 393
       ColWidths = (
         20
+        57
+        168
+        112
+        112
+        112
+        39
+        36
         64)
     end
   end
@@ -527,41 +731,47 @@ object FrameLane: TFrameLane
     Images = IMG.imglstMenuBar
     Left = 520
     Top = 224
-    object actnMoveUp: TAction
+    object actnLn_MoveUp: TAction
       Category = 'Lanes'
       Caption = 'Move Up'
       ImageIndex = 6
       ImageName = 'up'
+      OnUpdate = actnLn_GenericUpdate
     end
-    object actnMoveDown: TAction
+    object actnLn_MoveDown: TAction
       Category = 'Lanes'
       Caption = 'Move Down'
       ImageIndex = 7
       ImageName = 'down'
+      OnUpdate = actnLn_GenericUpdate
     end
-    object actnSwap: TAction
+    object actnLn_Swap: TAction
       Category = 'Lanes'
       Caption = 'Swap Lanes'
       ImageIndex = 38
       ImageName = 'swap2'
+      OnUpdate = actnLn_GenericUpdate
     end
-    object actnDelete: TAction
+    object actnLn_Delete: TAction
       Category = 'Lanes'
       Caption = 'Empty Lane'
       ImageIndex = 9
       ImageName = 'delete'
+      OnUpdate = actnLn_GenericUpdate
     end
-    object actnDeleteForever: TAction
+    object actnLn_DeleteForever: TAction
       Category = 'Lanes'
       Caption = 'Remove Nomination'
       ImageIndex = 10
       ImageName = 'delete-forever'
+      OnUpdate = actnLn_GenericUpdate
     end
-    object actnReport: TAction
+    object actnln_Report: TAction
       Category = 'Lanes'
       Caption = 'Lane Report'
       ImageIndex = 15
       ImageName = 'report'
+      OnUpdate = actnLn_GenericUpdate
     end
   end
   object pumenuLane: TPopupMenu

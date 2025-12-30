@@ -13239,52 +13239,52 @@ object IMG: TIMG
       item
         CollectionIndex = 26
         CollectionName = 'up'
-        Name = 'ht-up'
+        Name = 'up'
       end
       item
         CollectionIndex = 27
         CollectionName = 'down'
-        Name = 'ht-down'
+        Name = 'down'
       end
       item
         CollectionIndex = 28
         CollectionName = 'ToggleStatus'
-        Name = 'ht-ToggleStatus'
+        Name = 'ToggleStatus'
       end
       item
         CollectionIndex = 29
         CollectionName = 'new'
-        Name = 'ht-new'
+        Name = 'new'
       end
       item
         CollectionIndex = 30
         CollectionName = 'delete'
-        Name = 'ht-delete'
+        Name = 'delete'
       end
       item
         CollectionIndex = 32
         CollectionName = 'build'
-        Name = 'ht-build'
+        Name = 'build'
       end
       item
         CollectionIndex = 33
         CollectionName = 'marshall'
-        Name = 'ht-marshall'
+        Name = 'marshall'
       end
       item
         CollectionIndex = 34
         CollectionName = 'stopwatch'
-        Name = 'ht-timer'
+        Name = 'stopwatch'
       end
       item
         CollectionIndex = 35
         CollectionName = 'print'
-        Name = 'ht-print'
+        Name = 'print'
       end
       item
         CollectionIndex = 36
         CollectionName = 'report'
-        Name = 'ht-report'
+        Name = 'report'
       end>
     ImageCollection = CollectionCore
     Width = 48
@@ -13303,62 +13303,62 @@ object IMG: TIMG
       item
         CollectionIndex = 23
         CollectionName = 'visible_on'
-        Name = 'se-visible_on'
+        Name = 'visible_on'
       end
       item
         CollectionIndex = 24
         CollectionName = 'visible_off'
-        Name = 'se-visible_off'
-      end
-      item
-        CollectionIndex = 29
-        CollectionName = 'new'
-        Name = 'se-new'
-      end
-      item
-        CollectionIndex = 30
-        CollectionName = 'delete'
-        Name = 'se-delete'
-      end
-      item
-        CollectionIndex = 36
-        CollectionName = 'report'
-        Name = 'se-report'
+        Name = 'visible_off'
       end
       item
         CollectionIndex = 39
         CollectionName = 'lock2'
-        Name = 'se-lock2'
+        Name = 'lock2'
       end
       item
         CollectionIndex = 40
         CollectionName = 'lock2-open'
-        Name = 'se-lock2-open'
+        Name = 'lock2-open'
       end
       item
         CollectionIndex = 48
         CollectionName = 'edit'
-        Name = 'se-edit'
+        Name = 'edit'
       end
       item
-        CollectionIndex = 49
-        CollectionName = 'in'
-        Name = 'se-in'
-      end
-      item
-        CollectionIndex = 50
-        CollectionName = 'out'
-        Name = 'se-out'
+        CollectionIndex = 29
+        CollectionName = 'new'
+        Name = 'new'
       end
       item
         CollectionIndex = 51
         CollectionName = 'clone'
-        Name = 'se-clone'
+        Name = 'clone'
+      end
+      item
+        CollectionIndex = 30
+        CollectionName = 'delete'
+        Name = 'delete'
+      end
+      item
+        CollectionIndex = 36
+        CollectionName = 'report'
+        Name = 'report'
+      end
+      item
+        CollectionIndex = 49
+        CollectionName = 'in'
+        Name = 'in'
+      end
+      item
+        CollectionIndex = 50
+        CollectionName = 'out'
+        Name = 'out'
       end
       item
         CollectionIndex = 52
         CollectionName = 'sort'
-        Name = 'se-sort'
+        Name = 'sort'
       end>
     ImageCollection = CollectionCore
     Width = 48
@@ -13372,42 +13372,52 @@ object IMG: TIMG
       item
         CollectionIndex = 22
         CollectionName = 'grid-off'
-        Name = 'Ev-grid-off'
+        Name = 'grid-off'
       end
       item
         CollectionIndex = 21
         CollectionName = 'grid-on'
-        Name = 'Ev-grid-on'
+        Name = 'grid-on'
       end
       item
         CollectionIndex = 26
         CollectionName = 'up'
-        Name = 'Ev-up'
+        Name = 'up'
       end
       item
         CollectionIndex = 27
         CollectionName = 'down'
-        Name = 'Ev-down'
+        Name = 'down'
       end
       item
         CollectionIndex = 29
         CollectionName = 'new'
-        Name = 'Ev-new'
+        Name = 'new'
       end
       item
         CollectionIndex = 30
         CollectionName = 'delete'
-        Name = 'Ev-delete'
+        Name = 'delete'
       end
       item
         CollectionIndex = 36
         CollectionName = 'report'
-        Name = 'Ev-report'
+        Name = 'report'
       end
       item
         CollectionIndex = 102
         CollectionName = 'INDV_RELAY'
-        Name = 'Ev-INDV_RELAY'
+        Name = 'INDV_RELAY'
+      end
+      item
+        CollectionIndex = 96
+        CollectionName = 'arrow-left'
+        Name = 'arrow-left'
+      end
+      item
+        CollectionIndex = 97
+        CollectionName = 'arrow-right'
+        Name = 'arrow-right'
       end>
     ImageCollection = CollectionCore
     Width = 48
@@ -13431,7 +13441,7 @@ object IMG: TIMG
       item
         CollectionIndex = 105
         CollectionName = 'Members'
-        Name = 'Member'
+        Name = 'Members'
       end
       item
         CollectionIndex = 109
@@ -13613,60 +13623,60 @@ object IMG: TIMG
     Height = 36
     ApplyFixedColorToRootOnly = True
     Size = 36
-    Left = 1000
-    Top = 112
+    Left = 920
+    Top = 56
   end
   object imglstLaneCntrl: TSVGIconVirtualImageList
     Images = <
       item
         CollectionIndex = 26
         CollectionName = 'up'
-        Name = 'ln-up'
+        Name = 'up'
       end
       item
         CollectionIndex = 27
         CollectionName = 'down'
-        Name = 'ln-down'
+        Name = 'down'
       end
       item
         CollectionIndex = 48
         CollectionName = 'edit'
-        Name = 'ln-edit'
+        Name = 'edit'
       end
       item
         CollectionIndex = 41
         CollectionName = 'switch'
-        Name = 'ln-switch'
+        Name = 'switch'
       end
       item
         CollectionIndex = 30
         CollectionName = 'delete'
-        Name = 'ln-delete'
+        Name = 'delete'
       end
       item
         CollectionIndex = 31
         CollectionName = 'delete-forever'
-        Name = 'ln-delete-forever'
+        Name = 'delete-forever'
       end
       item
         CollectionIndex = 64
         CollectionName = 'minus-box'
-        Name = 'ln-minus-box'
+        Name = 'minus-box'
       end
       item
         CollectionIndex = 65
         CollectionName = 'plus-box'
-        Name = 'ln-plus-box'
+        Name = 'plus-box'
       end
       item
         CollectionIndex = 36
         CollectionName = 'report'
-        Name = 'ln-report'
+        Name = 'report'
       end
       item
         CollectionIndex = 66
         CollectionName = 'swap'
-        Name = 'ln-swap'
+        Name = 'swap'
       end>
     ImageCollection = CollectionCore
     Width = 48
@@ -14048,8 +14058,8 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 1120
-    Top = 112
+    Left = 984
+    Top = 32
   end
   object imglstHeatStrokeEx: TSVGIconVirtualImageList
     Images = <
@@ -14107,6 +14117,11 @@ object IMG: TIMG
         CollectionIndex = 15
         CollectionName = 'RELAY_DOT'
         Name = 'RELAY_DOT'
+      end
+      item
+        CollectionIndex = 43
+        CollectionName = 'checkbox-blank'
+        Name = 'checkbox-blank'
       end>
     ImageCollection = CollectionCore
     Width = 24
@@ -14149,7 +14164,7 @@ object IMG: TIMG
       item
         CollectionIndex = 0
         CollectionName = 'EmptyFrame'
-        Name = 'empty'
+        Name = 'EmptyFrame'
       end
       item
         CollectionIndex = 21
@@ -14164,12 +14179,12 @@ object IMG: TIMG
       item
         CollectionIndex = 23
         CollectionName = 'visible_on'
-        Name = 'locked-show'
+        Name = 'visible_on'
       end
       item
         CollectionIndex = 24
         CollectionName = 'visible_off'
-        Name = 'locked-hide'
+        Name = 'visible_off'
       end
       item
         CollectionIndex = 25
@@ -14204,7 +14219,7 @@ object IMG: TIMG
       item
         CollectionIndex = 32
         CollectionName = 'build'
-        Name = 'tool'
+        Name = 'build'
       end
       item
         CollectionIndex = 33
@@ -14214,7 +14229,7 @@ object IMG: TIMG
       item
         CollectionIndex = 34
         CollectionName = 'stopwatch'
-        Name = 'time-keeper'
+        Name = 'stopwatch'
       end
       item
         CollectionIndex = 35
@@ -14289,7 +14304,7 @@ object IMG: TIMG
       item
         CollectionIndex = 90
         CollectionName = 'query-stats'
-        Name = 'stats'
+        Name = 'query-stats'
       end
       item
         CollectionIndex = 91
@@ -14334,12 +14349,17 @@ object IMG: TIMG
       item
         CollectionIndex = 105
         CollectionName = 'Members'
-        Name = 'Member'
+        Name = 'Members'
       end
       item
         CollectionIndex = 66
         CollectionName = 'swap'
-        Name = 'swap2'
+        Name = 'swap'
+      end
+      item
+        CollectionIndex = 28
+        CollectionName = 'ToggleStatus'
+        Name = 'ToggleStatus'
       end>
     ImageCollection = CollectionCore
     Width = 32

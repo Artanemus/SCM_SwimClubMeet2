@@ -1,0 +1,75 @@
+object FrameNavigation: TFrameNavigation
+  Left = 0
+  Top = 0
+  Width = 664
+  Height = 81
+  Align = alClient
+  TabOrder = 0
+  object ControlList1: TControlList
+    Left = 0
+    Top = 0
+    Width = 664
+    Height = 89
+    Align = alTop
+    ItemColor = clBtnFace
+    ItemWidth = 200
+    ItemMargins.Left = 2
+    ItemMargins.Top = 2
+    ItemMargins.Right = 2
+    ItemMargins.Bottom = 2
+    ColumnLayout = cltMultiLeftToRight
+    ItemSelectionOptions.HotColorAlpha = 20
+    ItemSelectionOptions.SelectedColorAlpha = 30
+    ItemSelectionOptions.FocusedColorAlpha = 40
+    ParentColor = False
+    TabOrder = 0
+    SmoothMouseWheelScrolling = True
+    ExplicitLeft = 16
+    ExplicitTop = 112
+    ExplicitWidth = 529
+    object Label1: TLabel
+      AlignWithMargins = True
+      Left = 47
+      Top = 25
+      Width = 146
+      Height = 45
+      Margins.Left = 10
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
+      AutoSize = False
+      Caption = 'This is example of item with multi-line text.'
+      ShowAccelChar = False
+      Transparent = True
+      WordWrap = True
+    end
+    object VirtualImage1: TVirtualImage
+      AlignWithMargins = True
+      Left = 4
+      Top = 5
+      Width = 30
+      Height = 30
+      Margins.Left = 4
+      Margins.Top = 4
+      Margins.Right = 4
+      Margins.Bottom = 4
+      ImageWidth = 0
+      ImageHeight = 0
+      ImageIndex = -1
+    end
+    object Label2: TLabel
+      Left = 45
+      Top = 4
+      Width = 25
+      Height = 16
+      Caption = 'Title'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
+      Transparent = True
+    end
+  end
+end

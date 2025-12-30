@@ -152,7 +152,6 @@ object FrameHeat: TFrameHeat
       Height = 48
       Action = actnHt_MoveUp
       ImageIndex = 0
-      ImageName = 'ht-up'
       Images = IMG.imglstHeatCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -167,7 +166,6 @@ object FrameHeat: TFrameHeat
       Action = actnHt_MoveDown
       Anchors = []
       ImageIndex = 1
-      ImageName = 'ht-down'
       Images = IMG.imglstHeatCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -182,7 +180,6 @@ object FrameHeat: TFrameHeat
       Action = actnHt_ToggleStatus
       Anchors = []
       ImageIndex = 2
-      ImageName = 'ht-ToggleStatus'
       Images = IMG.imglstHeatCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -197,7 +194,6 @@ object FrameHeat: TFrameHeat
       Action = actnHt_New
       Anchors = []
       ImageIndex = 3
-      ImageName = 'ht-new'
       Images = IMG.imglstHeatCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -212,7 +208,6 @@ object FrameHeat: TFrameHeat
       Action = actnHt_Delete
       Anchors = []
       ImageIndex = 4
-      ImageName = 'ht-delete'
       Images = IMG.imglstHeatCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -241,7 +236,6 @@ object FrameHeat: TFrameHeat
       Action = actnHt_AutoBuild
       Anchors = []
       ImageIndex = 5
-      ImageName = 'ht-build'
       Images = IMG.imglstHeatCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -270,7 +264,6 @@ object FrameHeat: TFrameHeat
       Action = actnHt_MarshallSheet
       Anchors = []
       ImageIndex = 6
-      ImageName = 'ht-marshall'
       Images = IMG.imglstHeatCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -285,7 +278,6 @@ object FrameHeat: TFrameHeat
       Action = actnHt_TimeKeeperSheets
       Anchors = []
       ImageIndex = 7
-      ImageName = 'ht-timer'
       Images = IMG.imglstHeatCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -300,7 +292,6 @@ object FrameHeat: TFrameHeat
       Action = actnHt_SheetSet
       Anchors = []
       ImageIndex = 8
-      ImageName = 'ht-print'
       Images = IMG.imglstHeatCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -329,7 +320,6 @@ object FrameHeat: TFrameHeat
       Action = actnHt_Report
       Anchors = []
       ImageIndex = 9
-      ImageName = 'ht-report'
       Images = IMG.imglstHeatCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -356,7 +346,7 @@ object FrameHeat: TFrameHeat
       DefaultRowHeight = 64
       DrawingStyle = gdsClassic
       FixedColor = 4800817
-      RowCount = 101
+      RowCount = 2
       FixedRows = 1
       Options = [goRangeSelect, goRowSelect, goFixedRowDefAlign]
       ScrollBars = ssBoth
@@ -738,105 +728,6 @@ object FrameHeat: TFrameHeat
         64)
       RowHeights = (
         0
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
-        64
         64)
     end
   end
@@ -863,8 +754,8 @@ object FrameHeat: TFrameHeat
     object actnHt_ToggleStatus: TAction
       Category = 'Heats'
       Caption = 'Toggle Status'
-      ImageIndex = 0
-      ImageName = 'empty'
+      ImageIndex = 39
+      ImageName = 'ToggleStatus'
       ShortCut = 16468
       OnExecute = actnHt_ToggleStatusExecute
       OnUpdate = actnHt_GenericUpdate
@@ -887,7 +778,7 @@ object FrameHeat: TFrameHeat
       Category = 'Heats'
       Caption = 'Auto-Build'
       ImageIndex = 11
-      ImageName = 'tool'
+      ImageName = 'build'
     end
     object actnHt_MarshallSheet: TAction
       Category = 'Heats'
@@ -899,7 +790,7 @@ object FrameHeat: TFrameHeat
       Category = 'Heats'
       Caption = 'Timekeeper Sheets'
       ImageIndex = 13
-      ImageName = 'time-keeper'
+      ImageName = 'stopwatch'
     end
     object actnHt_SheetSet: TAction
       Category = 'Heats'
@@ -916,18 +807,26 @@ object FrameHeat: TFrameHeat
     object actnHt_AutoBuildAll: TAction
       Category = 'Heats'
       Caption = 'Auto Build ALL...'
+      ImageIndex = 11
+      ImageName = 'build'
     end
     object actnHt_AllMarshallSheets: TAction
       Category = 'Heats'
       Caption = 'ALL Marshall Sets...'
+      ImageIndex = 12
+      ImageName = 'marshall'
     end
     object actnHt_AllTimeKeeperSheets: TAction
       Category = 'Heats'
       Caption = 'ALL TimeKeeper Sets...'
+      ImageIndex = 13
+      ImageName = 'stopwatch'
     end
     object actnHt_Renumber: TAction
       Category = 'Heats'
       Caption = 'Renumber'
+      ImageIndex = 36
+      ImageName = 'renumber'
     end
   end
   object pumenuHeat: TPopupMenu
@@ -941,6 +840,7 @@ object FrameHeat: TFrameHeat
     end
     object oggleStatus1: TMenuItem
       Action = actnHt_ToggleStatus
+      ImageName = 'empty'
     end
     object New1: TMenuItem
       Action = actnHt_New
@@ -953,6 +853,7 @@ object FrameHeat: TFrameHeat
     end
     object AutoBuild1: TMenuItem
       Action = actnHt_AutoBuild
+      ImageName = 'tool'
     end
     object N2: TMenuItem
       Caption = '-'
@@ -962,6 +863,7 @@ object FrameHeat: TFrameHeat
     end
     object ALLTimeKeeperSets1: TMenuItem
       Action = actnHt_TimeKeeperSheets
+      ImageName = 'time-keeper'
     end
     object SheetSet1: TMenuItem
       Action = actnHt_SheetSet

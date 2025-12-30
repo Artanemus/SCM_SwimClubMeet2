@@ -28,7 +28,7 @@ object FrameSession: TFrameSession
       DefaultRowHeight = 58
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 101
+      RowCount = 2
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -394,105 +394,6 @@ object FrameSession: TFrameSession
         0)
       RowHeights = (
         24
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
-        58
         58)
     end
   end
@@ -503,7 +404,7 @@ object FrameSession: TFrameSession
     Height = 698
     ControlCollection = <
       item
-        Control = spbtnSessLockedVisible
+        Control = spbtnSessVisiblity
         AlignBottomWithPanel = False
         AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
@@ -512,14 +413,14 @@ object FrameSession: TFrameSession
         AlignVerticalCenterWithPanel = False
       end
       item
-        Control = spbtnSessLock
+        Control = spbtnSessLockState
         AlignBottomWithPanel = False
         AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
-        Below = spbtnSessLockedVisible
+        Below = spbtnSessVisiblity
       end
       item
         Control = ShapeSessBar1
@@ -529,7 +430,7 @@ object FrameSession: TFrameSession
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
-        Below = spbtnSessLock
+        Below = spbtnSessLockState
       end
       item
         Control = spbtnSessEdit
@@ -594,16 +495,15 @@ object FrameSession: TFrameSession
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 1
-    object spbtnSessLockedVisible: TSpeedButton
+    object spbtnSessVisiblity: TSpeedButton
       Tag = 1
       Left = 0
-      Top = 0
+      Top = -6
       Width = 58
       Height = 48
-      Action = actnSess_IsLocked
+      Action = actnSess_Visibilty
       Align = alTop
       Anchors = []
-      ImageName = 'se-visible_on'
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -612,16 +512,15 @@ object FrameSession: TFrameSession
       ShowHint = True
       Spacing = 5
     end
-    object spbtnSessLock: TSpeedButton
+    object spbtnSessLockState: TSpeedButton
       Tag = 6
       Left = 0
-      Top = 48
+      Top = 42
       Width = 58
       Height = 48
       Action = actnSess_Lock
       Align = alTop
       Anchors = []
-      ImageName = 'se-lock2'
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -633,7 +532,7 @@ object FrameSession: TFrameSession
     object ShapeSessBar1: TShape
       AlignWithMargins = True
       Left = 0
-      Top = 102
+      Top = 96
       Width = 58
       Height = 4
       Margins.Left = 0
@@ -647,13 +546,12 @@ object FrameSession: TFrameSession
     object spbtnSessEdit: TSpeedButton
       Tag = 8
       Left = 0
-      Top = 112
+      Top = 106
       Width = 58
       Height = 48
       Action = actnSess_Edit
       Align = alTop
       Anchors = []
-      ImageName = 'se-edit'
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -665,13 +563,12 @@ object FrameSession: TFrameSession
     object spbtnSessNew: TSpeedButton
       Tag = 3
       Left = 0
-      Top = 160
+      Top = 154
       Width = 58
       Height = 48
       Action = actnSess_New
       Align = alTop
       Anchors = []
-      ImageName = 'se-new'
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -683,13 +580,12 @@ object FrameSession: TFrameSession
     object spbtnSessClone: TSpeedButton
       Tag = 11
       Left = 0
-      Top = 208
+      Top = 202
       Width = 58
       Height = 48
       Action = actnSess_Clone
       Align = alTop
       Anchors = []
-      ImageName = 'se-clone'
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -701,13 +597,12 @@ object FrameSession: TFrameSession
     object spbtnSessDelete: TSpeedButton
       Tag = 4
       Left = 0
-      Top = 256
+      Top = 250
       Width = 58
       Height = 48
       Action = actnSess_Delete
       Align = alTop
       Anchors = []
-      ImageName = 'se-in'
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -719,7 +614,7 @@ object FrameSession: TFrameSession
     object ShapeSessBar2: TShape
       AlignWithMargins = True
       Left = 0
-      Top = 310
+      Top = 304
       Width = 58
       Height = 4
       Margins.Left = 0
@@ -733,13 +628,12 @@ object FrameSession: TFrameSession
     object spbtnSessReport: TSpeedButton
       Tag = 5
       Left = 0
-      Top = 320
+      Top = 314
       Width = 58
       Height = 48
       Action = actnSess_Report
       Align = alTop
       Anchors = []
-      ImageName = 'se-report'
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -753,35 +647,35 @@ object FrameSession: TFrameSession
     Images = IMG.imglstMenuBar
     Left = 208
     Top = 56
-    object actnSess_IsLocked: TAction
-      Category = 'Session'
+    object actnSess_Visibilty: TAction
+      Category = 'Sessions'
       Caption = 'Toggle Visibility'
       Hint = 'Toggle the visibility of locked sessions.'
       ImageIndex = 3
-      ImageName = 'locked-show'
-      OnExecute = actnSess_IsLockedExecute
-      OnUpdate = actnSess_IsLockedUpdate
+      ImageName = 'visible_on'
+      OnExecute = actnSess_VisibiltyExecute
+      OnUpdate = actnSess_VisibiltyUpdate
     end
     object actnSess_Lock: TAction
-      Category = 'Session'
+      Category = 'Sessions'
       Caption = 'Lock/Unlock'
-      Hint = 'Toggle the lock state of a session.'
+      Hint = 'Lock-Unlock the selected session.'
       ImageIndex = 16
       ImageName = 'lock2'
       OnExecute = actnSess_LockExecute
       OnUpdate = actnSess_LockUpdate
     end
     object actnSess_Edit: TAction
-      Category = 'Session'
+      Category = 'Sessions'
       Caption = 'Edit Session...'
-      Hint = 'Edit the current selected session.'
+      Hint = 'Edit session.'
       ImageIndex = 20
       ImageName = 'edit'
       OnExecute = actnSess_EditExecute
       OnUpdate = actnSess_EditUpdate
     end
     object actnSess_New: TAction
-      Category = 'Session'
+      Category = 'Sessions'
       Caption = 'New Session...'
       Hint = 'Create session. (Ctrl+Ins)'
       ImageIndex = 8
@@ -790,15 +684,15 @@ object FrameSession: TFrameSession
       OnUpdate = actnSess_NewUpdate
     end
     object actnSess_Clone: TAction
-      Category = 'Session'
+      Category = 'Sessions'
       Caption = 'Clone Session...'
-      Hint = 'Duplicate the selected session.'
+      Hint = 'Duplicate session.'
       ImageIndex = 23
       ImageName = 'clone'
       OnUpdate = actnSess_CloneUpdate
     end
     object actnSess_Delete: TAction
-      Category = 'Session'
+      Category = 'Sessions'
       Caption = 'Delete Session...'
       Hint = 'Delete session. (Ctrl+Del)'
       ImageIndex = 9
@@ -807,33 +701,33 @@ object FrameSession: TFrameSession
       OnUpdate = actnSess_DeleteUpdate
     end
     object actnSess_Report: TAction
-      Category = 'Session'
+      Category = 'Sessions'
       Caption = 'Session Report...'
-      Hint = 'Create a Session report.'
+      Hint = 'Select a session report to display and print.'
       ImageIndex = 15
       ImageName = 'report'
       OnUpdate = actnSess_ReportUpdate
     end
     object actnSess_Export: TAction
-      Category = 'Session'
+      Category = 'Sessions'
       Caption = 'Export...'
       ImageIndex = 22
       ImageName = 'out'
     end
     object actnSess_Import: TAction
-      Category = 'Session'
+      Category = 'Sessions'
       Caption = 'Import...'
       ImageIndex = 21
       ImageName = 'in'
     end
     object actnSess_Search: TAction
-      Category = 'Session'
+      Category = 'Sessions'
       Caption = 'Search...'
       ImageIndex = 33
       ImageName = 'search'
     end
     object actnSess_Sort: TAction
-      Category = 'Session'
+      Category = 'Sessions'
       Caption = 'Sort...'
       ImageIndex = 24
       ImageName = 'sort'
@@ -841,13 +735,12 @@ object FrameSession: TFrameSession
       OnUpdate = actnSess_SortUpdate
     end
     object actnSess_Stats: TAction
-      Category = 'Session'
+      Category = 'Sessions'
       Caption = 'Session Statistics...'
-      ImageIndex = 28
       ImageName = 'stats'
     end
     object actnSess_Schedule: TAction
-      Category = 'Session'
+      Category = 'Sessions'
       Caption = 'Schedule Session...'
     end
   end
@@ -856,7 +749,7 @@ object FrameSession: TFrameSession
     Left = 208
     Top = 336
     object pumToggleVisibility: TMenuItem
-      Action = actnSess_IsLocked
+      Action = actnSess_Visibilty
       ImageIndex = 1
       ImageName = 'visible-on'
     end

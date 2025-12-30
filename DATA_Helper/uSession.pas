@@ -51,6 +51,7 @@ function MAXEventNum(): integer;
 function PK(): integer; // NO CHECKS. RTNS: Primary key.
 function Assert: Boolean;
 function IsLocked: Boolean;
+function IsUnLocked: Boolean;
 function HasClosedOrRacedHeats: Boolean;
 procedure SetIndexName(IsLocked: Boolean);
 procedure SetSessionStatusID(const aSessionStatusID: Integer);
@@ -310,7 +311,7 @@ begin
   result := not CORE.qryEvent.IsEmpty;
 end;
 
-function IsEmptyOrLocked: Boolean;
+function IsEmptyOrLocked(): Boolean;
 var
   i: integer;
 begin
@@ -319,11 +320,16 @@ begin
   if (i <> 2) then result := false;
 end;
 
-function IsLocked: Boolean;
+function IsLocked(): Boolean;
 begin
   result := true;
   if (CORE.qrySession.FieldByName('SessionStatusID').AsInteger <> 2)
     then result := false;
+end;
+
+function IsUnLocked(): Boolean;
+begin
+  result := not IsLocked();
 end;
 
 function Locate(SessionID: integer): Boolean;

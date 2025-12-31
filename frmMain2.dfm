@@ -2781,7 +2781,6 @@ object Main2: TMain2
     Font.Name = 'Segoe UI'
     Font.Style = []
     Spacing = 6
-    OnClick = actnMainMenuBarClick
   end
   object StatusBar: TStatusBar
     AlignWithMargins = True
@@ -3343,7 +3342,7 @@ object Main2: TMain2
         Left = 0
         Top = 0
         Width = 1095
-        Height = 81
+        Height = 80
         Align = alTop
         BevelOuter = bvNone
         TabOrder = 0
@@ -3351,7 +3350,7 @@ object Main2: TMain2
           Left = 0
           Top = 0
           Width = 1095
-          Height = 81
+          Height = 80
           Align = alClient
           TabOrder = 0
           StyleElements = [seClient, seBorder]
@@ -3359,7 +3358,7 @@ object Main2: TMain2
           ExplicitHeight = 81
           inherited rpnlBody: TRelativePanel
             Width = 1095
-            Height = 81
+            Height = 80
             ControlCollection = <
               item
                 Control = frNavEv.spbtnNavLeft
@@ -3382,48 +3381,54 @@ object Main2: TMain2
             ExplicitWidth = 1095
             ExplicitHeight = 81
             inherited spbtnNavLeft: TSpeedButton
-              Height = 81
+              Height = 80
+              ExplicitHeight = 80
             end
             inherited spbtnNavRight: TSpeedButton
               Left = 1047
-              Height = 81
+              Height = 80
+              ExplicitLeft = 1047
+              ExplicitHeight = 80
             end
           end
           inherited scrBox: TScrollBox
             Width = 999
-            Height = 81
+            Height = 80
             ExplicitWidth = 999
-            ExplicitHeight = 81
+            ExplicitHeight = 90
           end
         end
       end
       object pnlBody: TPanel
         Left = 0
-        Top = 81
+        Top = 80
         Width = 1095
-        Height = 545
+        Height = 546
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
+        ExplicitTop = 81
+        ExplicitHeight = 545
         object pnlHeat: TPanel
           Left = 0
           Top = 0
           Width = 219
-          Height = 545
+          Height = 546
           Align = alLeft
           BevelOuter = bvNone
           TabOrder = 0
+          ExplicitHeight = 545
           inline frHeat: TFrameHeat
             Left = 0
             Top = 0
             Width = 219
-            Height = 545
+            Height = 546
             Align = alClient
             TabOrder = 0
             ExplicitWidth = 219
             ExplicitHeight = 545
             inherited rpnlCntrl: TRelativePanel
-              Height = 545
+              Height = 546
               ControlCollection = <
                 item
                   Control = frHeat.spbtnMoveUp
@@ -3558,12 +3563,12 @@ object Main2: TMain2
             end
             inherited pnlBody: TPanel
               Width = 161
-              Height = 545
+              Height = 546
               ExplicitWidth = 161
               ExplicitHeight = 545
               inherited grid: TDBAdvGrid
                 Width = 161
-                Height = 545
+                Height = 546
                 ExplicitWidth = 161
                 ExplicitHeight = 545
               end
@@ -3574,21 +3579,22 @@ object Main2: TMain2
           Left = 219
           Top = 0
           Width = 876
-          Height = 545
+          Height = 546
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
+          ExplicitHeight = 545
           inline frLane: TFrameLane
             Left = 0
             Top = 0
             Width = 876
-            Height = 545
+            Height = 546
             Align = alClient
             TabOrder = 0
             ExplicitWidth = 876
             ExplicitHeight = 545
             inherited rpnlCntrl: TRelativePanel
-              Height = 545
+              Height = 546
               ControlCollection = <
                 item
                   Control = frLane.spbtnMoveUp
@@ -3663,12 +3669,12 @@ object Main2: TMain2
             end
             inherited pnlBody: TPanel
               Width = 818
-              Height = 545
+              Height = 546
               ExplicitWidth = 818
               ExplicitHeight = 545
               inherited grid: TDBAdvGrid
                 Width = 818
-                Height = 545
+                Height = 546
                 ExplicitWidth = 818
                 ExplicitHeight = 545
                 RowHeights = (

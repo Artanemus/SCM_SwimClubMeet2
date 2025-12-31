@@ -30,11 +30,11 @@ type
   TFrameNavEvItem = class(TFrame)
     imgRelay: TSVGIconImage;
     imgStroke: TSVGIconImage;
-    imgBox: TSVGIconImage;
     lblEvNum: TLabel;
     lblMeter: TLabel;
     Shape1: TShape;
     lblDesc: TLabel;
+    Shape2: TShape;
     procedure FrameClick(Sender: TObject);
   private
     fSelected: boolean;
@@ -46,22 +46,15 @@ type
     property ParentFrame: TFrame read FParentFrame write FParentFrame;
 end;
 
+
 implementation
 
-      // Color := clHighlight;
-      // lblEvNum.Font.Color := clHighlightText;
-      // lblMeter.Font.Color := clHighlightText;
-      // lblDesc.Font.Color := clHighlightText;
+{$R *.dfm}
 
 { TLabel }
 procedure TLabel.CMHitTest(var Message: TCMHitTest);
 begin
-//  Color := clYellow;
-//  lblEvNum.Font.Color := clWindowText;
-//  lblMeter.Font.Color := clWindowText;
-//  lblDesc.Font.Color := clWindowText;
   Message.Result := HTNOWHERE;
-//    Invalidate;
 end;
 
 { TSVGIconImage }
@@ -82,8 +75,9 @@ begin
   inherited;
   fParentFrame := nil;
   fSelected := false;
+  imgRelay.Visible := false;
+  Shape1.Visible := false;
 end;
-
 
 { TFrameEvItem }
 
@@ -109,16 +103,7 @@ end;
 
 procedure TFrameNavEvItem.FrameClick(Sender : TObject);
 begin
-
-  // lblEvNum.Color := clYellow;
-  // lblEvNum.Invalidate;
-  // lblMeter.Color := clYellow;
-  // lblMeter.Invalidate;
-  // lblDesc.Color := clYellow;
-  // lblDesc.Invalidate;
-
-//  Self.Repaint;
-
+  // ParentFrame will unselect all then select clicked item.
   if Assigned(ParentFrame) then // Send to TFrameNavEv.
       SendMessage(ParentFrame.Handle, SCM_FRAME_SELECTED,
       WPARAM(NativeInt(Tag)), LPARAM(NativeInt(Self)));
@@ -129,12 +114,22 @@ begin
   if Mode then
   begin
     fSelected := true;
-//    Color := clHighlight;
+    lblEvNum.Font.Color := clYellow;
+    lblMeter.Font.Color := clYellow;
+    lblDesc.Font.Color := clYellow;
+//    lblHash.Font.Color := clYellow;
+//    Shape1.Brush.Color := clYellow;
+    Shape1.Visible := true;
   end
   else
   begin
     fSelected := false;
-//    Color := clBtnFace;
+    lblEvNum.Font.Color := clWebIvory;
+    lblMeter.Font.Color := clWebIvory;
+    lblDesc.Font.Color := clWebIvory;
+//    lblHash.Font.Color := clWebIvory;
+//    Shape1.Brush.Color := clWebDarkGray;
+    Shape1.Visible := false;
   end;
 end;
 

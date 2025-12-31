@@ -44,6 +44,7 @@ object FrameNavEv: TFrameNavEv
       ImageIndex = 8
       ImageName = 'arrow-left'
       Images = IMG.imglstEventCntrl
+      OnClick = spbtnNavLeftClick
     end
     object spbtnNavRight: TSpeedButton
       Left = 746
@@ -54,6 +55,7 @@ object FrameNavEv: TFrameNavEv
       ImageIndex = 9
       ImageName = 'arrow-right'
       Images = IMG.imglstEventCntrl
+      OnClick = spbtnNavRightClick
     end
   end
   object scrBox: TScrollBox
@@ -66,8 +68,17 @@ object FrameNavEv: TFrameNavEv
     Margins.Top = 0
     Margins.Right = 48
     Margins.Bottom = 0
+    HorzScrollBar.Smooth = True
+    HorzScrollBar.Size = 4
+    HorzScrollBar.Style = ssFlat
+    HorzScrollBar.ThumbSize = 10
+    HorzScrollBar.Tracking = True
+    VertScrollBar.Visible = False
     Align = alClient
     Anchors = []
+    DoubleBuffered = True
+    ParentDoubleBuffered = False
     TabOrder = 1
+    UseWheelForScrolling = True
   end
 end

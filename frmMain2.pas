@@ -118,7 +118,6 @@ type
     pnlLane: TPanel;
     frLane: TFrameLane;
     frNavEv: TFrameNavEv;
-    procedure actnMainMenuBarClick(Sender: TObject);
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -153,7 +152,7 @@ type
     procedure DetailTBLs_EnableCNTRLs;
 
     procedure HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
-      EvItem: TFrameNavEvItem);
+      NavEvItem: TFrameNavEvItem);
 
     procedure UpdateFrameVisibility();
 
@@ -180,18 +179,17 @@ uses
 
 // Add handler:
 procedure TMain2.HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
-    EvItem: TFrameNavEvItem);
+    NavEvItem: TFrameNavEvItem);
 begin
   // The navigation frame on the heat's tabsheet has changed.
   // re-locate to the event Msg.WParam.
-  if (EventID <> 0) then
-    uEvent.Locate(EventID);
-end;  
-
-procedure TMain2.actnMainMenuBarClick(Sender: TObject);
-begin
-
+  if (CORE.qryEvent.State in [dsOpening]) then exit;
+  if (EventID = 0) then exit;
+  if (uEvent.PK() <> EventID) then
+      uEvent.Locate(EventID); // generates a DB scroll event.
 end;
+
+
 
 {
   procedure TMain2.DetailTBLs_ApplyMaster;

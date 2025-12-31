@@ -319,14 +319,15 @@ end;
 
 procedure TCORE.qryEventAfterScroll(DataSet: TDataSet);
 var
-  PK: integer;
+  PK, EvNum: integer;
 begin
   if (msgHandle <> 0) then
   begin
     if not (qryEvent.State in [dsOpening]) then
     begin
       PK := DataSet.FieldByName('EventID').AsInteger;
-      PostMessage(msgHandle, SCM_SCROLL_EVENT, PK,0);
+      EvNum := DataSet.FieldByName('EventNum').AsInteger;
+      PostMessage(msgHandle, SCM_SCROLL_EVENT, WPARAM(nativeint(PK)),LPARAM(EvNum));
     end;
   end;
 end;

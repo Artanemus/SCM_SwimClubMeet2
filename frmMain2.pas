@@ -151,13 +151,14 @@ type
     procedure DetailTBLs_DisableCNTRLs;
     procedure DetailTBLs_EnableCNTRLs;
 
-    procedure HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
-      NavEvItem: TFrameNavEvItem);
+//    procedure HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
+//      NavEvItem: TFrameNavEvItem);
 
     procedure UpdateFrameVisibility();
 
   protected
     // Note: don't name procedure same as winapi.message name.
+    // SCROLL MESSAGES LISTED HERE PERFORM UI changes - not DB stuff.
     procedure Msg_SCM_Connect(var Msg: TMessage); message SCM_Connect;
     procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
     procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
@@ -177,17 +178,17 @@ uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
   frmManageMember, dlgSwimClub_Reports, frmMM_Stats, uEvent;
 
-// Add handler:
+{
+  // Add handler:
 procedure TMain2.HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
     NavEvItem: TFrameNavEvItem);
-begin
-  // The navigation frame on the heat's tabsheet has changed.
-  // re-locate to the event Msg.WParam.
-  if (CORE.qryEvent.State in [dsOpening]) then exit;
-  if (EventID = 0) then exit;
-  if (uEvent.PK() <> EventID) then
-      uEvent.Locate(EventID); // generates a DB scroll event.
-end;
+    begin
+      if (CORE.qryEvent.State in [dsOpening]) then exit;
+      if (EventID = 0) then exit;
+      if (uEvent.PK() <> EventID) then
+            uEvent.Locate(EventID); // generates a DB scroll event.
+    end;
+}
 
 
 
@@ -386,7 +387,7 @@ begin
   frEvent.Initialise;
   frFilterMember.Initialise;
   frNominate.Initialise;
-  frNavEv.FOnNavEvItemSelected := Self.HandleNavEvItemSelected;
+//  frNavEv.FOnNavEvItemSelected := Self.HandleNavEvItemSelected;
 
   // No connection established ...initialize UI state...
   PageControl.ActivePageIndex := 0; // tabsheet 0
@@ -525,13 +526,16 @@ begin
 end;
 
 procedure TMain2.Msg_SCM_Scroll_Event(var Msg: TMessage);
+var
+  PK: integer;
 begin
   // pass message forward to event frame...
   // Msg.WParam contains Event.EventID - used by frNavEv.
   if fscmIsConnecting then exit;
-  SendMessage(frEvent.Handle, SCM_SCROLL_EVENT, Msg.WParam, Msg.LParam);
-  PostMessage(frHeat.Handle, SCM_SCROLL_EVENT, Msg.WParam, Msg.LParam);
-  PostMessage(frNavEv.Handle, SCM_SCROLL_EVENT, Msg.WParam, Msg.LParam);
+  PK := uEvent.PK;
+  SendMessage(frEvent.Handle, SCM_SCROLL_EVENT, WPARAM(PK), Msg.LParam);
+  PostMessage(frHeat.Handle, SCM_SCROLL_EVENT, WPARAM(PK), Msg.LParam);
+  PostMessage(frNavEv.Handle, SCM_SCROLL_EVENT, WPARAM(PK), Msg.LParam);
 end;
 
 procedure TMain2.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
@@ -553,7 +557,7 @@ var
   i: integer;
 begin
   if fscmIsConnecting then exit;
-  // pass message forward to session frame...
+  // pass message forward to session frame... UI changes
   SendMessage(frSession.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
   // update the list of events in nominate frame...
   //  SendMessage(frNominate.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
@@ -580,8 +584,15 @@ begin
       StatusBar.Panels[3].Text := 'ERR';
     end;
   end;
-  // Manually re-fill the NavEv with NavEvItems...
-  PostMessage(frNavEv.Handle, SCM_FRAME_RESET, 0, 0);
+  if not (CORE.qrysession.State in [dsOpening]) then
+  begin
+    // Manually re-fill the NavEv with NavEvItems...
+    // Uses CORE.qryEvent. After iteration, relocates to orginal record.
+    SendMessage(frNavEv.Handle, SCM_FRAME_RESET, 0, 0); // UI UPDATE
+    // positions to first record.
+    // triggers event scroll - which intern triggers NavEv scroll ...
+    SendMessage(frEvent.Handle, SCM_SCROLL_SESSION, 0, 0); // UI UPDATE
+  end;
 end;
 
 procedure TMain2.PageControlChange(Sender: TObject);

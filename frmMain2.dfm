@@ -3355,7 +3355,7 @@ object Main2: TMain2
           TabOrder = 0
           StyleElements = [seClient, seBorder]
           ExplicitWidth = 1095
-          ExplicitHeight = 81
+          ExplicitHeight = 80
           inherited rpnlBody: TRelativePanel
             Width = 1095
             Height = 80
@@ -3379,7 +3379,7 @@ object Main2: TMain2
                 AlignVerticalCenterWithPanel = True
               end>
             ExplicitWidth = 1095
-            ExplicitHeight = 81
+            ExplicitHeight = 80
             inherited spbtnNavLeft: TSpeedButton
               Height = 80
               ExplicitHeight = 80
@@ -3395,7 +3395,7 @@ object Main2: TMain2
             Width = 999
             Height = 80
             ExplicitWidth = 999
-            ExplicitHeight = 90
+            ExplicitHeight = 80
           end
         end
       end
@@ -3407,8 +3407,6 @@ object Main2: TMain2
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitTop = 81
-        ExplicitHeight = 545
         object pnlHeat: TPanel
           Left = 0
           Top = 0
@@ -3417,7 +3415,6 @@ object Main2: TMain2
           Align = alLeft
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitHeight = 545
           inline frHeat: TFrameHeat
             Left = 0
             Top = 0
@@ -3426,7 +3423,7 @@ object Main2: TMain2
             Align = alClient
             TabOrder = 0
             ExplicitWidth = 219
-            ExplicitHeight = 545
+            ExplicitHeight = 546
             inherited rpnlCntrl: TRelativePanel
               Height = 546
               ControlCollection = <
@@ -3559,18 +3556,18 @@ object Main2: TMain2
                   AlignVerticalCenterWithPanel = False
                   Below = frHeat.ShapeHtBar3
                 end>
-              ExplicitHeight = 545
+              ExplicitHeight = 546
             end
             inherited pnlBody: TPanel
               Width = 161
               Height = 546
               ExplicitWidth = 161
-              ExplicitHeight = 545
+              ExplicitHeight = 546
               inherited grid: TDBAdvGrid
                 Width = 161
                 Height = 546
                 ExplicitWidth = 161
-                ExplicitHeight = 545
+                ExplicitHeight = 546
               end
             end
           end
@@ -3583,7 +3580,6 @@ object Main2: TMain2
           Align = alClient
           BevelOuter = bvNone
           TabOrder = 1
-          ExplicitHeight = 545
           inline frLane: TFrameLane
             Left = 0
             Top = 0
@@ -3592,7 +3588,7 @@ object Main2: TMain2
             Align = alClient
             TabOrder = 0
             ExplicitWidth = 876
-            ExplicitHeight = 545
+            ExplicitHeight = 546
             inherited rpnlCntrl: TRelativePanel
               Height = 546
               ControlCollection = <
@@ -3665,18 +3661,18 @@ object Main2: TMain2
                   AlignVerticalCenterWithPanel = False
                   Below = frLane.ShapeLnBar1
                 end>
-              ExplicitHeight = 545
+              ExplicitHeight = 546
             end
             inherited pnlBody: TPanel
               Width = 818
               Height = 546
               ExplicitWidth = 818
-              ExplicitHeight = 545
+              ExplicitHeight = 546
               inherited grid: TDBAdvGrid
                 Width = 818
                 Height = 546
                 ExplicitWidth = 818
-                ExplicitHeight = 545
+                ExplicitHeight = 546
                 RowHeights = (
                   32
                   32)

@@ -22,7 +22,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 496
+    Left = 424
     Top = 168
   end
   object CollectionCore: TSVGIconImageCollection
@@ -13192,7 +13192,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 616
+    Left = 544
     Top = 168
   end
   object imglstHeatStroke: TSVGIconVirtualImageList
@@ -13231,7 +13231,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 616
+    Left = 544
     Top = 224
   end
   object imglstHeatCntrl: TSVGIconVirtualImageList
@@ -13290,7 +13290,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 616
+    Left = 544
     Top = 112
   end
   object imglstSessCntrl: TSVGIconVirtualImageList
@@ -13364,7 +13364,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 368
+    Left = 296
     Top = 112
   end
   object imglstEventCntrl: TSVGIconVirtualImageList
@@ -13423,7 +13423,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 496
+    Left = 424
     Top = 112
   end
   object imglstNomCntrl: TSVGIconVirtualImageList
@@ -13452,7 +13452,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 760
+    Left = 656
     Top = 112
   end
   object imglstSessPopupMenu: TSVGIconVirtualImageList
@@ -13526,7 +13526,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 368
+    Left = 296
     Top = 168
   end
   object imglstMiscButtons: TSVGIconVirtualImageList
@@ -13623,8 +13623,8 @@ object IMG: TIMG
     Height = 36
     ApplyFixedColorToRootOnly = True
     Size = 36
-    Left = 920
-    Top = 56
+    Left = 984
+    Top = 88
   end
   object imglstLaneCntrl: TSVGIconVirtualImageList
     Images = <
@@ -13682,8 +13682,8 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 880
-    Top = 112
+    Left = 984
+    Top = 144
   end
   object imglstNomCheckBox: TSVGIconVirtualImageList
     Images = <
@@ -13701,7 +13701,7 @@ object IMG: TIMG
     Width = 38
     Height = 38
     Size = 38
-    Left = 760
+    Left = 656
     Top = 168
   end
   object imglstNomQualified: TSVGIconVirtualImageList
@@ -13720,7 +13720,7 @@ object IMG: TIMG
     Width = 38
     Height = 38
     Size = 38
-    Left = 760
+    Left = 656
     Top = 224
   end
   object imglstNomStroke: TSVGIconVirtualImageList
@@ -13759,7 +13759,7 @@ object IMG: TIMG
     Width = 38
     Height = 38
     Size = 38
-    Left = 760
+    Left = 656
     Top = 280
   end
   object imglstNomEventType: TSVGIconVirtualImageList
@@ -13783,7 +13783,7 @@ object IMG: TIMG
     Width = 38
     Height = 38
     Size = 38
-    Left = 760
+    Left = 656
     Top = 336
   end
   object imglstSessGrid: TSVGIconVirtualImageList
@@ -13879,7 +13879,7 @@ object IMG: TIMG
         Name = 'week'
       end>
     ImageCollection = CollectionCore
-    Left = 368
+    Left = 296
     Top = 224
   end
   object imglstTitleBar: TSVGIconVirtualImageList
@@ -13908,7 +13908,7 @@ object IMG: TIMG
     Width = 30
     Height = 30
     Size = 30
-    Left = 64
+    Left = 32
     Top = 112
   end
   object imglstSwimClubCntrl: TSVGIconVirtualImageList
@@ -13962,7 +13962,7 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 224
+    Left = 152
     Top = 112
   end
   object imglstSwimClubArchived: TSVGIconVirtualImageList
@@ -13981,7 +13981,7 @@ object IMG: TIMG
     Width = 30
     Height = 30
     Size = 30
-    Left = 224
+    Left = 152
     Top = 168
   end
   object imglstSwimClubGroup: TSVGIconVirtualImageList
@@ -14000,7 +14000,7 @@ object IMG: TIMG
     Width = 30
     Height = 30
     Size = 30
-    Left = 224
+    Left = 152
     Top = 224
   end
   object imglstSwimClubCell: TSVGIconVirtualImageList
@@ -14024,7 +14024,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 224
+    Left = 152
     Top = 280
   end
   object imglstClubGroup: TSVGIconVirtualImageList
@@ -14064,19 +14064,24 @@ object IMG: TIMG
   object imglstHeatStrokeEx: TSVGIconVirtualImageList
     Images = <
       item
+        CollectionIndex = 0
+        CollectionName = 'EmptyFrame'
+        Name = 'EmptyFrame'
+      end
+      item
         CollectionIndex = 5
         CollectionName = 'StrokeFS'
         Name = 'StrokeFS'
       end
       item
-        CollectionIndex = 6
-        CollectionName = 'StrokeBK'
-        Name = 'StrokeBK'
-      end
-      item
         CollectionIndex = 7
         CollectionName = 'StrokeBS'
         Name = 'StrokeBS'
+      end
+      item
+        CollectionIndex = 6
+        CollectionName = 'StrokeBK'
+        Name = 'StrokeBK'
       end
       item
         CollectionIndex = 8
@@ -14094,14 +14099,14 @@ object IMG: TIMG
         Name = 'StrokeFSRelay'
       end
       item
-        CollectionIndex = 11
-        CollectionName = 'StrokeBKRelay'
-        Name = 'StrokeBKRelay'
-      end
-      item
         CollectionIndex = 12
         CollectionName = 'StrokeBRRelay'
         Name = 'StrokeBRRelay'
+      end
+      item
+        CollectionIndex = 11
+        CollectionName = 'StrokeBKRelay'
+        Name = 'StrokeBKRelay'
       end
       item
         CollectionIndex = 13
@@ -14127,7 +14132,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 616
+    Left = 544
     Top = 280
   end
   object imglstStatusPanel: TSVGIconVirtualImageList
@@ -14156,7 +14161,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 64
+    Left = 32
     Top = 224
   end
   object imglstMenuBar: TSVGIconVirtualImageList
@@ -14365,7 +14370,7 @@ object IMG: TIMG
     Width = 32
     Height = 32
     Size = 32
-    Left = 64
+    Left = 32
     Top = 168
   end
   object imglstEventType: TSVGIconVirtualImageList
@@ -14389,7 +14394,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 496
+    Left = 424
     Top = 224
   end
   object imglstEventCell: TSVGIconVirtualImageList
@@ -14418,7 +14423,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 496
+    Left = 424
     Top = 280
   end
   object imglstEventPopupMenu: TSVGIconVirtualImageList
@@ -14472,7 +14477,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 496
+    Left = 424
     Top = 336
   end
 end

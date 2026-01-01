@@ -90,6 +90,7 @@ type
   public
     procedure Initialise();
     // messages must be forwarded by main form.
+    procedure Msg_SCM_Scroll_SESSION(var Msg: TMessage); message SCM_SCROLL_SESSION;
     procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
   end;
 
@@ -401,7 +402,7 @@ begin
 //  grid.RowCount := grid.FixedRows + 1; // TMS rule: row count > fixed row.
   if SCM2.scmConnection.Connected and CORE.IsActive then
   begin
-    if CORE.qrySession.IsEmpty then
+    if CORE.qryEvent.IsEmpty then
       // setting pagemode to false clears grid of text. (it appears empty)
       grid.PageMode := false
     else
@@ -411,6 +412,38 @@ begin
   else
     grid.PageMode := false; // read-only
   grid.EndUpdate;
+end;
+
+procedure TFrameEvent.Msg_SCM_Scroll_SESSION(var Msg: TMessage);
+begin
+  // ASSERT TMS UI STATE...
+  LockDrawing;
+  grid.BeginUpdate;
+  try
+    begin
+      //  grid.RowCount := grid.FixedRows + 1; // TMS rule: row count > fixed row.
+      if SCM2.scmConnection.Connected and CORE.IsActive then
+      begin
+        if CORE.qrySession.IsEmpty then
+          Visible := false // display - empty.
+        else
+        begin
+          Visible := true;
+          if CORE.qryEvent.IsEmpty then
+            grid.PageMode := false
+          else
+          begin
+            // Set pagemode to the default 'editable' fetch records mode.
+            grid.PageMode := true;
+            CORE.qryEvent.First; // triggers scroll event.
+          end;
+        end;
+      end
+    end;
+  finally
+    grid.EndUpdate;
+    UnlockDrawing;
+  end;
 end;
 
 procedure TFrameEvent.SetGridView_ColVisibility;

@@ -45,6 +45,9 @@ procedure FNameEllipse(); // todo: move out of uEvent to frame.
 procedure NewEvent();
 
 procedure MoveUpDown(MoveDirection: scmMoveDirection);
+procedure DetailTBLs_DisableCNTRLs;
+procedure DetailTBLs_ApplyMaster;
+procedure DetailTBLs_EnableCNTRLs;
 
 
 

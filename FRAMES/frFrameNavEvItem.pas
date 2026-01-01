@@ -35,6 +35,7 @@ type
     Shape1: TShape;
     lblDesc: TLabel;
     Shape2: TShape;
+    lblEV: TLabel;
     procedure FrameClick(Sender: TObject);
   private
     fSelected: boolean;
@@ -94,7 +95,7 @@ begin
 
 //  i := AQuery.FieldByName('Meters').AsInteger;
 //  lblMeter.Caption := Format('%2d', [i]);
-  lblMeter.Caption := IntToStr(AQuery.FieldByName('Meters').AsInteger);
+  lblMeter.Caption := IntToStr(AQuery.FieldByName('Meters').AsInteger) +'m';
 
   lblDesc.Caption := AQuery.FieldByName('Caption').AsString;
   if string(lblDesc.caption).IsEmpty then
@@ -103,33 +104,43 @@ end;
 
 procedure TFrameNavEvItem.FrameClick(Sender : TObject);
 begin
-  // ParentFrame will unselect all then select clicked item.
+  // Basic frame, knows nothing of DB...
+  // ParentFrame will handle this.
   if Assigned(ParentFrame) then // Send to TFrameNavEv.
       SendMessage(ParentFrame.Handle, SCM_FRAME_SELECTED,
       WPARAM(NativeInt(Tag)), LPARAM(NativeInt(Self)));
 end;
 
 procedure TFrameNavEvItem.Select(Mode: Boolean);
+var
+  s: string;
 begin
+//$009B8B6C
   if Mode then
   begin
     fSelected := true;
-    lblEvNum.Font.Color := clYellow;
-    lblMeter.Font.Color := clYellow;
-    lblDesc.Font.Color := clYellow;
-//    lblHash.Font.Color := clYellow;
-//    Shape1.Brush.Color := clYellow;
+    lblEvNum.Font.Color := clWebIvory;
+    lblMeter.Font.Color := clWebIvory;
+
+    lblDesc.Font.Color := clWebCornSilk;
+    lblEv.Font.Color  := clWebCornSilk;
+//    lblEv.Visible := true;
+    Shape1.Pen.Color := clWebCornSilk;
     Shape1.Visible := true;
+//    Shape2.Visible := false;
+    Shape2.Brush.Color := clWebCornSilk;
   end
   else
   begin
     fSelected := false;
-    lblEvNum.Font.Color := clWebIvory;
-    lblMeter.Font.Color := clWebIvory;
-    lblDesc.Font.Color := clWebIvory;
-//    lblHash.Font.Color := clWebIvory;
-//    Shape1.Brush.Color := clWebDarkGray;
+    lblEvNum.Font.Color := $009B8B6C;
+    lblMeter.Font.Color := $009B8B6C;
+    lblDesc.Font.Color := $009B8B6C;
+    lblEv.Font.Color  := $009B8B6C;
+//    lblEv.Visible := false;
     Shape1.Visible := false;
+//    Shape2.Visible := true;
+    Shape2.Brush.Color := $009B8B6C;
   end;
 end;
 

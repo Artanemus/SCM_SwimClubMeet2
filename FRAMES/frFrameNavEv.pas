@@ -24,40 +24,37 @@ uses
   dmIMG, dmSCM2, dmCORE, frFrameNavEvItem;
 
 type
-  TNavEvItemSelected = procedure(Sender: TObject; EventID: Integer; EvItem:
-      TFrameNavEvItem) of object;
+
+//  TNavEvItemSelected = procedure(Sender: TObject; EventID: Integer; EvItem:
+//      TFrameNavEvItem) of object;
 
   TFrameNavEv = class(TFrame)
     rpnlBody: TRelativePanel;
+    scrBox: TScrollBox;
     spbtnNavLeft: TSpeedButton;
     spbtnNavRight: TSpeedButton;
-    scrBox: TScrollBox;
     procedure spbtnNavLeftClick(Sender: TObject);
     procedure spbtnNavRightClick(Sender: TObject);
   private
     FCustomHorz: TScrollBar; // CUSTOM HORZSCROLLBAR
-
-    procedure SelectNone();
-    procedure UpdateSelect(EventID: integer);
-
     { CUSTOM HORZSCROLLBAR - CODE READY - FOR THIN SCROLLBAR...}
     procedure CreateCustomHorz;
-    procedure UpdateCustomHorz;
     procedure CustomHorzChange(Sender: TObject);
-
-  public
-
-    FOnNavEvItemSelected: TNavEvItemSelected; // MainForm proc for selection.
-
-//    procedure ClearNavEvItems;
-    procedure FillNavEvItems;
-//    function LocateNavEvItem(EventID: integer): Integer;
-
+//    procedure SelectNone();
+    procedure UpdateCustomHorz;
+    function UpdateSelect(EventID: integer): TFrameNavEvItem;
   protected
+    procedure Msg_SCM_Frame_Reset(var Msg: TMessage); message SCM_FRAME_RESET;
     procedure Msg_SCM_Frame_Selected(var Msg: TMessage); message SCM_FRAME_SELECTED;
     procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
-    procedure Msg_SCM_Frame_Reset(var Msg: TMessage); message SCM_FRAME_RESET;
+  public
+//    FOnNavEvItemSelected: TNavEvItemSelected; // MainForm proc for selection.
+    procedure FillNavEvItems;
   end;
+
+var
+  ScrollLockEvItem: boolean = true;
+
 
 implementation
 
@@ -119,6 +116,8 @@ procedure CenterControlInScrollBox(AScrollBox: TScrollBox; ACtrl: TControl);
 var
   TargetX, TargetY, MaxX, MaxY: Integer;
 begin
+  if ACtrl = nil then exit;
+
 //  AScrollBox.Realign; // ensure child positions are final
   TargetX := ACtrl.Left + (ACtrl.Width div 2) - (AScrollBox.ClientWidth div 2);
   TargetY := ACtrl.Top  + (ACtrl.Height div 2) - (AScrollBox.ClientHeight div 2);
@@ -149,34 +148,51 @@ end;
 
 { TFrameNavEvent }
 
-{
-procedure TFrameNavEv.ClearNavEvItems;
+procedure TFrameNavEv.CreateCustomHorz;
 begin
-  while scrBox.ControlCount > 0 do  // Clear existing frames.
-    scrBox.Controls[0].Free;
+{ CUSTOM HORZSCROLLBAR - CODE READY - FOR THIN SCROLLBAR...}
+  FCustomHorz := TScrollBar.Create(Self);
+  FCustomHorz.Parent := Self;         // keep it on the frame (not inside scrBox)
+  FCustomHorz.Kind := sbHorizontal;
+  FCustomHorz.Align := alBottom;
+  FCustomHorz.Height := Max(8, scrBox.HorzScrollBar.Size - 4); // desired thinner height
+  FCustomHorz.Visible := False;
+  FCustomHorz.OnChange := CustomHorzChange;
 end;
-}
+
+procedure TFrameNavEv.CustomHorzChange(Sender: TObject);
+begin
+{ CUSTOM HORZSCROLLBAR - CODE READY - FOR THIN SCROLLBAR...}
+  // user moved custom scrollbar => scroll the scrollbox
+  scrBox.HorzScrollBar.Position := FCustomHorz.Position;
+end;
 
 procedure TFrameNavEv.FillNavEvItems;
 var
   Frame: TFrameNavEvItem;
   Q: TFDQuery;
+  PK: integer;
+  found: boolean;
 begin
   // exception traps.
   if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
   if not Assigned(CORE) or not CORE.IsActive then exit;
-
+  PK := 0;
+  found := false;
   // 1. Performance: Disable UI updates
   LockDrawing;
   scrBox.DisableAlign;
   Q := CORE.qryEvent; // improves readability.
   Q.DisableControls;
+  uEvent.DetailTBLs_DisableCNTRLs;
   try
     // 2. Clear existing frames
     while scrBox.ControlCount > 0 do
       scrBox.Controls[0].Free;
 
     if Q.IsEmpty then exit;   // nothing to display
+
+    PK := uEvent.PK; // store record position.
 
     // 3. Loop through FireDAC / MS SQL Query
     Q.First;
@@ -206,30 +222,17 @@ begin
       Q.Next;
     end;
   finally
+    if PK <> 0 then
+      found := uEvent.Locate(PK); // relocate to stored record ID.
+
     Q.EnableControls;
-    scrBox.Realign; // ensures AutoScroll - scrollbar is displayed.
+    if not found then uEvent.DetailTBLs_ApplyMaster; // precautionary trap.
+    uEvent.DetailTBLs_EnableCNTRLs;
     scrBox.EnableAlign;
+    scrBox.Realign; // Calcs range - ensures scrollbar is displayed.
     UnlockDrawing;
   end;
 end;
-
-{
-function TFrameNavEv.LocateNavEvItem(EventID: integer): Integer;
-var
-  I: integer;
-begin
-  result := 0;
-  for I := 0 to scrBox.ControlCount - 1 do
-  begin
-    // assigned Item's Selected param and paint colors
-    if (scrBox.Controls[I].Tag = EventID) then
-    begin
-      result := i;
-      break;
-    end;
-  end;
-end;
-}
 
 procedure TFrameNavEv.Msg_SCM_Frame_Reset(var Msg: TMessage);
 begin
@@ -237,75 +240,91 @@ begin
 end;
 
 procedure TFrameNavEv.Msg_SCM_Frame_Selected(var Msg: TMessage);
+var
+  PK: integer;
 begin
-  if Msg.LParam <> 0 then
-  begin
-    // check - is the control visible within the scroll box
-    if not IsControlFullyVisibleInScrollBox(scrBox, TFrameNavEvItem(Msg.LParam)) then
-      CenterControlInScrollBox(scrBox, TFrameNavEvItem(Msg.LParam));
-//        scrBox.ScrollInView(NavEvItem); // note: doesn't center control...
+    // exception traps.
+    if Msg.WParam = 0 then exit;   // will hold an EventID.
+    if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
+    if not Assigned(CORE) or not CORE.IsActive then exit;
+    if (CORE.qryEvent.State in [dsOpening]) then exit;
 
-    // locateing DB to NavEvItem..EventID
-    // This results in SCM_Scroll_Event message and
-    // TFrameNavEv.Msg_SCM_Scroll_Event is called ...
-    if Assigned(FOnNavEvItemSelected) then
-      FOnNavEvItemSelected(TObject(Self), integer(Msg.WParam),
-        TFrameNavEvItem(Msg.LParam));
-  end;
+    PK := Msg.WParam;
+    if (uEvent.PK() <> PK) then
+      // locate event record..
+      // This triggers a scroll event which intern triggers a
+      // TFrameNavEv.Msg_SCM_Scroll_Event...
+      uEvent.Locate(PK);
 end;
 
 procedure TFrameNavEv.Msg_SCM_Scroll_Event(var Msg: TMessage);
-begin
-  if Msg.WParam <> 0 then
-      UpdateSelect(Msg.WParam);
-end;
-
-procedure TFrameNavEv.SelectNone;
 var
-  I: integer;
-begin
-  for I := 0 to scrBox.ControlCount - 1 do
-    TFrameNavEvItem(scrBox.Controls[I]).Select(false);
-end;
-
-procedure TFrameNavEv.UpdateSelect(EventID: integer);
-var
-  I: integer;
   NavEvItem: TFrameNavEvItem;
 begin
-  LockDrawing;
-  try
-    for I := 0 to scrBox.ControlCount - 1 do
+  if Msg.WParam <> 0 then
+  begin
+    NavEvItem := UpdateSelect(Msg.WParam);
+    if NavEvItem <> nil then
     begin
-      if (scrBox.Controls[I].Tag = EventID) then
-      begin
-        NavEvItem := TFrameNavEvItem(scrBox.Controls[I]);
-        SelectNone();
-        NavEvItem.Select(true);
-        break;
-      end
+      LockDrawing;
+      if not IsControlFullyVisibleInScrollBox(scrBox, NavEvItem) then
+        CenterControlInScrollBox(scrBox, NavEvItem);
+      // scrBox.ScrollInView(NavEvItem); // note: doesn't center control...
+      UnlockDrawing;
     end;
-  finally
-    UnlockDrawing;
   end;
 end;
 
-
-{ CUSTOM HORZSCROLLBAR - CODE READY - FOR THIN SCROLLBAR...}
-
-procedure TFrameNavEv.CreateCustomHorz;
+procedure TFrameNavEv.spbtnNavLeftClick(Sender: TObject);
+var
+  metric: integer;
 begin
-  FCustomHorz := TScrollBar.Create(Self);
-  FCustomHorz.Parent := Self;         // keep it on the frame (not inside scrBox)
-  FCustomHorz.Kind := sbHorizontal;
-  FCustomHorz.Align := alBottom;
-  FCustomHorz.Height := Max(8, scrBox.HorzScrollBar.Size - 4); // desired thinner height
-  FCustomHorz.Visible := False;
-  FCustomHorz.OnChange := CustomHorzChange;
+  if scrBox.ControlCount = 0 then exit;
+  if ScrollLockEvItem and ((GetKeyState(VK_CONTROL) and 128) = 128) then
+  begin
+    CORE.qryEvent.Prior; // ctrl ovverides - triggers scroll event
+  end
+  else if ScrollLockEvItem then
+  begin
+    metric := Round(scrBox.Controls[0].Width / 2);
+    if scrBox.HorzScrollBar.Position - Metric  > 0 then
+      scrBox.HorzScrollBar.Position := scrBox.HorzScrollBar.Position - Metric
+    else scrBox.HorzScrollBar.Position := 0;
+  end
+  else
+  begin
+    CORE.qryEvent.Prior;
+  end;
+end;
+
+procedure TFrameNavEv.spbtnNavRightClick(Sender: TObject);
+var
+  metric: integer;
+begin
+  if scrBox.ControlCount = 0 then exit;
+
+  if ScrollLockEvItem and ((GetKeyState(VK_CONTROL) and 128) = 128) then
+  begin
+    CORE.qryEvent.Next; // ctrl ovverides - triggers scroll event
+  end
+  else if ScrollLockEvItem then
+  begin
+    metric := Round(scrBox.Controls[0].Width / 2);
+    if scrBox.HorzScrollBar.Position + Metric < scrBox.HorzScrollBar.Range then
+      scrBox.HorzScrollBar.Position := scrBox.HorzScrollBar.Position + Metric
+    else
+      scrBox.HorzScrollBar.Position := scrBox.HorzScrollBar.Range;
+  end
+  else
+  begin
+    CORE.qryEvent.Next; // triggers scroll event
+  end;
+
 end;
 
 procedure TFrameNavEv.UpdateCustomHorz;
 begin
+{ CUSTOM HORZSCROLLBAR - CODE READY - FOR THIN SCROLLBAR...}
   if not Assigned(FCustomHorz) then Exit;
   // ensure scrBox handle exists
   if not scrBox.HandleAllocated then scrBox.HandleNeeded;
@@ -324,33 +343,30 @@ begin
     FCustomHorz.Visible := False;
 end;
 
-procedure TFrameNavEv.CustomHorzChange(Sender: TObject);
-begin
-  // user moved custom scrollbar => scroll the scrollbox
-  scrBox.HorzScrollBar.Position := FCustomHorz.Position;
-end;
-
-procedure TFrameNavEv.spbtnNavLeftClick(Sender: TObject);
+function TFrameNavEv.UpdateSelect(EventID: integer): TFrameNavEvItem;
 var
-  metric: integer;
+  I: integer;
+  NavEvItem: TFrameNavEvItem;
 begin
-  if scrBox.ControlCount = 0 then exit;
-  metric := Round(scrBox.Controls[0].Width / 2);
-  if scrBox.HorzScrollBar.Position - Metric  > 0 then
-    scrBox.HorzScrollBar.Position := scrBox.HorzScrollBar.Position - Metric
-  else scrBox.HorzScrollBar.Position := 0;
-end;
-
-procedure TFrameNavEv.spbtnNavRightClick(Sender: TObject);
-var
-  metric: integer;
-begin
-  if scrBox.ControlCount = 0 then exit;
-  metric := Round(scrBox.Controls[0].Width / 2);
-  if scrBox.HorzScrollBar.Position + Metric < scrBox.HorzScrollBar.Range then
-    scrBox.HorzScrollBar.Position := scrBox.HorzScrollBar.Position + Metric
-  else scrBox.HorzScrollBar.Position := scrBox.HorzScrollBar.Range;
-
+  result := nil;
+  LockDrawing;
+  try
+    begin
+      for I := 0 to scrBox.ControlCount - 1 do
+      begin
+        NavEvItem := TFrameNavEvItem(scrBox.Controls[I]);
+        if (scrBox.Controls[I].Tag = EventID) then
+        begin
+          NavEvItem.Select(true);
+          result := NavEvItem;
+        end
+        else
+          NavEvItem.Select(false);
+      end;
+    end;
+  finally
+    UnlockDrawing;
+  end;
 end;
 
 end.

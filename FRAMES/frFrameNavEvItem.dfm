@@ -11,9 +11,9 @@ object FrameNavEvItem: TFrameNavEvItem
   StyleElements = [seClient, seBorder]
   OnClick = FrameClick
   object Shape2: TShape
-    Left = 56
+    Left = 12
     Top = 39
-    Width = 95
+    Width = 136
     Height = 3
     Brush.Color = 10193772
     Pen.Color = 10193772
@@ -50,29 +50,15 @@ object FrameNavEvItem: TFrameNavEvItem
     ImageIndex = 0
     ImageName = 'StrokeFS'
   end
-  object lblEvNum: TLabel
-    Left = 5
+  object lblEv: TLabel
+    Left = 12
     Top = -1
-    Width = 36
+    Width = 128
     Height = 45
     Alignment = taRightJustify
-    Caption = '00'
+    Caption = '00.000m'
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = 10193772
-    Font.Height = -32
-    Font.Name = 'Segoe UI'
-    Font.Style = [fsBold]
-    ParentFont = False
-    StyleElements = [seClient, seBorder]
-  end
-  object lblMeter: TLabel
-    Left = 57
-    Top = -1
-    Width = 83
-    Height = 45
-    Caption = '000m'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = 10193772
+    Font.Color = 15191969
     Font.Height = -32
     Font.Name = 'Segoe UI'
     Font.Style = [fsBold]
@@ -92,21 +78,6 @@ object FrameNavEvItem: TFrameNavEvItem
     Font.Height = -13
     Font.Name = 'Segoe UI'
     Font.Style = []
-    ParentFont = False
-    WordWrap = True
-    StyleElements = [seClient, seBorder]
-  end
-  object lblEV: TLabel
-    Left = 41
-    Top = -6
-    Width = 12
-    Height = 30
-    Caption = '#'
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = 10193772
-    Font.Height = -21
-    Font.Name = 'Segoe UI'
-    Font.Style = [fsBold]
     ParentFont = False
     StyleElements = [seClient, seBorder]
   end

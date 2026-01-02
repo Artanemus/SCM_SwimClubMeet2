@@ -25,6 +25,8 @@ object CORE: TCORE
   end
   object qrySession: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    BeforeOpen = qrySessionBeforeOpen
+    AfterOpen = qrySessionAfterOpen
     BeforePost = qrySessionBeforePost
     AfterScroll = qrySessionAfterScroll
     OnNewRecord = qrySessionNewRecord

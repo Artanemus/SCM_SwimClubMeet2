@@ -114,16 +114,29 @@ end;
 
 procedure CenterControlInScrollBox(AScrollBox: TScrollBox; ACtrl: TControl);
 var
-  TargetX, TargetY, MaxX, MaxY: Integer;
+  TargetX, TargetY, MaxX, MaxY, clw, clh: Integer;
 begin
   if ACtrl = nil then exit;
 
 //  AScrollBox.Realign; // ensure child positions are final
-  TargetX := ACtrl.Left + (ACtrl.Width div 2) - (AScrollBox.ClientWidth div 2);
-  TargetY := ACtrl.Top  + (ACtrl.Height div 2) - (AScrollBox.ClientHeight div 2);
 
-  MaxX := AScrollBox.HorzScrollBar.Range - AScrollBox.ClientWidth;
-  MaxY := AScrollBox.VertScrollBar.Range - AScrollBox.ClientHeight;
+  if AScrollBox.AlignWithMargins then
+  begin
+    clw := (AScrollBox.ClientWidth - AScrollBox.Margins.Left - AScrollBox.Margins.Right);
+    clh := (AScrollBox.ClientHeight - AScrollBox.Margins.top - AScrollBox.Margins.bottom);
+  end
+  else
+  begin
+    clw := AScrollBox.ClientWidth div 2;
+    clh := AScrollBox.ClientHeight div 2;
+  end;
+
+  TargetX := ACtrl.Left + (ACtrl.Width div 2) - (clw div 2);
+  TargetY := ACtrl.Top  + (ACtrl.Height div 2) - (clh div 2);
+
+  MaxX := AScrollBox.HorzScrollBar.Range - clw;
+  MaxY := AScrollBox.VertScrollBar.Range - clh;
+
   if MaxX < 0 then MaxX := 0;
   if MaxY < 0 then MaxY := 0;
 

@@ -557,8 +557,6 @@ var
   i: integer;
 begin
   if fscmIsConnecting then exit;
-  // pass message forward to session frame... UI changes
-  SendMessage(frSession.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
   // update the list of events in nominate frame...
   //  SendMessage(frNominate.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
   try // update the status bar with nominee and entrant counts.
@@ -584,15 +582,14 @@ begin
       StatusBar.Panels[3].Text := 'ERR';
     end;
   end;
-  if not (CORE.qrysession.State in [dsOpening]) then
-  begin
+    // pass message forward to session frame... UI changes
+    PostMessage(frSession.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
     // Manually re-fill the NavEv with NavEvItems...
     // Uses CORE.qryEvent. After iteration, relocates to orginal record.
-    SendMessage(frNavEv.Handle, SCM_FRAME_RESET, 0, 0); // UI UPDATE
+    PostMessage(frNavEv.Handle, SCM_FRAME_RESET, 0, 0); // UI UPDATE
     // positions to first record.
     // triggers event scroll - which intern triggers NavEv scroll ...
-    SendMessage(frEvent.Handle, SCM_SCROLL_SESSION, 0, 0); // UI UPDATE
-  end;
+    PostMessage(frEvent.Handle, SCM_SCROLL_SESSION, 0, 0); // UI UPDATE
 end;
 
 procedure TMain2.PageControlChange(Sender: TObject);

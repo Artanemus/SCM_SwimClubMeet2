@@ -155,7 +155,9 @@ type
     procedure qryFilterMemberAfterScroll(DataSet: TDataSet);
     procedure qryHeatAfterScroll(DataSet: TDataSet);
     procedure qryNomineeNewRecord(DataSet: TDataSet);
+    procedure qrySessionAfterOpen(DataSet: TDataSet);
     procedure qrySessionAfterScroll(DataSet: TDataSet);
+    procedure qrySessionBeforeOpen(DataSet: TDataSet);
     procedure qrySessionBeforePost(DataSet: TDataSet);
     procedure qrySessionNewRecord(DataSet: TDataSet);
     procedure qrySessionSessionDTGetText(Sender: TField; var Text: string;
@@ -165,6 +167,7 @@ type
     procedure qrySwimClubNewRecord(DataSet: TDataSet);
 	private
     FIsActive: boolean;
+    fIsOpeningSession: boolean;
     msgHandle: HWND;  // handle to send wapi messages. typically Main Form.
 
 	public
@@ -379,13 +382,24 @@ begin
   DataSet.FieldByName('AutoBuildFlag').AsBoolean := false;
 end;
 
+procedure TCORE.qrySessionAfterOpen(DataSet: TDataSet);
+begin
+  fIsOpeningSession := false;
+end;
+
 procedure TCORE.qrySessionAfterScroll(DataSet: TDataSet);
 begin
   if (msgHandle <> 0) then
   begin
     if not (qrySession.State in [dsOpening]) then
-      PostMessage(msgHandle, SCM_SCROLL_SESSION, 0,0);
+      if not fIsOpeningSession then
+        PostMessage(msgHandle, SCM_SCROLL_SESSION, 0,0);
   end;
+end;
+
+procedure TCORE.qrySessionBeforeOpen(DataSet: TDataSet);
+begin
+  fIsOpeningSession := true;
 end;
 
 procedure TCORE.qrySessionBeforePost(DataSet: TDataSet);

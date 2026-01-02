@@ -30,12 +30,10 @@ type
   TFrameNavEvItem = class(TFrame)
     imgRelay: TSVGIconImage;
     imgStroke: TSVGIconImage;
-    lblEvNum: TLabel;
-    lblMeter: TLabel;
-    Shape1: TShape;
+    lblEv: TLabel;
     lblDesc: TLabel;
+    Shape1: TShape;
     Shape2: TShape;
-    lblEV: TLabel;
     procedure FrameClick(Sender: TObject);
   private
     fSelected: boolean;
@@ -76,30 +74,53 @@ begin
   inherited;
   fParentFrame := nil;
   fSelected := false;
+  imgStroke.ImageIndex := 0;
   imgRelay.Visible := false;
   Shape1.Visible := false;
+  lblEv.Caption := '';
 end;
 
 { TFrameEvItem }
 
 procedure TFrameNavEvItem.FillFromQuery(AQuery: TDataSet);
-//var
-//  i: integer;
+var
+  s: string;
+  w, w2, idx: integer;
 begin
   // RELAY BUG...
   if (AQuery.FieldByName('EventTypeID').AsInteger = 2) then
     imgRelay.Visible := true else imgRelay.Visible := false;
   // ICON FS, BK, BS, BF, IM, etc...
   imgStroke.ImageIndex := AQuery.FieldByName('StrokeID').AsInteger;
-  lblEvNum.Caption := IntToStr(AQuery.FieldByName('EventNum').AsInteger);
 
-//  i := AQuery.FieldByName('Meters').AsInteger;
-//  lblMeter.Caption := Format('%2d', [i]);
-  lblMeter.Caption := IntToStr(AQuery.FieldByName('Meters').AsInteger) +'m';
+  lblEv.Caption := IntToStr(AQuery.FieldByName('EventNum').AsInteger) +
+    '.' + IntToStr(AQuery.FieldByName('Meters').AsInteger) +'m';
+
+  // Adjust thin underline
+  shape2.left := lblEv.Left - 2;
+  shape2.width := lblEv.Width + 2;
 
   lblDesc.Caption := AQuery.FieldByName('Caption').AsString;
   if string(lblDesc.caption).IsEmpty then
     lblDesc.Caption := AQuery.FieldByName('ABREV').AsString;
+
+  // truncate caption to fit. append '...' to indicate text continues
+
+  w := lblDesc.Canvas.TextWidth(lblDesc.Caption);
+  w2 := lblDesc.Width - 16; // margin allowance.
+  if (w > w2) then
+  begin
+    s := lblDesc.Caption;
+    while (s <> '') and (lblDesc.Canvas.TextWidth(s + '...') > W2) do
+    begin
+      s := s.Substring(0, Length(s) - 1);
+    end;
+    idx := LastDelimiter(' ', s);
+    if idx > 0 then
+      s := s.Substring(0, idx - 1);
+    
+    lblDesc.Caption := s + '...';
+  end;
 end;
 
 procedure TFrameNavEvItem.FrameClick(Sender : TObject);
@@ -112,34 +133,24 @@ begin
 end;
 
 procedure TFrameNavEvItem.Select(Mode: Boolean);
-var
-  s: string;
 begin
 //$009B8B6C
   if Mode then
   begin
     fSelected := true;
-    lblEvNum.Font.Color := clWebIvory;
-    lblMeter.Font.Color := clWebIvory;
+    lblEv.Font.Color := clWebIvory;
 
     lblDesc.Font.Color := clWebCornSilk;
-    lblEv.Font.Color  := clWebCornSilk;
-//    lblEv.Visible := true;
     Shape1.Pen.Color := clWebCornSilk;
     Shape1.Visible := true;
-//    Shape2.Visible := false;
     Shape2.Brush.Color := clWebCornSilk;
   end
   else
   begin
     fSelected := false;
-    lblEvNum.Font.Color := $009B8B6C;
-    lblMeter.Font.Color := $009B8B6C;
+    lblEv.Font.Color := $00E7CFA1;
     lblDesc.Font.Color := $009B8B6C;
-    lblEv.Font.Color  := $009B8B6C;
-//    lblEv.Visible := false;
     Shape1.Visible := false;
-//    Shape2.Visible := true;
     Shape2.Brush.Color := $009B8B6C;
   end;
 end;

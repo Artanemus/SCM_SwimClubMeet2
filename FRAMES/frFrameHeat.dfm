@@ -334,6 +334,29 @@ object FrameHeat: TFrameHeat
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    object lblMsgEmpty: TLabel
+      AlignWithMargins = True
+      Left = 8
+      Top = 8
+      Width = 138
+      Height = 608
+      Margins.Left = 8
+      Margins.Top = 8
+      Margins.Right = 8
+      Margins.Bottom = 8
+      Align = alClient
+      Caption = 'Use AUTOBUILD or NEW to get started with heats.'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      Layout = tlCenter
+      WordWrap = True
+      ExplicitWidth = 117
+      ExplicitHeight = 51
+    end
     object grid: TDBAdvGrid
       Left = 0
       Top = 0
@@ -733,8 +756,8 @@ object FrameHeat: TFrameHeat
   end
   object actnlistHeat: TActionList
     Images = IMG.imglstMenuBar
-    Left = 96
-    Top = 296
+    Left = 112
+    Top = 216
     object actnHt_MoveUp: TAction
       Category = 'Heats'
       Caption = 'Move Up'
@@ -830,8 +853,8 @@ object FrameHeat: TFrameHeat
     end
   end
   object pumenuHeat: TPopupMenu
-    Left = 98
-    Top = 360
+    Left = 114
+    Top = 384
     object MoveUp1: TMenuItem
       Action = actnHt_MoveUp
     end

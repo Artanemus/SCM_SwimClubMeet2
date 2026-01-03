@@ -3563,6 +3563,13 @@ object Main2: TMain2
               Height = 546
               ExplicitWidth = 161
               ExplicitHeight = 546
+              inherited lblMsgEmpty: TLabel
+                Width = 145
+                Height = 530
+                Font.Height = -16
+                ExplicitWidth = 305
+                ExplicitHeight = 42
+              end
               inherited grid: TDBAdvGrid
                 Width = 161
                 Height = 546

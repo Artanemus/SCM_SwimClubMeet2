@@ -200,7 +200,6 @@ object FrameClubGroup: TFrameClubGroup
   end
   object qryLstSwimClub: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Connection = CORE.TestConnection
     SQL.Strings = (
       ''
       'DECLARE @ParentClubID AS Integer;'
@@ -238,7 +237,6 @@ object FrameClubGroup: TFrameClubGroup
   end
   object qryLstSwimClubGroup: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Connection = CORE.TestConnection
     SQL.Strings = (
       'DECLARE @ParentClubID AS INTEGER;'
       'SET @ParentClubID = :PARENTCLUBID;'

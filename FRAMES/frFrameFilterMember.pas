@@ -69,7 +69,8 @@ type
   private
 
   public
-    procedure Initialise();
+    procedure InitialiseDB;
+    procedure InitialiseUI;
   end;
 
 implementation
@@ -259,18 +260,14 @@ begin
 
 end;
 
-{ TFrameMember }
-
-procedure TFrameFilterMember.Initialise;
+procedure TFrameFilterMember.InitialiseDB;
 var
   SortOn: integer;
 begin
-  // prepare the SQL Query
-  grid.RowCount := grid.FixedRows + 1; // rule: row count > fixed row.
-  edtSearch.Text := '';
   SortOn := 0;
-  CORE.qryFilterMember.Filtered := false;
-  CORE.qryFilterMember.Filter := '';
+
+   // prepare the SQL Query
+//  grid.RowCount := grid.FixedRows + 1; // rule: row count > fixed row.
 
   grid.BeginUpdate;
   CORE.qryFilterMember.DisableControls;
@@ -311,6 +308,23 @@ begin
     CORE.qryFilterMember.EnableControls;
     grid.EndUpdate;
   end;
+end;
+
+{ TFrameMember }
+
+procedure TFrameFilterMember.InitialiseUI;
+begin
+  edtSearch.Text := '';
+  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
+  if not Assigned(CORE) or not CORE.IsActive then exit;
+
+  CORE.qryFilterMember.Filtered := false;
+  CORE.qryFilterMember.Filter := '';
+  // if CORE.IsWorkingOnConnection = true, then safe to call here...
+  // without the DB 'frame AfterScoll' messages.
+  if CORE.IsWorkingOnConnection then
+    InitialiseDB;
+
 end;
 
 

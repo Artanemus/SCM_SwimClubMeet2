@@ -154,10 +154,9 @@ type
     procedure qryEventNewRecord(DataSet: TDataSet);
     procedure qryFilterMemberAfterScroll(DataSet: TDataSet);
     procedure qryHeatAfterScroll(DataSet: TDataSet);
+    procedure qryLaneAfterScroll(DataSet: TDataSet);
     procedure qryNomineeNewRecord(DataSet: TDataSet);
-    procedure qrySessionAfterOpen(DataSet: TDataSet);
     procedure qrySessionAfterScroll(DataSet: TDataSet);
-    procedure qrySessionBeforeOpen(DataSet: TDataSet);
     procedure qrySessionBeforePost(DataSet: TDataSet);
     procedure qrySessionNewRecord(DataSet: TDataSet);
     procedure qrySessionSessionDTGetText(Sender: TField; var Text: string;
@@ -167,7 +166,7 @@ type
     procedure qrySwimClubNewRecord(DataSet: TDataSet);
 	private
     FIsActive: boolean;
-    fIsOpeningSession: boolean;
+    fIsWorkingOnConnection: boolean;
     msgHandle: HWND;  // handle to send wapi messages. typically Main Form.
 
 	public
@@ -175,6 +174,8 @@ type
     procedure DeActivateCore;
     property IsActive: boolean read FIsActive write FIsActive;
     property MSG_Handle: HWND read msgHandle write msgHandle;  // Both DataModules
+    property IsWorkingOnConnection: boolean read FIsWorkingOnConnection
+      write FIsWorkingOnConnection;
 	end;
 
 var
@@ -274,6 +275,7 @@ end;
 procedure TCORE.DataModuleCreate(Sender: TObject);
 begin
 	FIsActive := false;
+  fIsWorkingOnConnection := false;
   // SET ConnectionStoredUsage correctly : use only auDesignTime
 end;
 
@@ -328,9 +330,13 @@ begin
   begin
     if not (qryEvent.State in [dsOpening]) then
     begin
-      PK := DataSet.FieldByName('EventID').AsInteger;
-      EvNum := DataSet.FieldByName('EventNum').AsInteger;
-      PostMessage(msgHandle, SCM_SCROLL_EVENT, WPARAM(nativeint(PK)),LPARAM(EvNum));
+      if not IsWorkingOnConnection then
+      begin
+        // Pack additional information for use in FRAME NavEv.
+        PK := DataSet.FieldByName('EventID').AsInteger;
+        EvNum := DataSet.FieldByName('EventNum').AsInteger;
+        PostMessage(msgHandle, SCM_SCROLL_EVENT, WPARAM(nativeint(PK)),LPARAM(EvNum));
+      end;
     end;
   end;
 end;
@@ -358,9 +364,13 @@ begin
   begin
     if not (qryFilterMember.State in [dsOpening]) then
     begin
-      WP := qryFilterMember.FieldByName('MemberID').AsInteger;
-      LP := qrySession.FieldByName('SessionID').AsInteger;
-      PostMessage(msgHandle, SCM_SCROLL_NOMINATE_FILTERMEMBER, WP, LP);
+      if not fIsWorkingOnConnection then
+      begin
+        // additional params for sync (ie. manage members, etc)
+        WP := qryFilterMember.FieldByName('MemberID').AsInteger;
+        LP := qrySession.FieldByName('SessionID').AsInteger;
+        PostMessage(msgHandle, SCM_SCROLL_NOMINATE_FILTERMEMBER, WP, LP);
+      end;
     end;
   end;
 end;
@@ -370,7 +380,22 @@ begin
   if (msgHandle <> 0) then
   begin
     if not (qryHeat.State in [dsOpening]) then
-      PostMessage(msgHandle, SCM_SCROLL_HEAT, 0,0);
+    begin
+      if not fIsWorkingOnConnection then
+        PostMessage(msgHandle, SCM_SCROLL_HEAT, 0,0);
+    end;
+  end;
+end;
+
+procedure TCORE.qryLaneAfterScroll(DataSet: TDataSet);
+begin
+  if (msgHandle <> 0) then
+  begin
+    if not (qryLane.State in [dsOpening]) then
+    begin
+      if not fIsWorkingOnConnection then
+        PostMessage(msgHandle, SCM_SCROLL_LANE, 0,0);
+    end;
   end;
 end;
 
@@ -382,24 +407,17 @@ begin
   DataSet.FieldByName('AutoBuildFlag').AsBoolean := false;
 end;
 
-procedure TCORE.qrySessionAfterOpen(DataSet: TDataSet);
-begin
-  fIsOpeningSession := false;
-end;
-
 procedure TCORE.qrySessionAfterScroll(DataSet: TDataSet);
 begin
   if (msgHandle <> 0) then
   begin
     if not (qrySession.State in [dsOpening]) then
-      if not fIsOpeningSession then
+    begin
+      if not fIsWorkingOnConnection then
+        // go post frame scroll events...
         PostMessage(msgHandle, SCM_SCROLL_SESSION, 0,0);
+    end;
   end;
-end;
-
-procedure TCORE.qrySessionBeforeOpen(DataSet: TDataSet);
-begin
-  fIsOpeningSession := true;
 end;
 
 procedure TCORE.qrySessionBeforePost(DataSet: TDataSet);
@@ -472,7 +490,12 @@ procedure TCORE.qrySwimClubAfterScroll(DataSet: TDataSet);
 begin
   if (msgHandle <> 0) then
   begin
-    PostMessage(msgHandle, SCM_SCROLL_SWIMCLUB, 0,0);
+    if not (qrySwimClub.State in [dsOpening]) then
+    begin
+      if not fIsWorkingOnConnection then
+        // go post frame scroll events...
+        PostMessage(msgHandle, SCM_SCROLL_SWIMCLUB, 0,0);
+    end;
   end;
 end;
 

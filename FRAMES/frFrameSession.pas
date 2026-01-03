@@ -30,7 +30,6 @@ type
     actnSess_Edit: TAction;
     actnSess_Export: TAction;
     actnSess_Import: TAction;
-    actnSess_Visibilty: TAction;
     actnSess_Lock: TAction;
     actnSess_New: TAction;
     actnSess_Report: TAction;
@@ -38,6 +37,7 @@ type
     actnSess_Search: TAction;
     actnSess_Sort: TAction;
     actnSess_Stats: TAction;
+    actnSess_Visibilty: TAction;
     CloneSession1: TMenuItem;
     DeleteSession1: TMenuItem;
     EditSession1: TMenuItem;
@@ -49,6 +49,7 @@ type
     pnlBody: TPanel;
     pumenuSession: TPopupMenu;
     pumToggleVisibility: TMenuItem;
+    rpnlCntrl: TRelativePanel;
     SessionReport1: TMenuItem;
     ShapeSessBar1: TShape;
     ShapeSessBar2: TShape;
@@ -56,18 +57,15 @@ type
     spbtnSessDelete: TSpeedButton;
     spbtnSessEdit: TSpeedButton;
     spbtnSessLockState: TSpeedButton;
-    spbtnSessVisiblity: TSpeedButton;
     spbtnSessNew: TSpeedButton;
     spbtnSessReport: TSpeedButton;
-    rpnlCntrl: TRelativePanel;
+    spbtnSessVisiblity: TSpeedButton;
     procedure actnSess_CheckLockUpdate(Sender: TObject);
     procedure actnSess_CloneUpdate(Sender: TObject);
     procedure actnSess_DeleteExecute(Sender: TObject);
     procedure actnSess_DeleteUpdate(Sender: TObject);
     procedure actnSess_EditExecute(Sender: TObject);
     procedure actnSess_EditUpdate(Sender: TObject);
-    procedure actnSess_VisibiltyExecute(Sender: TObject);
-    procedure actnSess_VisibiltyUpdate(Sender: TObject);
     procedure actnSess_LockExecute(Sender: TObject);
     procedure actnSess_LockUpdate(Sender: TObject);
     procedure actnSess_NewExecute(Sender: TObject);
@@ -75,18 +73,21 @@ type
     procedure actnSess_ReportUpdate(Sender: TObject);
     procedure actnSess_SortExecute(Sender: TObject);
     procedure actnSess_SortUpdate(Sender: TObject);
+    procedure actnSess_VisibiltyExecute(Sender: TObject);
+    procedure actnSess_VisibiltyUpdate(Sender: TObject);
     procedure gridDblClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
     procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
   private
-    procedure SetVisibilityIcon;
     procedure SetLockStateIcon;
+    procedure SetVisibilityIcon;
   protected
     procedure Loaded; override;
   public
-    procedure Initialise();
+    procedure InitialiseDB;
+    procedure InitialiseUI;
     // messages must be forwarded by main form.
     procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
   end;
@@ -199,31 +200,6 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameSession.actnSess_VisibiltyExecute(Sender: TObject);
-begin
-    grid.BeginUpdate;
-    TAction(Sender).Checked := not TAction(Sender).Checked;
-    try
-      SetVisibilityIcon;
-      // Assign index ... ApplyMaster.
-      // true - indxShowAll , false indxHideLocked.
-      uSession.SetIndexName(TAction(Sender).Checked);
-    finally
-      grid.EndUpdate;
-    end;
-end;
-
-procedure TFrameSession.actnSess_VisibiltyUpdate(Sender: TObject);
-var
-  DoEnable: boolean;
-begin
-  DoEnable := false;
-  if Assigned(SCM2) and SCM2.scmConnection.Connected and
-    Assigned(CORE) and CORE.IsActive and
-    not CORE.qrySession.IsEmpty then DoEnable := true;
-  TAction(Sender).Enabled := DoEnable;
-end;
-
 procedure TFrameSession.actnSess_LockExecute(Sender: TObject);
 begin
   grid.BeginUpdate;
@@ -319,6 +295,30 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
+procedure TFrameSession.actnSess_VisibiltyExecute(Sender: TObject);
+begin
+    grid.BeginUpdate;
+    TAction(Sender).Checked := not TAction(Sender).Checked;
+    try
+      SetVisibilityIcon;
+      // Assign index ... ApplyMaster.
+      // true - indxShowAll , false indxHideLocked.
+      uSession.SetIndexName(TAction(Sender).Checked);
+    finally
+      grid.EndUpdate;
+    end;
+end;
+
+procedure TFrameSession.actnSess_VisibiltyUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and
+    not CORE.qrySession.IsEmpty then DoEnable := true;
+  TAction(Sender).Enabled := DoEnable;
+end;
 
 procedure TFrameSession.gridDblClickCell(Sender: TObject; ARow, ACol:
     Integer);
@@ -421,65 +421,67 @@ begin
 
 end;
 
-procedure TFrameSession.Initialise;
+procedure TFrameSession.InitialiseDB;
 begin
-  //  grid.RowCount := grid.FixedRows + 1; // rule: row count > fixed row.
-  grid.BeginUpdate; // Assures grid.Paint..
-  try
+  if CORE.qrySession.IsEmpty() then
   begin
-    if SCM2.scmConnection.Connected and CORE.IsActive then
-    begin
-
-      if CORE.qrySession.IsEmpty then
-      begin
-        // setting pagemode to false clears grid of text. (it appears empty)
-        grid.PageMode := false;
-      end
-      else
-      begin
-        // Set pagemode to the default 'editable' fetch records mode.
-        grid.PageMode := true;
-
-        if Assigned(Settings) then
-          actnSess_Visibilty.Checked := Settings.HideLockedSessions
-        else
-          actnSess_Visibilty.Checked := false;
-
-        SetVisibilityIcon; // uses actnSess_Visible.Checked state.
-
-        grid.BeginUpdate;
-          // FILTER TABLE CONTENTS: false - indxShowAll , true indxHideLocked.
-          uSession.SetIndexName(actnSess_Visibilty.Checked);
-        grid.EndUpdate;
-      end;
-    end
-  else
-    grid.PageMode := false; // read-only
-  end;
-  finally
+    actnSess_Visibilty.Checked := false;
+    SetVisibilityIcon;
+    actnSess_Lock.Checked := false;
+    SetLockStateIcon;
+  end else
+  begin
+    if Assigned(Settings) then
+      actnSess_Visibilty.Checked := Settings.HideLockedSessions
+    else
+      actnSess_Visibilty.Checked := false;
+    SetVisibilityIcon;
+    grid.BeginUpdate;
+      // FILTER TABLE CONTENTS: false - indxShowAll , true indxHideLocked.
+      uSession.SetIndexName(actnSess_Visibilty.Checked);
+      CORE.qrySession.First;
     grid.EndUpdate;
+    actnSess_Lock.Checked := uSession.IsLocked;
+    SetLockStateIcon;
   end;
+end;
 
+procedure TFrameSession.InitialiseUI;
+begin
+  grid.Visible := false;
+  pnlBody.Caption := '';
+  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
+  if not Assigned(CORE) or not CORE.IsActive then exit;
+
+  // NOTE:
+  // Originally - using grid.pagemode := false; to clear the grid of rows.
+  grid.Visible := not CORE.qrySession.IsEmpty();
+  if (not CORE.qrySwimClub.IsEmpty()) and CORE.qrySession.IsEmpty() then
+    pnlBody.Caption := 'Use NEW to get started with Sessions.';
+  // if CORE.IsWorkingOnConnection = true, then safe to call here...
+  // without the DB 'frame AfterScoll' messages.
+  if CORE.IsWorkingOnConnection then
+    InitialiseDB;
 end;
 
 procedure TFrameSession.Loaded;
 begin
   inherited Loaded;
   // This executes after the DFM has loaded and ActionLinks have synced.
-  // Manually re-apply your 48x48 indices here.
-//  spbtnSessVisiblity.ImageIndex := 1;
+  // Manually re-apply 48x48 icon indices.
+  // spbtnSessVisiblity.ImageIndex := 1;
   spbtnSessVisiblity.ImageName := 'visible-on';
-//  spbtnSessLockState.ImageIndex := 3;
+  //  spbtnSessLockState.ImageIndex := 3;
   spbtnSessLockState.ImageName := 'lock2';
-//  spbtnSessEdit.ImageIndex := 5;
+  //  spbtnSessEdit.ImageIndex := 5;
   spbtnSessEdit.ImageName := 'edit';
-//  spbtnSessNew.ImageIndex := 6;
+  //  spbtnSessNew.ImageIndex := 6;
   spbtnSessNew.ImageName := 'new';
-//  spbtnSessClone.ImageIndex := 7;
+  //  spbtnSessClone.ImageIndex := 7;
   spbtnSessClone.ImageName := 'clone';
-//  spbtnSessDelete.ImageIndex := 8;
+  //  spbtnSessDelete.ImageIndex := 8;
   spbtnSessDelete.ImageName := 'delete';
-//  spbtnSessReport.ImageIndex := 9;
+  //  spbtnSessReport.ImageIndex := 9;
   spbtnSessReport.ImageName := 'report';
 end;
 
@@ -513,6 +515,20 @@ begin
   end;
 end;
 
+procedure TFrameSession.SetLockStateIcon;
+begin
+  if actnSess_Lock.Checked then
+  begin
+    actnSess_Lock.ImageName := 'lock2' ;// lock2 icon
+    spbtnSessLockState.ImageIndex := 3;
+   end
+  else
+  begin
+    actnSess_Lock.ImageName := 'lock2-open'; // lock2-open icon
+    spbtnSessLockState.ImageIndex := 4;
+  end
+end;
+
 procedure TFrameSession.SetVisibilityIcon;
 begin
     if actnSess_Visibilty.Checked then
@@ -528,18 +544,6 @@ begin
     end;
 end;
 
-procedure TFrameSession.SetLockStateIcon;
-begin
-  if actnSess_Lock.Checked then
-  begin
-    actnSess_Lock.ImageName := 'lock2' ;// lock2 icon
-    spbtnSessLockState.ImageIndex := 3;
-   end
-  else
-  begin
-    actnSess_Lock.ImageName := 'lock2-open'; // lock2-open icon
-    spbtnSessLockState.ImageIndex := 4;
-  end
-end;
+
 
 end.

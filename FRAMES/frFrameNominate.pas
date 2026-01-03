@@ -24,35 +24,27 @@ uses
 
 type
   TFrameNominate = class(TFrame)
-    rpnlCntrl: TRelativePanel;
-    pnlBody: TPanel;
+    actnlistNominate: TActionList;
     dbtxtNominateFullName: TDBText;
     grid: TDBAdvGrid;
-    actnlistNominate: TActionList;
+    pnlBody: TPanel;
     pumenuNominate: TPopupMenu;
+    rpnlCntrl: TRelativePanel;
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
     procedure gridClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
     procedure gridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-  private
-    { Private declarations }
   public
-    procedure Initialise();
-    procedure UpdateQryNominate();
-
+    procedure InitialiseDB;
+    procedure InitialiseUI;
     // messages originate in the CORE and are forwarded by main form.
     procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
       message SCM_SCROLL_NOMINATE_FILTERMEMBER; // refreshes nominate and qualified icons
-
     procedure Msg_SCM_Scroll_Session(var Msg: TMessage);
       message SCM_SCROLL_SESSION; // events change with each session.
-
-
-    {TODO -oBSA -cGeneral : deleteing and inserting an event also needs tracking
-      - it maybe easier to update query each time the tabsheet is selected?}
-
+    procedure UpdateQryNominate();
   end;
 
 implementation
@@ -118,7 +110,6 @@ begin
   end;
 end;
 
-
 procedure TFrameNominate.gridGetHTMLTemplate(Sender: TObject; ACol, ARow:
     Integer; var HTMLTemplate: string; Fields: TFields);
 var
@@ -157,9 +148,9 @@ begin
   end;
 end;
 
-procedure TFrameNominate.Initialise;
+procedure TFrameNominate.InitialiseDB;
 begin
-  // prepare the SQL Query
+  // when using pagemode do we have to test this?
   grid.RowCount := grid.FixedRows + 1; // rule: row count > fixed row.
   grid.BeginUpdate;
   try
@@ -190,8 +181,19 @@ begin
     end;
   finally
     grid.EndUpdate;
-  end;end;
+  end;
+end;
 
+procedure TFrameNominate.InitialiseUI;
+begin
+  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
+  if not Assigned(CORE) or not CORE.IsActive then exit;
+
+  // if CORE.IsWorkingOnConnection = true, then safe to call here...
+  // without the DB 'frame AfterScoll' messages.
+  if CORE.IsWorkingOnConnection then
+    InitialiseDB;
+end;
 
 procedure TFrameNominate.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
 begin

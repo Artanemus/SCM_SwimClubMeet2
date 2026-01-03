@@ -50,6 +50,8 @@ type
   public
 //    FOnNavEvItemSelected: TNavEvItemSelected; // MainForm proc for selection.
     procedure FillNavEvItems;
+    procedure InitialiseDB;
+    procedure InitialiseUI;
   end;
 
 var
@@ -245,6 +247,23 @@ begin
     scrBox.Realign; // Calcs range - ensures scrollbar is displayed.
     UnlockDrawing;
   end;
+end;
+
+procedure TFrameNavEv.InitialiseDB;
+begin
+    FillNavEvItems();
+end;
+
+procedure TFrameNavEv.InitialiseUI;
+begin
+  rpnlBody.Visible := false;
+  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
+  if not Assigned(CORE) or not CORE.IsActive then exit;
+  rpnlBody.Visible := not CORE.qryEvent.IsEmpty();
+  // if CORE.IsWorkingOnConnection = true, then safe to call here...
+  // without the DB 'frame AfterScoll' messages.
+  if CORE.IsWorkingOnConnection then
+    InitialiseDB;
 end;
 
 procedure TFrameNavEv.Msg_SCM_Frame_Reset(var Msg: TMessage);

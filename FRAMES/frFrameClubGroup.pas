@@ -88,11 +88,11 @@ procedure TFrameClubGroup.Initialize;
 begin
   fIsChanged := False;
   ParentClubID := 0;
-  if Assigned(SCM2) then
-  begin
-    qryLstSwimClubGroup.Connection := SCM2.scmConnection;
-    qryLstSwimClub.Connection := SCM2.scmConnection;
-  end;
+
+  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
+  if not Assigned(CORE) or not CORE.IsActive then exit;
+  qryLstSwimClubGroup.Connection := SCM2.scmConnection;
+  qryLstSwimClub.Connection := SCM2.scmConnection;
 end;
 
 

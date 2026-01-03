@@ -88,34 +88,16 @@ type
     procedure SetGridView_ColVisibility;
     procedure SetGridView_IconIndex;
   public
-    procedure Initialise();
-    // messages must be forwarded by main form.
-    procedure Msg_SCM_Scroll_SESSION(var Msg: TMessage); message SCM_SCROLL_SESSION;
+    procedure InitialiseDB;
+    procedure InitialiseUI;
     procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
+    // messages must be forwarded by main form.
+    procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
   end;
 
 implementation
 
 {$R *.dfm}
-
-{
-// I N T E R C E P T E R ...
-procedure TSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
-var
-  SavedImages: TCustomImageList;
-begin
-  // Save local state
-  if Assigned(Self.Images) then
-  begin
-    SavedImages := Self.Images;
-    inherited ActionChange(Sender, CheckDefaults);
-    // Restore local state
-    Self.Images := SavedImages;
-    Self.ImageIndex := Self.Tag;
-  end;
-end;
-}
-
 
 procedure TFrameEvent.actnEv_DeleteExecute(Sender: TObject);
 begin
@@ -367,54 +349,45 @@ begin
   end;
 end;
 
-procedure TFrameEvent.Initialise;
+procedure TFrameEvent.InitialiseDB;
 begin
-  // GridView button icon index is depenandt on checked state.
+  // GridView button icon index is dependant on checked state.
   actnEv_GridView.Checked := false; // Collapsed grid view.
-
-  //  FixedEventCntrlIcons; // Fix RAD Studio erronous icon re-assignment.
-
   // ASSERT grid expand/collapse UI state.
   SetGridView_IconIndex;
   SetGridView_ColVisibility;
+end;
 
-  // ASSERT TMS UI STATE...
-  grid.RowCount := grid.FixedRows + 1; // TMS rule: row count > fixed row.
-
-  if SCM2.scmConnection.Connected and CORE.IsActive then
-  begin
-    if CORE.qrySession.IsEmpty then
-      // setting pagemode to false clears grid of text. (it appears empty)
-      grid.PageMode := false
-    else
-      // Set pagemode to the default 'editable' fetch records mode.
-      grid.PageMode := true;
-  end
-  else
-    grid.PageMode := false; // read-only
-
+procedure TFrameEvent.InitialiseUI;
+begin
+  grid.Visible := false;
+  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
+  if not Assigned(CORE) or not CORE.IsActive then exit;
+  // NOTE:
+  // Originally - using grid.pagemode := false; to clear the grid of rows.
+  grid.Visible := not CORE.qryEvent.IsEmpty();
+  if (not CORE.qrySession.IsEmpty()) and CORE.qryEvent.IsEmpty() then
+    pnlBody.Caption := 'Use NEW to get started with Events.';
+  // if CORE.IsWorkingOnConnection = true, then safe to call here...
+  // without the DB 'frame AfterScoll' messages.
+  if CORE.IsWorkingOnConnection then
+    InitialiseDB;
 end;
 
 procedure TFrameEvent.Msg_SCM_Scroll_Event(var Msg: TMessage);
 begin
-  // ASSERT TMS UI STATE...
+  LockDrawing;
   grid.BeginUpdate;
-//  grid.RowCount := grid.FixedRows + 1; // TMS rule: row count > fixed row.
+  try
   if SCM2.scmConnection.Connected and CORE.IsActive then
-  begin
-    if CORE.qryEvent.IsEmpty then
-      // setting pagemode to false clears grid of text. (it appears empty)
-      grid.PageMode := false
-    else
-      // Set pagemode to the default 'editable' fetch records mode.
-      grid.PageMode := true;
-  end
-  else
-    grid.PageMode := false; // read-only
-  grid.EndUpdate;
+    grid.Visible := not CORE.qryEvent.IsEmpty;
+  finally
+    grid.EndUpdate;
+    UnlockDrawing;
+  end;
 end;
 
-procedure TFrameEvent.Msg_SCM_Scroll_SESSION(var Msg: TMessage);
+procedure TFrameEvent.Msg_SCM_Scroll_Session(var Msg: TMessage);
 begin
   // ASSERT TMS UI STATE...
   LockDrawing;

@@ -102,7 +102,6 @@ type
     Tools_Score: TAction;
     Tools_Swimmercategory: TAction;
     pnlEvent: TPanel;
-    frEvent: TFrameEvent;
     pnlFilterMember: TPanel;
     pnlNominate: TPanel;
     frFilterMember: TFrameFilterMember;
@@ -118,6 +117,7 @@ type
     pnlLane: TPanel;
     frLane: TFrameLane;
     frNavEv: TFrameNavEv;
+    frEvent: TFrameEvent;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -143,26 +143,22 @@ type
     procedure Tools_PreferencesExecute(Sender: TObject);
   private
 
-    fscmIsConnecting: boolean;
     fCueToMemberID: integer;
-
-//    procedure DetailTBLs_ApplyMaster;
-
-    procedure DetailTBLs_DisableCNTRLs;
-    procedure DetailTBLs_EnableCNTRLs;
 
 //    procedure HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
 //      NavEvItem: TFrameNavEvItem);
 
-    procedure SetConnectionState_FrameVisibility;
+    procedure SetPanelAndFrame_Visibility;
 
   protected
     // Note: don't name procedure same as winapi.message name.
-    // SCROLL MESSAGES LISTED HERE PERFORM UI changes - not DB stuff.
     procedure Msg_SCM_Connect(var Msg: TMessage); message SCM_Connect;
-    procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
-    procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
-    procedure Msg_SCM_Scroll_Heat(var Msg: TMessage); message SCM_SCROLL_HEAT;
+    procedure Msg_SCM_AfterScroll_Session(var Msg: TMessage); message
+        SCM_AFTERSCROLL_SESSION;
+    procedure Msg_SCM_AfterScroll_Event(var Msg: TMessage); message
+        SCM_AFTERSCROLL_EVENT;
+    procedure Msg_SCM_AfterScroll_Heat(var Msg: TMessage); message
+        SCM_AFTERSCROLL_HEAT;
     procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
       message SCM_SCROLL_NOMINATE_FILTERMEMBER;
   end;
@@ -179,7 +175,7 @@ uses
   frmManageMember, dlgSwimClub_Reports, frmMM_Stats, uEvent;
 
 {
-  // Add handler:
+  // Event handler:
 procedure TMain2.HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
     NavEvItem: TFrameNavEvItem);
     begin
@@ -192,148 +188,74 @@ procedure TMain2.HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
 
 
 
-{
-  procedure TMain2.DetailTBLs_ApplyMaster;
-  begin
-    // FireDAC throws exception error if Master is empty?
-    if CORE.qrySwimClub.RecordCount <> 0 then
-    begin
-      CORE.qrySession.ApplyMaster;
-      if CORE.qrySession.RecordCount <> 0 then
-      begin
-        CORE.qryEvent.ApplyMaster;
-        if CORE.qryEvent.RecordCount <> 0 then
-        begin
-          CORE.qryHeat.ApplyMaster;
-          if CORE.qryHeat.RecordCount <> 0 then
-          begin
-            CORE.qryLane.ApplyMaster;
-            if CORE.qryLane.RecordCount <> 0 then
-            begin
-              CORE.qryWatchTime.ApplyMaster;
-              CORE.qrySplitTime.ApplyMaster;
-              CORE.qryTeam.ApplyMaster;
-            end;
-          end;
-        end;
-      end;
-    end;
-  end;
-}
-
-procedure TMain2.DetailTBLs_DisableCNTRLs;
-begin
-  CORE.qryTeamLink.DisableControls;
-  CORE.qryTeam.DisableControls;
-  CORE.qrySplitTime.DisableControls;
-  CORE.qryWatchTime.DisableControls;
-  CORE.qryLane.DisableControls;
-  CORE.qryHeat.DisableControls;
-  CORE.qryEvent.DisableControls;
-  CORE.qrySession.DisableControls;
-end;
-
-procedure TMain2.DetailTBLs_EnableCNTRLs;
-begin
-  CORE.qrySession.EnableControls;
-  CORE.qryEvent.EnableControls;
-  CORE.qryHeat.EnableControls;
-  CORE.qryLane.EnableControls;
-  CORE.qryWatchTime.EnableControls;
-  CORE.qrySplitTime.EnableControls;
-  CORE.qryTeam.EnableControls;
-  CORE.qryTeamLink.DisableControls;
-end;
-
 procedure TMain2.File_ConnectionExecute(Sender: TObject);
 var
   dlg: TLogin;
   connectionState: boolean;
 begin
   // NOTE: strange title bar colouration.
-
-  // store current connection state..
-  connectionState := SCM2.scmConnection.Connected;
-  fscmIsConnecting := true;
-
-  frNominate.grid.BeginUpdate;
-  frFilterMember.grid.BeginUpdate;
-  frLane.grid.BeginUpdate;
-  frHeat.grid.BeginUpdate;
-  frEvent.grid.BeginUpdate;
-  frSession.grid.BeginUpdate;
+  // IsWorkingOnConnection stops 'frame AfterScroll messages...'
+  // slowing down the re-connection action.
+  CORE.IsWorkingOnConnection := true;
+  LockDrawing;
   try
-    dlg := TLogin.Create(Self); // dlg to connect to the SCM2 DB.
-    dlg.ShowModal;
-    dlg.Free;
-
-    // Is the connection state different.
-    if (connectionState <> SCM2.scmConnection.Connected)  then
-    begin
-      // All connection state changes result in the following UI changes....
-      // Move to tabsheet 1 and reset UI.
-      if PageControl.ActivePageIndex <> 0 then
-        PageControl.ActivePageIndex := 0;
-      if frEvent.actnEv_GridView.Checked then
-        frEvent.actnEv_GridView.Checked := false; // Collapsed grid view.
-
-      if SCM2.scmConnection.Connected then
+    // store current connection state..
+    connectionState := SCM2.scmConnection.Connected;
+    frNominate.grid.BeginUpdate;
+    frFilterMember.grid.BeginUpdate;
+    frLane.grid.BeginUpdate;
+    frHeat.grid.BeginUpdate;
+    frEvent.grid.BeginUpdate;
+    frSession.grid.BeginUpdate;
+    try
+      // dlg to connect to the SCM2 DB.
+      // Executes AppyMaster to sync master/detail relationship.
+      dlg := TLogin.Create(Self);
+      dlg.ShowModal;
+      dlg.Free;
+      // Is the connection state different.
+      if (connectionState <> SCM2.scmConnection.Connected)  then
       begin
-        // disable all frame afterscroll messages ...
-        CORE.IsWorkingOnConnection := true;
-        try
+        if SCM2.scmConnection.Connected then
+        begin
           if Assigned(Settings) and (Settings.LastSwimClubPK <> 0) then
           begin
             // try to restore the last swim club that the user was using.
             // generates scroll events in all tables...
             uSwimClub.Locate(Settings.LastSwimClubPK);
           end;
-          // INITIALIZE FRAMES...
-          // IsWorkingOnConnection stops 'frame AfterScroll messages...'
-          // slowing down the re-connection action.
-          frSession.InitialiseUI;
-          frEvent.InitialiseUI;
-          frHeat.InitialiseUI;
-          frLane.InitialiseUI;
-          frFilterMember.InitialiseUI;
-          frNominate.InitialiseUI;
-//          frNavEvent.InitialiseUI;
-
-        finally
-          // enable all frame afterscroll messages ...
-          CORE.IsWorkingOnConnection := false;
         end;
       end;
+      // Always done after running TLogin - ASSERT UI values.
+      if SCM2.scmConnection.Connected then
+      begin
+        // Update the TitlePanel dbtext captions and enable custom buttons.
+        pnlTitleBar.CustomButtons[0].Enabled := true;
+        pnlTitleBar.CustomButtons[1].Enabled := true;
+        StatusBar.Panels[0].Text := 'CONNECTED'; // psOwnerDraw
+      end
+      else
+      begin
+        pnlTitleBar.CustomButtons[0].Enabled := false;
+        pnlTitleBar.CustomButtons[1].Enabled := false;
+        StatusBar.Panels[0].Text := 'NOT CONNECTED'; // psOwnerDraw
+      end;
+    finally
+
+      frSession.grid.EndUpdate;
+      frEvent.grid.EndUpdate;
+      frHeat.grid.EndUpdate;
+      frLane.grid.EndUpdate;
+      frFilterMember.grid.EndUpdate;
+      frNominate.grid.EndUpdate;
+
+      SetPanelAndFrame_Visibility;
 
 
     end;
-
-    // Always done after running TLogin - ASSERT UI values.
-    if SCM2.scmConnection.Connected then
-    begin
-      // Update the TitlePanel dbtext captions and enable custom buttons.
-      pnlTitleBar.CustomButtons[0].Enabled := true;
-      pnlTitleBar.CustomButtons[1].Enabled := true;
-      StatusBar.Panels[0].Text := 'CONNECTED'; // psOwnerDraw
-    end
-    else
-    begin
-      pnlTitleBar.CustomButtons[0].Enabled := false;
-      pnlTitleBar.CustomButtons[1].Enabled := false;
-      StatusBar.Panels[0].Text := 'NOT CONNECTED'; // psOwnerDraw
-    end;
-
-
   finally
-    frSession.grid.EndUpdate;
-    frEvent.grid.EndUpdate;
-    frHeat.grid.EndUpdate;
-    frLane.grid.EndUpdate;
-    frFilterMember.grid.EndUpdate;
-    frNominate.grid.EndUpdate;
-
-    fscmIsConnecting := false;
-    SetConnectionState_FrameVisibility;
+    CORE.IsWorkingOnConnection := false;
+    UnlockDrawing;
   end;
 
 end;
@@ -400,18 +322,11 @@ begin
   // Assign a handle to the CORE data module - for windows messages
   CORE.MSG_Handle := Self.Handle;
 
-  frSession.InitialiseUI;
-  frEvent.InitialiseUI;
-  frHeat.InitialiseUI;
-  frLane.InitialiseUI;
-  frFilterMember.InitialiseUI;
-  frNominate.InitialiseUI;
-
   // No connection established ...initialize UI state...
   PageControl.ActivePageIndex := 0; // tabsheet 0
   frEvent.actnEv_GridView.Checked := false; // default: collapsed gridview.
 
-  SetConnectionState_FrameVisibility(); // hide all panels displaying frames.
+  SetPanelAndFrame_Visibility(); // hide all panels displaying frames.
 
 end;
 
@@ -536,40 +451,42 @@ begin
     File_Connection.Execute;
 end;
 
-procedure TMain2.Msg_SCM_Scroll_Event(var Msg: TMessage);
-var
-  PK: integer;
-begin
-  // pass message forward to event frame...
-  // Msg.WParam contains Event.EventID - used by frNavEv.
-  if fscmIsConnecting then exit;
-  PK := uEvent.PK;
-  SendMessage(frEvent.Handle, SCM_SCROLL_EVENT, WPARAM(PK), Msg.LParam);
-  SendMessage(frHeat.Handle, SCM_SCROLL_EVENT, WPARAM(PK), Msg.LParam);
-  SendMessage(frNavEv.Handle, SCM_SCROLL_EVENT, WPARAM(PK), Msg.LParam);
-end;
+
 
 procedure TMain2.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
 begin
   // forward message to nominate frame.
-  if fscmIsConnecting then exit;
+  if CORE.IsWorkingOnConnection then exit;
   SendMessage(frNominate.Handle, SCM_SCROLL_NOMINATE_FILTERMEMBER, Msg.WParam, Msg.LParam);
 end;
 
-procedure TMain2.Msg_SCM_Scroll_Heat(var Msg: TMessage);
+
+
+procedure TMain2.Msg_SCM_AfterScroll_Event(var Msg: TMessage);
 begin
-  // pass message forward to Heat frame...
-  if fscmIsConnecting then exit;
-  SendMessage(frHeat.Handle, SCM_SCROLL_HEAT, Msg.WParam, Msg.LParam);
+  // UI elements specific to MAIN.
+
+  // DETAILED specific UI changes...
+//  if CORE.qryEvent.IsEmpty then
+//    frHeat.UpdateUI(true)
+//  else
+    frHeat.UpdateUI;
 end;
 
-procedure TMain2.Msg_SCM_Scroll_Session(var Msg: TMessage);
+procedure TMain2.Msg_SCM_AfterScroll_Heat(var Msg: TMessage);
+begin
+  // UI elements specific to MAIN.
+
+  // DETAILED specific UI changes...
+  frLane.UpdateUI;
+end;
+
+procedure TMain2.Msg_SCM_AfterScroll_Session(var Msg: TMessage);
 var
   i: integer;
 begin
-  if fscmIsConnecting then exit;
-  // update the list of events in nominate frame...
-  //  SendMessage(frNominate.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
+  // UI elements specific to MAIN.
+  if CORE.IsWorkingOnConnection then exit;
   try // update the status bar with nominee and entrant counts.
     if (uSession.IsLocked) then
     begin // Fast.. gets the pre-calculated params from table.
@@ -593,14 +510,10 @@ begin
       StatusBar.Panels[3].Text := 'ERR';
     end;
   end;
-    // pass message forward to session frame... UI changes
-    PostMessage(frSession.Handle, SCM_SCROLL_SESSION, Msg.WParam, Msg.LParam);
-    // Manually re-fill the NavEv with NavEvItems...
-    // Uses CORE.qryEvent. After iteration, relocates to orginal record.
-    PostMessage(frNavEv.Handle, SCM_FRAME_RESET, 0, 0); // UI UPDATE
-    // positions to first record.
-    // triggers event scroll - which intern triggers NavEv scroll ...
-    PostMessage(frEvent.Handle, SCM_SCROLL_SESSION, 0, 0); // UI UPDATE
+
+  // DETAILED specific UI changes...
+  frEvent.UpdateUI;
+
 end;
 
 procedure TMain2.PageControlChange(Sender: TObject);
@@ -746,41 +659,35 @@ var
   dlg: TSwimClubManage;
   PK1, PK2: integer;
 begin
-  frNominate.grid.BeginUpdate;
-  frFilterMember.grid.BeginUpdate;
-  frEvent.grid.BeginUpdate;
-  frSession.grid.BeginUpdate;
-  DetailTBLs_DisableCNTRLs;
+  PK1 := 0; PK2 :=0;
+  CORE.IsWorkingOnConnection := true;
   try
-    PK1 := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
-    dlg := TSwimClubManage.Create(Self);
+    frNominate.grid.BeginUpdate;
+    frFilterMember.grid.BeginUpdate;
+    frEvent.grid.BeginUpdate;
+    frSession.grid.BeginUpdate;
+    DetailTBLs_DisableCNTRLs;
     try
-      dlg.ShowModal;
+      PK1 := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+      dlg := TSwimClubManage.Create(Self);
+      try
+        dlg.ShowModal;
+      finally
+        dlg.Free;
+        PK2 := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+      end;
     finally
-      dlg.Free;
-      PK2 := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
-    end;
+      if (PK1<>0) and (PK1 <> PK2) then // switched to different club..
+        SetPanelAndFrame_Visibility();
 
-    if (PK1 <> PK2) then // switched to different club..
-    begin
-      frSession.InitialiseUI;
-      frEvent.InitialiseUI;
-      frHeat.InitialiseUI;
-      frLane.InitialiseUI;
-      frFilterMember.InitialiseUI;
-      frNominate.InitialiseUI;
-      // initialize UI state tabsheet 0 and Collapsed grid view.
-      PageControl.ActivePageIndex := 0;
-      frEvent.actnEv_GridView.Checked := false;
-      pnlSession.Visible := true;
+      DetailTBLs_EnableCNTRLs;
+      frSession.grid.EndUpdate;
+      frEvent.grid.EndUpdate;
+      frFilterMember.grid.EndUpdate;
+      frNominate.grid.EndUpdate;
     end;
-
   finally
-    DetailTBLs_EnableCNTRLs;
-    frSession.grid.EndUpdate;
-    frEvent.grid.EndUpdate;
-    frFilterMember.grid.EndUpdate;
-    frNominate.grid.EndUpdate;
+    CORE.IsWorkingOnConnection := false;
   end;
 end;
 
@@ -799,39 +706,38 @@ var
   dlg: TSwimClubSwitch;
   PK1, PK2: integer;
 begin
-  frNominate.grid.BeginUpdate;
-  frFilterMember.grid.BeginUpdate;
-  frEvent.grid.BeginUpdate;
-  frSession.grid.BeginUpdate;
+  CORE.IsWorkingOnConnection := true;
   try
-    PK1 := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
-    dlg :=  TSwimClubSwitch.Create(Self);
-    dlg.ShowModal;
-    dlg.Free;
-    PK2 := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+    frNominate.grid.BeginUpdate;
+    frFilterMember.grid.BeginUpdate;
+    frEvent.grid.BeginUpdate;
+    frSession.grid.BeginUpdate;
+    try
+      PK1 := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+      dlg :=  TSwimClubSwitch.Create(Self);
+      dlg.ShowModal;
+      dlg.Free;
+      PK2 := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
 
-    if (PK1 <> PK2) then // switched to different club..
-    begin
-      uSwimClub.SwitchClubs(PK1, PK2);
-      frSession.InitialiseUI;
-      frEvent.InitialiseUI;
-      frHeat.InitialiseUI;
-      frLane.InitialiseUI;
-      frFilterMember.InitialiseUI;
-      frNominate.InitialiseUI;
+      if (PK1 <> PK2) then // switched to different club..
+      begin
+        uSwimClub.SwitchClubs(PK1, PK2);
+      end;
 
-      // initialize UI state tabsheet 0 and Collapsed grid view.
-      PageControl.ActivePageIndex := 0;
-      frEvent.actnEv_GridView.Checked := false;
-      pnlSession.Visible := true;
+    finally
+
+      SetPanelAndFrame_Visibility;
+
+      frSession.grid.EndUpdate;
+      frEvent.grid.EndUpdate;
+      frFilterMember.grid.EndUpdate;
+      frNominate.grid.EndUpdate;
     end;
 
   finally
-    frSession.grid.EndUpdate;
-    frEvent.grid.EndUpdate;
-    frFilterMember.grid.EndUpdate;
-    frNominate.grid.EndUpdate;
+    CORE.IsWorkingOnConnection := false;
   end;
+
 end;
 
 procedure TMain2.Tools_PreferencesExecute(Sender: TObject);
@@ -847,34 +753,28 @@ begin
 
 end;
 
-procedure TMain2.SetConnectionState_FrameVisibility;
+procedure TMain2.SetPanelAndFrame_Visibility;
 begin
   {
     All frames are hidden when there is no database connection.
     STACK ORDER is important when making visible panels.
   }
-  LockDrawing;
-  pnlSession.Visible := false;
-  pnlEvent.Visible := false;
-  pnlNominate.Visible := false;
-  pnlFilterMember.Visible := false;
-  pnlHeat.Visible := False;
-  try
-    if Assigned(SCM2) and SCM2.scmConnection.Connected then
-    begin
-      if frEvent.actnEv_GridView.Checked then
-        pnlSession.Visible := false
-      else
-        pnlSession.Visible := true;
+//  LockDrawing;
+//  try
+    // INITIALIZE FRAMES...
+    frSession.UpdateUI(true);
+    frEvent.UpdateUI(true);
+    frHeat.UpdateUI(true);
+    frLane.UpdateUI(true);
+    frFilterMember.UpdateUI(true);
 
-      pnlEvent.Visible := true;
-      pnlFilterMember.Visible := true;
-      pnlNominate.Visible := true;
-      pnlHeat.Visible := true;
-    end;
-  finally
-    UnlockDrawing
-  end;
+//    frNavEv.UpdateUI;
+//    frNominate.UpdateUI;
+
+//  finally
+//    UnlockDrawing;
+//  end;
+
 
 end;
 

@@ -69,8 +69,8 @@ type
   private
 
   public
-    procedure InitialiseDB;
-    procedure InitialiseUI;
+    procedure InitFilterMemberDB;
+    procedure UpdateUI(DoFullUpdate: boolean = false);
   end;
 
 implementation
@@ -260,16 +260,11 @@ begin
 
 end;
 
-procedure TFrameFilterMember.InitialiseDB;
+procedure TFrameFilterMember.InitFilterMemberDB;
 var
   SortOn: integer;
 begin
   SortOn := 0;
-
-   // prepare the SQL Query
-//  grid.RowCount := grid.FixedRows + 1; // rule: row count > fixed row.
-
-  grid.BeginUpdate;
   CORE.qryFilterMember.DisableControls;
   try
     begin
@@ -289,43 +284,70 @@ begin
         CORE.qryFilterMember.ParamByName('SORTON').AsInteger := SortOn;
         CORE.qryFilterMember.Prepare;
         CORE.qryFilterMember.Open;
-
-        if CORE.qryFilterMember.IsEmpty then
-        begin
-          // setting pagemode to false clears grid of text. (it appears empty)
-          grid.PageMode := false;
-        end
-        else
-        begin
-          // Set pagemode to the default 'editable' fetch records mode.
-          grid.PageMode := true;
-        end;
       end
-      else
-        grid.PageMode := false; // read-only
     end;
   finally
     CORE.qryFilterMember.EnableControls;
-    grid.EndUpdate;
   end;
 end;
 
 { TFrameMember }
 
-procedure TFrameFilterMember.InitialiseUI;
+
+
+procedure TFrameFilterMember.UpdateUI(DoFullUpdate: boolean = false);
 begin
-  edtSearch.Text := '';
-  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
-  if not Assigned(CORE) or not CORE.IsActive then exit;
+  {CASES: after Connection, after change of swimming club, after manage-clubs. }
+  if DoFullUpdate then
+  begin
+    if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
+      (not Assigned(CORE)) or (not CORE.IsActive) or (CORE.qrySwimClub.IsEmpty)
+         then
+    begin
+      Self.Visible := false;
+      exit;
+    end;
+      { NOTE: grid must be visible to sync + forces re-paint. }
+    LockDrawing;
+    Self.Visible := true;
+    pnlBody.Visible := true;
+    pnlList.Visible := true;
+    grid.BeginUpdate;
+    CORE.qryFilterMember.Filtered := false;
+    CORE.qryFilterMember.Filter := '';
+    InitFilterMemberDB; // load the list of club members...
+    grid.EndUpdate;
+    UnlockDrawing;
+  end;
 
-  CORE.qryFilterMember.Filtered := false;
-  CORE.qryFilterMember.Filter := '';
-  // if CORE.IsWorkingOnConnection = true, then safe to call here...
-  // without the DB 'frame AfterScoll' messages.
-  if CORE.IsWorkingOnConnection then
-    InitialiseDB;
+  LockDrawing;
+  try
+    if CORE.qrySwimClub.IsEmpty() then
+    begin
+      Self.Visible := false; // hide everthing - move on.
+      exit;
+    end;
 
+    if not Visible then Self.Visible := true;
+
+    if CORE.qryFilterMember.IsEmpty then
+    begin
+      // CNTRL panel is displayed but not the grid.
+      pnlBody.Visible := true;
+      pnlList.Visible := false;
+      edtSearch.Enabled := false;
+      btnClearSearch.Enabled :=false;
+    end
+    else
+    begin
+      pnlBody.Visible := true;
+      pnlList.Visible := true;
+      edtSearch.Enabled := true;
+      btnClearSearch.Enabled := true;
+    end;
+  finally
+    UnlockDrawing;
+  end;
 end;
-
 
 end.

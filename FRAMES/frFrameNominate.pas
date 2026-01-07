@@ -37,13 +37,12 @@ type
         HTMLTemplate: string; Fields: TFields);
     procedure gridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   public
-    procedure InitialiseDB;
-    procedure InitialiseUI;
+    procedure UpdateUI;
     // messages originate in the CORE and are forwarded by main form.
     procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
       message SCM_SCROLL_NOMINATE_FILTERMEMBER; // refreshes nominate and qualified icons
-    procedure Msg_SCM_Scroll_Session(var Msg: TMessage);
-      message SCM_SCROLL_SESSION; // events change with each session.
+    procedure Msg_SCM_AfterScroll_Session(var Msg: TMessage); message
+        SCM_AFTERSCROLL_SESSION;
     procedure UpdateQryNominate();
   end;
 
@@ -148,59 +147,13 @@ begin
   end;
 end;
 
-procedure TFrameNominate.InitialiseDB;
-begin
-  // when using pagemode do we have to test this?
-  grid.RowCount := grid.FixedRows + 1; // rule: row count > fixed row.
-  grid.BeginUpdate;
-  try
-    begin
-      if SCM2.scmConnection.Connected and CORE.IsActive then
-      begin
-        CORE.qryNominate.Close;
-        CORE.qryNominate.ParamByName('MEMBERID').AsInteger := 0;
-        CORE.qryNominate.ParamByName('SESSIONID').AsInteger := uSession.PK;
-        CORE.qryNominate.ParamByName('SEEDDATE').AsDateTime := uNominee.GetSeedDate();
-        CORE.qryNominate.ParamByName('ISSHORTCOURSE').AsByte := 0;
-        CORE.qryNominate.Prepare;
-        CORE.qryNominate.Open;
-
-        if CORE.qryNominate.IsEmpty then
-        begin
-          // setting pagemode to false clears grid of text. (it appears empty)
-          grid.PageMode := false;
-        end
-        else
-        begin
-          // Set pagemode to the default 'editable' fetch records mode.
-          grid.PageMode := true;
-        end;
-      end
-      else
-        grid.PageMode := false; // read-only
-    end;
-  finally
-    grid.EndUpdate;
-  end;
-end;
-
-procedure TFrameNominate.InitialiseUI;
-begin
-  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
-  if not Assigned(CORE) or not CORE.IsActive then exit;
-
-  // if CORE.IsWorkingOnConnection = true, then safe to call here...
-  // without the DB 'frame AfterScoll' messages.
-  if CORE.IsWorkingOnConnection then
-    InitialiseDB;
-end;
 
 procedure TFrameNominate.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
 begin
     UpdateQryNominate;
 end;
 
-procedure TFrameNominate.Msg_SCM_Scroll_Session(var Msg: TMessage);
+procedure TFrameNominate.Msg_SCM_AfterScroll_Session(var Msg: TMessage);
 begin
     UpdateQryNominate;
 end;
@@ -229,6 +182,59 @@ begin
   end;
 end;
 
+procedure TFrameNominate.UpdateUI;
+begin
+  if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
+      (not Assigned(CORE)) or (not CORE.IsActive) then
+  begin
+    Self.Visible := false;
+    exit;
+  end;
+  LockDrawing;
+  pnlBody.Caption := '';
+  grid.BeginUpdate;
+  try
+    if CORE.qrySwimClub.IsEmpty() or CORE.qrySession.IsEmpty()
+      or CORE.qryMember.IsEmpty() then
+    begin
+      Self.Visible := false; // hide everthing - move on.
+      exit;
+    end;
+    Self.Visible := true;
+    if CORE.qryEvent.IsEmpty then
+    begin
+      // CNTRL panel is displayed but not the grid.
+      pnlBody.Visible := true;
+      pnlBody.Caption := 'No events found.';
+      pnlBody.Alignment := taCenter;
+      pnlBody.VerticalAlignment := taVerticalCenter;
+      grid.Visible := false;
+    end;
+
+    if not CORE.qryEvent.IsEmpty then
+    begin
+      pnlBody.Visible := true;
+      // Are we making a Connection or changing SwimClubs?
+      if CORE.IsWorkingOnConnection then
+      begin
+        grid.Visible := false;
+        CORE.qryNominate.EmptyDataSet;
+      end
+      else
+      begin
+        if CORE.qryFilterMember.Active and (not CORE.qryFilterMember.IsEmpty()) then
+        begin
+          grid.Visible := true;
+          UpdateQryNominate();
+        end else grid.Visible := false;
+      end;
+    end;
+  finally
+    grid.EndUpdate;
+    UnlockDrawing;
+  end;
+
+end;
 
 end.
 

@@ -188,6 +188,7 @@ object FrameFilterMember: TFrameFilterMember
     Height = 480
     Align = alClient
     BevelOuter = bvNone
+    Caption = 'No members were found for this swimclub.'
     TabOrder = 1
     object pnlList: TPanel
       Left = 0
@@ -638,8 +639,8 @@ object FrameFilterMember: TFrameFilterMember
   end
   object actnlistNomMember: TActionList
     Images = IMG.imglstMenuBar
-    Left = 178
-    Top = 369
+    Left = 154
+    Top = 345
     object actnNom_SwitchName: TAction
       Category = 'Nominate'
       Caption = 'Switch Name'
@@ -694,8 +695,8 @@ object FrameFilterMember: TFrameFilterMember
     end
   end
   object pumenuNomMember: TPopupMenu
-    Left = 178
-    Top = 465
+    Left = 154
+    Top = 281
     object SwitchName1: TMenuItem
       Action = actnNom_SwitchName
     end

@@ -493,7 +493,6 @@ object CORE: TCORE
   end
   object qrySwimClub: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    AfterScroll = qrySwimClubAfterScroll
     OnNewRecord = qrySwimClubNewRecord
     Filter = 'IsArchived <> 1'
     Indexes = <
@@ -546,7 +545,6 @@ object CORE: TCORE
   end
   object qryLane: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    AfterScroll = qryLaneAfterScroll
     Indexes = <
       item
         Active = True

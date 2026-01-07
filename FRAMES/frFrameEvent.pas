@@ -16,7 +16,7 @@ uses
 
   dmSCM2, dmIMG, dmCORE, uDefines,
 
-  uSettings, uSession, uEvent;
+  uSettings, uSession, uEvent, Vcl.StdCtrls;
 
 
 type
@@ -66,6 +66,7 @@ type
     spbtnEvNew: TSpeedButton;
     spbtnEvReport: TSpeedButton;
     spbtnEvUp: TSpeedButton;
+    pnlG: TPanel;
     procedure actnEv_DeleteExecute(Sender: TObject);
     procedure actnEv_DeleteUpdate(Sender: TObject);
     procedure actnEv_EventTypeExecute(Sender: TObject);
@@ -84,15 +85,12 @@ type
         State: TGridDrawState);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
   private
-//    procedure FixedEventCntrlIcons();
     procedure SetGridView_ColVisibility;
     procedure SetGridView_IconIndex;
+    procedure UpdateUI_2;
   public
-    procedure InitialiseDB;
-    procedure InitialiseUI;
-    procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
-    // messages must be forwarded by main form.
-    procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
+//    procedure AfterSessionScroll;
+    procedure UpdateUI(DoFullUpdate: Boolean = false);
   end;
 
 implementation
@@ -169,10 +167,8 @@ var
   DoEnable: boolean;
 begin
   DoEnable := false;
-  // fix RAD STUDIO icon re-assignment issue.
-//  SetGridView_IconIndex; // uses actnEv_GridView.Checked state.
 
-  // grid view is enabled when events table is empty.
+  // NOTE: grid view remains enabled evenif events table is empty.
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
     Assigned(CORE) and CORE.IsActive then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
@@ -268,16 +264,6 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-{
-procedure TFrameEvent.FixedEventCntrlIcons;
-var
-  i: integer;
-begin
-  for I := 0 to actnlstEvent.ActionCount - 1 do
-    TAction(actnlstEvent.Actions[i]).Update;
-end;
-}
-
 procedure TFrameEvent.gridCanEditCell(Sender: TObject; ARow, ACol: Integer;
     var CanEdit: Boolean);
 begin
@@ -349,76 +335,6 @@ begin
   end;
 end;
 
-procedure TFrameEvent.InitialiseDB;
-begin
-  // GridView button icon index is dependant on checked state.
-  actnEv_GridView.Checked := false; // Collapsed grid view.
-  // ASSERT grid expand/collapse UI state.
-  SetGridView_IconIndex;
-  SetGridView_ColVisibility;
-end;
-
-procedure TFrameEvent.InitialiseUI;
-begin
-  grid.Visible := false;
-  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
-  if not Assigned(CORE) or not CORE.IsActive then exit;
-  // NOTE:
-  // Originally - using grid.pagemode := false; to clear the grid of rows.
-  grid.Visible := not CORE.qryEvent.IsEmpty();
-  if (not CORE.qrySession.IsEmpty()) and CORE.qryEvent.IsEmpty() then
-    pnlBody.Caption := 'Use NEW to get started with Events.';
-  // if CORE.IsWorkingOnConnection = true, then safe to call here...
-  // without the DB 'frame AfterScoll' messages.
-  if CORE.IsWorkingOnConnection then
-    InitialiseDB;
-end;
-
-procedure TFrameEvent.Msg_SCM_Scroll_Event(var Msg: TMessage);
-begin
-  LockDrawing;
-  grid.BeginUpdate;
-  try
-  if SCM2.scmConnection.Connected and CORE.IsActive then
-    grid.Visible := not CORE.qryEvent.IsEmpty;
-  finally
-    grid.EndUpdate;
-    UnlockDrawing;
-  end;
-end;
-
-procedure TFrameEvent.Msg_SCM_Scroll_Session(var Msg: TMessage);
-begin
-  // ASSERT TMS UI STATE...
-  LockDrawing;
-  grid.BeginUpdate;
-  try
-    begin
-      //  grid.RowCount := grid.FixedRows + 1; // TMS rule: row count > fixed row.
-      if SCM2.scmConnection.Connected and CORE.IsActive then
-      begin
-        if CORE.qrySession.IsEmpty then
-          Visible := false // display - empty.
-        else
-        begin
-          Visible := true;
-          if CORE.qryEvent.IsEmpty then
-            grid.PageMode := false
-          else
-          begin
-            // Set pagemode to the default 'editable' fetch records mode.
-            grid.PageMode := true;
-            CORE.qryEvent.First; // triggers scroll event.
-          end;
-        end;
-      end
-    end;
-  finally
-    grid.EndUpdate;
-    UnlockDrawing;
-  end;
-end;
-
 procedure TFrameEvent.SetGridView_ColVisibility;
 begin
   // EXPANDED or COLLAPSED grid views...
@@ -453,6 +369,121 @@ begin
     if (spbtnEvGridView.ImageIndex <> 0) then
        spbtnEvGridView.ImageIndex := 0;
   end;
+end;
+
+procedure TFrameEvent.UpdateUI(DoFullUpdate: Boolean = false);
+begin
+
+  if DoFullUpdate then
+  begin
+    // CHECK TMS rule..
+    if grid.RowCount < grid.FixedRows  then
+      grid.RowCount := grid.FixedRows + 1;
+
+    { NOTE: never make TMG TDBAdvGrid Invisible. It won't draw correctly.}
+
+    if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
+        (not Assigned(CORE)) or (not CORE.IsActive) or (CORE.qrySession.IsEmpty) then
+    begin
+      Self.Visible := false; // hide everthing - move on.
+      exit;
+    end;
+
+    { CHEAT: grid must be visible to sync + forces re-paint. }
+    LockDrawing;
+    Self.Visible := true;
+    pnlBody.Visible := true;
+    pnlG.Visible := true;
+    grid.Refresh;
+//    grid.BeginUpdate;
+//    grid.EndUpdate;
+    UnlockDrawing;
+  end;
+
+  LockDrawing;
+
+  try
+    if CORE.qrySession.IsEmpty() then
+    begin
+      Self.Visible := false;   // hide TMS grid.
+      exit;
+    end;
+
+    if not Self.Visible then Self.Visible := true;
+
+    if CORE.qryEvent.IsEmpty then
+    begin
+      // CNTRL panel is displayed but not the grid.
+      pnlBody.Visible := true;
+      pnlG.Visible := false;
+      actnEv_GridView.Checked := false; // DEFAULT: Collapsed grid view.
+    end
+    else
+    begin
+      pnlBody.Visible := true;
+      pnlG.Visible := true;
+      // Are we making a Connection or changing SwimClubs?
+      if CORE.IsWorkingOnConnection then
+        actnEv_GridView.Checked := false;
+
+      SetGridView_IconIndex();
+      SetGridView_ColVisibility;
+    end;
+
+  finally
+    UnlockDrawing;
+  end;
+
+end;
+
+procedure TFrameEvent.UpdateUI_2;
+begin
+
+  LockDrawing;
+  Self.Visible := true;
+
+  try
+    if CORE.qrySession.IsEmpty() then
+    begin
+      pnlBody.Visible := true; // display CNTRLs.
+      pnlG.Visible := false;   // hide TMS grid.
+      exit;
+    end;
+
+    if CORE.qryEvent.IsEmpty then
+    begin
+      // CNTRL panel is displayed but not the grid.
+      pnlBody.Visible := true;
+      pnlG.Visible := false;
+      actnEv_GridView.Checked := false; // DEFAULT: Collapsed grid view.
+      SetGridView_IconIndex;
+      SetGridView_ColVisibility;
+      Invalidate;
+    end
+    else
+    begin
+      pnlBody.Visible := true;
+      pnlG.Visible := true;
+      // Are we making a Connection or changing SwimClubs?
+      if CORE.IsWorkingOnConnection then
+      begin
+        // reset
+        // CORE.qryEvent.First;
+        actnEv_GridView.Checked := false;
+        SetGridView_IconIndex();
+        SetGridView_ColVisibility;
+      end
+      else
+      begin
+        SetGridView_IconIndex();
+        SetGridView_ColVisibility;
+      end;
+    end;
+
+  finally
+    UnlockDrawing;
+  end;
+
 end;
 
 end.

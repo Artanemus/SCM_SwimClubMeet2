@@ -27,52 +27,53 @@ type
 }
 
   TFrameHeat = class(TFrame)
-    rpnlCntrl: TRelativePanel;
-    pnlBody: TPanel;
-    grid: TDBAdvGrid;
-    actnlistHeat: TActionList;
-    pumenuHeat: TPopupMenu;
-    actnHt_MoveUp: TAction;
-    actnHt_MoveDown: TAction;
-    actnHt_ToggleStatus: TAction;
-    actnHt_New: TAction;
-    actnHt_Delete: TAction;
-    actnHt_AutoBuild: TAction;
-    actnHt_MarshallSheet: TAction;
-    actnHt_TimeKeeperSheets: TAction;
-    actnHt_SheetSet: TAction;
-    actnHt_Report: TAction;
-    spbtnMoveUp: TSpeedButton;
-    spbtnMoveDown: TSpeedButton;
-    spbtnToggleStatus: TSpeedButton;
-    spbtnNew: TSpeedButton;
-    spbtnDelete: TSpeedButton;
-    ShapeHtBar1: TShape;
-    spbtnAutoBuild: TSpeedButton;
-    ShapeHtBar2: TShape;
-    spbtnMarshall: TSpeedButton;
-    spbtnTimeKeeper: TSpeedButton;
-    spbtnAllLogs: TSpeedButton;
-    ShapeHtBar3: TShape;
-    spbtnReport: TSpeedButton;
-    actnHt_AutoBuildAll: TAction;
     actnHt_AllMarshallSheets: TAction;
     actnHt_AllTimeKeeperSheets: TAction;
+    actnHt_AutoBuild: TAction;
+    actnHt_AutoBuildAll: TAction;
+    actnHt_Delete: TAction;
+    actnHt_MarshallSheet: TAction;
+    actnHt_MoveDown: TAction;
+    actnHt_MoveUp: TAction;
+    actnHt_New: TAction;
     actnHt_Renumber: TAction;
-    MoveUp1: TMenuItem;
-    MoveDown1: TMenuItem;
-    oggleStatus1: TMenuItem;
-    New1: TMenuItem;
-    Delete1: TMenuItem;
-    AutoBuild1: TMenuItem;
-    MarshallSheet1: TMenuItem;
+    actnHt_Report: TAction;
+    actnHt_SheetSet: TAction;
+    actnHt_TimeKeeperSheets: TAction;
+    actnHt_ToggleStatus: TAction;
+    actnlistHeat: TActionList;
     ALLTimeKeeperSets1: TMenuItem;
-    SheetSet1: TMenuItem;
+    AutoBuild1: TMenuItem;
+    Delete1: TMenuItem;
+    grid: TDBAdvGrid;
     HeatReport1: TMenuItem;
+    lblMsgEmpty: TLabel;
+    MarshallSheet1: TMenuItem;
+    MoveDown1: TMenuItem;
+    MoveUp1: TMenuItem;
     N1: TMenuItem;
     N2: TMenuItem;
     N3: TMenuItem;
-    lblMsgEmpty: TLabel;
+    New1: TMenuItem;
+    oggleStatus1: TMenuItem;
+    pnlBody: TPanel;
+    pumenuHeat: TPopupMenu;
+    rpnlCntrl: TRelativePanel;
+    ShapeHtBar1: TShape;
+    ShapeHtBar2: TShape;
+    ShapeHtBar3: TShape;
+    SheetSet1: TMenuItem;
+    spbtnAllLogs: TSpeedButton;
+    spbtnAutoBuild: TSpeedButton;
+    spbtnDelete: TSpeedButton;
+    spbtnMarshall: TSpeedButton;
+    spbtnMoveDown: TSpeedButton;
+    spbtnMoveUp: TSpeedButton;
+    spbtnNew: TSpeedButton;
+    spbtnReport: TSpeedButton;
+    spbtnTimeKeeper: TSpeedButton;
+    spbtnToggleStatus: TSpeedButton;
+    pnlG: TPanel;
     procedure actnHt_GenericUpdate(Sender: TObject);
     procedure actnHt_ToggleStatusExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
@@ -81,78 +82,13 @@ type
         State: TGridDrawState);
     procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
-  private
-    { Private declarations }
   public
-    procedure InitialiseDB;
-    procedure InitialiseUI;
-    // messages must be forwarded by main form.
-    procedure Msg_SCM_Scroll_Heat(var Msg: TMessage); message SCM_SCROLL_HEAT;
-    procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_Event;
-
+    procedure UpdateUI(DoFullUpdate: boolean = false);
   end;
 
 implementation
 
 {$R *.dfm}
-procedure TFrameHeat.InitialiseDB;
-begin
-  ;
-end;
-
-procedure TFrameHeat.InitialiseUI;
-begin
-  grid.Visible := false;
-  lblMsgEmpty.Caption := '';
-  lblMsgEmpty.Visible := false;
-  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
-  if not Assigned(CORE) or not CORE.IsActive then exit;
-
-  // NOTE:
-  // Originally - using grid.pagemode := false; to clear the grid of rows.
-  grid.Visible := not CORE.qryHeat.IsEmpty();
-  if (not CORE.qryEvent.IsEmpty()) and CORE.qryHeat.IsEmpty() then
-  begin
-    lblMsgEmpty.Caption := 'Use AUTOBUILD or NEW to get started with heats.';
-    lblMsgEmpty.Visible := true;
-  end;
-  // if CORE.IsWorkingOnConnection = true, then safe to call here...
-  // without the DB 'frame AfterScoll' messages.
-  if CORE.IsWorkingOnConnection then
-    InitialiseDB;
-end;
-
-
-procedure TFrameHeat.Msg_SCM_Scroll_Event(var Msg: TMessage);
-begin
-  LockDrawing; // forces a repaint of the frame...
-  try
-    if SCM2.scmConnection.Connected and CORE.IsActive then
-    begin
-      pnlBody.Visible := not CORE.qryEvent.IsEmpty;
-      if not CORE.qryHeat.IsEmpty() then
-        grid.Visible := true;
-    end
-    else
-      pnlBody.Visible := false;
-  finally
-    UnlockDrawing;
-  end;
-end;
-
-procedure TFrameHeat.Msg_SCM_Scroll_Heat(var Msg: TMessage);
-begin
-  // Depreciated:
-  // setting pagemode to false clears grid of text. (it appears empty)
-  // Set pagemode to the default 'editable' fetch records mode.
-
-  grid.beginUpdate; // forces a repaint of grid...
-  if SCM2.scmConnection.Connected and CORE.IsActive then
-    grid.Visible := not CORE.qryHeat.IsEmpty
-  else
-    grid.Visible := false;
-  grid.EndUpdate;
-end;
 
 procedure TFrameHeat.actnHt_GenericUpdate(Sender: TObject);
 var
@@ -225,6 +161,70 @@ procedure TFrameHeat.gridGetCellColor(Sender: TObject; ARow, ACol: Integer;
     AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
 begin
   ABrush.Color := $00494131;
+
+end;
+
+procedure TFrameHeat.UpdateUI(DoFullUpdate: boolean = false);
+begin
+
+  if DoFullUpdate then
+  begin
+    // CHECK TMS rule..
+    if grid.RowCount < grid.FixedRows  then
+      grid.RowCount := grid.FixedRows + 1;
+
+    { NOTE: never make TMG TDBAdvGrid Invisible. It won't draw correctly.}
+
+    if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
+        (not Assigned(CORE)) or (not CORE.IsActive) or (CORE.qrySession.IsEmpty)
+        or (CORE.qryEvent.IsEmpty) then
+    begin
+      Self.Visible := false; // hide everthing - move on.
+      exit;
+    end;
+
+    { NOTE: grid must be visible to sync + forces re-paint. }
+    LockDrawing;
+    try
+      Self.Visible := true;
+      pnlBody.Visible := true;
+      pnlG.Visible := true;
+      grid.Refresh;
+  //    grid.BeginUpdate;
+  //    grid.EndUpdate;
+    finally
+      UnlockDrawing;
+    end;
+  end;
+
+
+  LockDrawing;
+
+  try
+    if CORE.qryEvent.IsEmpty() then
+    begin
+      Self.Visible := false; // hide everthing - move on.
+      exit;
+    end;
+
+    if not Self.Visible then Self.Visible := true;
+
+    if CORE.qryHeat.IsEmpty then
+    begin
+      // CNTRL panel is displayed but not the grid.
+      pnlBody.Visible := true;
+      pnlG.Visible := false;
+    end
+    else
+    begin
+      pnlBody.Visible := true;
+      pnlG.Visible := true;
+    end;
+
+  finally
+    UnlockDrawing;
+  end;
+
 
 end;
 

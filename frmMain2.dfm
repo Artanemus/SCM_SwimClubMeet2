@@ -3,7 +3,7 @@ object Main2: TMain2
   Top = 0
   Caption = 'SwimClubMeet V2 (Build #)'
   ClientHeight = 799
-  ClientWidth = 1109
+  ClientWidth = 1137
   Color = clBtnFace
   CustomTitleBar.Control = pnlTitleBar
   CustomTitleBar.Enabled = True
@@ -2704,7 +2704,7 @@ object Main2: TMain2
   object pnlTitleBar: TTitleBarPanel
     Left = 0
     Top = 0
-    Width = 1109
+    Width = 1137
     Height = 37
     Margins.Top = 24
     OnPaint = pnlTitleBarPaint
@@ -2728,7 +2728,7 @@ object Main2: TMain2
         OnClick = pnlTitleBarCustomButtons1Click
       end>
     DesignSize = (
-      1109
+      1137
       37)
     object DBTextClubName: TDBText
       Left = 6
@@ -2765,7 +2765,7 @@ object Main2: TMain2
   object actnMainMenuBar: TActionMainMenuBar
     Left = 0
     Top = 37
-    Width = 1109
+    Width = 1137
     Height = 42
     UseSystemFont = False
     ActionManager = actnManager
@@ -2786,7 +2786,7 @@ object Main2: TMain2
     AlignWithMargins = True
     Left = 3
     Top = 757
-    Width = 1103
+    Width = 1131
     Height = 39
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBtnText
@@ -2826,10 +2826,10 @@ object Main2: TMain2
     AlignWithMargins = True
     Left = 3
     Top = 89
-    Width = 1103
+    Width = 1131
     Height = 662
     Margins.Top = 10
-    ActivePage = tabHeats
+    ActivePage = tabSession
     Align = alClient
     TabOrder = 3
     OnChange = PageControlChange
@@ -2856,13 +2856,22 @@ object Main2: TMain2
           inherited pnlBody: TPanel
             Width = 359
             Height = 626
+            ExplicitLeft = 58
             ExplicitWidth = 359
             ExplicitHeight = 626
-            inherited grid: TDBAdvGrid
+            inherited pnlG: TPanel
               Width = 359
               Height = 626
+              ExplicitLeft = 0
+              ExplicitTop = 0
               ExplicitWidth = 359
               ExplicitHeight = 626
+              inherited grid: TDBAdvGrid
+                Width = 359
+                Height = 626
+                ExplicitWidth = 359
+                ExplicitHeight = 626
+              end
             end
           end
           inherited rpnlCntrl: TRelativePanel
@@ -2959,31 +2968,24 @@ object Main2: TMain2
               end>
             ExplicitHeight = 626
             inherited spbtnSessVisiblity: TSpeedButton
-              ImageName = 'lock2'
               Glyph.Data = {00000000}
             end
             inherited spbtnSessLockState: TSpeedButton
-              ImageIndex = 3
               Glyph.Data = {00000000}
             end
             inherited spbtnSessEdit: TSpeedButton
-              ImageIndex = 5
               Glyph.Data = {00000000}
             end
             inherited spbtnSessNew: TSpeedButton
-              ImageName = 'delete'
               Glyph.Data = {00000000}
             end
             inherited spbtnSessClone: TSpeedButton
-              ImageIndex = 7
               Glyph.Data = {00000000}
             end
             inherited spbtnSessDelete: TSpeedButton
-              ImageName = 'report'
               Glyph.Data = {00000000}
             end
             inherited spbtnSessReport: TSpeedButton
-              ImageIndex = 9
               Glyph.Data = {00000000}
             end
           end
@@ -2995,7 +2997,7 @@ object Main2: TMain2
       object pnlEvent: TPanel
         Left = 417
         Top = 0
-        Width = 678
+        Width = 706
         Height = 626
         Align = alClient
         BevelOuter = bvNone
@@ -3003,25 +3005,31 @@ object Main2: TMain2
         inline frEvent: TFrameEvent
           Left = 0
           Top = 0
-          Width = 678
+          Width = 706
           Height = 626
           Align = alClient
           TabOrder = 0
-          ExplicitWidth = 678
+          ExplicitWidth = 706
           ExplicitHeight = 626
           inherited pnlBody: TPanel
-            Width = 620
+            Width = 648
             Height = 626
-            ExplicitWidth = 620
+            ExplicitWidth = 648
             ExplicitHeight = 626
-            inherited grid: TDBAdvGrid
-              Width = 620
+            inherited pnlG: TPanel
+              Width = 648
               Height = 626
-              ExplicitWidth = 620
+              ExplicitWidth = 648
               ExplicitHeight = 626
-              RowHeights = (
-                32
-                32)
+              inherited grid: TDBAdvGrid
+                Width = 648
+                Height = 626
+                ExplicitWidth = 648
+                ExplicitHeight = 626
+                RowHeights = (
+                  32
+                  32)
+              end
             end
           end
           inherited rpnlCntrl: TRelativePanel
@@ -3117,17 +3125,6 @@ object Main2: TMain2
                 Below = frEvent.spbtnEvDelete
               end>
             ExplicitHeight = 626
-          end
-          inherited actnlstEvent: TActionList
-            Left = 248
-            Top = 176
-            inherited actnEv_GridView: TAction
-              OnExecute = frEventactnEv_GridViewExecute
-            end
-          end
-          inherited pumenuEvent: TPopupMenu
-            Left = 250
-            Top = 256
           end
         end
       end
@@ -3282,7 +3279,7 @@ object Main2: TMain2
       object pnlNominate: TPanel
         Left = 433
         Top = 0
-        Width = 662
+        Width = 690
         Height = 626
         Align = alClient
         BevelOuter = bvNone
@@ -3290,7 +3287,7 @@ object Main2: TMain2
         inline frNominate: TFrameNominate
           Left = 0
           Top = 0
-          Width = 662
+          Width = 690
           Height = 626
           Align = alClient
           Font.Charset = DEFAULT_CHARSET
@@ -3300,7 +3297,7 @@ object Main2: TMain2
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitWidth = 662
+          ExplicitWidth = 690
           ExplicitHeight = 626
           inherited rpnlCntrl: TRelativePanel
             Height = 626
@@ -3317,19 +3314,15 @@ object Main2: TMain2
             ExplicitHeight = 626
           end
           inherited pnlBody: TPanel
-            Width = 604
+            Width = 632
             Height = 626
-            ExplicitWidth = 604
+            ExplicitWidth = 632
             ExplicitHeight = 626
             inherited grid: TDBAdvGrid
-              Width = 604
+              Width = 632
               Height = 626
-              RowCount = 2
-              ExplicitWidth = 604
+              ExplicitWidth = 632
               ExplicitHeight = 626
-              RowHeights = (
-                0
-                46)
             end
           end
         end
@@ -3341,7 +3334,7 @@ object Main2: TMain2
       object pnlHeader: TPanel
         Left = 0
         Top = 0
-        Width = 1095
+        Width = 1123
         Height = 80
         Align = alTop
         BevelOuter = bvNone
@@ -3349,15 +3342,15 @@ object Main2: TMain2
         inline frNavEv: TFrameNavEv
           Left = 0
           Top = 0
-          Width = 1095
+          Width = 1123
           Height = 80
           Align = alClient
           TabOrder = 0
           StyleElements = [seClient, seBorder]
-          ExplicitWidth = 1095
+          ExplicitWidth = 1123
           ExplicitHeight = 80
           inherited rpnlBody: TRelativePanel
-            Width = 1095
+            Width = 1123
             Height = 80
             ControlCollection = <
               item
@@ -3378,23 +3371,23 @@ object Main2: TMain2
                 AlignTopWithPanel = True
                 AlignVerticalCenterWithPanel = True
               end>
-            ExplicitWidth = 1095
+            ExplicitWidth = 1123
             ExplicitHeight = 80
             inherited spbtnNavLeft: TSpeedButton
               Height = 80
               ExplicitHeight = 80
             end
             inherited spbtnNavRight: TSpeedButton
-              Left = 1047
+              Left = 1075
               Height = 80
-              ExplicitLeft = 1047
+              ExplicitLeft = 1075
               ExplicitHeight = 80
             end
           end
           inherited scrBox: TScrollBox
-            Width = 999
+            Width = 1027
             Height = 80
-            ExplicitWidth = 999
+            ExplicitWidth = 1027
             ExplicitHeight = 80
           end
         end
@@ -3402,7 +3395,7 @@ object Main2: TMain2
       object pnlBody: TPanel
         Left = 0
         Top = 80
-        Width = 1095
+        Width = 1123
         Height = 546
         Align = alClient
         BevelOuter = bvNone
@@ -3564,17 +3557,19 @@ object Main2: TMain2
               ExplicitWidth = 161
               ExplicitHeight = 546
               inherited lblMsgEmpty: TLabel
-                Width = 145
-                Height = 530
+                Width = 136
+                Height = 63
                 Font.Height = -16
-                ExplicitWidth = 305
-                ExplicitHeight = 42
+                ExplicitWidth = 136
+                ExplicitHeight = 63
               end
-              inherited grid: TDBAdvGrid
-                Width = 161
-                Height = 546
-                ExplicitWidth = 161
-                ExplicitHeight = 546
+              inherited pnlG: TPanel
+                inherited grid: TDBAdvGrid
+                  Width = 161
+                  Height = 546
+                  ExplicitWidth = 161
+                  ExplicitHeight = 546
+                end
               end
             end
           end
@@ -3582,7 +3577,7 @@ object Main2: TMain2
         object pnlLane: TPanel
           Left = 219
           Top = 0
-          Width = 876
+          Width = 904
           Height = 546
           Align = alClient
           BevelOuter = bvNone
@@ -3590,11 +3585,11 @@ object Main2: TMain2
           inline frLane: TFrameLane
             Left = 0
             Top = 0
-            Width = 876
+            Width = 904
             Height = 546
             Align = alClient
             TabOrder = 0
-            ExplicitWidth = 876
+            ExplicitWidth = 904
             ExplicitHeight = 546
             inherited rpnlCntrl: TRelativePanel
               Height = 546
@@ -3671,18 +3666,20 @@ object Main2: TMain2
               ExplicitHeight = 546
             end
             inherited pnlBody: TPanel
-              Width = 818
+              Width = 846
               Height = 546
-              ExplicitWidth = 818
+              ExplicitWidth = 846
               ExplicitHeight = 546
-              inherited grid: TDBAdvGrid
-                Width = 818
-                Height = 546
-                ExplicitWidth = 818
-                ExplicitHeight = 546
-                RowHeights = (
-                  32
-                  32)
+              inherited pnlG: TPanel
+                inherited grid: TDBAdvGrid
+                  Width = 846
+                  Height = 546
+                  ExplicitWidth = 846
+                  ExplicitHeight = 546
+                  RowHeights = (
+                    32
+                    32)
+                end
               end
             end
           end
@@ -4106,95 +4103,7 @@ object Main2: TMain2
           item
             Items = <
               item
-                Action = frEvent.actnEv_GridView
-                Caption = '&Toogle Grid View'
-                ImageIndex = 1
-                ImageName = 'grid-on'
-              end
-              item
-                Action = frEvent.actnEv_MoveUp
-                Caption = '&Move Up'
-                ImageIndex = 6
-                ImageName = 'up'
-                ShortCut = 16422
-              end
-              item
-                Action = frEvent.actnEv_MoveDown
-                Caption = 'M&ove Down'
-                ImageIndex = 7
-                ImageName = 'down'
-                ShortCut = 16424
-              end
-              item
-                Action = frEvent.actnEv_New
-                Caption = '&New Event'
-                ImageIndex = 8
-                ImageName = 'new'
-                ShortCut = 16429
-              end
-              item
-                Action = frEvent.actnEv_Delete
-                Caption = '&Delete Event...'
-                ImageIndex = 9
-                ImageName = 'delete'
-                ShortCut = 16430
-              end
-              item
-                Action = frEvent.actnEv_EventType
-                Caption = 'Event T&ype'
-                ImageIndex = 35
-                ImageName = 'INDV_RELAY'
-              end
-              item
-                Action = frEvent.actnEv_Report
-                Caption = '&Event Report...'
-                ImageIndex = 15
-                ImageName = 'report'
-              end
-              item
-                Action = frEvent.actnEv_Final
-                Caption = '&Build Event Finals...'
-                ImageName = 'tool'
-              end
-              item
-                Action = frEvent.actnEv_SemiFinals
-                Caption = 'B&uild Semi-Finals...'
-                ImageName = 'tool'
-              end
-              item
-                Action = frEvent.actnEv_QuartFinals
-                Caption = 'Bu&ild Quater Finals...'
-                ImageName = 'tool'
-              end
-              item
-                Action = frEvent.actnEv_Renumber
-                Caption = '&Renumber...'
-                ImageIndex = 36
-                ImageName = 'renumber'
-              end
-              item
                 Caption = '-'
-              end
-              item
-                Action = frEvent.actnEv_Stats
-                Caption = 'E&vent Statistics...'
-                ImageName = 'stats'
-              end
-              item
-                Action = frEvent.actnEv_Schedule
-                Caption = '&Schedule Event...'
-              end
-              item
-                Action = frEvent.actnEv_Export
-                Caption = 'E&xport...'
-                ImageIndex = 22
-                ImageName = 'out'
-              end
-              item
-                Action = frEvent.actnEv_Import
-                Caption = 'Im&port...'
-                ImageIndex = 21
-                ImageName = 'in'
               end>
             Caption = 'E&vents'
           end
@@ -4511,10 +4420,6 @@ object Main2: TMain2
         ActionBar = actnMainMenuBar
       end>
     LinkedActionLists = <
-      item
-        ActionList = frEvent.actnlstEvent
-        Caption = 'actnlstEvents'
-      end
       item
         ActionList = frHeat.actnlistHeat
         Caption = 'actnlstHeats'

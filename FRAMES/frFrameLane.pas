@@ -35,19 +35,12 @@ type
     actnln_Report: TAction;
     ShapeLnBar1: TShape;
     spbtnReport: TSpeedButton;
+    pnlG: TPanel;
     procedure actnLn_GenericUpdate(Sender: TObject);
   private
     { Private declarations }
   public
-    procedure InitialiseUI;
-    procedure InitialiseDB;
-
-    // messages must be forwarded by main form.
-    procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
-    procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
-    procedure Msg_SCM_Scroll_Heat(var Msg: TMessage); message SCM_SCROLL_HEAT;
-    procedure Msg_SCM_Scroll_Lane(var Msg: TMessage); message SCM_SCROLL_LANE;
-
+    procedure UpdateUI(DoFullUpdate: boolean = false);
   end;
 
 implementation
@@ -72,52 +65,62 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameLane.InitialiseDB;
+procedure TFrameLane.UpdateUI(DoFullUpdate: boolean = false);
 begin
-  ;
-end;
 
-procedure TFrameLane.InitialiseUI;
-begin
-  grid.Visible := false;
-  pnlBody.Caption := '';
-  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
-  if not Assigned(CORE) or not CORE.IsActive then exit;
+  {CASES: after Connection, after change of swimming club, after manage-clubs. }
+  if DoFullUpdate then
+  begin
+    if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
+        (not Assigned(CORE)) or (not CORE.IsActive) or (CORE.qrySession.IsEmpty)
+        or (CORE.qryEvent.IsEmpty) or (CORE.qryHeat.IsEmpty) then
+    begin
+      Self.Visible := false;
+      exit;
+    end;
+        { NOTE: grid must be visible to sync + forces re-paint. }
+      LockDrawing;
+      Self.Visible := true;
+      pnlBody.Visible := true;
+      pnlG.Visible := true;
+      grid.Refresh;
+//    grid.BeginUpdate;
+//    grid.EndUpdate;
+      UnlockDrawing;
+  end;
 
-  // NOTE:
-  // Originally - using grid.pagemode := false; to clear the grid of rows.
-  grid.Visible := not CORE.qryLane.IsEmpty();
-  if (not CORE.qryHeat.IsEmpty()) and CORE.qryLane.IsEmpty() then
-    pnlBody.Caption := 'Use NEW to get started with Lanes.';
-  // if CORE.IsWorkingOnConnection = true, then safe to call here...
-  // without the DB 'frame AfterScoll' messages.
-  if CORE.IsWorkingOnConnection then
-    InitialiseDB;
-end;
 
-procedure TFrameLane.Msg_SCM_Scroll_Event(var Msg: TMessage);
-begin
-  {TODO -oBSA -cGeneral : Complete...}
-end;
+  LockDrawing;
+  try
 
-procedure TFrameLane.Msg_SCM_Scroll_Heat(var Msg: TMessage);
-begin
-  {TODO -oBSA -cGeneral : Complete...}
-end;
+    if CORE.qryHeat.IsEmpty then
+    begin
+      // CNTRL panel is displayed but not the grid.
+      Self.Visible := false;
+      exit;
+    end;
 
-procedure TFrameLane.Msg_SCM_Scroll_Lane(var Msg: TMessage);
-begin
-  grid.BeginUpdate; // forces a re-paint of grid.
-  if SCM2.scmConnection.Connected and CORE.IsActive then
-    grid.Visible := not CORE.qryLane.IsEmpty
-  else
-    grid.Visible := false;
-  grid.EndUpdate;
-end;
+    if not Visible then Self.Visible := true;
 
-procedure TFrameLane.Msg_SCM_Scroll_Session(var Msg: TMessage);
-begin
-  {TODO -oBSA -cGeneral : Complete...}
+    if not CORE.qryLane.IsEmpty then
+    begin
+      pnlBody.Visible := true;
+      pnlG.Visible := true;
+      // Are we making a Connection or changing SwimClubs?
+      if CORE.IsWorkingOnConnection then
+      begin
+        // reset
+        // CORE.qryLane.First;
+      end
+      else
+      begin
+        ;
+      end;
+    end;
+
+  finally
+    UnlockDrawing;
+  end;
 end;
 
 end.

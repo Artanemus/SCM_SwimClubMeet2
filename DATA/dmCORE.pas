@@ -154,7 +154,6 @@ type
     procedure qryEventNewRecord(DataSet: TDataSet);
     procedure qryFilterMemberAfterScroll(DataSet: TDataSet);
     procedure qryHeatAfterScroll(DataSet: TDataSet);
-    procedure qryLaneAfterScroll(DataSet: TDataSet);
     procedure qryNomineeNewRecord(DataSet: TDataSet);
     procedure qrySessionAfterScroll(DataSet: TDataSet);
     procedure qrySessionBeforePost(DataSet: TDataSet);
@@ -162,7 +161,6 @@ type
     procedure qrySessionSessionDTGetText(Sender: TField; var Text: string;
         DisplayText: Boolean);
     procedure qrySessionSessionDTSetText(Sender: TField; const Text: string);
-    procedure qrySwimClubAfterScroll(DataSet: TDataSet);
     procedure qrySwimClubNewRecord(DataSet: TDataSet);
 	private
     FIsActive: boolean;
@@ -323,20 +321,14 @@ begin
 end;
 
 procedure TCORE.qryEventAfterScroll(DataSet: TDataSet);
-var
-  PK, EvNum: integer;
 begin
   if (msgHandle <> 0) then
   begin
     if not (qryEvent.State in [dsOpening]) then
     begin
-      if not IsWorkingOnConnection then
-      begin
-        // Pack additional information for use in FRAME NavEv.
-        PK := DataSet.FieldByName('EventID').AsInteger;
-        EvNum := DataSet.FieldByName('EventNum').AsInteger;
-        PostMessage(msgHandle, SCM_SCROLL_EVENT, WPARAM(nativeint(PK)),LPARAM(EvNum));
-      end;
+      if not fIsWorkingOnConnection then
+        // go post frame scroll events...
+        PostMessage(msgHandle, SCM_AFTERSCROLL_EVENT, 0,0);
     end;
   end;
 end;
@@ -382,19 +374,8 @@ begin
     if not (qryHeat.State in [dsOpening]) then
     begin
       if not fIsWorkingOnConnection then
-        PostMessage(msgHandle, SCM_SCROLL_HEAT, 0,0);
-    end;
-  end;
-end;
-
-procedure TCORE.qryLaneAfterScroll(DataSet: TDataSet);
-begin
-  if (msgHandle <> 0) then
-  begin
-    if not (qryLane.State in [dsOpening]) then
-    begin
-      if not fIsWorkingOnConnection then
-        PostMessage(msgHandle, SCM_SCROLL_LANE, 0,0);
+        // go post frame scroll events...
+        PostMessage(msgHandle, SCM_AFTERSCROLL_HEAT, 0,0);
     end;
   end;
 end;
@@ -415,7 +396,7 @@ begin
     begin
       if not fIsWorkingOnConnection then
         // go post frame scroll events...
-        PostMessage(msgHandle, SCM_SCROLL_SESSION, 0,0);
+        PostMessage(msgHandle, SCM_AFTERSCROLL_SESSION, 0,0);
     end;
   end;
 end;
@@ -482,19 +463,6 @@ begin
       begin
         ShowMessage(E.ClassName + #10 + E.Message);
       end;
-    end;
-  end;
-end;
-
-procedure TCORE.qrySwimClubAfterScroll(DataSet: TDataSet);
-begin
-  if (msgHandle <> 0) then
-  begin
-    if not (qrySwimClub.State in [dsOpening]) then
-    begin
-      if not fIsWorkingOnConnection then
-        // go post frame scroll events...
-        PostMessage(msgHandle, SCM_SCROLL_SWIMCLUB, 0,0);
     end;
   end;
 end;

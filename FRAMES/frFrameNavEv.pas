@@ -46,12 +46,13 @@ type
   protected
     procedure Msg_SCM_Frame_Reset(var Msg: TMessage); message SCM_FRAME_RESET;
     procedure Msg_SCM_Frame_Selected(var Msg: TMessage); message SCM_FRAME_SELECTED;
-    procedure Msg_SCM_Scroll_Event(var Msg: TMessage); message SCM_SCROLL_EVENT;
+    procedure Msg_SCM_AfterScroll_Event(var Msg: TMessage); message
+        SCM_AFTERSCROLL_EVENT;
   public
 //    FOnNavEvItemSelected: TNavEvItemSelected; // MainForm proc for selection.
     procedure FillNavEvItems;
-    procedure InitialiseDB;
-    procedure InitialiseUI;
+    procedure UpdateUI;
+
   end;
 
 var
@@ -190,12 +191,15 @@ var
   found: boolean;
 begin
   // exception traps.
-  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
-  if not Assigned(CORE) or not CORE.IsActive then exit;
+
+  if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
+      (not Assigned(CORE)) or (not CORE.IsActive) then
+    exit;
+
   PK := 0;
   found := false;
   // 1. Performance: Disable UI updates
-  LockDrawing;
+  scrBox.LockDrawing;
   scrBox.DisableAlign;
   Q := CORE.qryEvent; // improves readability.
   Q.DisableControls;
@@ -245,30 +249,14 @@ begin
     uEvent.DetailTBLs_EnableCNTRLs;
     scrBox.EnableAlign;
     scrBox.Realign; // Calcs range - ensures scrollbar is displayed.
-    UnlockDrawing;
+    scrBox.UnlockDrawing;
+
   end;
-end;
-
-procedure TFrameNavEv.InitialiseDB;
-begin
-    FillNavEvItems();
-end;
-
-procedure TFrameNavEv.InitialiseUI;
-begin
-  rpnlBody.Visible := false;
-  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
-  if not Assigned(CORE) or not CORE.IsActive then exit;
-  rpnlBody.Visible := not CORE.qryEvent.IsEmpty();
-  // if CORE.IsWorkingOnConnection = true, then safe to call here...
-  // without the DB 'frame AfterScoll' messages.
-  if CORE.IsWorkingOnConnection then
-    InitialiseDB;
 end;
 
 procedure TFrameNavEv.Msg_SCM_Frame_Reset(var Msg: TMessage);
 begin
-  FillNavEvItems();
+//  FillNavEvItems();
 end;
 
 procedure TFrameNavEv.Msg_SCM_Frame_Selected(var Msg: TMessage);
@@ -285,11 +273,11 @@ begin
     if (uEvent.PK() <> PK) then
       // locate event record..
       // This triggers a scroll event which intern triggers a
-      // TFrameNavEv.Msg_SCM_Scroll_Event...
+      // TFrameNavEv.Msg_SCM_AfterScroll_Event...
       uEvent.Locate(PK);
 end;
 
-procedure TFrameNavEv.Msg_SCM_Scroll_Event(var Msg: TMessage);
+procedure TFrameNavEv.Msg_SCM_AfterScroll_Event(var Msg: TMessage);
 var
   NavEvItem: TFrameNavEvItem;
 begin
@@ -399,6 +387,65 @@ begin
   finally
     UnlockDrawing;
   end;
+end;
+
+procedure TFrameNavEv.UpdateUI;
+begin
+
+  if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
+      (not Assigned(CORE)) or (not CORE.IsActive) then
+  begin
+    Self.Visible := false;
+    exit;
+  end;
+
+  LockDrawing;
+  rpnlBody.Caption := '';
+  scrBox.LockDrawing;
+  try
+    if CORE.qrySwimClub.IsEmpty() or CORE.qrySession.IsEmpty() then
+    begin
+      Self.Visible := false; // hide everthing - move on.
+      exit;
+    end;
+
+    Self.Visible := true;
+
+    if CORE.qryEvent.IsEmpty then
+    begin
+      // CNTRL panel is displayed but not the grid.
+      rpnlBody.Visible := true;
+      rpnlBody.Caption := 'No events.';
+      rpnlBody.Alignment := taCenter;
+      rpnlBody.VerticalAlignment := taVerticalCenter;
+      scrBox.Visible := false;
+      spbtnNavLeft.Enabled := false;
+      spbtnNavRight.Enabled := false;
+    end;
+
+    if not CORE.qryEvent.IsEmpty then
+    begin
+      rpnlBody.Visible := true;
+      scrBox.Visible := false;
+      spbtnNavLeft.Enabled := false;
+      spbtnNavRight.Enabled := false;
+      // Are we making a Connection or changing SwimClubs?
+      if CORE.IsWorkingOnConnection then
+      begin
+        ;
+      end
+      else
+      begin
+        FillNavEvItems;
+      end;
+    end;
+
+  finally
+    scrBox.UnlockDrawing;
+    UnlockDrawing;
+  end;
+
+
 end;
 
 end.

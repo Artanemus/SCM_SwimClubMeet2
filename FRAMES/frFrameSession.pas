@@ -60,6 +60,7 @@ type
     spbtnSessNew: TSpeedButton;
     spbtnSessReport: TSpeedButton;
     spbtnSessVisiblity: TSpeedButton;
+    pnlG: TPanel;
     procedure actnSess_CheckLockUpdate(Sender: TObject);
     procedure actnSess_CloneUpdate(Sender: TObject);
     procedure actnSess_DeleteExecute(Sender: TObject);
@@ -86,10 +87,7 @@ type
   protected
     procedure Loaded; override;
   public
-    procedure InitialiseDB;
-    procedure InitialiseUI;
-    // messages must be forwarded by main form.
-    procedure Msg_SCM_Scroll_Session(var Msg: TMessage); message SCM_SCROLL_SESSION;
+    procedure UpdateUI(DoFullUpdate: boolean = false);
   end;
 
 implementation
@@ -98,7 +96,6 @@ uses
   uSession, dlgEditSession, dlgNewSession;
 
 {$R *.dfm}
-
 
 procedure TFrameSession.actnSess_CheckLockUpdate(Sender: TObject);
 var
@@ -421,47 +418,104 @@ begin
 
 end;
 
-procedure TFrameSession.InitialiseDB;
+procedure TFrameSession.UpdateUI(DoFullUpdate: boolean = false);
+var
+  storePK: integer;
+  s1, s2: string;
 begin
-  if CORE.qrySession.IsEmpty() then
+
+  if DoFullUpdate then
   begin
-    actnSess_Visibilty.Checked := false;
-    SetVisibilityIcon;
-    actnSess_Lock.Checked := false;
-    SetLockStateIcon;
-  end else
-  begin
+    // CHECK TMS rule..
+    if grid.RowCount < grid.FixedRows  then
+      grid.RowCount := grid.FixedRows + 1;
+
+    { NOTE: never make TMG TDBAdvGrid Invisible. It won't draw correctly.}
+
+    if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
+        (not Assigned(CORE)) or (not CORE.IsActive) then
+    begin
+      Self.Visible := false; // hide everthing - move on.
+      exit;
+    end;
+
+    { CHEAT: grid must be visible to sync + forces re-paint. }
+    LockDrawing;
+    Self.Visible := true;
+    pnlBody.Visible := true;
+    pnlG.Visible := true;
+    grid.Refresh;
+//    grid.BeginUpdate;
+//    grid.EndUpdate;
+    UnlockDrawing;
+  end;
+
+
+  LockDrawing;
+
+  try
+    if CORE.qrySwimClub.IsEmpty then
+    begin
+      Self.Visible := false; // hide everthing - move on.
+      exit;
+    end;
+
+    if not Self.Visible then Self.Visible := true;
+
     if Assigned(Settings) then
       actnSess_Visibilty.Checked := Settings.HideLockedSessions
     else
       actnSess_Visibilty.Checked := false;
-    SetVisibilityIcon;
-    grid.BeginUpdate;
-      // FILTER TABLE CONTENTS: false - indxShowAll , true indxHideLocked.
-      uSession.SetIndexName(actnSess_Visibilty.Checked);
-      CORE.qrySession.First;
-    grid.EndUpdate;
-    actnSess_Lock.Checked := uSession.IsLocked;
-    SetLockStateIcon;
+
+    if CORE.qrySession.IsEmpty then
+    begin
+      // CNTRLs are displayed but not grid.
+      pnlBody.Visible := true;
+      pnlG.Visible := false;
+      actnSess_Visibilty.Checked := false;
+      SetVisibilityIcon;
+      actnSess_Lock.Checked := false;
+      SetLockStateIcon;
+    end
+
+    else
+    begin
+      pnlBody.Visible := true;
+      pnlG.Visible := true;
+
+      // Are we making a Connection of changing SwimClubs?
+      if CORE.IsWorkingOnConnection then
+      begin
+        // reset to defaults
+        // FILTER TABLE show all sessions.
+        uSession.SetIndexName(false);
+        CORE.qrySession.First;
+        actnSess_Visibilty.Checked := false;
+        SetVisibilityIcon;
+        actnSess_Lock.Checked := uSession.IsLocked;
+        SetLockStateIcon;
+      end
+      else
+      begin
+        s1 := CORE.qrySession.IndexName;
+        if actnSess_Visibilty.Checked then
+          s2 := 'indxHideLocked' else s2 := 'indxShowAll';
+        if s1<>s2 then
+        begin
+          storePK := uSession.PK;
+          // FILTER TABLE CONTENTS: false - indxShowAll , true indxHideLocked.
+          uSession.SetIndexName(actnSess_Visibilty.Checked);
+          uSession.Locate(PK);
+        end;
+        actnSess_Lock.Checked := uSession.IsLocked;
+        SetLockStateIcon;
+      end;
+    end;
+
+  finally
+    UnLockDrawing;
   end;
-end;
 
-procedure TFrameSession.InitialiseUI;
-begin
-  grid.Visible := false;
-  pnlBody.Caption := '';
-  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
-  if not Assigned(CORE) or not CORE.IsActive then exit;
-
-  // NOTE:
-  // Originally - using grid.pagemode := false; to clear the grid of rows.
-  grid.Visible := not CORE.qrySession.IsEmpty();
-  if (not CORE.qrySwimClub.IsEmpty()) and CORE.qrySession.IsEmpty() then
-    pnlBody.Caption := 'Use NEW to get started with Sessions.';
-  // if CORE.IsWorkingOnConnection = true, then safe to call here...
-  // without the DB 'frame AfterScoll' messages.
-  if CORE.IsWorkingOnConnection then
-    InitialiseDB;
 end;
 
 procedure TFrameSession.Loaded;
@@ -483,36 +537,6 @@ begin
   spbtnSessDelete.ImageName := 'delete';
   //  spbtnSessReport.ImageIndex := 9;
   spbtnSessReport.ImageName := 'report';
-end;
-
-procedure TFrameSession.Msg_SCM_Scroll_Session(var Msg: TMessage);
-var
-  i: integer;
-begin
-  // avoid unnessary calls during boot-up.
-  grid.BeginUpdate;
-  try
-    begin
-      if Assigned(SCM2) and SCM2.scmConnection.Connected
-        and Assigned(CORE) and  CORE.IsActive then
-      begin
-        // track the state of locked/unlocked.
-        i := CORE.qrySession.FieldByName('SessionStatusID').AsInteger;
-        if (i=2) and not actnSess_Lock.Checked then
-        begin
-          actnSess_Lock.Checked := true; // syncronize to equal db state
-          SetLockStateIcon;
-        end;
-        if (i=1) and actnSess_Lock.Checked then
-        begin
-          actnSess_Lock.Checked := false; // syncronize to equal db state
-          SetLockStateIcon;
-        end;
-      end;
-    end;
-  finally
-    grid.EndUpdate;
-  end;
 end;
 
 procedure TFrameSession.SetLockStateIcon;

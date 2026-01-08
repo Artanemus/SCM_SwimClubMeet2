@@ -25,8 +25,8 @@ uses
 
 type
 
-//  TNavEvItemSelected = procedure(Sender: TObject; EventID: Integer; EvItem:
-//      TFrameNavEvItem) of object;
+  TNavEvItemSelected = procedure(Sender: TObject; EventID: Integer; EvItem:
+      TFrameNavEvItem) of object;
 
   TFrameNavEv = class(TFrame)
     rpnlBody: TRelativePanel;
@@ -44,14 +44,13 @@ type
     procedure UpdateCustomHorz;
     function UpdateSelect(EventID: integer): TFrameNavEvItem;
   protected
-    procedure Msg_SCM_Frame_Reset(var Msg: TMessage); message SCM_FRAME_RESET;
     procedure Msg_SCM_Frame_Selected(var Msg: TMessage); message SCM_FRAME_SELECTED;
     procedure Msg_SCM_AfterScroll_Event(var Msg: TMessage); message
         SCM_AFTERSCROLL_EVENT;
   public
-//    FOnNavEvItemSelected: TNavEvItemSelected; // MainForm proc for selection.
+    FOnNavEvItemSelected: TNavEvItemSelected; // MainForm proc for selection.
     procedure FillNavEvItems;
-    procedure UpdateUI;
+    procedure UpdateUI(DoFullUpdate: boolean = false);
 
   end;
 
@@ -78,6 +77,11 @@ begin
   while (C <> nil) and (C <> AAncestor) do
   begin
     OffsetRect(R, C.Left, C.Top);
+    // Account for parent's margins
+    if C is TScrollBox then
+    begin
+      OffsetRect(R, TScrollBox(C).Margins.Left, TScrollBox(C).Margins.Top);
+    end;
     C := C.Parent;
   end;
   Result := R;
@@ -98,6 +102,10 @@ begin
     if R.Right > ContentWidth then ContentWidth := R.Right;
     if R.Bottom > ContentHeight then ContentHeight := R.Bottom;
   end;
+  
+  // Account for the ScrollBox's right and bottom margins in total content size
+  ContentWidth := ContentWidth + AScrollBox.Margins.Right;
+  ContentHeight := ContentHeight + AScrollBox.Margins.Bottom;
 end;
 
 procedure UpdateBuiltInHorzRange(AScrollBox: TScrollBox);
@@ -118,31 +126,32 @@ end;
 procedure CenterControlInScrollBox(AScrollBox: TScrollBox; ACtrl: TControl);
 var
   TargetX, TargetY, MaxX, MaxY, clw, clh: Integer;
+  CtrlRect: TRect;
+  ContentWidth, ContentHeight: Integer;
 begin
-  if ACtrl = nil then exit;
+  if (ACtrl = nil) or (AScrollBox = nil) then exit;
 
-//  AScrollBox.Realign; // ensure child positions are final
+  // Get control's rectangle relative to scrollbox
+  CtrlRect := GetRectRelativeToAncestor(ACtrl, AScrollBox);
 
-  if AScrollBox.AlignWithMargins then
-  begin
-    clw := (AScrollBox.ClientWidth - AScrollBox.Margins.Left - AScrollBox.Margins.Right);
-    clh := (AScrollBox.ClientHeight - AScrollBox.Margins.top - AScrollBox.Margins.bottom);
-  end
-  else
-  begin
-    clw := AScrollBox.ClientWidth div 2;
-    clh := AScrollBox.ClientHeight div 2;
-  end;
+  // Calculate effective client area (accounting for margins)
+  clw := AScrollBox.ClientWidth;
+  clh := AScrollBox.ClientHeight;
 
-  TargetX := ACtrl.Left + (ACtrl.Width div 2) - (clw div 2);
-  TargetY := ACtrl.Top  + (ACtrl.Height div 2) - (clh div 2);
+  // Calculate target scroll position to center the control
+  TargetX := CtrlRect.Left + (CtrlRect.Width div 2) - (clw div 2);
+  TargetY := CtrlRect.Top  + (CtrlRect.Height div 2) - (clh div 2);
 
-  MaxX := AScrollBox.HorzScrollBar.Range - clw;
-  MaxY := AScrollBox.VertScrollBar.Range - clh;
+  // Get the actual content size to determine max scrollbar position
+  RecalcScrollBoxContentSize(AScrollBox, ContentWidth, ContentHeight);
+  
+  MaxX := ContentWidth - clw;
+  MaxY := ContentHeight - clh;
 
   if MaxX < 0 then MaxX := 0;
   if MaxY < 0 then MaxY := 0;
 
+  // Clamp to valid range
   if TargetX < 0 then TargetX := 0 else if TargetX > MaxX then TargetX := MaxX;
   if TargetY < 0 then TargetY := 0 else if TargetY > MaxY then TargetY := MaxY;
 
@@ -155,11 +164,18 @@ var
   R, ClientR: TRect;
 begin
   if (AScrollBox = nil) or (ACtrl = nil) then Exit(False);
+  
   R := GetRectRelativeToAncestor(ACtrl, AScrollBox);
+  
+  // Adjust for current scroll position - convert content coordinates to visible area
   OffsetRect(R, -AScrollBox.HorzScrollBar.Position, -AScrollBox.VertScrollBar.Position);
+  
+  // Define the visible client area of the ScrollBox
   ClientR := Rect(0, 0, AScrollBox.ClientWidth, AScrollBox.ClientHeight);
-  Result := (R.Left >= ClientR.Left) {and (R.Top >= ClientR.Top) } and
-            (R.Right <= ClientR.Right) {and (R.Bottom <= ClientR.Bottom)};
+  
+  // Check if control is fully within the visible area
+  Result := (R.Left >= ClientR.Left) and (R.Right <= ClientR.Right) and
+            (R.Top >= ClientR.Top) and (R.Bottom <= ClientR.Bottom);
 end;
 
 { TFrameNavEvent }
@@ -254,10 +270,6 @@ begin
   end;
 end;
 
-procedure TFrameNavEv.Msg_SCM_Frame_Reset(var Msg: TMessage);
-begin
-//  FillNavEvItems();
-end;
 
 procedure TFrameNavEv.Msg_SCM_Frame_Selected(var Msg: TMessage);
 var
@@ -389,59 +401,56 @@ begin
   end;
 end;
 
-procedure TFrameNavEv.UpdateUI;
+procedure TFrameNavEv.UpdateUI(DoFullUpdate: boolean = false);
 begin
 
-  if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
-      (not Assigned(CORE)) or (not CORE.IsActive) then
+  if DoFullUpdate then
   begin
-    Self.Visible := false;
-    exit;
+    { NOTE: never make TMG TDBAdvGrid Invisible. It won't draw correctly.}
+    if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
+        (not Assigned(CORE)) or (not CORE.IsActive) or (CORE.qrySession.IsEmpty) then
+    begin
+      // Clear navigation event items...
+      while scrBox.ControlCount > 0 do
+        scrBox.Controls[0].Free;
+      Self.Visible := false; // hide everthing - move on.
+      exit;
+    end;
   end;
 
   LockDrawing;
-  rpnlBody.Caption := '';
-  scrBox.LockDrawing;
+
   try
-    if CORE.qrySwimClub.IsEmpty() or CORE.qrySession.IsEmpty() then
+
+    if CORE.qrySession.IsEmpty then
     begin
       Self.Visible := false; // hide everthing - move on.
       exit;
     end;
 
-    Self.Visible := true;
+    if not Self.Visible then Self.Visible := true;
 
-    if CORE.qryEvent.IsEmpty then
+    if CORE.qryEvent.IsEmpty() then
     begin
+      // Clear navigation event items...
+      while scrBox.ControlCount > 0 do
+        scrBox.Controls[0].Free;
       // CNTRL panel is displayed but not the grid.
       rpnlBody.Visible := true;
-      rpnlBody.Caption := 'No events.';
-      rpnlBody.Alignment := taCenter;
-      rpnlBody.VerticalAlignment := taVerticalCenter;
       scrBox.Visible := false;
       spbtnNavLeft.Enabled := false;
       spbtnNavRight.Enabled := false;
-    end;
-
-    if not CORE.qryEvent.IsEmpty then
+    end
+    else
     begin
       rpnlBody.Visible := true;
-      scrBox.Visible := false;
-      spbtnNavLeft.Enabled := false;
-      spbtnNavRight.Enabled := false;
-      // Are we making a Connection or changing SwimClubs?
-      if CORE.IsWorkingOnConnection then
-      begin
-        ;
-      end
-      else
-      begin
-        FillNavEvItems;
-      end;
+      scrBox.Visible := true;
+      spbtnNavLeft.Enabled := true;
+      spbtnNavRight.Enabled := true;
+      FillNavEvItems;
     end;
 
   finally
-    scrBox.UnlockDrawing;
     UnlockDrawing;
   end;
 

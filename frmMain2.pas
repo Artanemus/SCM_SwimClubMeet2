@@ -455,30 +455,20 @@ end;
 
 procedure TMain2.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
 begin
-  // forward message to nominate frame.
-  if CORE.IsWorkingOnConnection then exit;
-  SendMessage(frNominate.Handle, SCM_SCROLL_NOMINATE_FILTERMEMBER, Msg.WParam, Msg.LParam);
+//  frNominate.UpdateUI();
 end;
 
 
 
 procedure TMain2.Msg_SCM_AfterScroll_Event(var Msg: TMessage);
 begin
-  // UI elements specific to MAIN.
-
-  // DETAILED specific UI changes...
-//  if CORE.qryEvent.IsEmpty then
-//    frHeat.UpdateUI(true)
-//  else
-    frHeat.UpdateUI;
+//    frHeat.UpdateUI;
+//    frNavEv.UpdateUI;
 end;
 
 procedure TMain2.Msg_SCM_AfterScroll_Heat(var Msg: TMessage);
 begin
-  // UI elements specific to MAIN.
-
-  // DETAILED specific UI changes...
-  frLane.UpdateUI;
+//  frLane.UpdateUI;
 end;
 
 procedure TMain2.Msg_SCM_AfterScroll_Session(var Msg: TMessage);
@@ -512,8 +502,9 @@ begin
   end;
 
   // DETAILED specific UI changes...
-  frEvent.UpdateUI;
-
+//  frEvent.UpdateUI;
+//  frNavEv.UpdateUI; - not needed - called on event scroll
+//  frNominate.UpdateUI;
 end;
 
 procedure TMain2.PageControlChange(Sender: TObject);
@@ -525,7 +516,7 @@ begin
       end;
     1: // Nominate Tab-sheet.
       begin
-        frNominate.UpdateQryNominate;
+//        frNominate.UpdateQryNominate;
         if frFilterMember.edtSearch.CanFocus then
           frFilterMember.edtSearch.SetFocus;
       end;
@@ -758,23 +749,15 @@ begin
   {
     All frames are hidden when there is no database connection.
     STACK ORDER is important when making visible panels.
+    Using param true initializes the frame with default values.
   }
-//  LockDrawing;
-//  try
-    // INITIALIZE FRAMES...
     frSession.UpdateUI(true);
     frEvent.UpdateUI(true);
     frHeat.UpdateUI(true);
     frLane.UpdateUI(true);
-    frFilterMember.UpdateUI(true);
-
-//    frNavEv.UpdateUI;
-//    frNominate.UpdateUI;
-
-//  finally
-//    UnlockDrawing;
-//  end;
-
+//    frFilterMember.UpdateUI(true);
+    frNavEv.UpdateUI(true);
+//    frNominate.UpdateUI(true);
 
 end;
 

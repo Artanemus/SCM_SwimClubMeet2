@@ -87,7 +87,6 @@ type
   private
     procedure SetGridView_ColVisibility;
     procedure SetGridView_IconIndex;
-    procedure UpdateUI_2;
   public
 //    procedure AfterSessionScroll;
     procedure UpdateUI(DoFullUpdate: Boolean = false);
@@ -395,8 +394,6 @@ begin
     pnlBody.Visible := true;
     pnlG.Visible := true;
     grid.Refresh;
-//    grid.BeginUpdate;
-//    grid.EndUpdate;
     UnlockDrawing;
   end;
 
@@ -428,56 +425,6 @@ begin
 
       SetGridView_IconIndex();
       SetGridView_ColVisibility;
-    end;
-
-  finally
-    UnlockDrawing;
-  end;
-
-end;
-
-procedure TFrameEvent.UpdateUI_2;
-begin
-
-  LockDrawing;
-  Self.Visible := true;
-
-  try
-    if CORE.qrySession.IsEmpty() then
-    begin
-      pnlBody.Visible := true; // display CNTRLs.
-      pnlG.Visible := false;   // hide TMS grid.
-      exit;
-    end;
-
-    if CORE.qryEvent.IsEmpty then
-    begin
-      // CNTRL panel is displayed but not the grid.
-      pnlBody.Visible := true;
-      pnlG.Visible := false;
-      actnEv_GridView.Checked := false; // DEFAULT: Collapsed grid view.
-      SetGridView_IconIndex;
-      SetGridView_ColVisibility;
-      Invalidate;
-    end
-    else
-    begin
-      pnlBody.Visible := true;
-      pnlG.Visible := true;
-      // Are we making a Connection or changing SwimClubs?
-      if CORE.IsWorkingOnConnection then
-      begin
-        // reset
-        // CORE.qryEvent.First;
-        actnEv_GridView.Checked := false;
-        SetGridView_IconIndex();
-        SetGridView_ColVisibility;
-      end
-      else
-      begin
-        SetGridView_IconIndex();
-        SetGridView_ColVisibility;
-      end;
     end;
 
   finally

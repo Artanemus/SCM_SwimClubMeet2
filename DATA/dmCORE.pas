@@ -258,6 +258,11 @@ begin
         qryLane.Open;
         qryWatchTime.Open;
         qrySplitTime.open;
+
+        // Nominate
+        qryNominate.Open;
+        qryFiltermember.Open;
+
         {TODO -oBSA -cException : EXCEPTION HERE TO FIX Field - LaneID }
   //       qryTeam.Open;
   //       qryTeamLink.Open;
@@ -285,6 +290,10 @@ end;
 procedure TCORE.DeActivateCore;
 begin
   try
+      // Nominate
+    qryNominate.Close;
+    qryFiltermember.Close;
+
     // Detailed tables.
     qrySession.Close;
     qryEvent.Close;
@@ -328,7 +337,8 @@ begin
     begin
       if not fIsWorkingOnConnection then
         // go post frame scroll events...
-        PostMessage(msgHandle, SCM_AFTERSCROLL_EVENT, 0,0);
+        PostMessage(msgHandle, SCM_AFTERSCROLL_EVENT,
+          WPARAM(DataSet.FieldByName('EventID').AsInteger),0);
     end;
   end;
 end;

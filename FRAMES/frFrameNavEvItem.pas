@@ -129,7 +129,7 @@ begin
   // ParentFrame will handle this.
   if Assigned(ParentFrame) then // Send to TFrameNavEv.
       SendMessage(ParentFrame.Handle, SCM_FRAME_SELECTED,
-      WPARAM(NativeInt(Tag)), LPARAM(NativeInt(Self)));
+        WPARAM(Tag), LPARAM(Self));
 end;
 
 procedure TFrameNavEvItem.Select(Mode: Boolean);

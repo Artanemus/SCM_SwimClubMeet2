@@ -18,9 +18,7 @@ uses
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
   uDefines, uSettings, dmIMG
-
   ;
-
 
 type
   TFrameNominate = class(TFrame)
@@ -30,6 +28,7 @@ type
     pnlBody: TPanel;
     pumenuNominate: TPopupMenu;
     rpnlCntrl: TRelativePanel;
+    pnlG: TPanel;
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
     procedure gridClickCell(Sender: TObject; ARow, ACol: Integer);
@@ -37,7 +36,7 @@ type
         HTMLTemplate: string; Fields: TFields);
     procedure gridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   public
-    procedure UpdateUI;
+    procedure UpdateUI(DoFullUpdate: boolean = false);
     // messages originate in the CORE and are forwarded by main form.
     procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
       message SCM_SCROLL_NOMINATE_FILTERMEMBER; // refreshes nominate and qualified icons
@@ -150,12 +149,12 @@ end;
 
 procedure TFrameNominate.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
 begin
-    UpdateQryNominate;
+//    frNominate.UpdateUI;
 end;
 
 procedure TFrameNominate.Msg_SCM_AfterScroll_Session(var Msg: TMessage);
 begin
-    UpdateQryNominate;
+//    UpdateQryNominate;
 end;
 
 procedure TFrameNominate.UpdateQryNominate;
@@ -182,55 +181,70 @@ begin
   end;
 end;
 
-procedure TFrameNominate.UpdateUI;
+procedure TFrameNominate.UpdateUI(DoFullUpdate: boolean = false);
 begin
-  if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
-      (not Assigned(CORE)) or (not CORE.IsActive) then
+  if DoFullUpdate then
   begin
-    Self.Visible := false;
-    exit;
-  end;
-  LockDrawing;
-  pnlBody.Caption := '';
-  grid.BeginUpdate;
-  try
-    if CORE.qrySwimClub.IsEmpty() or CORE.qrySession.IsEmpty()
-      or CORE.qryMember.IsEmpty() then
+    // CHECK TMS rule..
+    if grid.RowCount < grid.FixedRows  then
+      grid.RowCount := grid.FixedRows + 1;
+
+    { NOTE: never make TMG TDBAdvGrid Invisible. It won't draw correctly.}
+
+    if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
+        (not Assigned(CORE)) or (not CORE.IsActive) or (CORE.qrySession.IsEmpty) then
     begin
       Self.Visible := false; // hide everthing - move on.
       exit;
     end;
+
+    { CHEAT: grid must be visible to sync + forces re-paint. }
+    LockDrawing;
     Self.Visible := true;
+    pnlBody.Visible := true;
+    pnlG.Visible := true;
+//    if CORE.qryNominate.Active then
+//      CORE.qryNominate.EmptyDataSet;
+    grid.Refresh;
+    UnlockDrawing;
+  end;
+
+
+  LockDrawing;
+
+  try
+    if CORE.qrySession.IsEmpty() then
+    begin
+      Self.Visible := false;   // hide all..
+      exit;
+    end;
+
+    if not Self.Visible then Self.Visible := true;
+
     if CORE.qryEvent.IsEmpty then
     begin
       // CNTRL panel is displayed but not the grid.
       pnlBody.Visible := true;
       pnlBody.Caption := 'No events found.';
-      pnlBody.Alignment := taCenter;
-      pnlBody.VerticalAlignment := taVerticalCenter;
-      grid.Visible := false;
-    end;
-
-    if not CORE.qryEvent.IsEmpty then
+      pnlG.Visible := false;
+    end
+    else
     begin
       pnlBody.Visible := true;
-      // Are we making a Connection or changing SwimClubs?
-      if CORE.IsWorkingOnConnection then
+      pnlG.Visible := true;
+      if not CORE.qryFilterMember.IsEmpty() then
       begin
-        grid.Visible := false;
-        CORE.qryNominate.EmptyDataSet;
+        pnlG.Visible := true;
+        UpdateQryNominate();
       end
       else
       begin
-        if CORE.qryFilterMember.Active and (not CORE.qryFilterMember.IsEmpty()) then
-        begin
-          grid.Visible := true;
-          UpdateQryNominate();
-        end else grid.Visible := false;
+        pnlBody.Caption := 'No club members found.';
+        pnlG.Visible := false;
       end;
     end;
+
   finally
-    grid.EndUpdate;
     UnlockDrawing;
   end;
 

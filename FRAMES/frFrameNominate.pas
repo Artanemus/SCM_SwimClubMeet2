@@ -183,13 +183,12 @@ end;
 
 procedure TFrameNominate.UpdateUI(DoFullUpdate: boolean = false);
 begin
+  { NOTE: never make TMG TDBAdvGrid Invisible. It won't draw correctly.}
   if DoFullUpdate then
   begin
     // CHECK TMS rule..
     if grid.RowCount < grid.FixedRows  then
       grid.RowCount := grid.FixedRows + 1;
-
-    { NOTE: never make TMG TDBAdvGrid Invisible. It won't draw correctly.}
 
     if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
         (not Assigned(CORE)) or (not CORE.IsActive) or (CORE.qrySession.IsEmpty) then
@@ -197,18 +196,7 @@ begin
       Self.Visible := false; // hide everthing - move on.
       exit;
     end;
-
-    { CHEAT: grid must be visible to sync + forces re-paint. }
-    LockDrawing;
-    Self.Visible := true;
-    pnlBody.Visible := true;
-    pnlG.Visible := true;
-//    if CORE.qryNominate.Active then
-//      CORE.qryNominate.EmptyDataSet;
-    grid.Refresh;
-    UnlockDrawing;
   end;
-
 
   LockDrawing;
 

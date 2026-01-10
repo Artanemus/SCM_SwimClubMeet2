@@ -388,12 +388,11 @@ begin
       exit;
     end;
 
-    { CHEAT: grid must be visible to sync + forces re-paint. }
+    { grid must be visible to sync + forces re-paint. }
     LockDrawing;
     Self.Visible := true;
     pnlBody.Visible := true;
     pnlG.Visible := true;
-    grid.Refresh;
     UnlockDrawing;
   end;
 

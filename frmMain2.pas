@@ -159,6 +159,8 @@ type
         SCM_AFTERSCROLL_EVENT;
     procedure Msg_SCM_AfterScroll_Heat(var Msg: TMessage); message
         SCM_AFTERSCROLL_HEAT;
+    procedure Msg_SCM_AfterScroll_Lane(var Msg: TMessage); message
+        SCM_AFTERSCROLL_LANE;
     procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
       message SCM_SCROLL_NOMINATE_FILTERMEMBER;
   end;
@@ -451,24 +453,24 @@ begin
     File_Connection.Execute;
 end;
 
-
-
 procedure TMain2.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
 begin
-//  frNominate.UpdateUI();
+    frNominate.UpdateUI();
 end;
-
-
 
 procedure TMain2.Msg_SCM_AfterScroll_Event(var Msg: TMessage);
 begin
-//    frHeat.UpdateUI;
-//    frNavEv.UpdateUI;
+  frEvent.UpdateUI();
 end;
 
 procedure TMain2.Msg_SCM_AfterScroll_Heat(var Msg: TMessage);
 begin
-//  frLane.UpdateUI;
+  frHeat.UpdateUI;
+end;
+
+procedure TMain2.Msg_SCM_AfterScroll_Lane(var Msg: TMessage);
+begin
+  frLane.UpdateUI();
 end;
 
 procedure TMain2.Msg_SCM_AfterScroll_Session(var Msg: TMessage);
@@ -502,9 +504,9 @@ begin
   end;
 
   // DETAILED specific UI changes...
-//  frEvent.UpdateUI;
-//  frNavEv.UpdateUI; - not needed - called on event scroll
-//  frNominate.UpdateUI;
+//  frEvent.UpdateUI; - after session called - OnEventScroll triggered...
+//  frNavEv.UpdateUI; - let tabsheet do the triggering
+//  frNominate.UpdateUI; - let filtermember and tabsheet do the triggering...
 end;
 
 procedure TMain2.PageControlChange(Sender: TObject);
@@ -519,10 +521,14 @@ begin
 //        frNominate.UpdateQryNominate;
         if frFilterMember.edtSearch.CanFocus then
           frFilterMember.edtSearch.SetFocus;
+        frNominate.UpdateUI;
       end;
     2: // Heat.Lane.INDV.RELAY...
       begin
-        ;
+        // TFrameNavEv may need full reload if Events have been
+        // inserted, deleted, modified..
+        frNavEv.UpdateUI;
+        frNavEv.SelectNavEvItem(uEvent.PK);
       end;
   end;
 end;
@@ -755,7 +761,7 @@ begin
     frEvent.UpdateUI(true);
     frHeat.UpdateUI(true);
     frLane.UpdateUI(true);
-//    frFilterMember.UpdateUI(true);
+    frFilterMember.UpdateUI(true);
     frNavEv.UpdateUI(true);
 //    frNominate.UpdateUI(true);
 

@@ -154,6 +154,7 @@ type
     procedure qryEventNewRecord(DataSet: TDataSet);
     procedure qryFilterMemberAfterScroll(DataSet: TDataSet);
     procedure qryHeatAfterScroll(DataSet: TDataSet);
+    procedure qryLaneAfterScroll(DataSet: TDataSet);
     procedure qryNomineeNewRecord(DataSet: TDataSet);
     procedure qrySessionAfterScroll(DataSet: TDataSet);
     procedure qrySessionBeforePost(DataSet: TDataSet);
@@ -386,6 +387,19 @@ begin
       if not fIsWorkingOnConnection then
         // go post frame scroll events...
         PostMessage(msgHandle, SCM_AFTERSCROLL_HEAT, 0,0);
+    end;
+  end;
+end;
+
+procedure TCORE.qryLaneAfterScroll(DataSet: TDataSet);
+begin
+  if (msgHandle <> 0) then
+  begin
+    if not (qryHeat.State in [dsOpening]) then
+    begin
+      if not fIsWorkingOnConnection then
+        // go post frame scroll events...
+        PostMessage(msgHandle, SCM_AFTERSCROLL_LANE, 0,0);
     end;
   end;
 end;

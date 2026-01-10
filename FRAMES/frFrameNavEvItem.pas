@@ -27,6 +27,8 @@ type
     procedure CMHitTest(var Message: TCMHitTest); message CM_HITTEST;
   end;
 
+  TNavEvItemSelected = procedure(Sender: TObject; EventID: Integer) of object;
+
   TFrameNavEvItem = class(TFrame)
     imgRelay: TSVGIconImage;
     imgStroke: TSVGIconImage;
@@ -38,12 +40,23 @@ type
   private
     fSelected: boolean;
     fParentFrame: TFrame;
+    procedure UpdateSelectionColors(Mode: Boolean);
+    procedure SetSelected(const Value: boolean);
   public
+
+    FOnNavEvItemSelected: TNavEvItemSelected; // MainForm proc for selection.
+
     procedure FillFromQuery(AQuery: TDataSet);
-    procedure Select(Mode: Boolean);
     constructor Create(AOwner: TComponent); override;
     property ParentFrame: TFrame read FParentFrame write FParentFrame;
+    property Selected: boolean read fSelected write SetSelected;
+
+    const DesignWidth = 194;
+    const DesignSpacing = 10;
 end;
+
+
+
 
 
 implementation
@@ -78,6 +91,8 @@ begin
   imgRelay.Visible := false;
   Shape1.Visible := false;
   lblEv.Caption := '';
+  Tag := 0; // used to store EventID.
+  FOnNavEvItemSelected := nil;
 end;
 
 { TFrameEvItem }
@@ -125,21 +140,20 @@ end;
 
 procedure TFrameNavEvItem.FrameClick(Sender : TObject);
 begin
-  // Basic frame, knows nothing of DB...
-  // ParentFrame will handle this.
-  if Assigned(ParentFrame) then // Send to TFrameNavEv.
-      SendMessage(ParentFrame.Handle, SCM_FRAME_SELECTED,
-        WPARAM(Tag), LPARAM(Self));
+  // Use the property setter to ensure consistent behavior with SelectNavEvItem
+  Self.Selected := true;
+  //
+  if Assigned(FOnNavEvItemSelected) then
+    // TFrameNavEv callback. Tag = EventID.
+    FOnNavEvItemSelected(Sender, Tag);
 end;
 
-procedure TFrameNavEvItem.Select(Mode: Boolean);
+procedure TFrameNavEvItem.UpdateSelectionColors(Mode: Boolean);
 begin
-//$009B8B6C
   if Mode then
   begin
     fSelected := true;
     lblEv.Font.Color := clWebIvory;
-
     lblDesc.Font.Color := clWebCornSilk;
     Shape1.Pen.Color := clWebCornSilk;
     Shape1.Visible := true;
@@ -153,6 +167,13 @@ begin
     Shape1.Visible := false;
     Shape2.Brush.Color := $009B8B6C;
   end;
+end;
+
+procedure TFrameNavEvItem.SetSelected(const Value: boolean);
+begin
+  fSelected := Value;
+  UpdateSelectionColors(Value);
+  Invalidate;
 end;
 
 end.

@@ -81,5 +81,6 @@ object FrameNavEv: TFrameNavEv
     ParentDoubleBuffered = False
     TabOrder = 1
     UseWheelForScrolling = True
+    OnResize = scrBoxResize
   end
 end

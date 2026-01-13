@@ -395,14 +395,20 @@ begin
   if aSessionStatusID in [1,2] then // Check out of bounds.
   begin
     CORE.qrySession.DisableControls;
+    CORE.qrySession.UpdateOptions.ReadOnly := false;
     try
-      CORE.qrySession.Edit;
-      CORE.qrySession.FieldByName('SessionStatusID').AsInteger := aSessionStatusID;
-      CORE.qrySession.Post;
-    except on E: Exception do
-        CORE.qrySession.Cancel;
+      try
+        CORE.qrySession.Edit;
+        CORE.qrySession.FieldByName('SessionStatusID').AsInteger := aSessionStatusID;
+        CORE.qrySession.Post;
+      except on E: Exception do
+          CORE.qrySession.Cancel;
+      end;
+    finally
+      if (CORE.qrySession.FieldByName('SessionStatusID').AsInteger = 2) then
+        CORE.qrySession.UpdateOptions.ReadOnly := true;
+      CORE.qrySession.EnableControls;
     end;
-    CORE.qrySession.EnableControls;
   end;
 end;
 

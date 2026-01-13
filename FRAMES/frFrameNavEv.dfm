@@ -31,7 +31,7 @@ object FrameNavEv: TFrameNavEv
       end>
     Align = alClient
     BevelOuter = bvNone
-    Caption = 'No swimming events to display.'
+    Caption = 'No events found.'
     TabOrder = 0
     DesignSize = (
       794

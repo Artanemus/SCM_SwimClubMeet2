@@ -2767,6 +2767,7 @@ object Main2: TMain2
     Top = 37
     Width = 1137
     Height = 42
+    UseSystemFont = False
     ActionManager = actnManager
     Caption = 'actnMainMenuBar'
     Color = clMenuBar
@@ -2775,7 +2776,7 @@ object Main2: TMain2
     ColorMap.BtnSelectedFont = clBlack
     ColorMap.UnusedColor = clWhite
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
+    Font.Color = clBlack
     Font.Height = -13
     Font.Name = 'Segoe UI'
     Font.Style = []
@@ -2855,14 +2856,11 @@ object Main2: TMain2
           inherited pnlBody: TPanel
             Width = 359
             Height = 626
-            ExplicitLeft = 58
             ExplicitWidth = 359
             ExplicitHeight = 626
             inherited pnlG: TPanel
               Width = 359
               Height = 626
-              ExplicitLeft = 0
-              ExplicitTop = 0
               ExplicitWidth = 359
               ExplicitHeight = 626
               inherited grid: TDBAdvGrid
@@ -2966,30 +2964,9 @@ object Main2: TMain2
                 Below = frSession.ShapeSessBar2
               end>
             ExplicitHeight = 626
-            inherited spbtnSessVisiblity: TSpeedButton
-              Glyph.Data = {00000000}
-            end
             inherited spbtnSessLockState: TSpeedButton
               ImageIndex = 3
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessEdit: TSpeedButton
-              ImageIndex = 5
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessNew: TSpeedButton
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessClone: TSpeedButton
-              ImageIndex = 7
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessDelete: TSpeedButton
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessReport: TSpeedButton
-              ImageIndex = 9
-              Glyph.Data = {00000000}
+              ImageName = 'lock2'
             end
           end
           inherited actnlstSession: TActionList
@@ -3321,6 +3298,20 @@ object Main2: TMain2
             Height = 626
             ExplicitWidth = 632
             ExplicitHeight = 626
+            inherited pnlG: TPanel
+              Width = 632
+              Height = 626
+              ExplicitLeft = 0
+              ExplicitTop = 0
+              ExplicitWidth = 632
+              ExplicitHeight = 626
+              inherited grid: TDBAdvGrid
+                Width = 632
+                Height = 626
+                ExplicitWidth = 632
+                ExplicitHeight = 626
+              end
+            end
           end
         end
       end
@@ -3554,13 +3545,17 @@ object Main2: TMain2
               ExplicitWidth = 161
               ExplicitHeight = 546
               inherited lblMsgEmpty: TLabel
-                Width = 136
-                Height = 63
+                Width = 145
+                Height = 530
                 Font.Height = -16
                 ExplicitWidth = 136
                 ExplicitHeight = 63
               end
               inherited pnlG: TPanel
+                Width = 161
+                Height = 546
+                ExplicitWidth = 161
+                ExplicitHeight = 546
                 inherited grid: TDBAdvGrid
                   Width = 161
                   Height = 546
@@ -3668,6 +3663,10 @@ object Main2: TMain2
               ExplicitWidth = 846
               ExplicitHeight = 546
               inherited pnlG: TPanel
+                Width = 846
+                Height = 546
+                ExplicitWidth = 846
+                ExplicitHeight = 546
                 inherited grid: TDBAdvGrid
                   Width = 846
                   Height = 546

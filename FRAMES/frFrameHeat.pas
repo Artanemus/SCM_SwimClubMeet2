@@ -108,6 +108,8 @@ end;
 procedure TFrameHeat.actnHt_ToggleStatusExecute(Sender: TObject);
 begin
   uHeat.ToggleStatus;
+  // frame lane needs to paint the grid in a new color...
+  PostMessage(TForm(Owner).handle, SCM_FRAME_HEATSTATUS_CHANGED, 0, 0);
 end;
 
 procedure TFrameHeat.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var
@@ -189,9 +191,8 @@ begin
       Self.Visible := true;
       pnlBody.Visible := true;
       pnlG.Visible := true;
-      grid.Refresh;
-  //    grid.BeginUpdate;
-  //    grid.EndUpdate;
+      grid.Enabled := true;
+//      grid.Refresh;
     finally
       UnlockDrawing;
     end;
@@ -200,8 +201,11 @@ begin
 
   LockDrawing;
 
+  if (uSession.IsUnLocked()) AND (not grid.Enabled) then
+    grid.Enabled := true;
+
   try
-    if CORE.qryEvent.IsEmpty() then
+    if CORE.qryEvent.IsEmpty then
     begin
       Self.Visible := false; // hide everthing - move on.
       exit;

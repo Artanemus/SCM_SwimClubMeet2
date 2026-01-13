@@ -200,10 +200,6 @@ object FrameLane: TFrameLane
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitLeft = 120
-      ExplicitTop = 144
-      ExplicitWidth = 185
-      ExplicitHeight = 41
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
@@ -230,6 +226,7 @@ object FrameLane: TFrameLane
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
+        OnGetCellColor = gridGetCellColor
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
         ActiveCellFont.Height = -12
@@ -726,8 +723,6 @@ object FrameLane: TFrameLane
           FFC003FF}
         ShowBooleanFields = True
         ShowUnicode = False
-        ExplicitWidth = 185
-        ExplicitHeight = 41
         ColWidths = (
           20
           57

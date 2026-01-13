@@ -586,7 +586,17 @@ begin
                 // toggle to CLOSED ...
                 CORE.qryHeat.FieldByName('HeatStatusID').AsInteger := 3;
                 // 22.09.2020 TimeStamp
-                CORE.qryHeat.FieldByName('CloseDT').AsDateTime := Now;
+                {
+                if ScheduleHeat record for current heat then ....
+                  found = Locate.ScheduleHeat(
+                    CORE.qryHeat.FieldByName('HeatID').AsInteger);
+                if found then
+                begin
+                  CORE.qryScheduleHeat.Edit;
+                  CORE.qryScheduleHeat.FieldByName('HeatEnd).AsDateTime := Now;
+                  CORE.qryScheduleHeat.post;
+                end;
+                }
               end;
           else
             // toggle to OPEN ...

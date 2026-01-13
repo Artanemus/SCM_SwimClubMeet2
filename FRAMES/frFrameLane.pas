@@ -37,6 +37,8 @@ type
     spbtnReport: TSpeedButton;
     pnlG: TPanel;
     procedure actnLn_GenericUpdate(Sender: TObject);
+    procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
+        TGridDrawState; ABrush: TBrush; AFont: TFont);
   private
     { Private declarations }
   public
@@ -65,6 +67,28 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
+procedure TFrameLane.gridGetCellColor(Sender: TObject; ARow, ACol: Integer;
+  AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
+begin
+  if (ARow >= grid.FixedRows) then
+  begin
+    case uHeat.HeatStatusID of
+      1:
+        begin
+          ; // do nothing
+        end;
+      2:
+        begin
+          AFont.Color := clWebGoldenRod;
+        end;
+      3:
+        begin
+          AFont.Color := grid.DisabledFontColor;
+        end;
+    end;
+  end;
+end;
+
 procedure TFrameLane.UpdateUI(DoFullUpdate: boolean = false);
 begin
 
@@ -83,9 +107,8 @@ begin
       Self.Visible := true;
       pnlBody.Visible := true;
       pnlG.Visible := true;
-      grid.Refresh;
-//    grid.BeginUpdate;
-//    grid.EndUpdate;
+      grid.Enabled := true;
+//      grid.Refresh;
       UnlockDrawing;
   end;
 
@@ -95,27 +118,21 @@ begin
 
     if CORE.qryHeat.IsEmpty then
     begin
-      // CNTRL panel is displayed but not the grid.
       Self.Visible := false;
       exit;
     end;
 
-    if not Visible then Self.Visible := true;
+    if not Self.Visible then Self.Visible := true;
 
-    if not CORE.qryLane.IsEmpty then
+    if CORE.qryLane.IsEmpty then
+    begin
+      Self.Visible := false;
+      exit;
+    end
+    else
     begin
       pnlBody.Visible := true;
       pnlG.Visible := true;
-      // Are we making a Connection or changing SwimClubs?
-      if CORE.IsWorkingOnConnection then
-      begin
-        // reset
-        // CORE.qryLane.First;
-      end
-      else
-      begin
-        ;
-      end;
     end;
 
   finally

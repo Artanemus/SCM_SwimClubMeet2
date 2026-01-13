@@ -366,10 +366,6 @@ object FrameHeat: TFrameHeat
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitLeft = -16
-      ExplicitTop = 199
-      ExplicitWidth = 185
-      ExplicitHeight = 41
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
@@ -757,9 +753,6 @@ object FrameHeat: TFrameHeat
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitTop = 1
-        ExplicitWidth = 185
-        ExplicitHeight = 41
         ColWidths = (
           0
           0

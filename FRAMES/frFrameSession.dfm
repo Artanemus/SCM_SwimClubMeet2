@@ -13,7 +13,6 @@ object FrameSession: TFrameSession
     BevelOuter = bvNone
     Caption = 'Use NEW to create a session.'
     TabOrder = 0
-    ExplicitLeft = 61
     object pnlG: TPanel
       Left = 0
       Top = 0
@@ -22,10 +21,6 @@ object FrameSession: TFrameSession
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitLeft = 104
-      ExplicitTop = 370
-      ExplicitWidth = 185
-      ExplicitHeight = 41
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
@@ -402,8 +397,6 @@ object FrameSession: TFrameSession
           FFC003FF}
         ShowUnicode = False
         OnGetHTMLTemplate = gridGetHTMLTemplate
-        ExplicitWidth = 185
-        ExplicitHeight = 41
         ColWidths = (
           0
           340
@@ -426,7 +419,7 @@ object FrameSession: TFrameSession
         AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
         AlignRightWithPanel = False
-        AlignTopWithPanel = False
+        AlignTopWithPanel = True
         AlignVerticalCenterWithPanel = False
       end
       item
@@ -515,13 +508,12 @@ object FrameSession: TFrameSession
     object spbtnSessVisiblity: TSpeedButton
       Tag = 1
       Left = 0
-      Top = -6
+      Top = 0
       Width = 58
       Height = 48
       Action = actnSess_Visibilty
       Align = alTop
       Anchors = []
-      ImageName = 'lock2'
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -533,12 +525,13 @@ object FrameSession: TFrameSession
     object spbtnSessLockState: TSpeedButton
       Tag = 6
       Left = 0
-      Top = 42
+      Top = 48
       Width = 58
       Height = 48
       Action = actnSess_Lock
       Align = alTop
       Anchors = []
+      ImageIndex = 4
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -550,7 +543,7 @@ object FrameSession: TFrameSession
     object ShapeSessBar1: TShape
       AlignWithMargins = True
       Left = 0
-      Top = 96
+      Top = 102
       Width = 58
       Height = 4
       Margins.Left = 0
@@ -564,12 +557,13 @@ object FrameSession: TFrameSession
     object spbtnSessEdit: TSpeedButton
       Tag = 8
       Left = 0
-      Top = 106
+      Top = 112
       Width = 58
       Height = 48
       Action = actnSess_Edit
       Align = alTop
       Anchors = []
+      ImageIndex = 5
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -581,7 +575,7 @@ object FrameSession: TFrameSession
     object spbtnSessNew: TSpeedButton
       Tag = 3
       Left = 0
-      Top = 154
+      Top = 160
       Width = 58
       Height = 48
       Action = actnSess_New
@@ -599,12 +593,13 @@ object FrameSession: TFrameSession
     object spbtnSessClone: TSpeedButton
       Tag = 11
       Left = 0
-      Top = 202
+      Top = 208
       Width = 58
       Height = 48
       Action = actnSess_Clone
       Align = alTop
       Anchors = []
+      ImageIndex = 7
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -616,7 +611,7 @@ object FrameSession: TFrameSession
     object spbtnSessDelete: TSpeedButton
       Tag = 4
       Left = 0
-      Top = 250
+      Top = 256
       Width = 58
       Height = 48
       Action = actnSess_Delete
@@ -634,7 +629,7 @@ object FrameSession: TFrameSession
     object ShapeSessBar2: TShape
       AlignWithMargins = True
       Left = 0
-      Top = 304
+      Top = 310
       Width = 58
       Height = 4
       Margins.Left = 0
@@ -648,12 +643,13 @@ object FrameSession: TFrameSession
     object spbtnSessReport: TSpeedButton
       Tag = 5
       Left = 0
-      Top = 314
+      Top = 320
       Width = 58
       Height = 48
       Action = actnSess_Report
       Align = alTop
       Anchors = []
+      ImageIndex = 9
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -680,8 +676,8 @@ object FrameSession: TFrameSession
       Category = 'Sessions'
       Caption = 'Lock/Unlock'
       Hint = 'Lock-Unlock the selected session.'
-      ImageIndex = 16
-      ImageName = 'lock2'
+      ImageIndex = 17
+      ImageName = 'lock2-open'
       OnExecute = actnSess_LockExecute
       OnUpdate = actnSess_LockUpdate
     end

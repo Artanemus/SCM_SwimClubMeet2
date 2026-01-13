@@ -503,6 +503,8 @@ begin
     end;
   end;
 
+  frSession.UpdateUI();
+
   // DETAILED specific UI changes...
 //  frEvent.UpdateUI; - after session called - OnEventScroll triggered...
 //  frNavEv.UpdateUI; - let tabsheet do the triggering

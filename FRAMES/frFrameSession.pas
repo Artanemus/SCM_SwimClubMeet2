@@ -47,6 +47,7 @@ type
     N2: TMenuItem;
     NewSession1: TMenuItem;
     pnlBody: TPanel;
+    pnlG: TPanel;
     pumenuSession: TPopupMenu;
     pumToggleVisibility: TMenuItem;
     rpnlCntrl: TRelativePanel;
@@ -60,7 +61,6 @@ type
     spbtnSessNew: TSpeedButton;
     spbtnSessReport: TSpeedButton;
     spbtnSessVisiblity: TSpeedButton;
-    pnlG: TPanel;
     procedure actnSess_CheckLockUpdate(Sender: TObject);
     procedure actnSess_CloneUpdate(Sender: TObject);
     procedure actnSess_DeleteExecute(Sender: TObject);
@@ -206,13 +206,6 @@ begin
     begin
       try
         uSession.SetSessionStatusID(2); // CLOSED ie.LOCKED.
-        // good opertunity to re-calulate and store count values.
-        {-------------------------------------------------------}
-        // iterate over events in session - re-calculating counts.
-        uSession.UpdateEvent_Stats();
-        // uses database scalar functions.
-        uSession.SetSess_NomineeCount; // SwimClubMeet2.dbo.SessionNomineeCount
-        uSession.SetSess_EntrantCount; // SwimClubMeet2.dbo.SessionEntrantCount
       finally
         actnSess_Lock.Checked := true; // syncronize to equal db state
         SetLockStateIcon;
@@ -220,9 +213,19 @@ begin
     end
     else
     begin
+      // proc set ReadOnly false.
       uSession.SetSessionStatusID(1); // OPEN ie.UN-LOCKED.
       actnSess_Lock.Checked := false; // syncronize to equal db state
       SetLockStateIcon;
+
+
+      // good opertunity to re-calulate and store count values.
+      {-------------------------------------------------------}
+      // iterate over events in session - re-calculating counts.
+      uSession.UpdateEvent_Stats();
+      // uses database scalar functions.
+      uSession.SetSess_NomineeCount; // SwimClubMeet2.dbo.SessionNomineeCount
+      uSession.SetSess_EntrantCount; // SwimClubMeet2.dbo.SessionEntrantCount
     end;
   finally
     grid.endUpdate;
@@ -293,17 +296,36 @@ begin
 end;
 
 procedure TFrameSession.actnSess_VisibiltyExecute(Sender: TObject);
+var
+  s1, s2: string;
+  storePK: integer;
+
 begin
-    grid.BeginUpdate;
-    TAction(Sender).Checked := not TAction(Sender).Checked;
-    try
-      SetVisibilityIcon;
-      // Assign index ... ApplyMaster.
-      // true - indxShowAll , false indxHideLocked.
-      uSession.SetIndexName(TAction(Sender).Checked);
-    finally
-      grid.EndUpdate;
+  LockDrawing;
+  grid.BeginUpdate;
+  TAction(Sender).Checked := not TAction(Sender).Checked;
+  try
+    SetVisibilityIcon;
+    s1 := CORE.qrySession.IndexName;
+
+    if actnSess_Visibilty.Checked then
+      s2 := 'indxHideLocked' else s2 := 'indxShowAll';
+
+    if s1<>s2 then
+    begin
+      storePK := uSession.PK;
+      // FILTER TABLE CONTENTS: false - indxShowAll , true indxHideLocked.
+      uSession.SetIndexName(actnSess_Visibilty.Checked);
+      uSession.Locate(storePK);
     end;
+
+    // Assign index ... ApplyMaster.
+    // true - indxShowAll , false indxHideLocked.
+    uSession.SetIndexName(TAction(Sender).Checked);
+  finally
+    grid.EndUpdate;
+    unlockDrawing;
+  end;
 end;
 
 procedure TFrameSession.actnSess_VisibiltyUpdate(Sender: TObject);
@@ -334,14 +356,15 @@ begin
 
   if (ARow >= grid.FixedRows) then   // (ARow >= grid.FixedCols)
   begin
+    // check the SessionStatusID. 1=unlocked, 2=locked;
     if (grid.Cells[2, ARow] = '2') then
       AFont.Color := grid.DisabledFontColor
     else
     begin
       if (gdSelected in AState) then
-        AFont.Color := RGB(255, 254, 254) // slightly dimmed white.
+        AFont.Color := RGB(255, 254, 254) // slightly 'off' white.
       else
-        AFont.Color :=  RGB(215, 215, 215); // even dimmer.
+        AFont.Color :=  RGB(215, 215, 215); // dim white.
       // clWebGhostWhite;
     end;
   end;
@@ -418,6 +441,62 @@ begin
 
 end;
 
+procedure TFrameSession.Loaded;
+begin
+  inherited Loaded;
+  // This executes after the DFM has loaded and ActionLinks have synced.
+  // Manually re-apply 48x48 icon indices.
+//  spbtnSessVisiblity.images := IMG.imglstSessCntrl;
+//  spbtnSessVisiblity.ImageIndex := -1;
+  spbtnSessVisiblity.ImageName := 'visible_on';
+  //  spbtnSessLockState.ImageIndex := 3;
+  spbtnSessLockState.ImageName := 'lock2-open';
+  //  spbtnSessEdit.ImageIndex := 5;
+  spbtnSessEdit.ImageName := 'edit';
+  //  spbtnSessNew.ImageIndex := 6;
+  spbtnSessNew.ImageName := 'new';
+  //  spbtnSessClone.ImageIndex := 7;
+  spbtnSessClone.ImageName := 'clone';
+  //  spbtnSessDelete.ImageIndex := 8;
+  spbtnSessDelete.ImageName := 'delete';
+  //  spbtnSessReport.ImageIndex := 9;
+  spbtnSessReport.ImageName := 'report';
+end;
+
+procedure TFrameSession.SetLockStateIcon;
+begin
+  if actnSess_Lock.Checked then
+  begin
+    actnSess_Lock.ImageName := 'lock2' ;// lock2 icon
+    spbtnSessLockState.ImageName := 'lock2';
+   end
+  else
+  begin
+    actnSess_Lock.ImageName := 'lock2-open'; // lock2-open icon
+    spbtnSessLockState.ImageName := 'lock2-open';
+  end
+end;
+
+procedure TFrameSession.SetVisibilityIcon;
+begin
+    if actnSess_Visibilty.Checked then
+    begin
+      actnSess_Visibilty.ImageName := 'visible_off'; // Eye+line - HIDE locked sessions.
+      // update speed button icon.
+      if (spbtnSessVisiblity.ImageName <> 'visible_off') then
+        spbtnSessVisiblity.ImageName := 'visible_off';
+
+    end
+    else
+    begin
+      actnSess_Visibilty.ImageName := 'visible_on'; // Eye - SHOW ALL sessions.
+
+      // update speed button icon.
+      if (spbtnSessVisiblity.ImageName <> 'visible_on') then
+        spbtnSessVisiblity.ImageName := 'visible_on';
+    end;
+end;
+
 procedure TFrameSession.UpdateUI(DoFullUpdate: boolean = false);
 var
   storePK: integer;
@@ -439,15 +518,6 @@ begin
       exit;
     end;
 
-    { CHEAT: grid must be visible to sync + forces re-paint. }
-    LockDrawing;
-    Self.Visible := true;
-    pnlBody.Visible := true;
-    pnlG.Visible := true;
-    grid.Refresh;
-//    grid.BeginUpdate;
-//    grid.EndUpdate;
-    UnlockDrawing;
   end;
 
 
@@ -462,6 +532,7 @@ begin
 
     if not Self.Visible then Self.Visible := true;
 
+    // inspect the user's preferences...
     if Assigned(Settings) then
       actnSess_Visibilty.Checked := Settings.HideLockedSessions
     else
@@ -469,7 +540,7 @@ begin
 
     if CORE.qrySession.IsEmpty then
     begin
-      // CNTRLs are displayed but not grid.
+      // CNTRL panel is displayed but not the grid.
       pnlBody.Visible := true;
       pnlG.Visible := false;
       actnSess_Visibilty.Checked := false;
@@ -480,36 +551,44 @@ begin
 
     else
     begin
+      // Display all controls and grid.
       pnlBody.Visible := true;
       pnlG.Visible := true;
 
-      // Are we making a Connection of changing SwimClubs?
+      // Are we making a Connection or changing SwimClubs?
       if CORE.IsWorkingOnConnection then
       begin
-        // reset to defaults
-        // FILTER TABLE show all sessions.
+        // Conform to defaults. Set filters, show all sessions.
         uSession.SetIndexName(false);
         CORE.qrySession.First;
         actnSess_Visibilty.Checked := false;
         SetVisibilityIcon;
-        actnSess_Lock.Checked := uSession.IsLocked;
+        actnSess_Lock.Checked := false;
         SetLockStateIcon;
       end
       else
       begin
+        // Get the filter (visibility) state of the TFDQuery...
         s1 := CORE.qrySession.IndexName;
+        // Get the action's requested filter state.
         if actnSess_Visibilty.Checked then
           s2 := 'indxHideLocked' else s2 := 'indxShowAll';
+        // ReQuery... implement the filter request.
         if s1<>s2 then
         begin
-          storePK := uSession.PK;
-          // FILTER TABLE CONTENTS: false - indxShowAll , true indxHideLocked.
+          storePK := uSession.PK; // bookmark
+          // FILTER TABLE CONTENTS:
+          // false - indxShowAll - visibility_on (see all eye),
+          // true - indxHideLocked - visibility_off (line draw through eye).
           uSession.SetIndexName(actnSess_Visibilty.Checked);
-          uSession.Locate(PK);
+          uSession.Locate(storePK); // retore bookmark
+          SetVisibilityIcon;
         end;
+        // State of the
         actnSess_Lock.Checked := uSession.IsLocked;
         SetLockStateIcon;
       end;
+
     end;
 
   finally
@@ -517,57 +596,6 @@ begin
   end;
 
 end;
-
-procedure TFrameSession.Loaded;
-begin
-  inherited Loaded;
-  // This executes after the DFM has loaded and ActionLinks have synced.
-  // Manually re-apply 48x48 icon indices.
-  // spbtnSessVisiblity.ImageIndex := 1;
-  spbtnSessVisiblity.ImageName := 'visible-on';
-  //  spbtnSessLockState.ImageIndex := 3;
-  spbtnSessLockState.ImageName := 'lock2';
-  //  spbtnSessEdit.ImageIndex := 5;
-  spbtnSessEdit.ImageName := 'edit';
-  //  spbtnSessNew.ImageIndex := 6;
-  spbtnSessNew.ImageName := 'new';
-  //  spbtnSessClone.ImageIndex := 7;
-  spbtnSessClone.ImageName := 'clone';
-  //  spbtnSessDelete.ImageIndex := 8;
-  spbtnSessDelete.ImageName := 'delete';
-  //  spbtnSessReport.ImageIndex := 9;
-  spbtnSessReport.ImageName := 'report';
-end;
-
-procedure TFrameSession.SetLockStateIcon;
-begin
-  if actnSess_Lock.Checked then
-  begin
-    actnSess_Lock.ImageName := 'lock2' ;// lock2 icon
-    spbtnSessLockState.ImageIndex := 3;
-   end
-  else
-  begin
-    actnSess_Lock.ImageName := 'lock2-open'; // lock2-open icon
-    spbtnSessLockState.ImageIndex := 4;
-  end
-end;
-
-procedure TFrameSession.SetVisibilityIcon;
-begin
-    if actnSess_Visibilty.Checked then
-    begin
-      actnSess_Visibilty.ImageName := 'visible-off'; // Eye+line - HIDE locked sessions.
-      spbtnSessVisiblity.ImageIndex := 2;
-
-    end
-    else
-    begin
-      actnSess_Visibilty.ImageName := 'visible-on'; // Eye - SHOW ALL sessions.
-      spbtnSessVisiblity.ImageIndex := 1;
-    end;
-end;
-
 
 
 end.

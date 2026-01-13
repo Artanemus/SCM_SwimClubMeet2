@@ -83,6 +83,8 @@ type
         Boolean);
     procedure gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
         State: TGridDrawState);
+    procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
+        TGridDrawState; ABrush: TBrush; AFont: TFont);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
   private
     procedure SetGridView_ColVisibility;
@@ -292,6 +294,39 @@ begin
   end;
 end;
 
+procedure TFrameEvent.gridGetCellColor(Sender: TObject; ARow, ACol: Integer;
+    AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
+begin
+  { C E L L   C O L O R S  .
+    1. the StyleElements seFont has been disabled for the session grid.
+    2. the property UseSelectionColor has been disabled.
+    3. the property SelectionTextColor has been set but will be ignored.
+
+    - results : all assignments of font color are handles here.
+  }
+  if (ARow >= grid.FixedRows) then   // (ARow >= grid.FixedCols)
+  begin
+
+    if (ACol in [2, 8, 9]) then
+      AFont.Color := clWebLightgrey // readonly fields - not so white...
+
+    else
+    begin
+      if (gdSelected in AState) then
+      begin
+        AFont.Color := clWhite;
+      end
+      else
+        AFont.Color :=  clWebGhostWhite;
+    end;
+
+    // overrides all
+    if uSession.IsLocked then
+      AFont.Color := grid.DisabledFontColor;
+  end;
+
+end;
+
 procedure TFrameEvent.gridKeyPress(Sender: TObject; var Key: Char);
 begin
   {TODO -oBSA -cGeneral :
@@ -393,6 +428,8 @@ begin
     Self.Visible := true;
     pnlBody.Visible := true;
     pnlG.Visible := true;
+    grid.Enabled := true;
+//    grid.Refresh;
     UnlockDrawing;
   end;
 

@@ -49,11 +49,13 @@ object FrameEvent: TFrameEvent
         PopupMenu = pumenuEvent
         ScrollBars = ssBoth
         TabOrder = 0
+        StyleElements = [seClient, seBorder]
         OnDrawCell = gridDrawCell
         OnKeyPress = gridKeyPress
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
+        OnGetCellColor = gridGetCellColor
         OnCanEditCell = gridCanEditCell
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
@@ -175,6 +177,7 @@ object FrameEvent: TFrameEvent
         SortSettings.HeaderColorTo = clWhite
         SortSettings.HeaderMirrorColor = clWhite
         SortSettings.HeaderMirrorColorTo = clWhite
+        UseSelectionTextColor = False
         Version = '2.5.1.3'
         AutoCreateColumns = False
         AutoRemoveColumns = False

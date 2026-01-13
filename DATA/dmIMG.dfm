@@ -13821,12 +13821,12 @@ object IMG: TIMG
       item
         CollectionIndex = 39
         CollectionName = 'lock2'
-        Name = 'lock-2'
+        Name = 'lock2'
       end
       item
         CollectionIndex = 40
         CollectionName = 'lock2-open'
-        Name = 'lock-open-2'
+        Name = 'lock2-open'
       end
       item
         CollectionIndex = 48

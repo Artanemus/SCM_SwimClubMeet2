@@ -413,6 +413,8 @@ begin
 end;
 
 procedure TCORE.qrySessionAfterScroll(DataSet: TDataSet);
+var
+  IsLocked: boolean;
 begin
   if (msgHandle <> 0) then
   begin
@@ -423,6 +425,31 @@ begin
         PostMessage(msgHandle, SCM_AFTERSCROLL_SESSION, 0,0);
     end;
   end;
+
+  IsLocked := true;
+  if (CORE.qrySession.FieldByName('SessionStatusID').AsInteger <> 2)
+    then IsLocked := false;
+  if IsLocked then
+  begin
+    if not TFDQuery(DataSet).UpdateOptions.ReadOnly  then
+    begin
+      TFDQuery(DataSet).UpdateOptions.ReadOnly := true;
+      qryEvent.UpdateOptions.ReadOnly := true;
+      qryHeat.UpdateOptions.ReadOnly := true;
+      qryLane.UpdateOptions.ReadOnly := true;
+    end;
+  end
+  else
+  begin
+    if TFDQuery(DataSet).UpdateOptions.ReadOnly  then
+    begin
+      TFDQuery(DataSet).UpdateOptions.ReadOnly := false;
+      qryEvent.UpdateOptions.ReadOnly := false;
+      qryHeat.UpdateOptions.ReadOnly := false;
+      qryLane.UpdateOptions.ReadOnly := false;
+    end;
+  end;
+
 end;
 
 procedure TCORE.qrySessionBeforePost(DataSet: TDataSet);

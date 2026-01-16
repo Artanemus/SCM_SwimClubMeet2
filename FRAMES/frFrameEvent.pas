@@ -277,6 +277,8 @@ end;
 
 procedure TFrameEvent.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
   TRect; State: TGridDrawState);
+var
+  AEventTypeID: integer;
 begin
   if (ARow = 0) then
   begin
@@ -291,6 +293,23 @@ begin
         IMG.imglstEventCell.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 6,
           Rect.top + 4, 3);
     end;
+  end;
+  if ARow >= TDBAdvGrid(Sender).FixedCols then
+  begin
+      if ACol = 5 then // EventTypeID
+      begin
+        AEventTypeID := TDBAdvGrid(Sender).RealCells[ACol, ARow].ToInteger;
+        AEventTypeID := StrToIntDef(TDBAdvGrid(Sender).RealCells[ACol, ARow],0);
+        if Assigned(CORE) and CORE.IsActive and (AEventTypeID <> 0) then
+        begin
+          if CORE.qryEvent.UpdateOptions.ReadOnly then
+            IMG.imglstEventType.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 4,
+              Rect.top + 4, (AEventTypeID + 2))
+          else
+            IMG.imglstEventType.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 4,
+              Rect.top + 4, AEventTypeID);
+        end;
+      end;
   end;
 end;
 

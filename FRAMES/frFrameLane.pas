@@ -37,6 +37,8 @@ type
     spbtnReport: TSpeedButton;
     pnlG: TPanel;
     procedure actnLn_GenericUpdate(Sender: TObject);
+    procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
+        Boolean);
     procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
   private
@@ -67,6 +69,28 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
+procedure TFrameLane.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var
+    CanEdit: Boolean);
+begin
+  CanEdit := true;
+  case uHeat.HeatStatusID of
+    1: // OPEN
+      begin
+        if ACol in [2, 3, 6, 7, 8] then
+          CanEdit := true;
+      end;
+    2: // RACED
+      begin
+        if ACol in [2, 3, 6, 7, 8] then
+          CanEdit := true;
+      end;
+    3: // CLOSED
+      begin
+        CanEdit := false;
+      end;
+  end;
+end;
+
 procedure TFrameLane.gridGetCellColor(Sender: TObject; ARow, ACol: Integer;
   AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
 begin
@@ -75,17 +99,19 @@ begin
     case uHeat.HeatStatusID of
       1:
         begin
-          ; // do nothing
+          ; // Default assigned color.
         end;
-      2:
+      2: // RACED
         begin
           AFont.Color := clWebGoldenRod;
         end;
-      3:
+      3: // CLOSED
         begin
-          AFont.Color := grid.DisabledFontColor;
+          AFont.Color := clWebDarkSalmon;
         end;
     end;
+    if uSession.IsLocked then AFont.Color := grid.DisabledFontColor;
+
   end;
 end;
 

@@ -236,7 +236,7 @@ object FrameEvent: TFrameEvent
             Width = 0
           end
           item
-            Alignment = taRightJustify
+            Alignment = taCenter
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -255,6 +255,7 @@ object FrameEvent: TFrameEvent
             HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
+            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clWindowText
@@ -711,6 +712,7 @@ object FrameEvent: TFrameEvent
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
+        ExplicitLeft = 1
         ColWidths = (
           20
           0

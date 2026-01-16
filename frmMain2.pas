@@ -153,6 +153,7 @@ type
   protected
     // Note: don't name procedure same as winapi.message name.
     procedure Msg_SCM_Connect(var Msg: TMessage); message SCM_Connect;
+
     procedure Msg_SCM_AfterScroll_Session(var Msg: TMessage); message
         SCM_AFTERSCROLL_SESSION;
     procedure Msg_SCM_AfterScroll_Event(var Msg: TMessage); message
@@ -161,6 +162,16 @@ type
         SCM_AFTERSCROLL_HEAT;
     procedure Msg_SCM_AfterScroll_Lane(var Msg: TMessage); message
         SCM_AFTERSCROLL_LANE;
+
+    procedure Msg_SCM_AfterPost_Session(var Msg: TMessage); message
+        SCM_AFTERPOST_SESSION;
+    procedure Msg_SCM_AfterPost_Event(var Msg: TMessage); message
+        SCM_AFTERPOST_EVENT;
+    procedure Msg_SCM_AfterPost_Heat(var Msg: TMessage); message
+        SCM_AFTERPOST_HEAT;
+    procedure Msg_SCM_AfterPost_Lane(var Msg: TMessage); message
+        SCM_AFTERPOST_LANE;
+
     procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
       message SCM_SCROLL_NOMINATE_FILTERMEMBER;
   end;
@@ -458,6 +469,30 @@ begin
     frNominate.UpdateUI();
 end;
 
+procedure TMain2.Msg_SCM_AfterPost_Event(var Msg: TMessage);
+begin
+    frHeat.Grid.Refresh();
+    frHeat.Grid.Refresh;
+    frLane.Grid.Refresh;
+end;
+
+procedure TMain2.Msg_SCM_AfterPost_Heat(var Msg: TMessage);
+begin
+  frLane.Grid.Refresh();
+end;
+
+procedure TMain2.Msg_SCM_AfterPost_Lane(var Msg: TMessage);
+begin
+
+end;
+
+procedure TMain2.Msg_SCM_AfterPost_Session(var Msg: TMessage);
+begin
+    frEvent.Grid.Refresh();
+    frHeat.Grid.Refresh;
+    frLane.Grid.Refresh;
+end;
+
 procedure TMain2.Msg_SCM_AfterScroll_Event(var Msg: TMessage);
 begin
   frEvent.UpdateUI();
@@ -466,6 +501,7 @@ end;
 procedure TMain2.Msg_SCM_AfterScroll_Heat(var Msg: TMessage);
 begin
   frHeat.UpdateUI;
+  frLane.UpdateUI;
 end;
 
 procedure TMain2.Msg_SCM_AfterScroll_Lane(var Msg: TMessage);

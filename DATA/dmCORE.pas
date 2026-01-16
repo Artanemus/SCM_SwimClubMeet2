@@ -153,9 +153,11 @@ type
     procedure qryEventAfterScroll(DataSet: TDataSet);
     procedure qryEventNewRecord(DataSet: TDataSet);
     procedure qryFilterMemberAfterScroll(DataSet: TDataSet);
+    procedure qryHeatAfterPost(DataSet: TDataSet);
     procedure qryHeatAfterScroll(DataSet: TDataSet);
     procedure qryLaneAfterScroll(DataSet: TDataSet);
     procedure qryNomineeNewRecord(DataSet: TDataSet);
+    procedure qrySessionAfterPost(DataSet: TDataSet);
     procedure qrySessionAfterScroll(DataSet: TDataSet);
     procedure qrySessionBeforePost(DataSet: TDataSet);
     procedure qrySessionNewRecord(DataSet: TDataSet);
@@ -167,6 +169,8 @@ type
     FIsActive: boolean;
     fIsWorkingOnConnection: boolean;
     msgHandle: HWND;  // handle to send wapi messages. typically Main Form.
+
+    procedure CheckAllTablesReadOnlyState;
 
 	public
     procedure ActivateCore;
@@ -276,6 +280,38 @@ begin
   end;
 end;
 
+procedure TCORE.CheckAllTablesReadOnlyState;
+var
+  IsLocked: boolean;
+begin
+  IsLocked := true;
+  if (CORE.qrySession.FieldByName('SessionStatusID').AsInteger <> 2)
+    then IsLocked := false;
+  if IsLocked then
+  begin
+    if not qrySession.UpdateOptions.ReadOnly  then
+      qrySession.UpdateOptions.ReadOnly := true;
+    if not qryEvent.UpdateOptions.ReadOnly  then
+      qryEvent.UpdateOptions.ReadOnly := true;
+    if not qryHeat.UpdateOptions.ReadOnly  then
+      qryHeat.UpdateOptions.ReadOnly := true;
+    if not qryLane.UpdateOptions.ReadOnly  then
+      qryLane.UpdateOptions.ReadOnly := true;
+  end
+  else
+  begin
+    if qrySession.UpdateOptions.ReadOnly  then
+      qrySession.UpdateOptions.ReadOnly := false;
+    if qryEvent.UpdateOptions.ReadOnly  then
+      qryEvent.UpdateOptions.ReadOnly := false;
+    if qryHeat.UpdateOptions.ReadOnly  then
+      qryHeat.UpdateOptions.ReadOnly := false;
+    if qryLane.UpdateOptions.ReadOnly  then
+      qryLane.UpdateOptions.ReadOnly := false;
+  end;
+
+end;
+
 procedure TCORE.DataModuleCreate(Sender: TObject);
 begin
 	FIsActive := false;
@@ -378,6 +414,19 @@ begin
   end;
 end;
 
+procedure TCORE.qryHeatAfterPost(DataSet: TDataSet);
+begin
+  if (msgHandle <> 0) then
+  begin
+    if not (qryHeat.State in [dsOpening]) then
+    begin
+      if not fIsWorkingOnConnection then
+        // go post frame scroll events...
+        PostMessage(msgHandle, SCM_AFTERPOST_HEAT, 0,0);
+    end;
+  end;
+end;
+
 procedure TCORE.qryHeatAfterScroll(DataSet: TDataSet);
 begin
   if (msgHandle <> 0) then
@@ -412,44 +461,34 @@ begin
   DataSet.FieldByName('AutoBuildFlag').AsBoolean := false;
 end;
 
-procedure TCORE.qrySessionAfterScroll(DataSet: TDataSet);
-var
-  IsLocked: boolean;
+procedure TCORE.qrySessionAfterPost(DataSet: TDataSet);
 begin
+  CheckAllTablesReadOnlyState(); // handle SessionStatusID.
+
   if (msgHandle <> 0) then
   begin
     if not (qrySession.State in [dsOpening]) then
     begin
       if not fIsWorkingOnConnection then
-        // go post frame scroll events...
+        // Refresh UI...
+        PostMessage(msgHandle, SCM_AFTERPOST_SESSION, 0,0);
+    end;
+  end;
+end;
+
+procedure TCORE.qrySessionAfterScroll(DataSet: TDataSet);
+begin
+  CheckAllTablesReadOnlyState;
+
+  if (msgHandle <> 0) then
+  begin
+    if not (qrySession.State in [dsOpening]) then
+    begin
+      if not fIsWorkingOnConnection then
+        // Refresh UI...
         PostMessage(msgHandle, SCM_AFTERSCROLL_SESSION, 0,0);
     end;
   end;
-
-  IsLocked := true;
-  if (CORE.qrySession.FieldByName('SessionStatusID').AsInteger <> 2)
-    then IsLocked := false;
-  if IsLocked then
-  begin
-    if not TFDQuery(DataSet).UpdateOptions.ReadOnly  then
-    begin
-      TFDQuery(DataSet).UpdateOptions.ReadOnly := true;
-      qryEvent.UpdateOptions.ReadOnly := true;
-      qryHeat.UpdateOptions.ReadOnly := true;
-      qryLane.UpdateOptions.ReadOnly := true;
-    end;
-  end
-  else
-  begin
-    if TFDQuery(DataSet).UpdateOptions.ReadOnly  then
-    begin
-      TFDQuery(DataSet).UpdateOptions.ReadOnly := false;
-      qryEvent.UpdateOptions.ReadOnly := false;
-      qryHeat.UpdateOptions.ReadOnly := false;
-      qryLane.UpdateOptions.ReadOnly := false;
-    end;
-  end;
-
 end;
 
 procedure TCORE.qrySessionBeforePost(DataSet: TDataSet);

@@ -531,7 +531,6 @@ object FrameSession: TFrameSession
       Action = actnSess_Lock
       Align = alTop
       Anchors = []
-      ImageIndex = 4
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -563,7 +562,6 @@ object FrameSession: TFrameSession
       Action = actnSess_Edit
       Align = alTop
       Anchors = []
-      ImageIndex = 5
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -599,7 +597,6 @@ object FrameSession: TFrameSession
       Action = actnSess_Clone
       Align = alTop
       Anchors = []
-      ImageIndex = 7
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop
@@ -649,7 +646,6 @@ object FrameSession: TFrameSession
       Action = actnSess_Report
       Align = alTop
       Anchors = []
-      ImageIndex = 9
       Images = IMG.imglstSessCntrl
       Flat = True
       Layout = blGlyphTop

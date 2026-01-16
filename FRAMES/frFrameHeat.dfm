@@ -338,8 +338,8 @@ object FrameHeat: TFrameHeat
       AlignWithMargins = True
       Left = 8
       Top = 8
-      Width = 138
-      Height = 608
+      Width = 117
+      Height = 51
       Margins.Left = 8
       Margins.Top = 8
       Margins.Right = 8
@@ -355,8 +355,6 @@ object FrameHeat: TFrameHeat
       ParentFont = False
       Layout = tlCenter
       WordWrap = True
-      ExplicitWidth = 117
-      ExplicitHeight = 51
     end
     object pnlG: TPanel
       Left = 0

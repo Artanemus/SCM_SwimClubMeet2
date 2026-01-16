@@ -2964,9 +2964,29 @@ object Main2: TMain2
                 Below = frSession.ShapeSessBar2
               end>
             ExplicitHeight = 626
+            inherited spbtnSessVisiblity: TSpeedButton
+              ImageName = 'lock2'
+              Glyph.Data = {00000000}
+            end
             inherited spbtnSessLockState: TSpeedButton
               ImageIndex = 3
               ImageName = 'lock2'
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessEdit: TSpeedButton
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessNew: TSpeedButton
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessClone: TSpeedButton
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessDelete: TSpeedButton
+              Glyph.Data = {00000000}
+            end
+            inherited spbtnSessReport: TSpeedButton
+              Glyph.Data = {00000000}
             end
           end
           inherited actnlstSession: TActionList
@@ -3545,8 +3565,8 @@ object Main2: TMain2
               ExplicitWidth = 161
               ExplicitHeight = 546
               inherited lblMsgEmpty: TLabel
-                Width = 145
-                Height = 530
+                Width = 136
+                Height = 63
                 Font.Height = -16
                 ExplicitWidth = 136
                 ExplicitHeight = 63

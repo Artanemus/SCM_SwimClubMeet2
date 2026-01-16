@@ -201,15 +201,13 @@ procedure TFrameSession.actnSess_LockExecute(Sender: TObject);
 begin
   grid.BeginUpdate;
   try
+    // NOTE: Record changes - triggers CORE.AfterPost...
     TAction(Sender).Checked := not TAction(Sender).Checked;
     if TAction(Sender).Checked then
     begin
-      try
-        uSession.SetSessionStatusID(2); // CLOSED ie.LOCKED.
-      finally
-        actnSess_Lock.Checked := true; // syncronize to equal db state
-        SetLockStateIcon;
-      end;
+      uSession.SetSessionStatusID(2); // CLOSED ie.LOCKED.
+      actnSess_Lock.Checked := true; // syncronize to equal db state
+      SetLockStateIcon;
     end
     else
     begin
@@ -217,7 +215,6 @@ begin
       uSession.SetSessionStatusID(1); // OPEN ie.UN-LOCKED.
       actnSess_Lock.Checked := false; // syncronize to equal db state
       SetLockStateIcon;
-
 
       // good opertunity to re-calulate and store count values.
       {-------------------------------------------------------}

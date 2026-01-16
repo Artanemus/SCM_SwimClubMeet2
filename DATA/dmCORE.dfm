@@ -26,6 +26,7 @@ object CORE: TCORE
   object qrySession: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     BeforePost = qrySessionBeforePost
+    AfterPost = qrySessionAfterPost
     AfterScroll = qrySessionAfterScroll
     OnNewRecord = qrySessionNewRecord
     Indexes = <
@@ -394,6 +395,7 @@ object CORE: TCORE
   end
   object qryHeat: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    AfterPost = qryHeatAfterPost
     AfterScroll = qryHeatAfterScroll
     Indexes = <
       item

@@ -2056,35 +2056,36 @@ object IMG: TIMG
           't-xdpi="96" inkscape:export-ydpi="96" xmlns:inkscape="http://www' +
           '.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipo' +
           'di.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/' +
-          '2000/svg" xmlns:svg="http://www.w3.org/2000/svg">'#13#10'  <defs id="d' +
-          'efs8"/>'#13#10'  <sodipodi:namedview id="namedview6" pagecolor="#fffff' +
-          'f" bordercolor="#666666" borderopacity="1.0" inkscape:showpagesh' +
-          'adow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerboard="0' +
-          '" inkscape:deskcolor="#d1d1d1" showgrid="false" inkscape:zoom="1' +
-          '6" inkscape:cx="50.5" inkscape:cy="34.0625" inkscape:window-widt' +
-          'h="2560" inkscape:window-height="1377" inkscape:window-x="-8" in' +
-          'kscape:window-y="-8" inkscape:window-maximized="1" inkscape:curr' +
-          'ent-layer="svg4" showguides="true">'#13#10'    <inkscape:page x="0" y=' +
-          '"0" width="48" height="48" id="page535" inkscape:label="EmptyFra' +
-          'me" inkscape:export-filename="..\HeatNavigator\EmptyFrame.png" i' +
-          'nkscape:export-xdpi="96" inkscape:export-ydpi="96" margin="0" bl' +
-          'eed="0"/>'#13#10'  </sodipodi:namedview>'#13#10'  <g inkscape:groupmode="lay' +
-          'er" id="layer1" inkscape:label="Layer 1" transform="translate(82' +
-          '.201164,-10.960155)"/>'#13#10'  <path d="M 5.3447453,44.049642 H 3.194' +
-          '386 V 3.9660138 h 2.1503593 z m 19.6220287,0 h -2.63675 l -9.446' +
-          '22,-31.949504 q -0.358394,-1.20195 -0.58879,-2.5157079 h -0.0768' +
-          ' q 0.102395,1.2858079 0.102395,5.5066069 V 44.049642 H 10.170254' +
-          ' V 3.9660138 h 2.790347 l 9.190227,31.4463592 q 0.57599,1.956663' +
-          ' 0.742387,2.683423 h 0.0512 Q 22.816418,36.362751 22.816418,32.1' +
-          '97857 V 3.9660138 h 2.150359 z m 4.812708,0 V 3.9660138 h 5.0687' +
-          '05 q 9.702218,0 9.702218,19.5386722 0,9.280169 -2.700751,14.9265' +
-          '39 -2.687948,5.618417 -7.206263,5.618417 z M 31.929841,8.2147664' +
-          ' V 39.800887 h 2.73915 q 3.609531,0 5.619093,-4.2208 2.009563,-4' +
-          '.220801 2.009563,-11.963591 0,-15.4017296 -7.50066,-15.4017296 z' +
-          '" id="text1" style="font-size:40.6354px;line-height:1.25;font-fa' +
-          'mily:'#39'Segoe UI'#39';-inkscape-font-specification:'#39'Segoe UI, Normal'#39';' +
-          'text-align:center;text-anchor:middle;stroke:#000000;stroke-width' +
-          ':2.83266" aria-label="IND"/>'#13#10'</svg>'#13#10
+          '2000/svg" xmlns:svg="http://www.w3.org/2000/svg">'#13#10'    <defs id=' +
+          '"defs8"/>'#13#10#13#10'    <sodipodi:namedview id="namedview6" pagecolor="' +
+          '#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:show' +
+          'pageshadow="2" inkscape:pageopacity="0.0" inkscape:pagecheckerbo' +
+          'ard="0" inkscape:deskcolor="#d1d1d1" showgrid="false" inkscape:z' +
+          'oom="16" inkscape:cx="50.5" inkscape:cy="34.0625" inkscape:windo' +
+          'w-width="2560" inkscape:window-height="1377" inkscape:window-x="' +
+          '-8" inkscape:window-y="-8" inkscape:window-maximized="1" inkscap' +
+          'e:current-layer="svg4" showguides="true">'#13#10'      <inkscape:page ' +
+          'x="0" y="0" width="48" height="48" id="page535" inkscape:label="' +
+          'EmptyFrame" inkscape:export-filename="..\HeatNavigator\EmptyFram' +
+          'e.png" inkscape:export-xdpi="96" inkscape:export-ydpi="96" margi' +
+          'n="0" bleed="0"/>'#13#10'  '#13#10'  </sodipodi:namedview>'#13#10#13#10'    <g inkscap' +
+          'e:groupmode="layer" id="layer1" inkscape:label="Layer 1" transfo' +
+          'rm="translate(82.201164,-10.960155)"/>'#13#10#13#10'    <path d="M 5.34474' +
+          '53,44.049642 H 3.194386 V 3.9660138 h 2.1503593 z m 19.6220287,0' +
+          ' h -2.63675 l -9.44622,-31.949504 q -0.358394,-1.20195 -0.58879,' +
+          '-2.5157079 h -0.0768 q 0.102395,1.2858079 0.102395,5.5066069 V 4' +
+          '4.049642 H 10.170254 V 3.9660138 h 2.790347 l 9.190227,31.446359' +
+          '2 q 0.57599,1.956663 0.742387,2.683423 h 0.0512 Q 22.816418,36.3' +
+          '62751 22.816418,32.197857 V 3.9660138 h 2.150359 z m 4.812708,0 ' +
+          'V 3.9660138 h 5.068705 q 9.702218,0 9.702218,19.5386722 0,9.2801' +
+          '69 -2.700751,14.926539 -2.687948,5.618417 -7.206263,5.618417 z M' +
+          ' 31.929841,8.2147664 V 39.800887 h 2.73915 q 3.609531,0 5.619093' +
+          ',-4.2208 2.009563,-4.220801 2.009563,-11.963591 0,-15.4017296 -7' +
+          '.50066,-15.4017296 z" id="text1" style="font-size:40.6354px;line' +
+          '-height:1.25;font-family:'#39'Segoe UI'#39';-inkscape-font-specification' +
+          ':'#39'Segoe UI, Normal'#39';text-align:center;text-anchor:middle;stroke:' +
+          '#000000;stroke-width:2.83266" aria-label="IND"/>'#13#10#13#10'</svg>'#13#10
+        FixedColor = clDarkgoldenrod
       end
       item
         IconName = 'user'
@@ -14389,6 +14390,18 @@ object IMG: TIMG
         CollectionIndex = 101
         CollectionName = 'RELAY_DOT_intense'
         Name = 'RELAY_DOT_intense'
+      end
+      item
+        CollectionIndex = 72
+        CollectionName = 'INDV'
+        Disabled = True
+        Name = 'INDV_Disabled'
+      end
+      item
+        CollectionIndex = 15
+        CollectionName = 'RELAY_DOT'
+        Disabled = True
+        Name = 'RELAY_DOT_Disabled'
       end>
     ImageCollection = CollectionCore
     Width = 24

@@ -108,8 +108,6 @@ end;
 procedure TFrameHeat.actnHt_ToggleStatusExecute(Sender: TObject);
 begin
   uHeat.ToggleStatus;
-  // frame lane needs to paint the grid in a new color...
-  PostMessage(TForm(Owner).handle, SCM_FRAME_HEATSTATUS_CHANGED, 0, 0);
 end;
 
 procedure TFrameHeat.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var

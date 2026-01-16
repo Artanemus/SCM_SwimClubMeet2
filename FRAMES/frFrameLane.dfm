@@ -227,6 +227,7 @@ object FrameLane: TFrameLane
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
         OnGetCellColor = gridGetCellColor
+        OnCanEditCell = gridCanEditCell
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
         ActiveCellFont.Height = -12

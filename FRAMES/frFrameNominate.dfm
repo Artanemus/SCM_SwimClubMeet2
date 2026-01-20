@@ -69,10 +69,6 @@ object FrameNominate: TFrameNominate
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitLeft = 136
-      ExplicitTop = 168
-      ExplicitWidth = 185
-      ExplicitHeight = 41
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
@@ -100,6 +96,8 @@ object FrameNominate: TFrameNominate
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
+        OnGetDisplText = gridGetDisplText
+        OnGetCellColor = gridGetCellColor
         OnClickCell = gridClickCell
         OnCanEditCell = gridCanEditCell
         HTMLKeepLineBreak = False
@@ -579,8 +577,7 @@ object FrameNominate: TFrameNominate
           FFC003FF}
         ShowUnicode = False
         OnGetHTMLTemplate = gridGetHTMLTemplate
-        ExplicitWidth = 185
-        ExplicitHeight = 41
+        ExplicitLeft = -4
         ColWidths = (
           20
           50

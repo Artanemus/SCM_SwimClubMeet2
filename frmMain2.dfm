@@ -2974,18 +2974,21 @@ object Main2: TMain2
               Glyph.Data = {00000000}
             end
             inherited spbtnSessEdit: TSpeedButton
+              ImageIndex = 5
               Glyph.Data = {00000000}
             end
             inherited spbtnSessNew: TSpeedButton
               Glyph.Data = {00000000}
             end
             inherited spbtnSessClone: TSpeedButton
+              ImageIndex = 7
               Glyph.Data = {00000000}
             end
             inherited spbtnSessDelete: TSpeedButton
               Glyph.Data = {00000000}
             end
             inherited spbtnSessReport: TSpeedButton
+              ImageIndex = 9
               Glyph.Data = {00000000}
             end
           end
@@ -3321,8 +3324,6 @@ object Main2: TMain2
             inherited pnlG: TPanel
               Width = 632
               Height = 626
-              ExplicitLeft = 0
-              ExplicitTop = 0
               ExplicitWidth = 632
               ExplicitHeight = 626
               inherited grid: TDBAdvGrid

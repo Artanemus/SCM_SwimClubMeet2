@@ -2737,6 +2737,18 @@ object IMG: TIMG
           '.825 4H19q.625 0 .9.55t-.1 1.05zM19.775 22.6L14 16.825V19q0 .425' +
           '-.288.713T13 20h-2q-.425 0-.712-.288T10 19v-6.175l-8.6-8.6L2.8 2' +
           '.8l18.4 18.4z"/></svg>'
+      end
+      item
+        IconName = 'error'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M10 2c3.9 0 7 ' +
+          '3.1 7 7c0 2.4-1.2 4.5-3 5.7V17c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1v-2' +
+          '.3C4.2 13.5 3 11.4 3 9c0-3.9 3.1-7 7-7M7 21v-1h6v1c0 .6-.4 1-1 1' +
+          'H8c-.6 0-1-.4-1-1m3-17C7.2 4 5 6.2 5 9c0 2.1 1.2 3.8 3 4.6V16h4v' +
+          '-2.4c1.8-.8 3-2.5 3-4.6c0-2.8-2.2-5-5-5m9 8V7h2v6h-2m0 4v-2h2v2z' +
+          '"/></svg>'
+        FixedColor = clGold
       end>
     Left = 496
     Top = 16
@@ -13687,6 +13699,8 @@ object IMG: TIMG
     Top = 144
   end
   object imglstNomCheckBox: TSVGIconVirtualImageList
+    DisabledOpacity = 100
+    DisabledGrayScale = True
     Images = <
       item
         CollectionIndex = 43
@@ -13697,6 +13711,18 @@ object IMG: TIMG
         CollectionIndex = 44
         CollectionName = 'checkbox'
         Name = 'checkbox'
+      end
+      item
+        CollectionIndex = 43
+        CollectionName = 'checkbox-blank'
+        Disabled = True
+        Name = 'checkbox-blank_Disabled'
+      end
+      item
+        CollectionIndex = 44
+        CollectionName = 'checkbox'
+        Disabled = True
+        Name = 'checkbox_Disabled'
       end>
     ImageCollection = CollectionCore
     Width = 38
@@ -13716,6 +13742,12 @@ object IMG: TIMG
         CollectionIndex = 45
         CollectionName = 'award-star'
         Name = 'award-star'
+      end
+      item
+        CollectionIndex = 45
+        CollectionName = 'award-star'
+        Disabled = True
+        Name = 'award-star_Disabled'
       end>
     ImageCollection = CollectionCore
     Width = 38
@@ -13725,6 +13757,8 @@ object IMG: TIMG
     Top = 224
   end
   object imglstNomStroke: TSVGIconVirtualImageList
+    DisabledOpacity = 50
+    DisabledGrayScale = True
     Images = <
       item
         CollectionIndex = 0
@@ -13755,6 +13789,36 @@ object IMG: TIMG
         CollectionIndex = 9
         CollectionName = 'StrokeIM'
         Name = 'StrokeIM'
+      end
+      item
+        CollectionIndex = 5
+        CollectionName = 'StrokeFS'
+        Disabled = True
+        Name = 'StrokeFS_Disabled'
+      end
+      item
+        CollectionIndex = 7
+        CollectionName = 'StrokeBS'
+        Disabled = True
+        Name = 'StrokeBS_Disabled'
+      end
+      item
+        CollectionIndex = 6
+        CollectionName = 'StrokeBK'
+        Disabled = True
+        Name = 'StrokeBK_Disabled'
+      end
+      item
+        CollectionIndex = 8
+        CollectionName = 'StrokeBF'
+        Disabled = True
+        Name = 'StrokeBF_Disabled'
+      end
+      item
+        CollectionIndex = 9
+        CollectionName = 'StrokeIM'
+        Disabled = True
+        Name = 'StrokeIM_Disabled'
       end>
     ImageCollection = CollectionCore
     Width = 38
@@ -13779,6 +13843,18 @@ object IMG: TIMG
         CollectionIndex = 15
         CollectionName = 'RELAY_DOT'
         Name = 'RELAY_DOT'
+      end
+      item
+        CollectionIndex = 72
+        CollectionName = 'INDV'
+        Disabled = True
+        Name = 'INDV_Disabled'
+      end
+      item
+        CollectionIndex = 15
+        CollectionName = 'RELAY_DOT'
+        Disabled = True
+        Name = 'RELAY_DOT_Disabled'
       end>
     ImageCollection = CollectionCore
     Width = 38
@@ -14402,6 +14478,11 @@ object IMG: TIMG
         CollectionName = 'RELAY_DOT'
         Disabled = True
         Name = 'RELAY_DOT_Disabled'
+      end
+      item
+        CollectionIndex = 115
+        CollectionName = 'error'
+        Name = 'error'
       end>
     ImageCollection = CollectionCore
     Width = 24

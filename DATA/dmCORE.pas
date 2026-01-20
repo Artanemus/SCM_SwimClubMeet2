@@ -189,7 +189,6 @@ implementation
 {%CLASSGROUP 'Vcl.Controls.TControl'}
 
 
-
 {$R *.dfm}
 
 procedure TCORE.ActivateCore;
@@ -287,12 +286,15 @@ begin
   IsLocked := true;
   if (CORE.qrySession.FieldByName('SessionStatusID').AsInteger <> 2)
     then IsLocked := false;
+
   if IsLocked then
   begin
     if not qrySession.UpdateOptions.ReadOnly  then
       qrySession.UpdateOptions.ReadOnly := true;
     if not qryEvent.UpdateOptions.ReadOnly  then
       qryEvent.UpdateOptions.ReadOnly := true;
+    if not qryNominate.UpdateOptions.ReadOnly  then
+      qryNominate.UpdateOptions.ReadOnly := true;
     if not qryHeat.UpdateOptions.ReadOnly  then
       qryHeat.UpdateOptions.ReadOnly := true;
     if not qryLane.UpdateOptions.ReadOnly  then
@@ -304,6 +306,8 @@ begin
       qrySession.UpdateOptions.ReadOnly := false;
     if qryEvent.UpdateOptions.ReadOnly  then
       qryEvent.UpdateOptions.ReadOnly := false;
+    if qryNominate.UpdateOptions.ReadOnly  then
+      qryNominate.UpdateOptions.ReadOnly := false;
     if qryHeat.UpdateOptions.ReadOnly  then
       qryHeat.UpdateOptions.ReadOnly := false;
     if qryLane.UpdateOptions.ReadOnly  then
@@ -463,7 +467,9 @@ end;
 
 procedure TCORE.qrySessionAfterPost(DataSet: TDataSet);
 begin
-  CheckAllTablesReadOnlyState(); // handle SessionStatusID.
+  CheckAllTablesReadOnlyState(); // handle SessionStatusID state.
+
+
 
   if (msgHandle <> 0) then
   begin
@@ -478,7 +484,7 @@ end;
 
 procedure TCORE.qrySessionAfterScroll(DataSet: TDataSet);
 begin
-  CheckAllTablesReadOnlyState;
+  CheckAllTablesReadOnlyState; // handle SessionStatusID state.
 
   if (msgHandle <> 0) then
   begin

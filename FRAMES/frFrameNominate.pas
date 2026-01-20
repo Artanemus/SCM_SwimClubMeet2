@@ -32,6 +32,10 @@ type
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
     procedure gridClickCell(Sender: TObject; ARow, ACol: Integer);
+    procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
+        TGridDrawState; ABrush: TBrush; AFont: TFont);
+    procedure gridGetDisplText(Sender: TObject; ACol, ARow: Integer; var Value:
+        string);
     procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
     procedure gridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -76,12 +80,17 @@ begin
   begin
     if ACol = 1 then
     begin
-      G.BeginUpdate;
-      try
-        uNominee.ToogleNomination(); // current active reccord?
-      finally
-        G.EndUpdate;
+      // table's readonly state is determined on the lock state of the Session.
+      if not CORE.qryNominate.UpdateOptions.ReadOnly then
+      begin
+        G.BeginUpdate;
+        try
+            uNominee.ToogleNomination(); // current active record.
+        finally
+          G.EndUpdate;
+        end;
       end;
+
       {
       CORE.qryNominate.DisableControls;
       try
@@ -106,6 +115,45 @@ begin
       }
     end;
   end;
+end;
+
+procedure TFrameNominate.gridGetCellColor(Sender: TObject; ARow, ACol: Integer;
+    AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
+begin
+  if (ARow >= grid.FixedRows) then   // (ARow >= grid.FixedCols)
+  begin
+    // overrides all
+    if uSession.IsLocked then
+      AFont.Color := grid.DisabledFontColor;
+  end;
+end;
+
+procedure TFrameNominate.gridGetDisplText(Sender: TObject; ACol, ARow: Integer;
+  var Value: string);
+var
+  indx: integer;
+begin
+  // It's here we toggle the DISABLED ICONS that are displayed in the grid.
+  if (ARow >= grid.FixedRows) then
+    if CORE.qryNominate.UpdateOptions.ReadOnly then
+    begin
+      indx := StrToIntDef(Value, 0);
+      case ACol of
+        1: // CHECKBOX - NOMINATED (zero is accepted here.)
+          Value := IntToStr(indx + 2);
+        2: // QUALLIFIED
+          if indx = 1 then Value := IntToStr(indx + 1);
+        3: // STROKE.
+          begin
+            if indx > 0 then
+              { Results in a different data image being displayed.
+               In this instance, a 'disabled' stroke icon. }
+              Value := IntToStr(indx + 5);
+          end;
+        6: // EVENTYPEID.
+          if indx > 0 then Value := IntToStr(indx + 2);
+      end;
+    end;
 end;
 
 procedure TFrameNominate.gridGetHTMLTemplate(Sender: TObject; ACol, ARow:
@@ -145,7 +193,6 @@ begin
     end;
   end;
 end;
-
 
 procedure TFrameNominate.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
 begin
@@ -230,6 +277,7 @@ begin
         pnlBody.Caption := 'No club members found.';
         pnlG.Visible := false;
       end;
+
     end;
 
   finally

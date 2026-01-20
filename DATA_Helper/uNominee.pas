@@ -215,6 +215,9 @@ procedure ToogleNomination();
 var
  aMemberID, aEventID: integer;
 begin
+  // table's readonly state is determined on the lock state of the Session.
+  if CORE.qryNominate.UpdateOptions.ReadOnly then exit;
+
   CORE.qryNominate.DisableControls;
   try
     aMemberID := CORE.qryFilterMember.FieldByName('MemberID').AsInteger;

@@ -27,6 +27,10 @@ type
       procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     end;
 }
+
+  TFrameNotifyEvent_GridViewChange = procedure(Sender: TObject; GridState:
+      Boolean) of object;
+
   TFrameEvent = class(TFrame)
     actnEv_Delete: TAction;
     actnEv_EventType: TAction;
@@ -67,6 +71,8 @@ type
     spbtnEvReport: TSpeedButton;
     spbtnEvUp: TSpeedButton;
     pnlG: TPanel;
+    actnEv_ClearCell: TAction;
+    ClearCell1: TMenuItem;
     procedure actnEv_DeleteExecute(Sender: TObject);
     procedure actnEv_DeleteUpdate(Sender: TObject);
     procedure actnEv_EventTypeExecute(Sender: TObject);
@@ -87,11 +93,17 @@ type
         TGridDrawState; ABrush: TBrush; AFont: TFont);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
   private
+    FOnGridViewChange: TFrameNotifyEvent_GridViewChange;
     procedure SetGridView_ColVisibility;
     procedure SetGridView_IconIndex;
   public
-//    procedure AfterSessionScroll;
+
     procedure UpdateUI(DoFullUpdate: Boolean = false);
+
+    // Notify main form of a grid view change (expand/collapse)...
+    property OnGridViewChanged: TFrameNotifyEvent_GridViewChange
+      read FOnGridViewChange write FOnGridViewChange;
+
   end;
 
 implementation
@@ -161,6 +173,9 @@ begin
         grid.EndUpdate;
       end;
     end;
+
+    if Assigned(FOnGridViewChange) then
+      FOnGridViewChange(self, TAction(Sender).Checked);
 end;
 
 procedure TFrameEvent.actnEv_GridViewUpdate(Sender: TObject);
@@ -279,37 +294,60 @@ procedure TFrameEvent.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
   TRect; State: TGridDrawState);
 var
   AEventTypeID: integer;
+  G: TDBAdvGrid;
+//  readOnly: boolean;
 begin
+  G := TDBAdvGrid(Sender);
+
   if (ARow = 0) then
   begin
-    case ACol of
+    case ACol of // Draw icons in the header line of the grid.
       8:
-        IMG.imglstEventCell.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 4,
+        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4,
           Rect.top + 4, 1);
       9:
-        IMG.imglstEventCell.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 4,
+        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4,
           Rect.top + 4, 2);
       10: // centered gender icon...
-        IMG.imglstEventCell.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 6,
+        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 6,
           Rect.top + 4, 3);
     end;
   end;
-  if ARow >= TDBAdvGrid(Sender).FixedCols then
+
+  if ARow >= G.FixedCols then
   begin
-      if ACol = 5 then // EventTypeID
+    { Replace the grid's EventTypeID value with an icon.
+      Select DIMMED version of the icon if the event table is readonly.
+    }
+    if ACol = 5 then
+    begin
+      // TMS exception: trap any empty string in cell..
+      if G.RealCells[ACol, ARow].IsEmpty then
+        AEventTypeID := 0
+      else
+        AEventTypeID := G.RealCells[ACol, ARow].ToInteger;
+
+      // clear the cell of display text
+      G.Canvas.FillRect(Rect);
+
+      // readOnly := G.Columns[ACol].ReadOnly;
+
+      // if not(goediting in G.Options) then readOnly := false else readOnly := true;
+
+
+      if Assigned(CORE) and CORE.IsActive and (AEventTypeID <> 0) then
       begin
-        AEventTypeID := TDBAdvGrid(Sender).RealCells[ACol, ARow].ToInteger;
-        AEventTypeID := StrToIntDef(TDBAdvGrid(Sender).RealCells[ACol, ARow],0);
-        if Assigned(CORE) and CORE.IsActive and (AEventTypeID <> 0) then
-        begin
-          if CORE.qryEvent.UpdateOptions.ReadOnly then
-            IMG.imglstEventType.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 4,
-              Rect.top + 4, (AEventTypeID + 2))
-          else
-            IMG.imglstEventType.Draw(TDBAdvGrid(Sender).Canvas, Rect.left + 4,
-              Rect.top + 4, AEventTypeID);
-        end;
-      end;
+        if CORE.qryEvent.UpdateOptions.ReadOnly then // DIMMED ICON...
+          IMG.imglstEventType.Draw(G.Canvas, Rect.left + 4,
+            Rect.top + 4, (AEventTypeID + 2))
+        else // NORMAL ICON...
+          IMG.imglstEventType.Draw(G.Canvas, Rect.left + 4,
+            Rect.top + 4, AEventTypeID);
+      end
+      else // lightbulb - error!
+          IMG.imglstEventType.Draw(G.Canvas, Rect.left + 4,
+            Rect.top + 4, 5);
+    end;
   end;
 end;
 
@@ -357,7 +395,7 @@ begin
 //      end;
 
   if (grid.row >= grid.FixedRows) and
-      (grid.RealColIndex(grid.Col) in [12, 13]) then
+      (grid.RealColIndex(grid.Col) in [10, 11, 12, 13]) then
   begin
     if (Key = char(VK_BACK)) or (Key = #$7F) then
     begin
@@ -369,6 +407,10 @@ begin
               if (CORE.qryEvent.State <> dsEdit) then
                 CORE.qryEvent.Edit;
               case (grid.RealColIndex(grid.Col)) of
+                10:
+                CORE.qryEvent.FieldByName('GenderID').Clear;
+                11:
+                CORE.qryEvent.FieldByName('RoundID').Clear;
                 12:
                 CORE.qryEvent.FieldByName('EventCategoryID').Clear;
                 13:

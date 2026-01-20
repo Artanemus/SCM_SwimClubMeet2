@@ -141,12 +141,15 @@ type
     procedure SwimClub_ReportsExecute(Sender: TObject);
     procedure SwimClub_SwitchExecute(Sender: TObject);
     procedure Tools_PreferencesExecute(Sender: TObject);
+
   private
 
     fCueToMemberID: integer;
 
 //    procedure HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
 //      NavEvItem: TFrameNavEvItem);
+
+    procedure HandleOnGridViewChange(Sender: TObject; GridState: Boolean);
 
     procedure SetPanelAndFrame_Visibility;
 
@@ -338,6 +341,7 @@ begin
   // No connection established ...initialize UI state...
   PageControl.ActivePageIndex := 0; // tabsheet 0
   frEvent.actnEv_GridView.Checked := false; // default: collapsed gridview.
+  frEvent.OnGridViewChanged := HandleOnGridViewChange; // assign event handle.
 
   SetPanelAndFrame_Visibility(); // hide all panels displaying frames.
 
@@ -391,6 +395,15 @@ begin
   if Assigned(SCM2) and SCM2.scmConnection.Connected and CORE.IsActive then
     DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TMain2.HandleOnGridViewChange(Sender: TObject; GridState: Boolean);
+begin
+  // if Event grid is expanded...
+  if GridState = true then
+    pnlSession.Visible := false
+  else
+    pnlSession.Visible := true;
 end;
 
 procedure TMain2.Members_ManageExecute(Sender: TObject);

@@ -128,7 +128,6 @@ object FrameEvent: TFrameEvent
         HTMLSettings.ImageBaseName = 'img'
         Look = glCustom
         Navigation.AllowInsertRow = True
-        Navigation.AlwaysEdit = True
         Navigation.AdvanceOnEnter = True
         Navigation.AdvanceInsert = True
         Navigation.InsertPosition = pInsertAfter
@@ -327,7 +326,6 @@ object FrameEvent: TFrameEvent
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWhite
-            DataImageField = True
             FieldName = 'EventTypeID'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clBlack
@@ -483,6 +481,7 @@ object FrameEvent: TFrameEvent
             HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
+            HeaderAlignment = taCenter
             Name = 'Gender'
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
@@ -490,7 +489,6 @@ object FrameEvent: TFrameEvent
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 38
           end
           item
             Borders = []
@@ -712,7 +710,6 @@ object FrameEvent: TFrameEvent
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitLeft = 1
         ColWidths = (
           20
           0
@@ -724,7 +721,7 @@ object FrameEvent: TFrameEvent
           32
           43
           43
-          38
+          50
           64
           64
           64)
@@ -1036,7 +1033,7 @@ object FrameEvent: TFrameEvent
     end
     object actnEv_EventType: TAction
       Category = 'Events'
-      Caption = 'Event Type'
+      Caption = 'Toggle Event Type'
       Hint = 'Toggle event type. INDV-RELAY'
       ImageIndex = 35
       ImageName = 'INDV_RELAY'
@@ -1099,6 +1096,10 @@ object FrameEvent: TFrameEvent
       ImageIndex = 21
       ImageName = 'in'
     end
+    object actnEv_ClearCell: TAction
+      Category = 'Events'
+      Caption = 'Clear Cell'
+    end
   end
   object pumenuEvent: TPopupMenu
     Images = IMG.imglstEventPopupMenu
@@ -1129,6 +1130,10 @@ object FrameEvent: TFrameEvent
     object EventType1: TMenuItem
       Action = actnEv_EventType
       ImageIndex = 7
+    end
+    object ClearCell1: TMenuItem
+      Action = actnEv_ClearCell
+      Hint = 'Empty the selected cell. (set to nil)'
     end
     object N2: TMenuItem
       Caption = '-'

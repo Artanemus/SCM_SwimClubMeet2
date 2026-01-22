@@ -1,4 +1,4 @@
-unit dlgDatePicker;
+unit dlgscmDatePicker;
 
 interface
 
@@ -8,7 +8,7 @@ uses
   Vcl.StdCtrls;
 
 type
-  TDatePicker = class(TForm)
+  TscmDatePicker = class(TForm)
     CalendarView1: TCalendarView;
     btnOk: TButton;
     procedure btnCancelClick(Sender: TObject);
@@ -22,23 +22,23 @@ type
   end;
 
 var
-  DatePicker: TDatePicker;
+  scmDatePicker: TscmDatePicker;
 
 implementation
 
 {$R *.dfm}
 
-procedure TDatePicker.btnCancelClick(Sender: TObject);
+procedure TscmDatePicker.btnCancelClick(Sender: TObject);
 begin
   ModalResult := mrCancel;
 end;
 
-procedure TDatePicker.btnOkClick(Sender: TObject);
+procedure TscmDatePicker.btnOkClick(Sender: TObject);
 begin
     ModalResult := mrOk;
 end;
 
-procedure TDatePicker.CalendarView1DblClick(Sender: TObject);
+procedure TscmDatePicker.CalendarView1DblClick(Sender: TObject);
 var
 d1, d2: TDateTime;
 begin
@@ -52,7 +52,7 @@ begin
     ModalResult := mrOk;
 end;
 
-procedure TDatePicker.FormKeyDown(Sender: TObject; var Key: Word; Shift:
+procedure TscmDatePicker.FormKeyDown(Sender: TObject; var Key: Word; Shift:
     TShiftState);
 begin
   if key = VK_ESCAPE then

@@ -1,5 +1,5 @@
 object Club_MembersList: TClub_MembersList
-  Height = 458
+  Height = 312
   Width = 395
   object frxReport1: TfrxReport
     Version = '6.6.11'
@@ -404,8 +404,8 @@ object Club_MembersList: TClub_MembersList
     EmptyLines = True
     Print = False
     PictureType = gpPNG
-    Left = 72
-    Top = 320
+    Left = 56
+    Top = 200
   end
   object frxPDFExport1: TfrxPDFExport
     UseFileCache = True
@@ -431,8 +431,8 @@ object Club_MembersList: TClub_MembersList
     PdfA = False
     PDFStandard = psNone
     PDFVersion = pv17
-    Left = 72
-    Top = 256
+    Left = 152
+    Top = 200
   end
   object frxXLSExport1: TfrxXLSExport
     UseFileCache = True
@@ -446,8 +446,8 @@ object Club_MembersList: TClub_MembersList
     PageBreaks = True
     EmptyLines = True
     SuppressPageHeadersFooters = False
-    Left = 168
-    Top = 256
+    Left = 320
+    Top = 200
   end
   object frxMailExport1: TfrxMailExport
     UseFileCache = True
@@ -462,8 +462,8 @@ object Club_MembersList: TClub_MembersList
     ConfurmReading = False
     UseMAPI = SMTP
     MAPISendFlag = 0
-    Left = 168
-    Top = 320
+    Left = 240
+    Top = 200
   end
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]

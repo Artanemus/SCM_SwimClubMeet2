@@ -1,7 +1,7 @@
 object FrameLane: TFrameLane
   Left = 0
   Top = 0
-  Width = 818
+  Width = 926
   Height = 480
   TabOrder = 0
   object rpnlCntrl: TRelativePanel
@@ -186,7 +186,7 @@ object FrameLane: TFrameLane
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 760
+    Width = 868
     Height = 480
     Align = alClient
     BevelOuter = bvNone
@@ -195,7 +195,7 @@ object FrameLane: TFrameLane
     object pnlG: TPanel
       Left = 0
       Top = 0
-      Width = 760
+      Width = 868
       Height = 480
       Align = alClient
       BevelOuter = bvNone
@@ -203,12 +203,12 @@ object FrameLane: TFrameLane
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 760
+        Width = 868
         Height = 480
         Cursor = crDefault
         Align = alClient
         Color = clWhite
-        ColCount = 9
+        ColCount = 10
         DefaultRowHeight = 32
         DrawingStyle = gdsClassic
         FixedColor = clWhite
@@ -223,11 +223,15 @@ object FrameLane: TFrameLane
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
+        OnGetEditMask = gridGetEditMask
+        OnGetEditText = gridGetEditText
+        OnKeyPress = gridKeyPress
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
         OnGetCellColor = gridGetCellColor
         OnCanEditCell = gridCanEditCell
+        OnGetEditorType = gridGetEditorType
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
         ActiveCellFont.Height = -12
@@ -250,6 +254,7 @@ object FrameLane: TFrameLane
         ControlLook.FixedGradientDownMirrorFrom = clWhite
         ControlLook.FixedGradientDownMirrorTo = clWhite
         ControlLook.FixedGradientDownBorder = 11250603
+        ControlLook.DropDownCount = 12
         ControlLook.DropDownHeader.Font.Charset = DEFAULT_CHARSET
         ControlLook.DropDownHeader.Font.Color = clWindowText
         ControlLook.DropDownHeader.Font.Height = -12
@@ -425,12 +430,15 @@ object FrameLane: TFrameLane
             Width = 168
           end
           item
+            Alignment = taRightJustify
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWhite
+            EditMask = '!00:00.000;1;0'
+            Editor = edNumeric
             FieldName = 'RaceTime'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clBlack
@@ -457,6 +465,7 @@ object FrameLane: TFrameLane
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWhite
+            FieldName = 'TTB'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clBlack
             Font.Height = -16
@@ -483,6 +492,7 @@ object FrameLane: TFrameLane
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWhite
+            FieldName = 'PB'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clBlack
             Font.Height = -16
@@ -559,6 +569,7 @@ object FrameLane: TFrameLane
             Width = 36
           end
           item
+            AllowBlank = True
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -584,6 +595,33 @@ object FrameLane: TFrameLane
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
             Width = 64
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'ClubRecord'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = 'Club Record'
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 112
           end>
         DataSource = CORE.dsLane
         InvalidPicture.Data = {
@@ -724,6 +762,7 @@ object FrameLane: TFrameLane
           FFC003FF}
         ShowBooleanFields = True
         ShowUnicode = False
+        ExplicitLeft = 1
         ColWidths = (
           20
           57
@@ -733,7 +772,8 @@ object FrameLane: TFrameLane
           112
           39
           36
-          64)
+          64
+          112)
       end
     end
   end
@@ -787,5 +827,23 @@ object FrameLane: TFrameLane
   object pumenuLane: TPopupMenu
     Left = 520
     Top = 304
+  end
+  object EditLinkRT: TAdvEditEditLink
+    Tag = 0
+    WantKeyLeftRight = True
+    WantKeyUpDown = False
+    WantKeyHomeEnd = True
+    WantKeyPriorNext = False
+    EditAlign = eaRight
+    EditColor = clWindow
+    MaxLength = 0
+    ModifiedColor = clRed
+    EditType = etNumeric
+    ShowModified = False
+    Precision = 0
+    Signed = False
+    ExcelStyleDecimalSeparator = False
+    Left = 658
+    Top = 160
   end
 end

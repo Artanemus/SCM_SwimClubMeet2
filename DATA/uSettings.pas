@@ -21,7 +21,7 @@ type
     LastSwimClubPK: integer;
     HideLockedSessions: boolean;
 
-    // sdaTodaysDate = 0, sdaSessionDate, sdaStartOfSeason
+    // sdaTodaysDate = 0, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate
     SeedDateAuto: integer;
 
     // FrameMember - grid sorton members name.

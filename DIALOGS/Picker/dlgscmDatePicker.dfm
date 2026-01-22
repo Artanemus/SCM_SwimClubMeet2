@@ -1,4 +1,4 @@
-object DatePicker: TDatePicker
+object scmDatePicker: TscmDatePicker
   Left = 0
   Top = 0
   BorderIcons = [biSystemMenu]

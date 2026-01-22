@@ -32,7 +32,7 @@ uses
   dlgLogin in 'DIALOGS\dlgLogin.pas' {Login},
   dlgSwimClubGroup_View in 'DIALOGS\SwimClub\dlgSwimClubGroup_View.pas' {SwimClubGroup_View},
   dlgEditSession in 'DIALOGS\Session\dlgEditSession.pas' {EditSession},
-  dlgDatePicker in 'DIALOGS\Picker\dlgDatePicker.pas' {DatePicker},
+  dlgscmDatePicker in 'DIALOGS\Picker\dlgscmDatePicker.pas' {scmDatePicker},
   dlgNewSession in 'DIALOGS\Session\dlgNewSession.pas' {NewSession},
   dlgSwimClub_Manage in 'DIALOGS\SwimClub\dlgSwimClub_Manage.pas' {SwimClubManage},
   dlgPreferences in 'TOOLS\dlgPreferences.pas' {Preferences},

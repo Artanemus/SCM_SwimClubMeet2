@@ -2711,7 +2711,7 @@ object SwimClubManage: TSwimClubManage
       DefaultRowHeight = 60
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 4
+      RowCount = 2
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -3167,8 +3167,6 @@ object SwimClubManage: TSwimClubManage
         0)
       RowHeights = (
         30
-        60
-        60
         60)
     end
   end
@@ -3553,7 +3551,7 @@ object SwimClubManage: TSwimClubManage
                 AlignVerticalCenterWithPanel = False
                 RightOf = CGFrame.lbxL
               end>
-            ExplicitHeight = 284
+            ExplicitHeight = 459
             inherited lbxL: TListBox
               Height = 459
               ExplicitHeight = 459

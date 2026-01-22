@@ -212,7 +212,6 @@ object EditSession: TEditSession
     BevelKind = bkFlat
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = -6
     object spbtnAutoDT: TSpeedButton
       Left = 629
       Top = 9
@@ -296,7 +295,7 @@ object EditSession: TEditSession
     object DBTextNominees: TDBText
       Left = 39
       Top = 49
-      Width = 9
+      Width = 116
       Height = 21
       AutoSize = True
       DataField = 'NomineeCount'
@@ -332,7 +331,7 @@ object EditSession: TEditSession
     object DBTextEntrants: TDBText
       Left = 117
       Top = 49
-      Width = 9
+      Width = 102
       Height = 21
       AutoSize = True
       DataField = 'EntrantCount'

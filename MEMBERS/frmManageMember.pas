@@ -199,7 +199,7 @@ uses
   System.UITypes,
   System.IOUtils,
 
-  dlgDatePicker,
+  dlgscmDatePicker,
 
   dlgMM_Delete,
   dlgMM_Find_ID,
@@ -298,11 +298,11 @@ end;
 
 procedure TManageMember.btnDOBPickerClick(Sender: TObject);
 var
-  dlg: TDatePicker;
+  dlg: TscmDatePicker;
   Rect: TRect;
   rtn: TModalResult;
 begin
-  dlg := TDatePicker.Create(Self);
+  dlg := TscmDatePicker.Create(Self);
   dlg.Position := poDesigned;
   Rect := btnDOBPicker.ClientToScreen(btnDOBPicker.ClientRect);
   dlg.Left := Rect.Left;
@@ -510,7 +510,7 @@ end;
 procedure TManageMember.DBGridEditButtonClick(Sender: TObject);
 var
   fld: TField;
-  cal: TDatePicker;
+  cal: TscmDatePicker;
   // point: TPoint;
   Rect: TRect;
   rtn: TModalResult;
@@ -519,7 +519,7 @@ begin
   fld := TDBGrid(Sender).SelectedField;
   if fld.Name = 'qryMemberDOB' then
   begin
-    cal := TDatePicker.Create(Self);
+    cal := TscmDatePicker.Create(Self);
     Rect := TButton(Sender).ClientToScreen(TButton(Sender).ClientRect);
     cal.Left := Rect.Left;
     cal.Top := Rect.Top;
@@ -678,7 +678,7 @@ end;
 procedure TManageMember.DBGridRoleEditButtonClick(Sender: TObject);
 var
   fld: TField;
-  dlg: TDatePicker;
+  dlg: TscmDatePicker;
   mrRtn: TModalResult;
 begin
   // handle the ellipse button for TDateTime entry...
@@ -687,7 +687,7 @@ begin
     exit;
   if (fld.FieldName = 'ElectedOn') OR (fld.FieldName = 'RetiredOn') then
   begin
-    dlg := TDatePicker.Create(Self);
+    dlg := TscmDatePicker.Create(Self);
     mrRtn := dlg.ShowModal; // open DATE PICKER ...
     if (mrRtn = mrOk) then
     begin

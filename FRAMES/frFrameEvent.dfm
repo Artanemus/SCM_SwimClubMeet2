@@ -55,6 +55,7 @@ object FrameEvent: TFrameEvent
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
+        OnGetDisplText = gridGetDisplText
         OnGetCellColor = gridGetCellColor
         OnCanEditCell = gridCanEditCell
         ActiveCellFont.Charset = DEFAULT_CHARSET
@@ -326,6 +327,7 @@ object FrameEvent: TFrameEvent
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWhite
+            DataImageField = True
             FieldName = 'EventTypeID'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clBlack

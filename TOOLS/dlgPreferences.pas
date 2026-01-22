@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages,
 
-  System.SysUtils, System.Variants, System.Classes,
+  System.SysUtils, System.Variants, System.Classes, System.DateUtils,
 
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
 
@@ -18,9 +18,9 @@ uses
 
   Vcl.StdCtrls, Vcl.Buttons,
   Vcl.Samples.Spin, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.Mask, Vcl.DBCtrls,
-  Vcl.ExtDlgs, Vcl.WinXCtrls,
+  Vcl.ExtDlgs, Vcl.WinXCtrls, Vcl.WinXPickers,
 
-  dmSCM2, uSettings
+  dmSCM2, uSettings, uDefines
 
   ;
 
@@ -54,10 +54,21 @@ type
     Label19: TLabel;
     Label20: TLabel;
     lbl1: TLabel;
+    lblMembersAge: TLabel;
+    rgrpMembersAge: TRadioGroup;
+    lblCustomDate: TLabel;
+    datePickerCustom: TDatePicker;
+    btnToday: TButton;
+    btnDate: TButton;
+    spbtnMembersAge: TSpeedButton;
+    BalloonHintPreferences: TBalloonHint;
     procedure btnCloseClick(Sender: TObject);
+    procedure btnDateClick(Sender: TObject);
+    procedure btnTodayClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure spbtnMembersAgeMouseLeave(Sender: TObject);
   private
     procedure ReadPreferences();
     procedure WritePreferences();
@@ -71,12 +82,37 @@ implementation
 
 {$R *.dfm}
 
-uses uUtility, System.UITypes;
+uses uUtility, System.UITypes, dlgscmDatePicker;
 
 
 procedure TPreferences.btnCloseClick(Sender: TObject);
 begin
   ModalResult := mrOK;
+end;
+
+procedure TPreferences.btnDateClick(Sender: TObject);
+var
+  dlg: TscmDatePicker;
+  Rect: TRect;
+  rtn: TModalResult;
+begin
+  dlg := TscmDatePicker.Create(Self);
+
+  dlg.Position := poDesigned;
+  Rect := btnDate.ClientToScreen(btnDate.ClientRect);
+  dlg.Left := Rect.Left;
+  dlg.Top := Rect.Bottom + 1;
+  dlg.CalendarView1.Date := datePickerCustom.Date;
+  rtn := dlg.ShowModal;
+  if IsPositiveResult(rtn) then
+    datePickerCustom.Date := dlg.CalendarView1.Date;
+
+  dlg.Free;
+end;
+
+procedure TPreferences.btnTodayClick(Sender: TObject);
+begin
+  datePickerCustom.Date := Date.Today;
 end;
 
 procedure TPreferences.FormCreate(Sender: TObject);
@@ -106,6 +142,8 @@ begin
 end;
 
 procedure TPreferences.ReadPreferences();
+var
+  indx: integer;
 begin
   prefAlgorithm.ItemIndex := Settings.ttb_algorithmIndx;
   prefcalcDefRT.Checked := Settings.ttb_calcDefRT;
@@ -118,6 +156,24 @@ begin
   prefShowDebugInfo.Checked := Settings.ShowDebugInfo;
   prefEnableDQcodes.Checked := Settings.EnableDQcodes;
   prefMemberChartDataPoints.Text := FloatToStr(Settings.MemberChartDataPoints);
+
+  // scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate);
+  case scmSeedDateAuto(Settings.SeedDateAuto) of
+    sdaTodaysDate: indx := 3;
+    sdaSessionDate: indx := 2;
+    sdaStartOfSeason: indx := 0;
+    sdaCustomDate: indx := 4;
+    sdaMeetDate: indx := 1;
+  else
+    indx := -1;
+  end;
+    rgrpMembersAge.ItemIndex := indx;
+
+end;
+
+procedure TPreferences.spbtnMembersAgeMouseLeave(Sender: TObject);
+begin
+  BalloonHintPreferences.HideHint;
 end;
 
 procedure TPreferences.WritePreferences();
@@ -133,6 +189,26 @@ begin
   Settings.ab_SeedMethodIndx := prefSeedMethod.ItemIndex;
   Settings.ab_SeedDepth := prefSeedDepth.Value;
   Settings.ShowDebugInfo := prefShowDebugInfo.Checked;
+
+  // scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate);
+
+  if rgrpMembersAge.ItemIndex > -1 then
+  begin
+    case rgrpMembersAge.ItemIndex of
+    0:
+      Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaStartOfSeason);
+    1:
+      Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaMeetDate);
+    2:
+      Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaSessionDate);
+    3:
+      Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaTodaysDate);
+    4:
+      Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaCustomDate);
+
+    end;
+  end;
+
   try
     i := Round(StrToFloatDef(prefMemberChartDataPoints.Text, 0));
   except

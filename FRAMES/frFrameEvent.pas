@@ -91,6 +91,8 @@ type
         State: TGridDrawState);
     procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
+    procedure gridGetDisplText(Sender: TObject; ACol, ARow: Integer; var Value:
+        string);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
   private
     FOnGridViewChange: TFrameNotifyEvent_GridViewChange;
@@ -293,9 +295,7 @@ end;
 procedure TFrameEvent.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
   TRect; State: TGridDrawState);
 var
-  AEventTypeID: integer;
   G: TDBAdvGrid;
-//  readOnly: boolean;
 begin
   G := TDBAdvGrid(Sender);
 
@@ -311,42 +311,6 @@ begin
       10: // centered gender icon...
         IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 6,
           Rect.top + 4, 3);
-    end;
-  end;
-
-  if ARow >= G.FixedCols then
-  begin
-    { Replace the grid's EventTypeID value with an icon.
-      Select DIMMED version of the icon if the event table is readonly.
-    }
-    if ACol = 5 then
-    begin
-      // TMS exception: trap any empty string in cell..
-      if G.RealCells[ACol, ARow].IsEmpty then
-        AEventTypeID := 0
-      else
-        AEventTypeID := G.RealCells[ACol, ARow].ToInteger;
-
-      // clear the cell of display text
-      G.Canvas.FillRect(Rect);
-
-      // readOnly := G.Columns[ACol].ReadOnly;
-
-      // if not(goediting in G.Options) then readOnly := false else readOnly := true;
-
-
-      if Assigned(CORE) and CORE.IsActive and (AEventTypeID <> 0) then
-      begin
-        if CORE.qryEvent.UpdateOptions.ReadOnly then // DIMMED ICON...
-          IMG.imglstEventType.Draw(G.Canvas, Rect.left + 4,
-            Rect.top + 4, (AEventTypeID + 2))
-        else // NORMAL ICON...
-          IMG.imglstEventType.Draw(G.Canvas, Rect.left + 4,
-            Rect.top + 4, AEventTypeID);
-      end
-      else // lightbulb - error!
-          IMG.imglstEventType.Draw(G.Canvas, Rect.left + 4,
-            Rect.top + 4, 5);
     end;
   end;
 end;
@@ -382,6 +346,27 @@ begin
       AFont.Color := grid.DisabledFontColor;
   end;
 
+end;
+
+procedure TFrameEvent.gridGetDisplText(Sender: TObject; ACol, ARow: Integer;
+    var Value: string);
+var
+  indx: integer;
+begin
+  // Here we toggle the DISABLED ICONS when needed by the TDBAdvGrid.
+  // Ref: IMG.imglstEventType
+  if (ARow >= grid.FixedRows) then
+    if CORE.qryEvent.UpdateOptions.ReadOnly then
+    begin
+      indx := StrToIntDef(Value, 0);
+      case ACol of
+        5: // EVENT TYPE - INDV/RELAY.
+        begin
+          if indx > 0 then Value := IntToStr(indx + 2);
+          if indx = 0 then Value := '5'; // lightbulb+error.
+        end;
+      end;
+    end;
 end;
 
 procedure TFrameEvent.gridKeyPress(Sender: TObject; var Key: Char);

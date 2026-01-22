@@ -414,6 +414,7 @@ object CORE: TCORE
     MasterSource = dsEvent
     MasterFields = 'EventID'
     DetailFields = 'EventID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'hh.nn'
     UpdateOptions.AssignedValues = [uvCheckRequired]
@@ -547,6 +548,7 @@ object CORE: TCORE
   end
   object qryLane: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    BeforePost = qryLaneBeforePost
     AfterScroll = qryLaneAfterScroll
     Indexes = <
       item
@@ -560,6 +562,7 @@ object CORE: TCORE
     MasterSource = dsHeat
     MasterFields = 'HeatID'
     DetailFields = 'HeatID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvDefaultParamDataType, fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Lane'
@@ -652,12 +655,31 @@ object CORE: TCORE
       Origin = 'LaneNum'
     end
     object qryLaneRaceTime: TTimeField
+      DisplayWidth = 10
       FieldName = 'RaceTime'
       Origin = 'RaceTime'
+      OnGetText = qryLaneRaceTimeGetText
+      OnSetText = qryLaneRaceTimeSetText
+      DisplayFormat = 'nn:ss.zzz'
+      EditMask = '!00:00.000;1;0'
     end
-    object qryLaneClubRecord: TTimeField
-      FieldName = 'ClubRecord'
-      Origin = 'ClubRecord'
+    object qryLaneTTB: TTimeField
+      DisplayWidth = 10
+      FieldName = 'TTB'
+      Origin = 'TTB'
+      ReadOnly = True
+      OnGetText = qryLaneTTBGetText
+      DisplayFormat = 'nn:ss.zzz'
+      EditMask = '!00:00.000;1;0'
+    end
+    object qryLanePB: TTimeField
+      DisplayWidth = 10
+      FieldName = 'PB'
+      Origin = 'PB'
+      ReadOnly = True
+      OnGetText = qryLanePBGetText
+      DisplayFormat = 'nn:ss.zzz'
+      EditMask = '!00:00.000;1;0'
     end
     object qryLaneIsDisqualified: TBooleanField
       FieldName = 'IsDisqualified'
@@ -667,13 +689,20 @@ object CORE: TCORE
       FieldName = 'IsScratched'
       Origin = 'IsScratched'
     end
-    object qryLaneHeatID: TIntegerField
-      FieldName = 'HeatID'
-      Origin = 'HeatID'
-    end
     object qryLaneDisqualifyCodeID: TIntegerField
       FieldName = 'DisqualifyCodeID'
       Origin = 'DisqualifyCodeID'
+    end
+    object qryLaneClubRecord: TTimeField
+      DisplayWidth = 10
+      FieldName = 'ClubRecord'
+      Origin = 'ClubRecord'
+      DisplayFormat = 'nn:ss.zzz'
+      EditMask = '!00:00.000;1;0'
+    end
+    object qryLaneHeatID: TIntegerField
+      FieldName = 'HeatID'
+      Origin = 'HeatID'
     end
     object qryLaneTeamID: TIntegerField
       FieldName = 'TeamID'
@@ -1630,8 +1659,10 @@ object CORE: TCORE
       end>
   end
   object tblDisqualifyCode: TFDTable
+    Active = True
     IndexFieldNames = 'DisqualifyCodeID'
     DetailFields = 'DisqualifyCodeID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False

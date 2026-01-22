@@ -3029,9 +3029,6 @@ object Main2: TMain2
                 Height = 626
                 ExplicitWidth = 648
                 ExplicitHeight = 626
-                RowHeights = (
-                  32
-                  32)
               end
             end
           end
@@ -3693,9 +3690,6 @@ object Main2: TMain2
                   Height = 546
                   ExplicitWidth = 846
                   ExplicitHeight = 546
-                  RowHeights = (
-                    32
-                    32)
                 end
               end
             end

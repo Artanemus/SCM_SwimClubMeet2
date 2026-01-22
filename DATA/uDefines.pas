@@ -43,7 +43,8 @@ const
  scmSendToDevice = (stdSendToPrinter, stdSendToFile);
  scmRptType = (rptSession, rptEvent, rptHeat, rptLane, rptNominee,
    rptMarshall, rptTimeKeeper, rptTeam, rptWatchTime, rptSplitTime);
- scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason);
+
+ scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate);
 
 
 /// <Remarks>

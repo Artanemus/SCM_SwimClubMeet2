@@ -1,5 +1,5 @@
 object Club_MembersSummary: TClub_MembersSummary
-  Height = 468
+  Height = 282
   Width = 474
   object frxReport1: TfrxReport
     Version = '6.6.11'
@@ -17,8 +17,8 @@ object Club_MembersSummary: TClub_MembersSummary
       'begin'
       ''
       'end.')
-    Left = 312
-    Top = 312
+    Left = 320
+    Top = 40
     Datasets = <
       item
         DataSet = frxDSReport
@@ -244,8 +244,8 @@ object Club_MembersSummary: TClub_MembersSummary
       'Age=Age')
     DataSet = qryReport
     BCDToCurrency = False
-    Left = 192
-    Top = 312
+    Left = 200
+    Top = 40
   end
   object frxHTMLExport1: TfrxHTMLExport
     UseFileCache = True
@@ -259,8 +259,8 @@ object Club_MembersSummary: TClub_MembersSummary
     EmptyLines = True
     Print = False
     PictureType = gpPNG
-    Left = 208
-    Top = 112
+    Left = 72
+    Top = 192
   end
   object frxPDFExport1: TfrxPDFExport
     UseFileCache = True
@@ -286,8 +286,8 @@ object Club_MembersSummary: TClub_MembersSummary
     PdfA = False
     PDFStandard = psNone
     PDFVersion = pv17
-    Left = 208
-    Top = 48
+    Left = 168
+    Top = 192
   end
   object frxXLSExport1: TfrxXLSExport
     UseFileCache = True
@@ -301,8 +301,8 @@ object Club_MembersSummary: TClub_MembersSummary
     PageBreaks = True
     EmptyLines = True
     SuppressPageHeadersFooters = False
-    Left = 296
-    Top = 56
+    Left = 352
+    Top = 192
   end
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -347,8 +347,8 @@ object Club_MembersSummary: TClub_MembersSummary
       ''
       ''
       '')
-    Left = 64
-    Top = 312
+    Left = 72
+    Top = 40
     ParamData = <
       item
         Name = 'SWIMCLUBID'
@@ -370,7 +370,7 @@ object Club_MembersSummary: TClub_MembersSummary
     ConfurmReading = False
     UseMAPI = SMTP
     MAPISendFlag = 0
-    Left = 296
-    Top = 112
+    Left = 264
+    Top = 192
   end
 end

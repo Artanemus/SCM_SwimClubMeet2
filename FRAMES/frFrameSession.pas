@@ -296,13 +296,15 @@ procedure TFrameSession.actnSess_VisibiltyExecute(Sender: TObject);
 var
   s1, s2: string;
   storePK: integer;
-
+  HideLocked: boolean;
 begin
   LockDrawing;
   grid.BeginUpdate;
-  TAction(Sender).Checked := not TAction(Sender).Checked;
-  try
-    SetVisibilityIcon;
+  TAction(Sender).Checked := not TAction(Sender).Checked; // toggle visibility
+  SetVisibilityIcon; // update visibility icon and action.imagename
+  if TAction(Sender).Checked then HideLocked := true else HideLocked := false;
+
+  try // update database...
     s1 := CORE.qrySession.IndexName;
 
     if actnSess_Visibilty.Checked then
@@ -312,13 +314,10 @@ begin
     begin
       storePK := uSession.PK;
       // FILTER TABLE CONTENTS: false - indxShowAll , true indxHideLocked.
-      uSession.SetIndexName(actnSess_Visibilty.Checked);
-      uSession.Locate(storePK);
+      uSession.SetVisibilityOfLockedSessions(HideLocked);
+      if storePK <> uSession.PK then
+        uSession.Locate(storePK);
     end;
-
-    // Assign index ... ApplyMaster.
-    // true - indxShowAll , false indxHideLocked.
-    uSession.SetIndexName(TAction(Sender).Checked);
   finally
     grid.EndUpdate;
     unlockDrawing;
@@ -390,9 +389,10 @@ begin
   ShowSeasonIcon := false;
   if CORE.qrySession.FieldByName('SessionStatusID').AsInteger = 2 then
     Locked := true else Locked := false;
+
   // as typical swimming season is 6 months .. 25 weeks...
   weeks := uSession.WeeksSinceSeasonStart;
-  if (weeks < 26) and (weeks > 0) then ShowSeasonIcon := true;
+  if (weeks < 26) and (weeks >= 0) then ShowSeasonIcon := true;
 
   if (ACol = 1) then     // and (ARow >= grid.FixedRows)
   begin
@@ -515,6 +515,12 @@ begin
       exit;
     end;
 
+    // inspect the user's preferences...
+    if Assigned(Settings) then
+      actnSess_Visibilty.Checked := Settings.HideLockedSessions
+    else
+      actnSess_Visibilty.Checked := false;
+
   end;
 
 
@@ -529,19 +535,19 @@ begin
 
     if not Self.Visible then Self.Visible := true;
 
-    // inspect the user's preferences...
-    if Assigned(Settings) then
-      actnSess_Visibilty.Checked := Settings.HideLockedSessions
-    else
-      actnSess_Visibilty.Checked := false;
 
     if CORE.qrySession.IsEmpty then
     begin
       // CNTRL panel is displayed but not the grid.
       pnlBody.Visible := true;
       pnlG.Visible := false;
-      actnSess_Visibilty.Checked := false;
-      SetVisibilityIcon;
+
+      if actnSess_Visibilty.Checked <> false then
+      begin
+        actnSess_Visibilty.Checked := false;
+        SetVisibilityIcon;
+      end;
+
       actnSess_Lock.Checked := false;
       SetLockStateIcon;
     end
@@ -555,10 +561,11 @@ begin
       // Are we making a Connection or changing SwimClubs?
       if CORE.IsWorkingOnConnection then
       begin
-        // Conform to defaults. Set filters, show all sessions.
-        uSession.SetIndexName(false);
+        // Conform to defaults. Set indexname, show all sessions.
         CORE.qrySession.First;
         actnSess_Visibilty.Checked := false;
+
+        uSession.SetVisibilityOfLockedSessions(false);
         SetVisibilityIcon;
         actnSess_Lock.Checked := false;
         SetLockStateIcon;
@@ -577,8 +584,9 @@ begin
           // FILTER TABLE CONTENTS:
           // false - indxShowAll - visibility_on (see all eye),
           // true - indxHideLocked - visibility_off (line draw through eye).
-          uSession.SetIndexName(actnSess_Visibilty.Checked);
-          uSession.Locate(storePK); // retore bookmark
+          uSession.SetVisibilityOfLockedSessions(actnSess_Visibilty.Checked);
+          if (storePK <> uSession.PK) then
+            uSession.Locate(storePK); // retore bookmark
           SetVisibilityIcon;
         end;
         // State of the

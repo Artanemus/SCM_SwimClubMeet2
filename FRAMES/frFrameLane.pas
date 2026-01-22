@@ -13,7 +13,7 @@ uses
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
-  dmIMG, dmSCM2, dmCORE, uDefines  ;
+  dmIMG, dmSCM2, dmCORE, uDefines, AsgLinks  ;
 
 type
   TFrameLane = class(TFrame)
@@ -36,11 +36,19 @@ type
     ShapeLnBar1: TShape;
     spbtnReport: TSpeedButton;
     pnlG: TPanel;
+    EditLinkRT: TAdvEditEditLink;
     procedure actnLn_GenericUpdate(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
     procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
+    procedure gridGetEditMask(Sender: TObject; ACol, ARow: LongInt; var Value:
+        string);
+    procedure gridGetEditorType(Sender: TObject; ACol, ARow: Integer; var AEditor:
+        TEditorType);
+    procedure gridGetEditText(Sender: TObject; ACol, ARow: LongInt; var Value:
+        string);
+    procedure gridKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
   public
@@ -72,19 +80,19 @@ end;
 procedure TFrameLane.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var
     CanEdit: Boolean);
 begin
-  CanEdit := true;
+  CanEdit := false;
   case uHeat.HeatStatusID of
-    1: // OPEN
-      begin
+    1: // OPEN.
+      begin // swimmer/team, racetime, s, q, dQ.
         if ACol in [2, 3, 6, 7, 8] then
           CanEdit := true;
       end;
-    2: // RACED
-      begin
-        if ACol in [2, 3, 6, 7, 8] then
+    2: // RACED.
+      begin // racetime, s, q, dQ.
+        if ACol in [3, 6, 7, 8] then
           CanEdit := true;
       end;
-    3: // CLOSED
+    3: // CLOSED.
       begin
         CanEdit := false;
       end;
@@ -101,17 +109,101 @@ begin
         begin
           ; // Default assigned color.
         end;
-      2: // RACED
+      2: // RACED.
         begin
           AFont.Color := clWebGoldenRod;
         end;
-      3: // CLOSED
+      3: // CLOSED.
         begin
           AFont.Color := clWebDarkSalmon;
         end;
     end;
     if uSession.IsLocked then AFont.Color := grid.DisabledFontColor;
+  end;
+end;
 
+procedure TFrameLane.gridGetEditMask(Sender: TObject; ACol, ARow: LongInt; var
+    Value: string);
+var
+  G: TDBAdvGrid;
+begin
+  G := TDBAdvGrid(Sender);
+  if (ARow >= G.FixedRows) and (ACol = 3) then
+  begin
+    Value := '!00:00.000;1;0';
+  end;
+end;
+
+procedure TFrameLane.gridGetEditorType(Sender: TObject; ACol, ARow: Integer;
+    var AEditor: TEditorType);
+var
+  G: TDBAdvGrid;
+begin
+  G := TDBAdvGrid(Sender);
+  if (ARow >= G.FixedRows) and (ACol = 3) then
+  begin
+    AEditor := edNumeric;
+  end;
+end;
+
+procedure TFrameLane.gridGetEditText(Sender: TObject; ACol, ARow: LongInt; var
+    Value: string);
+var
+  Hour, Min, Sec, MSec: word;
+  G: TDBAdvGrid;
+  dt: TDateTime;
+begin
+  G := TDBAdvGrid(Sender);
+  if (ARow >= G.FixedRows) and (ACol = 3 )then
+  begin
+    // This method FIXES display format issues.
+    dt := G.DataSource.DataSet.FieldByName('RaceTime').AsDateTime;
+    DecodeTime(dt, Hour, Min, Sec, MSec);
+    Value := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
+  end;
+end;
+
+procedure TFrameLane.gridKeyPress(Sender: TObject; var Key: Char);
+begin
+  {TODO -oBSA -cGeneral :
+    Clear lookup cells, whether in edit state of not, using the BACKSPACE key.
+    make it optional to use CNTRL+BACKSPACE to clear cell}
+
+//      if ((GetKeyState(VK_CONTROL) and 128) = 128) then
+//      begin
+//      end;
+
+  if (grid.row >= grid.FixedRows) and
+      (grid.RealColIndex(grid.Col) in [2, 3, 8]) then
+  begin
+    if (Key = char(VK_BACK)) then
+    begin
+      grid.BeginUpdate;
+      try
+        begin
+          try
+            begin
+              if (CORE.qryLane.State <> dsEdit) then
+                CORE.qryLane.Edit;
+              case (grid.RealColIndex(grid.Col)) of
+                2:
+                CORE.qryLane.FieldByName('FullName').Clear;
+                3:
+                CORE.qryLane.FieldByName('RaceTime').Clear;
+                8:
+                CORE.qryLane.FieldByName('DisqualifyCodeID').Clear;
+              end;
+              CORE.qryLane.Post;
+              Key := char(0);
+            end;
+          except
+            on E: Exception do ShowMessage(E.Message);
+          end;
+        end;
+      finally
+        grid.EndUpdate;
+      end;
+    end;
   end;
 end;
 

@@ -72,7 +72,7 @@ implementation
 {$R *.dfm}
 
 uses
-  System.DateUtils, dlgDatePicker;
+  System.DateUtils, dlgscmDatePicker;
 
 procedure TNewSession.AutoCalcDateTime;
 var
@@ -113,11 +113,11 @@ end;
 
 procedure TNewSession.btnDateClick(Sender: TObject);
 var
-  dlg: TDatePicker;
+  dlg: TscmDatePicker;
   Rect: TRect;
   rtn: TModalResult;
 begin
-  dlg := TDatePicker.Create(Self);
+  dlg := TscmDatePicker.Create(Self);
 
   dlg.Position := poDesigned;
   Rect := btnDate.ClientToScreen(btnDate.ClientRect);

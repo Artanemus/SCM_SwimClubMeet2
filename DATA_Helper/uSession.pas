@@ -53,7 +53,7 @@ function Assert: Boolean;
 function IsLocked: Boolean;
 function IsUnLocked: Boolean;
 function HasClosedOrRacedHeats: Boolean;
-procedure SetIndexName(IsLocked: Boolean);
+procedure SetVisibilityOfLockedSessions(HideLocked: Boolean);
 procedure SetSessionStatusID(const aSessionStatusID: Integer);
 procedure DetailTBLs_DisableCNTRLs;
 procedure DetailTBLs_ApplyMaster;
@@ -412,33 +412,46 @@ begin
   end;
 end;
 
-procedure SetIndexName(IsLocked: Boolean);
-/// <param name="IsLocked">
+procedure SetVisibilityOfLockedSessions(HideLocked: Boolean);
+/// <param name="HideLocked">
 ///  true: show both locked and unlocked sessions.
 ///  false: hides locked sessions.
 /// </param>
+var
+  indxname: string;
 begin
-  DetailTBLs_DisableCNTRLs;
-  CORE.qrySession.DisableControls;
-  try
-    try
-      if IsLocked then
-        CORE.qrySession.IndexName := 'indxHideLocked'
-      else
-        CORE.qrySession.IndexName := 'indxShowAll';
 
-      if not CORE.qrySession.IndexesActive then
-        CORE.qrySession.IndexesActive := true;
-    except on E: Exception do
-      begin
-        E.Message := E.Message +sLineBreak+ 'FATAL - Session.IndexName ';
-        raise;
+  if HideLocked then
+    indxname := 'indxHideLocked'
+  else
+    indxname := 'indxShowAll';
+
+  if CORE.qrySession.IndexName <> indxname then
+  begin
+    DetailTBLs_DisableCNTRLs;
+    CORE.qrySession.DisableControls;
+    try
+      try
+        if HideLocked then
+          CORE.qrySession.IndexName := 'indxHideLocked'
+        else
+          CORE.qrySession.IndexName := 'indxShowAll';
+
+        if not CORE.qrySession.IndexesActive then
+          CORE.qrySession.IndexesActive := true;
+
+      except on E: Exception do
+        begin
+          E.Message := E.Message +sLineBreak+ 'FATAL - Session.IndexName ';
+          raise;
+        end;
       end;
+      DetailTBLs_ApplyMaster;   // Re-Sync Master detail relationship.
+
+    finally
+      CORE.qrySession.EnableControls;
+      DetailTBLs_EnableCNTRLs;
     end;
-    DetailTBLs_ApplyMaster;   // Re-Sync Master detail relationship.
-  finally
-    CORE.qrySession.EnableControls;
-    DetailTBLs_EnableCNTRLs;
   end;
 end;
 
@@ -508,13 +521,19 @@ var
 AThen: TDateTime;
 begin
   result := 0;
+
   // get the number of weeks since the start of the swimming season.
   if not CORE.qrySwimClub.FieldByName('StartOfSwimSeason').IsNull then
   begin
     aThen := CORE.qrySwimClub.FieldByName('StartOfSwimSeason').AsDateTime;
+    if AThen > ANow then
+    begin
+      result := -1;
+      exit;
+    end;
     // Calculates the number of whole weeks between ANow and AThen, counting
-    // incomplete weeks as a full week. ALT: WeeksBetween
-    result := aNow.WeeksBetween(aThen); // ALT: WeekSpan(aNow, aThen);
+    // incomplete weeks as week=0.
+    result := aNow.WeeksBetween(aThen) + 1; // set base to 1.
   end;
 end;
 

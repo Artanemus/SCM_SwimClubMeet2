@@ -205,8 +205,8 @@
         <DCCReference Include="DIALOGS\Session\dlgEditSession.pas">
             <Form>EditSession</Form>
         </DCCReference>
-        <DCCReference Include="DIALOGS\Picker\dlgDatePicker.pas">
-            <Form>DatePicker</Form>
+        <DCCReference Include="DIALOGS\Picker\dlgscmDatePicker.pas">
+            <Form>scmDatePicker</Form>
         </DCCReference>
         <DCCReference Include="DIALOGS\Session\dlgNewSession.pas">
             <Form>NewSession</Form>

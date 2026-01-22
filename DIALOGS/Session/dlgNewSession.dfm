@@ -26,8 +26,6 @@ object NewSession: TNewSession
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 0
-    ExplicitHeight = 239
     object Label1: TLabel
       Left = 0
       Top = 172
@@ -155,7 +153,6 @@ object NewSession: TNewSession
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 239
     object btnCancel: TButton
       Left = 213
       Top = 6
@@ -196,7 +193,7 @@ object NewSession: TNewSession
     object DBTextClubName: TDBText
       Left = 56
       Top = 0
-      Width = 257
+      Width = 145
       Height = 25
       AutoSize = True
       DataField = 'Caption'
@@ -211,7 +208,7 @@ object NewSession: TNewSession
     object DBTextNickName: TDBText
       Left = 56
       Top = 24
-      Width = 113
+      Width = 98
       Height = 17
       AutoSize = True
       DataField = 'NickName'

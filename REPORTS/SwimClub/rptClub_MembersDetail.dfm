@@ -17,8 +17,8 @@ object Club_MembersDetail: TClub_MembersDetail
       'begin'
       ''
       'end.')
-    Left = 264
-    Top = 296
+    Left = 272
+    Top = 24
     Datasets = <
       item
         DataSet = frxDSReport
@@ -390,8 +390,8 @@ object Club_MembersDetail: TClub_MembersDetail
       'Age=Age')
     DataSet = qryReport
     BCDToCurrency = False
-    Left = 160
-    Top = 296
+    Left = 168
+    Top = 24
   end
   object frxHTMLExport1: TfrxHTMLExport
     UseFileCache = True
@@ -405,8 +405,8 @@ object Club_MembersDetail: TClub_MembersDetail
     EmptyLines = True
     Print = False
     PictureType = gpPNG
-    Left = 120
-    Top = 136
+    Left = 48
+    Top = 144
   end
   object frxPDFExport1: TfrxPDFExport
     UseFileCache = True
@@ -432,8 +432,8 @@ object Club_MembersDetail: TClub_MembersDetail
     PdfA = False
     PDFStandard = psNone
     PDFVersion = pv17
-    Left = 120
-    Top = 72
+    Left = 152
+    Top = 144
   end
   object frxXLSExport1: TfrxXLSExport
     UseFileCache = True
@@ -447,8 +447,8 @@ object Club_MembersDetail: TClub_MembersDetail
     PageBreaks = True
     EmptyLines = True
     SuppressPageHeadersFooters = False
-    Left = 232
-    Top = 80
+    Left = 248
+    Top = 144
   end
   object frxMailExport1: TfrxMailExport
     UseFileCache = True
@@ -463,11 +463,12 @@ object Club_MembersDetail: TClub_MembersDetail
     ConfurmReading = False
     UseMAPI = SMTP
     MAPISendFlag = 0
-    Left = 232
-    Top = 136
+    Left = 336
+    Top = 144
   end
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     Connection = SCM2.scmConnection
     SQL.Strings = (
       'USE SwimClubMeet'
@@ -500,8 +501,8 @@ object Club_MembersDetail: TClub_MembersDetail
       'LEFT OUTER JOIN Gender ON Member.GenderID = Gender.GenderID '
       'WHERE        (Member.SwimClubID = @SwimClubID )'
       'ORDER BY Member.LastName')
-    Left = 64
-    Top = 296
+    Left = 72
+    Top = 24
     ParamData = <
       item
         Name = 'SWIMCLUBID'

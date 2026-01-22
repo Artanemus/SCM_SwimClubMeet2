@@ -41,7 +41,7 @@ object ManageMember: TManageMember
     object DBTextFullName: TDBText
       Left = 21
       Top = 6
-      Width = 151
+      Width = 154
       Height = 25
       AutoSize = True
       DataField = 'FName'
@@ -865,14 +865,14 @@ object ManageMember: TManageMember
         DefaultRowHeight = 24
         DrawingStyle = gdsClassic
         FixedColor = clWhite
-        RowCount = 101
+        RowCount = 2
         FixedRows = 1
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -16
         Font.Name = 'Tahoma'
         Font.Style = []
-        Options = [goVertLine, goHorzLine, goRangeSelect, goEditing, goAlwaysShowEditor, goFixedRowDefAlign]
+        Options = [goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
@@ -947,6 +947,7 @@ object ManageMember: TManageMember
         HTMLSettings.ImageFolder = 'images'
         HTMLSettings.ImageBaseName = 'img'
         Look = glCustom
+        Navigation.AlwaysEdit = True
         PrintSettings.DateFormat = 'dd/mm/yyyy'
         PrintSettings.Font.Charset = DEFAULT_CHARSET
         PrintSettings.Font.Color = clWindowText
@@ -1510,105 +1511,6 @@ object ManageMember: TManageMember
           105)
         RowHeights = (
           24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
-          24
           24)
       end
     end
@@ -1658,6 +1560,7 @@ object ManageMember: TManageMember
     Top = 0
     Width = 1370
     Height = 27
+    UseSystemFont = False
     ActionManager = ActnManagerMember
     Caption = 'Member Menu Bar'
     Color = clMenuBar
@@ -1666,7 +1569,7 @@ object ManageMember: TManageMember
     ColorMap.BtnSelectedFont = clBlack
     ColorMap.UnusedColor = clWhite
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
+    Font.Color = clBlack
     Font.Height = -13
     Font.Name = 'Segoe UI'
     Font.Style = []

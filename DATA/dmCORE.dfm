@@ -715,7 +715,6 @@ object CORE: TCORE
     object qryLaneFullName: TWideStringField
       FieldName = 'FullName'
       Origin = 'FullName'
-      ReadOnly = True
       Size = 257
     end
     object qryLaneStat: TWideStringField

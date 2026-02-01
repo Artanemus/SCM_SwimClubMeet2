@@ -36,10 +36,11 @@ type
     ShapeLnBar1: TShape;
     spbtnReport: TSpeedButton;
     pnlG: TPanel;
-    EditLinkRT: TAdvEditEditLink;
+    AdvEditEditLink1: TAdvEditEditLink;
     procedure actnLn_GenericUpdate(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
+    procedure gridEllipsClick(Sender: TObject; ACol, ARow: Integer; var S: string);
     procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
     procedure gridGetEditMask(Sender: TObject; ACol, ARow: LongInt; var Value:
@@ -53,6 +54,9 @@ type
     { Private declarations }
   public
     procedure UpdateUI(DoFullUpdate: boolean = false);
+    procedure OnPreferenceChange();
+    procedure OnEventTypeChange(AEventTypeID: Integer);
+
   end;
 
 implementation
@@ -60,7 +64,7 @@ implementation
 {$R *.dfm}
 
 uses
-  uSession, uEvent, uHeat;
+  uSession, uEvent, uHeat, uSettings;
 
 procedure TFrameLane.actnLn_GenericUpdate(Sender: TObject);
 var
@@ -97,6 +101,21 @@ begin
         CanEdit := false;
       end;
   end;
+end;
+
+procedure TFrameLane.gridEllipsClick(Sender: TObject; ACol, ARow: Integer; var
+    S: string);
+begin
+var
+  G: TDBAdvGrid;
+begin
+  G := TDBAdvGrid(Sender);
+  if (ARow >= G.FixedRows) and (ACol = 2) then
+  begin
+    ; // deal with the ellipse button getting clicked...
+  end;
+end;
+
 end;
 
 procedure TFrameLane.gridGetCellColor(Sender: TObject; ARow, ACol: Integer;
@@ -143,6 +162,12 @@ begin
   if (ARow >= G.FixedRows) and (ACol = 3) then
   begin
     AEditor := edNumeric;
+  end;
+  if (ARow >= G.FixedRows) and (ACol = 2) then
+  begin
+    AEditor := edEditBtn;
+    Grid.BtnEdit.EditorEnabled := False; // disables typing
+    Grid.BtnEdit.ButtonCaption := '...'; // optional
   end;
 end;
 
@@ -204,6 +229,35 @@ begin
         grid.EndUpdate;
       end;
     end;
+  end;
+end;
+
+procedure TFrameLane.OnEventTypeChange(AEventTypeID: Integer);
+begin
+  if AEventTypeID = 2 then
+    Grid.Columns[2].Header := 'Relay Team'
+  else
+    Grid.Columns[2].Header := 'Entrant';
+end;
+
+procedure TFrameLane.OnPreferenceChange;
+begin
+  LockDrawing;
+  Grid.BeginUpdate;
+  // default - use simplified method of disqualification
+  Grid.Columns[8].Width := 0;
+  Grid.Columns[6].Width := 39;
+  Grid.Columns[7].Width := 39;
+  try
+    if Assigned(Settings) and Settings.EnableDQcodes then
+    begin
+      Grid.Columns[8].Width := 64;
+      Grid.Columns[6].Width := 0;
+      Grid.Columns[7].Width := 0;
+    end;
+  finally
+    Grid.EndUpdate;
+    UnlockDrawing;
   end;
 end;
 

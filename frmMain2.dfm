@@ -2880,7 +2880,7 @@ object Main2: TMain2
                 AlignHorizontalCenterWithPanel = True
                 AlignLeftWithPanel = False
                 AlignRightWithPanel = False
-                AlignTopWithPanel = False
+                AlignTopWithPanel = True
                 AlignVerticalCenterWithPanel = False
               end
               item
@@ -2964,36 +2964,6 @@ object Main2: TMain2
                 Below = frSession.ShapeSessBar2
               end>
             ExplicitHeight = 626
-            inherited spbtnSessVisiblity: TSpeedButton
-              ImageName = 'lock2'
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessLockState: TSpeedButton
-              ImageIndex = 3
-              ImageName = 'lock2'
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessEdit: TSpeedButton
-              ImageIndex = 5
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessNew: TSpeedButton
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessClone: TSpeedButton
-              ImageIndex = 7
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessDelete: TSpeedButton
-              Glyph.Data = {00000000}
-            end
-            inherited spbtnSessReport: TSpeedButton
-              ImageIndex = 9
-              Glyph.Data = {00000000}
-            end
-          end
-          inherited actnlstSession: TActionList
-            Top = 272
           end
         end
       end
@@ -3029,6 +2999,9 @@ object Main2: TMain2
                 Height = 626
                 ExplicitWidth = 648
                 ExplicitHeight = 626
+                RowHeights = (
+                  32
+                  32)
               end
             end
           end
@@ -3326,6 +3299,7 @@ object Main2: TMain2
               inherited grid: TDBAdvGrid
                 Width = 632
                 Height = 626
+                ExplicitLeft = 0
                 ExplicitWidth = 632
                 ExplicitHeight = 626
               end
@@ -3690,6 +3664,9 @@ object Main2: TMain2
                   Height = 546
                   ExplicitWidth = 846
                   ExplicitHeight = 546
+                  RowHeights = (
+                    32
+                    32)
                 end
               end
             end

@@ -338,8 +338,8 @@ object FrameHeat: TFrameHeat
       AlignWithMargins = True
       Left = 8
       Top = 8
-      Width = 117
-      Height = 51
+      Width = 138
+      Height = 608
       Margins.Left = 8
       Margins.Top = 8
       Margins.Right = 8
@@ -355,6 +355,8 @@ object FrameHeat: TFrameHeat
       ParentFont = False
       Layout = tlCenter
       WordWrap = True
+      ExplicitWidth = 117
+      ExplicitHeight = 51
     end
     object pnlG: TPanel
       Left = 0
@@ -530,6 +532,7 @@ object FrameHeat: TFrameHeat
             Width = 0
           end
           item
+            AllowBlank = True
             Alignment = taCenter
             Borders = []
             BorderPen.Color = clSilver
@@ -557,6 +560,7 @@ object FrameHeat: TFrameHeat
             Width = 0
           end
           item
+            AllowBlank = True
             Alignment = taRightJustify
             Borders = []
             BorderPen.Color = clSilver
@@ -586,6 +590,7 @@ object FrameHeat: TFrameHeat
             Width = 64
           end
           item
+            AllowBlank = True
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18

@@ -343,6 +343,9 @@ begin
   frEvent.actnEv_GridView.Checked := false; // default: collapsed gridview.
   frEvent.OnGridViewChanged := HandleOnGridViewChange; // assign event handle.
 
+  // Adjust display of columns based on Settings.EnableDQcodes state.
+  frLane.OnPreferenceChange;
+
   SetPanelAndFrame_Visibility(); // hide all panels displaying frames.
 
 end;
@@ -509,6 +512,8 @@ end;
 procedure TMain2.Msg_SCM_AfterScroll_Event(var Msg: TMessage);
 begin
   frEvent.UpdateUI();
+  if Assigned(CORE) and CORE.IsActive then
+    frLane.OnEventTypeChange(CORE.qryEvent.FieldByName('EventTypeID').AsInteger);
 end;
 
 procedure TMain2.Msg_SCM_AfterScroll_Heat(var Msg: TMessage);

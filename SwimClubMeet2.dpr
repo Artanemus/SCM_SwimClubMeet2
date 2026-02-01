@@ -59,7 +59,9 @@ uses
   frFrameLane in 'FRAMES\frFrameLane.pas' {FrameLane: TFrame},
   uLane in 'DATA_Helper\uLane.pas',
   frFrameNavEv in 'FRAMES\frFrameNavEv.pas' {FrameNavEv: TFrame},
-  frFrameNavEvItem in 'FRAMES\frFrameNavEvItem.pas' {FrameNavEvItem: TFrame};
+  frFrameNavEvItem in 'FRAMES\frFrameNavEvItem.pas' {FrameNavEvItem: TFrame},
+  dlgEntrantPicker in 'DIALOGS\Lane\dlgEntrantPicker.pas' {EntrantPicker},
+  dlgEntrantPickerCTRL in 'DIALOGS\Lane\dlgEntrantPickerCTRL.pas' {EntrantPickerCTRL};
 
 {$R *.res}
 

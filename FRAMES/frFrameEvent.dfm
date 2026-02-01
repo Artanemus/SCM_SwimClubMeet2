@@ -265,6 +265,7 @@ object FrameEvent: TFrameEvent
             Width = 43
           end
           item
+            AllowBlank = True
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -293,6 +294,7 @@ object FrameEvent: TFrameEvent
             Width = 120
           end
           item
+            AllowBlank = True
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -464,6 +466,7 @@ object FrameEvent: TFrameEvent
             Width = 43
           end
           item
+            AllowBlank = True
             Alignment = taCenter
             Borders = []
             BorderPen.Color = clSilver
@@ -493,6 +496,7 @@ object FrameEvent: TFrameEvent
             PrintFont.Style = []
           end
           item
+            AllowBlank = True
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -521,6 +525,7 @@ object FrameEvent: TFrameEvent
             Width = 64
           end
           item
+            AllowBlank = True
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -548,6 +553,7 @@ object FrameEvent: TFrameEvent
             Width = 64
           end
           item
+            AllowBlank = True
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18

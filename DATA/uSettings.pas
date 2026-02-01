@@ -23,6 +23,8 @@ type
 
     // sdaTodaysDate = 0, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate
     SeedDateAuto: integer;
+    CustomSeedDate: TDate;
+    MeetSeedDate: TDate;
 
     // FrameMember - grid sorton members name.
     MemberSortOn: integer; // 0 firstname-lastname 1 lastname-firstname;
@@ -113,6 +115,8 @@ begin
   HideLockedSessions := false; // Display all sessions. Session grid variable.
   MemberSortOn := 0; // Sort on firstname-lastname. Nomination members grid variable.
   SeedDateAuto := 0; // Today's date. Needed to calculate AGE and TTB.
+  CustomSeedDate := Date();
+  MeetSeedDate := Date();
 
   ttb_algorithmIndx := 2; // Use the average of the member's 3 fastest RTs
   ttb_calcDefRT := true;  // if algorithm fails - calculate a mean average.

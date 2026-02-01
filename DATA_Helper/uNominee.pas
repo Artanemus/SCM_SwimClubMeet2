@@ -165,7 +165,6 @@ begin
   end;
 end;
 
-
 function Locate_FilterMember(aMemberID: integer): Boolean;
 var
   SearchOptions: TLocateOptions;
@@ -197,8 +196,9 @@ begin
   SeedDateAuto := scmSeeddateAuto.sdaTodaysDate;
 
   if Assigned(Settings) then
-    if Settings.SeedDateAuto in [1..2] then
+    if Settings.SeedDateAuto in [1..5] then
       SeedDateAuto := scmSeedDateAuto(Settings.SeedDateAuto);
+
   case SeedDateAuto of
     sdaTodaysDate:
       result := Date();
@@ -206,10 +206,21 @@ begin
       result := uSession.SessionDT;
     sdaStartOfSeason:
       result := uSwimClub.StartOfSwimSeason;
+    sdaCustomDate:
+    begin
+      if Assigned(Settings) then
+       If (Settings.CustomSeedDate <> 0) then
+        result := Settings.CustomSeedDate;
+    end;
+    sdaMeetDate:
+    begin
+    // PK := uMeet.GetMeetID_WithSession(SessionID)
+//      if (PK <> 0) then
+//        result := uMeet.GetStartDT(PK);
+      ;
+    end;
   end;
-
 end;
-
 
 procedure ToogleNomination();
 var

@@ -298,6 +298,14 @@
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="DIALOGS\Lane\dlgEntrantPicker.pas">
+            <Form>EntrantPicker</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="DIALOGS\Lane\dlgEntrantPickerCTRL.pas">
+            <Form>EntrantPickerCTRL</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

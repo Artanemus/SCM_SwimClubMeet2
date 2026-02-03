@@ -61,7 +61,10 @@ uses
   frFrameNavEv in 'FRAMES\frFrameNavEv.pas' {FrameNavEv: TFrame},
   frFrameNavEvItem in 'FRAMES\frFrameNavEvItem.pas' {FrameNavEvItem: TFrame},
   dlgEntrantPicker in 'DIALOGS\Lane\dlgEntrantPicker.pas' {EntrantPicker},
-  dlgEntrantPickerCTRL in 'DIALOGS\Lane\dlgEntrantPickerCTRL.pas' {EntrantPickerCTRL};
+  dlgEntrantPickerCTRL in 'DIALOGS\Lane\dlgEntrantPickerCTRL.pas' {EntrantPickerCTRL},
+  dlgTeamPicker in 'DIALOGS\Lane\dlgTeamPicker.pas' {TeamPicker},
+  dlgTeamPickerCTRL in 'DIALOGS\Lane\dlgTeamPickerCTRL.pas' {TeamPickerCTRL},
+  uPickerStage in 'DIALOGS\Lane\uPickerStage.pas';
 
 {$R *.res}
 

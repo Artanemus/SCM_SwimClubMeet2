@@ -58,6 +58,10 @@ type
     procedure btnToggleNameClick(Sender: TObject);
     procedure GridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
+    procedure GridCustomCompare(Sender: TObject; str1, str2: string; var Res:
+        Integer);
+    procedure GridGetFormat(Sender: TObject; ACol: Integer; var AStyle: TSortStyle;
+        var aPrefix, aSuffix: string);
   private
     { Private declarations }
     fToggleNameState: boolean;
@@ -67,6 +71,7 @@ type
     prefHeatAlgorithm: Integer;
     ToggleState: Array [0 .. 4] of boolean;
     fSeedDate: TDate;
+    FSuccess: boolean;
 
     function AssertConnection(AConnection: TFDConnection): boolean;
     function UpdateLaneData: boolean;
@@ -77,6 +82,9 @@ type
   public
     { Public declarations }
     function Prepare(LaneID: Integer): boolean;
+
+    property Success: boolean read FSuccess write FSuccess;
+
   end;
 
 var
@@ -88,6 +96,11 @@ implementation
 
 uses uUtility, uEvent, uNominee, IniFiles, System.Math;
 
+
+function TEntrantPicker.AssertConnection(AConnection: TFDConnection): boolean;
+begin
+
+end;
 
 procedure TEntrantPicker.btnCancelClick(Sender: TObject);
 begin
@@ -154,6 +167,7 @@ begin
   prefRaceTimeTopPercent := 50.0;
   prefHeatAlgorithm := 1; // Base is zero
   fSeedDate := uNominee.GetSeedDate;
+  FSuccess := false;
 
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
     qryQuickPick.Connection := SCM2.scmConnection
@@ -250,6 +264,15 @@ end;
 function TEntrantPicker.UpdateLaneData: boolean;
 begin
   result := false;
+
+  // U P D A T E   N O M I N A T I O N S .
+
+  // U P D A T E   L A N E D A T A .
+  if True then
+  begin
+    fSuccess := true;
+  end;
+
 end;
 
 procedure TEntrantPicker.UpdateGridTitleBar(ColumnID: Integer);
@@ -277,54 +300,133 @@ begin
 }
 end;
 
-function TEntrantPicker.NormalizeDistanceID(aDistanceID: integer): integer;
-var
-  tbl: TFDTable;
-  SearchOptions: TLocateOptions;
-  foundit: Boolean;
-  meters, aEventTypeID: integer;
-begin
-  result := 0; // Flags - failed to normalize.
-//  if not Assigned(fConnection) then exit;
-  tbl := TFDTable.Create(self);
-  tbl.TableName := 'SwimClubMeet2..Distance';
-//  tbl.Connection := FConnection;
-  tbl.IndexFieldNames := 'DistanceID';
-  tbl.UpdateOptions.ReadOnly := true;
-  tbl.Open;
-  if tbl.Active then
-  Begin
-    // locate the
-    foundit := tbl.Locate('DistanceID', aDistanceID, SearchOptions);
-    if foundit then
-    begin
-      meters := tbl.FieldByName('Meters').AsInteger;
-      aEventTypeID := tbl.FieldByName('EventTypeID').AsInteger;
-      if aEventTypeID = 1 then // INDV EVENT
-          result := aDistanceID
-      else if aEventTypeID = 2 then // TEAM EVENT
-      Begin
-        // Total meters divided by number of swimmers.
-        // It's ASSUMED that relays have 4 swimmer (Olympic Standard).
-        meters := (meters div 4);
-        // XReference : The distance swum by each swimmer in the relay.
-        // Result is the ID of a INDV event.
-        foundit := tbl.Locate('Meters; EventTypeID', VarArrayOf([meters, 1]),
-          SearchOptions);
-        // This normalized distance is required/used by scalar
-        // functions dbo.TTB and dbo.PB
-        if foundit then result := tbl.FieldByName('DistanceID').AsInteger;
-      End;
-    end;
-  End;
-  tbl.Close;
-  tbl.Free;
-end;
-
 procedure TEntrantPicker.GridCanEditCell(Sender: TObject; ARow, ACol:
     Integer; var CanEdit: Boolean);
 begin
   CanEdit := false;
+end;
+
+function ParseMMSSmmmToTime(const S: string; out ATime: TTime): Boolean;
+var
+  sTrim, minsPart, secsPart, msPart: string;
+  mins, secs, ms: Integer;
+  totalMS, hrs, minsR, secsR: Int64;
+  dotPos, colonPos: Integer;
+  i: Integer;
+  digits: string;
+begin
+  Result := False;
+  ATime := 0;
+  sTrim := Trim(S);
+  if sTrim = '' then Exit;
+
+  // split minutes and seconds by ':' (if present)
+  colonPos := Pos(':', sTrim);
+  if colonPos > 0 then
+  begin
+    minsPart := Trim(Copy(sTrim, 1, colonPos-1));
+    secsPart := Trim(Copy(sTrim, colonPos+1, MaxInt));
+  end
+  else
+  begin
+    // no colon means we treat the whole string as seconds[.ms]
+    minsPart := '0';
+    secsPart := sTrim;
+  end;
+
+  // split seconds and milliseconds by '.' or ','
+  dotPos := Pos('.', secsPart);
+  if dotPos = 0 then dotPos := Pos(',', secsPart);
+  if dotPos > 0 then
+  begin
+    msPart := Copy(secsPart, dotPos+1, MaxInt);
+    secsPart := Copy(secsPart, 1, dotPos-1);
+  end
+  else
+    msPart := '0';
+
+  mins := StrToIntDef(minsPart, -1);
+  secs := StrToIntDef(secsPart, -1);
+  if (mins < 0) or (secs < 0) then Exit(False);
+
+  // normalise ms to 0..999 (handle 1-3 digits)
+  digits := '';
+  for i := 1 to Length(msPart) do
+    if msPart[i] in ['0'..'9'] then
+      digits := digits + msPart[i]
+    else
+      Break;
+  if digits = '' then
+    ms := 0
+  else if Length(digits) = 1 then
+    ms := StrToIntDef(digits, 0) * 100
+  else if Length(digits) = 2 then
+    ms := StrToIntDef(digits, 0) * 10
+  else
+    ms := StrToIntDef(Copy(digits, 1, 3), 0);
+
+  // compute total milliseconds and convert into h:m:s:ms for EncodeTime
+  totalMS := (Int64(mins) * 60 + Int64(secs)) * 1000 + ms;
+  hrs := totalMS div 3600000;
+  totalMS := totalMS mod 3600000;
+  minsR := totalMS div 60000;
+  totalMS := totalMS mod 60000;
+  secsR := totalMS div 1000;
+  ms := totalMS mod 1000;
+
+  try
+    ATime := EncodeTime(hrs, minsR, secsR, ms);
+    Result := True;
+  except
+    Result := False;
+  end;
+end;
+
+procedure TEntrantPicker.GridCustomCompare(Sender: TObject; str1, str2: string;
+    var Res: Integer);
+var
+  T1, T2: TTime;
+  fs: TFormatSettings;
+  ok1, ok2: Boolean;
+begin
+  // Prefer MM:SS.mmm parsing, but fall back to StrToTime for other formats
+  ok1 := ParseMMSSmmmToTime(str1, T1);
+  ok2 := ParseMMSSmmmToTime(str2, T2);
+  if not (ok1 and ok2) then
+  begin
+    fs := TFormatSettings.Create;
+    fs.ShortTimeFormat := 'hh:nn:ss.zzz';
+    try
+      T1 := StrToTime(str1, fs);
+      T2 := StrToTime(str2, fs);
+    except
+      on E: EConvertError do
+      begin
+        Res := 0;
+        Exit;
+      end;
+    end;
+  end;
+
+  if T1 < T2 then Res := -1
+  else if T1 = T2 then Res := 0
+  else Res := 1;
+end;
+
+procedure TEntrantPicker.GridGetFormat(Sender: TObject; ACol: Integer; var
+    AStyle: TSortStyle; var aPrefix, aSuffix: string);
+var
+  G: TDBAdvGrid;
+begin
+  G := TDBAdvGrid(Sender);
+  case ACol of
+  1, 5:
+    AStyle := ssAlphaNoCase;
+  2, 3:
+    AStyle := ssCustom; // sorting on TTB, PB.
+  4:
+    AStyle := ssNumeric;
+  end;
 end;
 
 end.

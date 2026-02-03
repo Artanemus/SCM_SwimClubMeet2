@@ -24,8 +24,6 @@ object EntrantPicker: TEntrantPicker
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 0
-    ExplicitHeight = 701
   end
   object pnlHeader: TPanel
     Left = 0
@@ -64,10 +62,6 @@ object EntrantPicker: TEntrantPicker
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitLeft = 328
-    ExplicitTop = 352
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object pnlCntrl: TPanel
       Left = 696
       Top = 0
@@ -76,7 +70,6 @@ object EntrantPicker: TEntrantPicker
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitHeight = 592
       object btnCancel: TButton
         Left = 10
         Top = 47
@@ -116,10 +109,6 @@ object EntrantPicker: TEntrantPicker
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitLeft = 320
-      ExplicitTop = 312
-      ExplicitWidth = 185
-      ExplicitHeight = 41
       object Grid: TDBAdvGrid
         Left = 0
         Top = 0
@@ -127,17 +116,27 @@ object EntrantPicker: TEntrantPicker
         Height = 588
         Cursor = crDefault
         Align = alClient
+        Color = clWhite
         ColCount = 6
         DefaultRowHeight = 30
         DrawingStyle = gdsClassic
         FixedColor = clWhite
         RowCount = 2
         FixedRows = 1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -16
+        Font.Name = 'Tahoma'
+        Font.Style = []
+        Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
+        ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
-        GridLineColor = 13948116
-        GridFixedLineColor = 11250603
+        GridLineColor = 15987699
+        GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
+        OnGetFormat = GridGetFormat
+        OnCustomCompare = GridCustomCompare
         OnCanEditCell = GridCanEditCell
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
@@ -151,6 +150,7 @@ object EntrantPicker: TEntrantPicker
         ControlLook.FixedGradientTo = clWhite
         ControlLook.FixedGradientMirrorFrom = clWhite
         ControlLook.FixedGradientMirrorTo = clWhite
+        ControlLook.FixedGradientHoverFrom = clGray
         ControlLook.FixedGradientHoverTo = clWhite
         ControlLook.FixedGradientHoverMirrorFrom = clWhite
         ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -196,7 +196,7 @@ object EntrantPicker: TEntrantPicker
         FixedColWidth = 20
         FixedRowHeight = 30
         FixedFont.Charset = DEFAULT_CHARSET
-        FixedFont.Color = 3881787
+        FixedFont.Color = clBlack
         FixedFont.Height = -12
         FixedFont.Name = 'Tahoma'
         FixedFont.Style = [fsBold]
@@ -551,10 +551,6 @@ object EntrantPicker: TEntrantPicker
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitLeft = 8
-        ExplicitTop = 339
-        ExplicitWidth = 697
-        ExplicitHeight = 321
         ColWidths = (
           20
           265
@@ -562,6 +558,9 @@ object EntrantPicker: TEntrantPicker
           112
           55
           70)
+        RowHeights = (
+          30
+          30)
       end
     end
   end

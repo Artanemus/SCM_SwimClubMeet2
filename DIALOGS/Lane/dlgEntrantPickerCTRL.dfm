@@ -530,4 +530,217 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
     Left = 464
     Top = 216
   end
+  object qryQuickPick: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
+    FilterOptions = [foCaseInsensitive]
+    Filter = '[FName] LIKE '#39'%b%'#39
+    Indexes = <
+      item
+        Active = True
+        Selected = True
+        Name = 'idxMemberFName'
+        Fields = 'FName'
+      end
+      item
+        Active = True
+        Name = 'idxMemberFNameDESC'
+        Fields = 'FName'
+        DescFields = 'FName'
+        Options = [soDescNullLast, soDescending]
+      end
+      item
+        Active = True
+        Name = 'idxTTB'
+        Fields = 'TTB'
+      end
+      item
+        Active = True
+        Name = 'idxTTBDESC'
+        Fields = 'TTB'
+        DescFields = 'TTB'
+        Options = [soDescending]
+      end
+      item
+        Active = True
+        Name = 'idxPB'
+        Fields = 'PB'
+      end
+      item
+        Active = True
+        Name = 'idxPBDESC'
+        Fields = 'PB'
+        DescFields = 'PB'
+        Options = [soDescending]
+      end
+      item
+        Active = True
+        Name = 'idxAge'
+        Fields = 'AGE'
+      end
+      item
+        Active = True
+        Name = 'idxAgeDESC'
+        Fields = 'AGE'
+        Options = [soDescNullLast, soDescending]
+      end
+      item
+        Active = True
+        Name = 'idxGender'
+        Fields = 'GenderID'
+      end
+      item
+        Active = True
+        Name = 'idxGenderDESC'
+        Fields = 'GenderID'
+        Options = [soDescNullLast, soDescending]
+      end>
+    IndexName = 'idxMemberFName'
+    DetailFields = 'MemberID'
+    Connection = SCM2.scmConnection
+    FormatOptions.AssignedValues = [fvFmtDisplayTime]
+    FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate, uvCheckReadOnly]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.CheckReadOnly = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2..Nominee'
+    UpdateOptions.KeyFields = 'NomineeID'
+    SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
+      'DECLARE @EventID AS INT;'
+      'DECLARE @ToggleName BIT;'
+      ''
+      'SET @EventID = :EVENTID;'
+      'SET @ToggleName = :TOGGLENAME;'
+      ''
+      '-- Drop a temporary table called '#39'#tmpID'#39
+      'IF OBJECT_ID('#39'tempDB..#tmpID'#39', '#39'U'#39') IS NOT NULL'
+      '    DROP TABLE #tmpID;'
+      ''
+      'CREATE TABLE #tmpID'
+      '('
+      '    MemberID INT'
+      ')'
+      ''
+      '-- Members given a swimming lane in the given event '
+      '    INSERT INTO #tmpID'
+      '    SELECT Nominee.MemberID'
+      '    FROM [SwimClubMeet2].[dbo].[Heat]'
+      '        INNER JOIN Lane'
+      '            ON Lane.HeatID = Heat.HeatID'
+      '        LEFT JOIN Nominee'
+      '            ON Lane.NomineeID = Nominee.NomineeID'
+      
+        '    WHERE Heat.EventID = @EventID AND Lane.NomineeID IS NOT NULL' +
+        ';'
+      ''
+      'SELECT '
+      '       Nominee.NomineeID'
+      '     , Nominee.EventID'
+      '     , Nominee.MemberID'
+      '     , Member.GenderID'
+      '     , Nominee.AGE'
+      '     , dbo.SwimmerGenderToString(Member.MemberID) AS GenderABREV'
+      '     , Nominee.TTB'
+      '     , Nominee.PB'
+      '     , CASE'
+      '           WHEN @ToggleName = 0 THEN'
+      
+        '               SUBSTRING(CONCAT(UPPER([LastName]), '#39', '#39', [FirstN' +
+        'ame]), 0, 48)'
+      '           WHEN @ToggleName = 1 THEN'
+      
+        '               SUBSTRING(CONCAT([FirstName], '#39', '#39', UPPER([LastNa' +
+        'me])), 0, 48)'
+      '       END AS FName'
+      'FROM Nominee'
+      '    LEFT OUTER JOIN #tmpID'
+      '        ON #tmpID.MemberID = Nominee.MemberID'
+      '    LEFT OUTER JOIN Member'
+      '        ON Nominee.MemberID = Member.MemberID'
+      'WHERE Nominee.EventID = @EventID'
+      '      AND #tmpID.MemberID IS NULL ;'
+      '')
+    Left = 144
+    Top = 384
+    ParamData = <
+      item
+        Name = 'EVENTID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = 65
+      end
+      item
+        Name = 'TOGGLENAME'
+        DataType = ftBoolean
+        ParamType = ptInput
+        Value = True
+      end>
+    object qryQuickPickFName: TWideStringField
+      DisplayLabel = 'Nominees'
+      DisplayWidth = 30
+      FieldName = 'FName'
+      Origin = 'FName'
+      ReadOnly = True
+      Size = 60
+    end
+    object qryQuickPickTTB: TTimeField
+      Alignment = taCenter
+      DisplayLabel = 'TimeToBeat'
+      DisplayWidth = 12
+      FieldName = 'TTB'
+      Origin = 'TTB'
+      ReadOnly = True
+      DisplayFormat = 'nn:ss.zzz'
+    end
+    object qryQuickPickPB: TTimeField
+      Alignment = taCenter
+      DisplayLabel = 'Personal Best'
+      DisplayWidth = 12
+      FieldName = 'PB'
+      Origin = 'PB'
+      ReadOnly = True
+      DisplayFormat = 'nn:ss.zzz'
+    end
+    object qryQuickPickAGE: TIntegerField
+      Alignment = taLeftJustify
+      DisplayLabel = '  AGE'
+      DisplayWidth = 5
+      FieldName = 'AGE'
+      Origin = 'AGE'
+      ReadOnly = True
+      DisplayFormat = '##0'
+    end
+    object qryQuickPickMemberID: TIntegerField
+      FieldName = 'MemberID'
+      Origin = 'MemberID'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+    end
+    object qryQuickPickEventID: TIntegerField
+      FieldName = 'EventID'
+      Origin = 'EventID'
+    end
+    object qryQuickPickGenderID: TIntegerField
+      FieldName = 'GenderID'
+      Origin = 'GenderID'
+    end
+    object qryQuickPickGenderABREV: TWideStringField
+      DisplayLabel = 'Gender'
+      FieldName = 'GenderABREV'
+      Origin = 'GenderABREV'
+      ReadOnly = True
+      Size = 2
+    end
+    object qryQuickPickNomineeID: TFDAutoIncField
+      FieldName = 'NomineeID'
+      Origin = 'NomineeID'
+    end
+  end
+  object dsQuickPick: TDataSource
+    DataSet = qryQuickPick
+    Left = 232
+    Top = 384
+  end
 end

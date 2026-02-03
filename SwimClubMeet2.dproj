@@ -306,6 +306,15 @@
             <Form>EntrantPickerCTRL</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="DIALOGS\Lane\dlgTeamPicker.pas">
+            <Form>TeamPicker</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="DIALOGS\Lane\dlgTeamPickerCTRL.pas">
+            <Form>TeamPickerCTRL</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="DIALOGS\Lane\uPickerStage.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

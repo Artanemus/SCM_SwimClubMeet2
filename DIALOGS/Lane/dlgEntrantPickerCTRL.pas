@@ -15,7 +15,7 @@ uses
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
 
 
-  dmSCM2, dmCORE, dmIMG, uDefines;
+  dmSCM2, dmCORE, dmIMG, uDefines, uEvent;
 
 
 type
@@ -38,6 +38,17 @@ type
     ImageCollection1: TImageCollection;
     VirtualImage1: TVirtualImage;
     Panel1: TPanel;
+    qryQuickPick: TFDQuery;
+    qryQuickPickFName: TWideStringField;
+    qryQuickPickTTB: TTimeField;
+    qryQuickPickPB: TTimeField;
+    qryQuickPickAGE: TIntegerField;
+    qryQuickPickMemberID: TIntegerField;
+    qryQuickPickEventID: TIntegerField;
+    qryQuickPickGenderID: TIntegerField;
+    qryQuickPickGenderABREV: TWideStringField;
+    qryQuickPickNomineeID: TFDAutoIncField;
+    dsQuickPick: TDataSource;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnPostClick(Sender: TObject);
@@ -69,8 +80,7 @@ type
 
   public
     { Public declarations }
-    function Prepare(AConnection: TFDConnection; AEntrantID: Integer;
-      aEventType: scmEventType): boolean;
+    function Prepare(LaneID: Integer): boolean;
   end;
 
 var
@@ -301,63 +311,30 @@ begin
   tbl.Free;
 end;
 
-function TEntrantPickerCTRL.Prepare(AConnection: TFDConnection;
-  AEntrantID: Integer; aEventType: scmEventType): boolean;
-var
-  SQL, rtnstr: string;
-  aNormalizedDistanceID, aDistanceID: Integer;
+function TEntrantPickerCTRL.Prepare(LaneID: Integer): boolean;
 begin
   result := false;
-  if not AssertConnection(AConnection) then exit;
-
-  FConnection := AConnection;
-  fID := AEntrantID;
-  fEventType := aEventType;
-
-  if aEventType = etINDV then
-      SQL := 'SELECT [HeatIndividual].[EventID] FROM [SwimClubMeet].[dbo].[Entrant] '
-      + 'INNER JOIN HeatIndividual ON [Entrant].[HeatID] = [HeatIndividual].[HeatID] '
-      + 'WHERE [Entrant].[EntrantID] = :ID';
-
-  if aEventType = etTEAM then
-      SQL := 'SELECT [HeatIndividual].[EventID] FROM [SwimClubMeet].[dbo].[TeamEntrant] '
-      + 'INNER JOIN Team ON [TeamEntrant].[TeamID] = [Team].[teamID] ' +
-      'INNER JOIN HeatIndividual ON [Team].[HeatID] = [HeatIndividual].[HeatID] '
-      + 'WHERE [TeamEntrant].[TeamEntrantID] = :ID';
-
-  rtnstr := AConnection.ExecSQLScalar(SQL, [AEntrantID]);
-  fEventID := StrToIntDef(rtnstr, 0);
-  if (fEventID = 0) then exit;
-
-  // 20231008 With TEAM Events eg.4x25M Relay
-  // the 100M siatnce must be normalized to
-  aDistanceID := GetEventDistanceID(fEventID);
-  // this is used by scalar functions dbo.TTB and dbo.PB.
-  aNormalizedDistanceID := NormalizeDistanceID(aDistanceID);
-
-  // ASSIGN CRITICAL PARAMS
-  qryQuickPickCtrl.Connection := AConnection;
-  qryQuickPickCtrl.ParamByName('EVENTID').AsInteger := fEventID;
-  qryQuickPickCtrl.ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
-  qryQuickPickCtrl.ParamByName('ALGORITHM').AsInteger := prefHeatAlgorithm;
-  qryQuickPickCtrl.ParamByName('CALCDEFAULT').AsInteger :=
-    Integer(prefUseDefRaceTime); // Safe - always 0 or 1.
-  qryQuickPickCtrl.ParamByName('BOTTOMPERCENT').AsFloat :=
-    double(prefRaceTimeTopPercent);
-  qryQuickPickCtrl.ParamByName('EVENTTYPE').AsInteger := ord(aEventType);
-  qryQuickPickCtrl.ParamByName('DISTANCEID').AsInteger := aNormalizedDistanceID;
-
-  qryQuickPickCtrl.Prepare();
-  qryQuickPickCtrl.Open();
-  if (qryQuickPickCtrl.Active) then
-  begin
-    result := true;
+  LockDrawing;
+  // Grid.BeginUpdate
+  qryQuickPick.DisableControls;
+  try
+    qryQuickPick.Close();
+    qryQuickPick.ParamByName('EVENTID').AsInteger := uEvent.PK;
+    qryQuickPick.ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
+    qryQuickPick.Prepare();
+    qryQuickPick.Open();
+    if (qryQuickPick.Active) then
+      result := true;
+  finally
+    qryQuickPick.EnableControls;
+    // Grid.EndUpdate
+    UnlockDrawing;
   end;
 end;
 
 function TEntrantPickerCTRL.UpdateEntrantData: boolean;
-var
-  nom: TSCMNom;
+//var
+//  nom: TSCMNom;
 begin
   result := false;
   if not AssertConnection(FConnection) then exit;
@@ -367,9 +344,9 @@ begin
   with dsQuickPickCtrl.DataSet do
   begin
     // U P D A T E   N O M I N A T I O N S .
-    nom := TSCMNom.CreateWithConnection(Self, FConnection);
-    nom.NominateMember(FieldByName('MemberID').AsInteger, fEventID);
-    nom.Free;
+//    nom := TSCMNom.CreateWithConnection(Self, FConnection);
+//    nom.NominateMember(FieldByName('MemberID').AsInteger, fEventID);
+//    nom.Free;
 
     // U P D A T E   E N T R A N T D A T A .
     FDCommandUpdateEntrant.Connection := FConnection;

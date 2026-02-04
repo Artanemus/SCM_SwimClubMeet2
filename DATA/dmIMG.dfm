@@ -2749,6 +2749,28 @@ object IMG: TIMG
           '-2.4c1.8-.8 3-2.5 3-4.6c0-2.8-2.2-5-5-5m9 8V7h2v6h-2m0 4v-2h2v2z' +
           '"/></svg>'
         FixedColor = clGold
+      end
+      item
+        IconName = 'circle-up'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="m12 11.325l3.0' +
+          '75 3.075L16.5 13L12 8.5L7.5 13l1.425 1.4zM12 22q-2.075 0-3.9-.78' +
+          '8t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12' +
+          ' 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-' +
+          '3.175 2.138T12 22"/></svg>'
+        FixedColor = clDarkgoldenrod
+      end
+      item
+        IconName = 'circle-down'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="m12 15.5l4.5-4' +
+          '.5l-1.425-1.4L12 12.675L8.925 9.6L7.5 11zm0 6.5q-2.075 0-3.9-.78' +
+          '8t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12' +
+          ' 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-' +
+          '3.175 2.138T12 22"/></svg>'
+        FixedColor = clDarkgoldenrod
       end>
     Left = 496
     Top = 16
@@ -14573,5 +14595,44 @@ object IMG: TIMG
     Size = 24
     Left = 424
     Top = 336
+  end
+  object imglstLaneCell: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 0
+        CollectionName = 'EmptyFrame'
+        Name = 'EmptyFrame'
+      end
+      item
+        CollectionIndex = 73
+        CollectionName = 'user'
+        Name = 'user'
+      end
+      item
+        CollectionIndex = 74
+        CollectionName = 'user-check'
+        Name = 'user-check'
+      end
+      item
+        CollectionIndex = 104
+        CollectionName = 'male-female'
+        Name = 'male-female'
+      end
+      item
+        CollectionIndex = 116
+        CollectionName = 'circle-up'
+        Name = 'circle-up'
+      end
+      item
+        CollectionIndex = 117
+        CollectionName = 'circle-down'
+        Name = 'circle-down'
+      end>
+    ImageCollection = CollectionCore
+    Width = 24
+    Height = 24
+    Size = 24
+    Left = 776
+    Top = 112
   end
 end

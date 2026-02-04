@@ -132,11 +132,14 @@ object EntrantPicker: TEntrantPicker
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
+        OnDrawCell = GridDrawCell
+        OnFixedCellClick = GridFixedCellClick
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
-        OnGetFormat = GridGetFormat
+        OnGetCellColor = GridGetCellColor
         OnCustomCompare = GridCustomCompare
+        OnDblClickCell = GridDblClickCell
         OnCanEditCell = GridCanEditCell
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
@@ -245,10 +248,13 @@ object EntrantPicker: TEntrantPicker
         SearchFooter.ResultFormat = '(%d of %d)'
         SelectionColor = 13744549
         SortSettings.DefaultFormat = ssAutomatic
-        SortSettings.HeaderColor = clWhite
-        SortSettings.HeaderColorTo = clWhite
-        SortSettings.HeaderMirrorColor = clWhite
-        SortSettings.HeaderMirrorColorTo = clWhite
+        SortSettings.IgnoreBlanks = True
+        SortSettings.BlankPos = blLast
+        SortSettings.IgnoreCase = True
+        SortSettings.HeaderColor = clGoldenrod
+        SortSettings.HeaderColorTo = clGoldenrod
+        SortSettings.HeaderMirrorColor = clGoldenrod
+        SortSettings.HeaderMirrorColorTo = clGoldenrod
         Version = '2.5.1.3'
         AutoCreateColumns = True
         AutoRemoveColumns = True
@@ -392,26 +398,26 @@ object EntrantPicker: TEntrantPicker
             ButtonHeight = 18
             CheckFalse = 'N'
             CheckTrue = 'Y'
-            Color = clWindow
-            FieldName = 'GenderABREV'
+            Color = clWhite
+            FieldName = 'GenderStr'
             Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
+            Font.Color = clBlack
             Font.Height = -16
             Font.Name = 'Tahoma'
             Font.Style = []
-            Header = 'Gender'
+            Header = ' '
             HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
+            HeaderFont.Color = clBlack
             HeaderFont.Height = -16
             HeaderFont.Name = 'Tahoma'
             HeaderFont.Style = []
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
+            PrintFont.Color = clBlack
             PrintFont.Height = -16
             PrintFont.Name = 'Tahoma'
             PrintFont.Style = []
-            Width = 70
+            Width = 64
           end>
         DataSource = dsQuickPick
         InvalidPicture.Data = {
@@ -557,7 +563,7 @@ object EntrantPicker: TEntrantPicker
           112
           112
           55
-          70)
+          64)
         RowHeights = (
           30
           30)
@@ -676,7 +682,7 @@ object EntrantPicker: TEntrantPicker
       '     , Nominee.MemberID'
       '     , Member.GenderID'
       '     , Nominee.AGE'
-      '     , dbo.SwimmerGenderToString(Member.MemberID) AS GenderABREV'
+      '     , dbo.SwimmerGenderToString(Member.MemberID) AS GenderStr'
       '     , Nominee.TTB'
       '     , Nominee.PB'
       '     , CASE'
@@ -694,8 +700,7 @@ object EntrantPicker: TEntrantPicker
       '        ON #tmpID.MemberID = Nominee.MemberID'
       '    LEFT OUTER JOIN Member'
       '        ON Nominee.MemberID = Member.MemberID'
-      'WHERE Nominee.EventID = @EventID'
-      '      AND #tmpID.MemberID IS NULL ;'
+      ' WHERE Nominee.EventID = @EventID AND #tmpID.MemberID IS NULL ;'
       '')
     Left = 152
     Top = 216
@@ -727,6 +732,7 @@ object EntrantPicker: TEntrantPicker
       FieldName = 'TTB'
       Origin = 'TTB'
       ReadOnly = True
+      OnGetText = qryQuickPickTTBGetText
       DisplayFormat = 'nn:ss.zzz'
     end
     object qryQuickPickPB: TTimeField
@@ -736,6 +742,7 @@ object EntrantPicker: TEntrantPicker
       FieldName = 'PB'
       Origin = 'PB'
       ReadOnly = True
+      OnGetText = qryQuickPickPBGetText
       DisplayFormat = 'nn:ss.zzz'
     end
     object qryQuickPickAGE: TIntegerField
@@ -760,11 +767,11 @@ object EntrantPicker: TEntrantPicker
       FieldName = 'GenderID'
       Origin = 'GenderID'
     end
-    object qryQuickPickGenderABREV: TWideStringField
+    object qryQuickPickGenderStr: TWideStringField
       DisplayLabel = 'Gender'
-      FieldName = 'GenderABREV'
-      Origin = 'GenderABREV'
-      ReadOnly = True
+      DisplayWidth = 6
+      FieldName = 'GenderStr'
+      Origin = 'GenderStr'
       Size = 2
     end
     object qryQuickPickNomineeID: TFDAutoIncField

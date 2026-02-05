@@ -16,15 +16,6 @@ object EntrantPicker: TEntrantPicker
   OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   TextHeight = 19
-  object Panel1: TPanel
-    Left = 0
-    Top = 45
-    Width = 818
-    Height = 588
-    Align = alClient
-    BevelOuter = bvNone
-    TabOrder = 0
-  end
   object pnlHeader: TPanel
     Left = 0
     Top = 0
@@ -32,7 +23,7 @@ object EntrantPicker: TEntrantPicker
     Height = 45
     Align = alTop
     BevelOuter = bvNone
-    TabOrder = 1
+    TabOrder = 0
     object VirtualImage2: TVirtualImage
       Left = 8
       Top = 2
@@ -61,7 +52,7 @@ object EntrantPicker: TEntrantPicker
     Height = 588
     Align = alClient
     BevelOuter = bvNone
-    TabOrder = 2
+    TabOrder = 1
     object pnlCntrl: TPanel
       Left = 696
       Top = 0
@@ -69,6 +60,8 @@ object EntrantPicker: TEntrantPicker
       Height = 588
       Align = alRight
       BevelOuter = bvNone
+      Color = clDarkslategray
+      ParentBackground = False
       TabOrder = 0
       object btnCancel: TButton
         Left = 10
@@ -128,7 +121,7 @@ object EntrantPicker: TEntrantPicker
         Font.Height = -16
         Font.Name = 'Tahoma'
         Font.Style = []
-        Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
+        Options = [goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
@@ -138,7 +131,6 @@ object EntrantPicker: TEntrantPicker
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
         OnGetCellColor = GridGetCellColor
-        OnCustomCompare = GridCustomCompare
         OnDblClickCell = GridDblClickCell
         OnCanEditCell = GridCanEditCell
         ActiveCellFont.Charset = DEFAULT_CHARSET
@@ -633,6 +625,10 @@ object EntrantPicker: TEntrantPicker
         Name = 'idxGenderDESC'
         Fields = 'GenderID'
         Options = [soDescNullLast, soDescending]
+      end
+      item
+        Name = 'idxUnSorted'
+        Fields = 'NomineeID'
       end>
     IndexName = 'idxMemberFName'
     DetailFields = 'MemberID'

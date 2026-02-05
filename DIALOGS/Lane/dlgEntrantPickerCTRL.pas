@@ -15,16 +15,12 @@ uses
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
 
 
-  dmSCM2, dmCORE, dmIMG, uDefines, uEvent;
+  dmSCM2, dmCORE, dmIMG, uDefines, uEvent, AdvUtil, AdvObj, BaseGrid, AdvGrid,
+  DBAdvGrid;
 
 
 type
   TEntrantPickerCTRL = class(TForm)
-    DBGrid1: TDBGrid;
-    Nominate_Edit: TEdit;
-    btnPost: TButton;
-    btnCancel: TButton;
-    btnToggleName: TButton;
     dsQuickPickCtrl: TDataSource;
     qryQuickPickCtrl: TFDQuery;
     qryQuickPickCtrlMemberID: TFDAutoIncField;
@@ -36,8 +32,6 @@ type
     FDCommandUpdateEntrant: TFDCommand;
     qryQuickPickCtrlGenderID: TIntegerField;
     ImageCollection1: TImageCollection;
-    VirtualImage1: TVirtualImage;
-    Panel1: TPanel;
     qryQuickPick: TFDQuery;
     qryQuickPickFName: TWideStringField;
     qryQuickPickTTB: TTimeField;
@@ -49,6 +43,16 @@ type
     qryQuickPickGenderABREV: TWideStringField;
     qryQuickPickNomineeID: TFDAutoIncField;
     dsQuickPick: TDataSource;
+    pnlHeader: TPanel;
+    VirtualImage2: TVirtualImage;
+    Nominate_Edit: TEdit;
+    pnlBody: TPanel;
+    pnlCntrl: TPanel;
+    btnCancel: TButton;
+    btnPost: TButton;
+    btnToggleName: TButton;
+    pnlGrid: TPanel;
+    Grid: TDBAdvGrid;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnPostClick(Sender: TObject);

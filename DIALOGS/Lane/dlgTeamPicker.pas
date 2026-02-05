@@ -4,14 +4,35 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.VirtualImage,
+  Vcl.ExtCtrls, AdvUtil, Vcl.Grids, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client,
+  dmSCM2, dmCORE, dmIMG, uDefines, uSettings, uEvent;
 
 type
   TTeamPicker = class(TForm)
+    pnlHeader: TPanel;
+    VirtualImage2: TVirtualImage;
+    Nominate_Edit: TEdit;
+    pnlBody: TPanel;
+    pnlCntrl: TPanel;
+    btnCancel: TButton;
+    btnPost: TButton;
+    btnToggleName: TButton;
+    pnlGrid: TPanel;
+    Grid: TDBAdvGrid;
+    qryQuickPick: TFDQuery;
   private
-    { Private declarations }
+    fActiveSortCol: integer;
+    fToggleNameState: boolean;
+    // 6 grid columns containing TriState: unsorted, ascend, descend.
+    TSortState: Array [0 .. 5] of scmSortState;
+    procedure SortGrid(aActiveSortCol: Integer);
+    procedure ToogleSortState(indx: integer);
   public
-    { Public declarations }
     function Prepare(LaneID: Integer): boolean;
   end;
 
@@ -26,8 +47,31 @@ implementation
 
 function TTeamPicker.Prepare(LaneID: Integer): boolean;
 begin
-  ;
-end;
+  result := false;
+  fActiveSortCol := -1; // no sorting...
+  LockDrawing;
+  Grid.BeginUpdate;
+  qryQuickPick.DisableControls;
+  try
+    qryQuickPick.Close();
+    qryQuickPick.ParamByName('EVENTID').AsInteger := uEvent.PK;
+    qryQuickPick.ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
+    qryQuickPick.Prepare();
+    qryQuickPick.Open();
+    if (qryQuickPick.Active) then
+    begin
+      // qryQuickPick.IndexName := 'idxUnsorted';
+      qryQuickPick.Indexes[10].Selected := true; // idxUnSorted.
+      { The InitSortXRef method initializes the current row indexing
+          as reference. }
+      // Grid.InitSortXRef;
+      result := true;
+    end;
+  finally
+    qryQuickPick.EnableControls;
+    Grid.EndUpdate;
+    UnlockDrawing;
+  end;end;
 
 
 {

@@ -45,6 +45,8 @@ const
    rptMarshall, rptTimeKeeper, rptTeam, rptWatchTime, rptSplitTime);
 
  scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate);
+ scmSortState = (stUnsorted, stAscend, stDescend);
+
 
 
 /// <Remarks>

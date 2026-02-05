@@ -18,18 +18,11 @@ type
   TPickerStage = class(TComponent)
   private
     fEventType: scmEventType;
-  protected
-
   public
-
     function Stage(AEventType: scmEventType; ALaneID: Integer; DoAltMethod:
         Boolean): Boolean;
-
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-
-  published
-
   end;
 
 
@@ -40,6 +33,8 @@ uses
 
 function TPickerStage.Stage(AEventType: scmEventType; ALaneID: Integer;
     DoAltMethod: Boolean): Boolean;
+var
+mr: TModalResult;
 begin
   // TODO -cMM: Stage default body inserted
   Result := false;
@@ -60,7 +55,9 @@ begin
         var dlg: TEntrantPicker;
         dlg := TEntrantPicker.Create(Self);
         dlg.Prepare(ALaneID);
-        dlg.ShowModal;
+        mr := dlg.ShowModal;
+        if IsPositiveResult(mr) then
+          result := true;
         dlg.Free;
       end;
       ;
@@ -77,11 +74,12 @@ begin
       end
       else
       begin
-        var dlg: TEntrantPicker;
-        dlg := TEntrantPicker.Create(Self);
+        var dlg: TTeamPicker;
+        dlg := TTeamPicker.Create(Self);
         dlg.Prepare(ALaneID);
-        dlg.ShowModal;
-        result := dlg.Success;
+        mr := dlg.ShowModal;
+        if IsPositiveResult(mr) then
+          result := true;
         dlg.Free;
       end;
       ;

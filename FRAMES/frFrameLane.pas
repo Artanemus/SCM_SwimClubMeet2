@@ -13,7 +13,7 @@ uses
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
-  dmIMG, dmSCM2, dmCORE, uDefines, AsgLinks  ;
+  dmIMG, dmSCM2, dmCORE, uDefines, AsgLinks, uLane;
 
 type
   TFrameLane = class(TFrame)
@@ -64,7 +64,7 @@ implementation
 {$R *.dfm}
 
 uses
-  uSession, uEvent, uHeat, uSettings;
+  uSession, uEvent, uHeat, uSettings, uPickerStage;
 
 procedure TFrameLane.actnLn_GenericUpdate(Sender: TObject);
 var
@@ -105,17 +105,29 @@ end;
 
 procedure TFrameLane.gridEllipsClick(Sender: TObject; ACol, ARow: Integer; var
     S: string);
-begin
 var
   G: TDBAdvGrid;
+  stage: TPickerStage;
+  success: boolean;
 begin
+  success := false;
   G := TDBAdvGrid(Sender);
+  G.BeginUpdate;
   if (ARow >= G.FixedRows) and (ACol = 2) then
   begin
-    ; // deal with the ellipse button getting clicked...
+    stage := TPickerStage.Create(Self);
+    // deal with the ellipse button getting clicked...
+    if ((GetKeyState(VK_CONTROL) and 128) = 128) then
+      success := stage.Stage(uEvent.GetEventType,  uLane.PK, true)
+    else
+      success := stage.Stage(uEvent.GetEventType,  uLane.PK, false);
+    stage.free;
   end;
-end;
-
+  G.EndUpdate;
+  if Success then
+  begin
+    // post ststus message?...
+  end;
 end;
 
 procedure TFrameLane.gridGetCellColor(Sender: TObject; ARow, ACol: Integer;

@@ -36,13 +36,13 @@ object EntrantPicker: TEntrantPicker
       ImageName = 'Search'
       Enabled = False
     end
-    object Nominate_Edit: TEdit
+    object edtSearch: TEdit
       Left = 48
       Top = 11
       Width = 249
       Height = 27
       TabOrder = 0
-      OnChange = Nominate_EditChange
+      OnChange = edtSearchChange
     end
   end
   object pnlBody: TPanel

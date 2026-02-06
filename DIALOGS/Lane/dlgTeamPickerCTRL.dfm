@@ -131,6 +131,7 @@ object TeamPickerCTRL: TTeamPickerCTRL
         ControlLook.FixedGradientTo = clWhite
         ControlLook.FixedGradientMirrorFrom = clWhite
         ControlLook.FixedGradientMirrorTo = clWhite
+        ControlLook.FixedGradientHoverFrom = clGray
         ControlLook.FixedGradientHoverTo = clWhite
         ControlLook.FixedGradientHoverMirrorFrom = clWhite
         ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -546,7 +547,7 @@ object TeamPickerCTRL: TTeamPickerCTRL
       end
     end
   end
-  object qryQuickPickCTRL: TFDQuery
+  object qryQuickPick: TFDQuery
     Left = 256
     Top = 229
   end

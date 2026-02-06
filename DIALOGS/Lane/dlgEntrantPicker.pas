@@ -20,10 +20,10 @@ uses
   FireDAC.Stan.Async, FireDAC.DApt,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client,
 
+  AdvUtil, AdvObj, BaseGrid,  AdvGrid, DBAdvGrid,
 
-  dmSCM2, dmCORE, dmIMG, uDefines, uSettings, AdvUtil, AdvObj, BaseGrid,
-  AdvGrid, DBAdvGrid;
-
+  dmSCM2, dmCORE, dmIMG, uDefines, uSettings;
+  
 type
 
   TEntrantPicker = class(TForm)
@@ -32,7 +32,7 @@ type
     btnToggleName: TButton;
     dsQuickPick: TDataSource;
     Grid: TDBAdvGrid;
-    Nominate_Edit: TEdit;
+    edtSearch: TEdit;
     pnlBody: TPanel;
     pnlCntrl: TPanel;
     pnlGrid: TPanel;
@@ -61,7 +61,7 @@ type
     procedure GridFixedCellClick(Sender: TObject; ACol, ARow: LongInt);
     procedure GridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
-    procedure Nominate_EditChange(Sender: TObject);
+    procedure edtSearchChange(Sender: TObject);
     procedure qryQuickPickPBGetText(Sender: TField; var Text: string; DisplayText:
         Boolean);
     procedure qryQuickPickTTBGetText(Sender: TField; var Text: string; DisplayText:
@@ -126,12 +126,12 @@ end;
 
 procedure TEntrantPicker.btnToggleNameClick(Sender: TObject);
 var
-  NomineeID: Integer;
+  aNomineeID: Integer;
 begin
   fToggleNameState := not fToggleNameState;
   with dsQuickPick.DataSet as TFDQuery do
   begin
-    NomineeID := FieldByName('NomineeID').AsInteger;
+    aNomineeID := FieldByName('NomineeID').AsInteger;
     LockDrawing;
     Grid.BeginUpdate;
     DisableControls;
@@ -140,7 +140,7 @@ begin
       ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
       Prepare;
       Open;
-      if (Active) then uLane.LocateNominee(NomineeID);
+      if (Active) then uLane.LocateNominee(aNomineeID);
     finally
       EnableControls();
       Grid.EndUpdate;
@@ -247,7 +247,7 @@ begin
   end;
 end;
 
-procedure TEntrantPicker.Nominate_EditChange(Sender: TObject);
+procedure TEntrantPicker.edtSearchChange(Sender: TObject);
 var
   fs: string;
 begin
@@ -259,9 +259,9 @@ begin
     DisableControls;
     try
       // update filter string ....
-      if (Length(Nominate_Edit.Text) > 0) then
+      if (Length(edtSearch.Text) > 0) then
       begin
-        fs := fs + '[FName] LIKE ' + QuotedStr('%' + Nominate_Edit.Text + '%');
+        fs := fs + '[FName] LIKE ' + QuotedStr('%' + edtSearch.Text + '%');
       end;
       // assign filter
       if fs.IsEmpty then Filtered := false

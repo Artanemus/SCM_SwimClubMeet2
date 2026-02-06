@@ -10,6 +10,8 @@ object TeamPicker: TTeamPicker
   Font.Height = -16
   Font.Name = 'Segoe UI'
   Font.Style = []
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   TextHeight = 21
   object pnlHeader: TPanel
     Left = 0
@@ -19,7 +21,6 @@ object TeamPicker: TTeamPicker
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitLeft = -194
     object VirtualImage2: TVirtualImage
       Left = 8
       Top = 2
@@ -32,12 +33,13 @@ object TeamPicker: TTeamPicker
       ImageName = 'Search'
       Enabled = False
     end
-    object Nominate_Edit: TEdit
+    object edtSearch: TEdit
       Left = 48
       Top = 11
       Width = 249
       Height = 29
       TabOrder = 0
+      OnChange = edtSearchChange
     end
   end
   object pnlBody: TPanel
@@ -48,9 +50,6 @@ object TeamPicker: TTeamPicker
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = -194
-    ExplicitTop = -147
-    ExplicitHeight = 588
     object pnlCntrl: TPanel
       Left = 696
       Top = 0
@@ -61,7 +60,6 @@ object TeamPicker: TTeamPicker
       Color = clDarkslategray
       ParentBackground = False
       TabOrder = 0
-      ExplicitHeight = 588
       object btnCancel: TButton
         Left = 10
         Top = 47
@@ -71,6 +69,7 @@ object TeamPicker: TTeamPicker
         Caption = 'Cancel'
         ModalResult = 2
         TabOrder = 0
+        OnClick = btnCancelClick
       end
       object btnPost: TButton
         Left = 10
@@ -80,6 +79,7 @@ object TeamPicker: TTeamPicker
         Caption = 'Post'
         ModalResult = 1
         TabOrder = 1
+        OnClick = btnPostClick
       end
       object btnToggleName: TButton
         Left = 10
@@ -88,6 +88,7 @@ object TeamPicker: TTeamPicker
         Height = 35
         Caption = 'Toggle Name'
         TabOrder = 2
+        OnClick = btnToggleNameClick
       end
     end
     object pnlGrid: TPanel
@@ -98,7 +99,6 @@ object TeamPicker: TTeamPicker
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitHeight = 588
       object Grid: TDBAdvGrid
         Left = 0
         Top = 0
@@ -122,9 +122,14 @@ object TeamPicker: TTeamPicker
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
+        OnDrawCell = GridDrawCell
+        OnFixedCellClick = GridFixedCellClick
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
+        OnGetCellColor = GridGetCellColor
+        OnDblClickCell = GridDblClickCell
+        OnCanEditCell = GridCanEditCell
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
         ActiveCellFont.Height = -12
@@ -137,6 +142,7 @@ object TeamPicker: TTeamPicker
         ControlLook.FixedGradientTo = clWhite
         ControlLook.FixedGradientMirrorFrom = clWhite
         ControlLook.FixedGradientMirrorTo = clWhite
+        ControlLook.FixedGradientHoverFrom = clGray
         ControlLook.FixedGradientHoverTo = clWhite
         ControlLook.FixedGradientHoverMirrorFrom = clWhite
         ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -249,7 +255,7 @@ object TeamPicker: TTeamPicker
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWindow
-            FieldName = 'NomineeID'
+            FieldName = 'TeamID'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
@@ -275,17 +281,17 @@ object TeamPicker: TTeamPicker
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWindow
-            FieldName = 'FName'
+            FieldName = 'TeamName'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
-            Font.Name = 'Tahoma'
+            Font.Name = 'Segoe UI'
             Font.Style = []
-            Header = 'Nominee'
+            Header = 'Team Name'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
             HeaderFont.Height = -16
-            HeaderFont.Name = 'Tahoma'
+            HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
@@ -301,17 +307,70 @@ object TeamPicker: TTeamPicker
             ButtonHeight = 18
             CheckFalse = 'N'
             CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'Caption'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = ' '
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -12
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 64
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'ABREV'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -12
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 64
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
             Color = clWindow
             FieldName = 'TTB'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
-            Font.Name = 'Tahoma'
+            Font.Name = 'Segoe UI'
             Font.Style = []
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
             HeaderFont.Height = -16
-            HeaderFont.Name = 'Tahoma'
+            HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
@@ -332,12 +391,12 @@ object TeamPicker: TTeamPicker
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
-            Font.Name = 'Tahoma'
+            Font.Name = 'Segoe UI'
             Font.Style = []
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
             HeaderFont.Height = -16
-            HeaderFont.Name = 'Tahoma'
+            HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
@@ -346,62 +405,8 @@ object TeamPicker: TTeamPicker
             PrintFont.Name = 'Tahoma'
             PrintFont.Style = []
             Width = 112
-          end
-          item
-            Alignment = taCenter
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWindow
-            FieldName = 'AGE'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -16
-            HeaderFont.Name = 'Tahoma'
-            HeaderFont.Style = []
-            HeaderAlignment = taCenter
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -16
-            PrintFont.Name = 'Tahoma'
-            PrintFont.Style = []
-            Width = 55
-          end
-          item
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWhite
-            FieldName = 'GenderStr'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clBlack
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            Header = ' '
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -16
-            HeaderFont.Name = 'Tahoma'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clBlack
-            PrintFont.Height = -16
-            PrintFont.Name = 'Tahoma'
-            PrintFont.Style = []
-            Width = 64
           end>
+        DataSource = dsQuickPick
         InvalidPicture.Data = {
           055449636F6E0000010001002020200000000000A81000001600000028000000
           2000000040000000010020000000000000100000000000000000000000000000
@@ -539,14 +544,13 @@ object TeamPicker: TTeamPicker
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitHeight = 588
         ColWidths = (
           20
           265
+          64
+          64
           112
-          112
-          55
-          64)
+          112)
         RowHeights = (
           30
           30)
@@ -554,7 +558,141 @@ object TeamPicker: TTeamPicker
     end
   end
   object qryQuickPick: TFDQuery
-    Left = 312
-    Top = 229
+    Indexes = <
+      item
+        Active = True
+        Selected = True
+        Name = 'idxUnSorted'
+        Fields = 'TeamID'
+      end
+      item
+        Name = 'idxTeamName'
+        Fields = 'TeamName'
+      end
+      item
+        Name = 'idxTeamNameDESC'
+        Fields = 'TeamName'
+        DescFields = 'TeamName'
+        Options = [soDescNullLast, soDescending]
+      end
+      item
+        Name = 'idxTTB'
+        Fields = 'TTB'
+      end
+      item
+        Name = 'idxTTBDESC'
+        Fields = 'TTB'
+        DescFields = 'TTB'
+        Options = [soDescNullLast, soDescending]
+      end
+      item
+        Name = 'idxPB'
+        Fields = 'PB'
+      end
+      item
+        Name = 'idxPBDESC'
+        Fields = 'PB'
+        DescFields = 'PB'
+        Options = [soDescNullLast, soDescending]
+      end
+      item
+        Name = 'idxABREV'
+        Fields = 'ABREV'
+      end
+      item
+        Name = 'idxABREVDESC'
+        Fields = 'ABREV'
+        DescFields = 'ABREV'
+        Options = [soDescNullLast, soDescending]
+      end>
+    IndexName = 'idxUnSorted'
+    Connection = SCM2.scmConnection
+    SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
+      'DECLARE @EventID AS INT;'
+      ''
+      'SET @EventID = :EVENTID;'
+      ''
+      '-- Drop a temporary table called '#39'#tmpID'#39
+      'IF OBJECT_ID('#39'tempDB..#tmpID'#39', '#39'U'#39') IS NOT NULL'
+      '    DROP TABLE #tmpID;'
+      ''
+      'CREATE TABLE #tmpID'
+      '('
+      '    TeamID INT'
+      ')'
+      ''
+      '-- Members given a swimming lane in the given event '
+      '    INSERT INTO #tmpID'
+      '    SELECT Team.TeamID'
+      '    FROM [SwimClubMeet2].[dbo].[Heat]'
+      '        INNER JOIN Lane'
+      '            ON Lane.HeatID = Heat.HeatID'
+      '        LEFT JOIN Team'
+      '            ON Lane.TeamID = Team.TeamID'
+      '    WHERE Heat.EventID = @EventID AND Lane.TeamID IS NOT NULL;'
+      ''
+      'SELECT '
+      '       Team.TeamID'
+      '     , Team.EventID'
+      '     , Team.Caption'
+      '     , Team.TeamName'
+      '     , Team.ABREV'
+      '     , Team.TTB'
+      '     , Team.PB'
+      'FROM Team'
+      '    LEFT OUTER JOIN #tmpID'
+      '        ON #tmpID.TeamID = Team.TeamID'
+      ' WHERE Team.EventID = @EventID AND #tmpID.TeamID IS NULL ;'
+      '')
+    Left = 88
+    Top = 189
+    ParamData = <
+      item
+        Name = 'EVENTID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = Null
+      end>
+    object qryQuickPickTeamID: TFDAutoIncField
+      FieldName = 'TeamID'
+      Origin = 'TeamID'
+    end
+    object qryQuickPickEventID: TIntegerField
+      FieldName = 'EventID'
+      Origin = 'EventID'
+      Required = True
+    end
+    object qryQuickPickCaption: TWideStringField
+      FieldName = 'Caption'
+      Origin = 'Caption'
+      Size = 128
+    end
+    object qryQuickPickTeamName: TWideStringField
+      FieldName = 'TeamName'
+      Origin = 'TeamName'
+      Size = 16
+    end
+    object qryQuickPickABREV: TWideStringField
+      FieldName = 'ABREV'
+      Origin = 'ABREV'
+      Size = 16
+    end
+    object qryQuickPickTTB: TTimeField
+      FieldName = 'TTB'
+      Origin = 'TTB'
+      OnGetText = qryQuickPickTTBGetText
+    end
+    object qryQuickPickPB: TTimeField
+      FieldName = 'PB'
+      Origin = 'PB'
+      OnGetText = qryQuickPickPBGetText
+    end
+  end
+  object dsQuickPick: TDataSource
+    DataSet = qryQuickPick
+    Left = 192
+    Top = 192
   end
 end

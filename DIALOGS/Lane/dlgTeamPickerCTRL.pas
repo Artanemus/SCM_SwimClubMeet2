@@ -24,7 +24,7 @@ uses
 
 type
   TTeamPickerCTRL = class(TForm)
-    qryQuickPickCTRL: TFDQuery;
+    qryQuickPick: TFDQuery;
     pnlHeader: TPanel;
     VirtualImage2: TVirtualImage;
     Nominate_Edit: TEdit;
@@ -63,26 +63,92 @@ begin
   fActiveSortCol := -1; // no sorting...
   LockDrawing;
   Grid.BeginUpdate;
-  qryQuickPickCTRL.DisableControls;
+  qryQuickPick.DisableControls;
   try
-    qryQuickPickCTRL.Close();
-    qryQuickPickCTRL.ParamByName('EVENTID').AsInteger := uEvent.PK;
-    qryQuickPickCTRL.ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
-    qryQuickPickCTRL.Prepare();
-    qryQuickPickCTRL.Open();
-    if (qryQuickPickCTRL.Active) then
+    qryQuickPick.Close();
+    qryQuickPick.ParamByName('EVENTID').AsInteger := uEvent.PK;
+    qryQuickPick.ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
+    qryQuickPick.Prepare();
+    qryQuickPick.Open();
+    if (qryQuickPick.Active) then
     begin
-      // qryQuickPickCTRL.IndexName := 'idxUnsorted';
-      qryQuickPickCTRL.Indexes[10].Selected := true; // idxUnSorted.
+      // qryQuickPick.IndexName := 'idxUnsorted';
+      qryQuickPick.Indexes[10].Selected := true; // idxUnSorted.
       { The InitSortXRef method initializes the current row indexing
           as reference. }
       // Grid.InitSortXRef;
       result := true;
     end;
   finally
-    qryQuickPickCTRL.EnableControls;
+    qryQuickPick.EnableControls;
     Grid.EndUpdate;
     UnlockDrawing;
   end;end;
+
+procedure TTeamPickerCTRL.SortGrid(aActiveSortCol: Integer);
+var
+  idx: Integer;
+begin
+  idx := 0; // UnSorted
+  if aActiveSortCol in [0..5] then
+  begin
+    case aActiveSortCol of
+      1: // TEAM FNAME
+        case TSortState[aActiveSortCol] of
+          stDescend:
+            idx := 1;
+          stAscend:
+            idx := 2;
+        end;
+      2: // TTB
+        case TSortState[aActiveSortCol] of
+          stDescend:
+            idx := 3;
+          stAscend:
+            idx := 4;
+        end;
+      3: // PB
+        case TSortState[aActiveSortCol] of
+          stDescend:
+            idx := 5;
+          stAscend:
+            idx := 5;
+        end;
+      4: // ABREV
+        case TSortState[aActiveSortCol] of
+          stDescend:
+            idx := 7;
+          stAscend:
+            idx := 8;
+        end;
+      5: // CAPTION
+        case TSortState[aActiveSortCol] of
+          stDescend:
+            idx := 9;
+          stAscend:
+            idx := 10;
+        end;
+    end;
+  end;
+  // note aActiveSortCol = -1 ... idx = 10. (UnSorted)
+  qryQuickPick.Indexes[idx].Selected := true;
+end;
+
+procedure TTeamPickerCTRL.ToogleSortState(indx: integer);
+begin
+  TSortState[indx] := stUnsorted;
+  // check bounds
+  if indx in [0..5] then
+  begin
+    case TSortState[indx] of
+      stDescend:
+        TSortState[indx] := stUnsorted;
+      stAscend:
+        TSortState[indx] := stDescend;
+      stUnSorted:
+        TSortState[indx] := stAscend;
+    end;
+  end;
+end;
 
 end.

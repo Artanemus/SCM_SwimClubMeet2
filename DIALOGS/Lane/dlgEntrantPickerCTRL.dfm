@@ -53,7 +53,6 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitHeight = 588
     object pnlCntrl: TPanel
       Left = 696
       Top = 0
@@ -64,7 +63,6 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       Color = clDarkslategray
       ParentBackground = False
       TabOrder = 0
-      ExplicitHeight = 588
       object btnCancel: TButton
         Left = 10
         Top = 47
@@ -104,7 +102,6 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitHeight = 588
       object Grid: TDBAdvGrid
         Left = 0
         Top = 0
@@ -143,6 +140,7 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
         ControlLook.FixedGradientTo = clWhite
         ControlLook.FixedGradientMirrorFrom = clWhite
         ControlLook.FixedGradientMirrorTo = clWhite
+        ControlLook.FixedGradientHoverFrom = clGray
         ControlLook.FixedGradientHoverTo = clWhite
         ControlLook.FixedGradientHoverMirrorFrom = clWhite
         ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -546,7 +544,6 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitHeight = 588
         ColWidths = (
           20
           265

@@ -205,7 +205,7 @@ begin
   begin
     fPanelBgColor := clActiveCaption;
   end;
-  Panel1.Color := fPanelBgColor;
+//  Panel1.Color := fPanelBgColor;
 
   UpdateGridTitleBar(0);
 
@@ -375,11 +375,11 @@ var
   idx: Integer;
   s: string;
 begin
-  DBGrid1.Columns[0].Title.Caption := 'Nominees';
-  DBGrid1.Columns[1].Title.Caption := 'TimeToBeat';
-  DBGrid1.Columns[2].Title.Caption := 'Personal Best';
-  DBGrid1.Columns[3].Title.Caption := 'AGE';
-  DBGrid1.Columns[4].Title.Caption := 'Gender';
+  Grid.Columns[0].Header := 'Nominees';
+  Grid.Columns[1].Header := 'TimeToBeat';
+  Grid.Columns[2].Header := 'Personal Best';
+  Grid.Columns[3].Header := 'AGE';
+  Grid.Columns[4].Header := 'Gender';
 
   // This cryptic method works provided all indexes are listed in the
   // correct order and all are active...
@@ -389,8 +389,8 @@ begin
   if ToggleState[ColumnID] then s := (#$02C4 + ' ')
   else s := (#$02C5 + ' ');
 
-  DBGrid1.Columns[ColumnID].Title.Caption := s + DBGrid1.Columns[ColumnID]
-    .Title.Caption;
+  Grid.Columns[ColumnID].Header := s + Grid.Columns[ColumnID]
+    .Header;
 end;
 
 end.

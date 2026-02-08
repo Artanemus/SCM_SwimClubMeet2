@@ -107,7 +107,7 @@ procedure TFrameNavEv.FillNavEvItems;
 var
   Frame: TFrameNavEvItem;
   Q: TFDQuery;
-  PK, FItemSpace: integer;
+  PK: integer;
   found: boolean;
 begin
   // exception traps.
@@ -205,12 +205,11 @@ end;
 
 function TFrameNavEv.SelectNavEvItem(EventID: integer): Integer;
 var
-  I, indx, pos, metric: integer;
-  Current, ANavEvItem: TFrameNavEvItem;
+  I, indx: integer;
+  Current: TFrameNavEvItem;
 begin
   result := -1;
   indx := -1;
-  ANavEvItem := nil;
   scrBox.LockDrawing;
   scrBox.DisableAlign;
   try
@@ -219,11 +218,7 @@ begin
     begin
       Current := TFrameNavEvItem(scrBox.Controls[I]);
       // return the index of the control.
-      if (Current.Tag = EventID) then
-      begin
-        ANavEvItem := Current;
-        indx := I;
-      end;
+      if (Current.Tag = EventID) then indx := I;
       // Only update if state is changing to minimize visual updates
       if (Current.Tag = EventID) and not Current.Selected then
         Current.Selected := true

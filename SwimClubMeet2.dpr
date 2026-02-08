@@ -11,7 +11,7 @@ uses
   dmCORE in 'DATA\dmCORE.pas' {CORE: TDataModule},
   dmIMG in 'DATA\dmIMG.pas' {IMG: TDataModule},
   dmMM_CORE in 'MEMBERS\dmMM_CORE.pas' {MM_CORE: TDataModule},
-  dmMMD_House in 'MEMBERS\dmMMD_House.pas' {MemberHouse: TDataModule},
+  dmMM_House in 'MEMBERS\dmMM_House.pas' {MM_House: TDataModule},
   uDefines in 'DATA\uDefines.pas',
   uSettings in 'DATA\uSettings.pas',
   uSwimClub in 'DATA_Helper\uSwimClub.pas',
@@ -64,7 +64,8 @@ uses
   dlgEntrantPickerCTRL in 'DIALOGS\Lane\dlgEntrantPickerCTRL.pas' {EntrantPickerCTRL},
   dlgTeamPicker in 'DIALOGS\Lane\dlgTeamPicker.pas' {TeamPicker},
   dlgTeamPickerCTRL in 'DIALOGS\Lane\dlgTeamPickerCTRL.pas' {TeamPickerCTRL},
-  uPickerStage in 'DIALOGS\Lane\uPickerStage.pas';
+  uPickerStage in 'DIALOGS\Lane\uPickerStage.pas',
+  frFrameMM_SwimClub in 'MEMBERS\MM_FRAMES\frFrameMM_SwimClub.pas' {frameMM_SwimClub: TFrame};
 
 {$R *.res}
 

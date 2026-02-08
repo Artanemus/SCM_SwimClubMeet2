@@ -1,4 +1,4 @@
-unit dmMMD_House;
+unit dmMM_House;
 
 interface
 
@@ -9,7 +9,7 @@ uses
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, dmSCM2;
 
 type
-  TMemberHouse = class(TDataModule)
+  TMM_House = class(TDataModule)
     qryMinHouse: TFDQuery;
     qryMinHouseAGE: TFDQuery;
     procedure DataModuleDestroy(Sender: TObject);
@@ -23,7 +23,7 @@ type
   end;
 
 var
-  MemberHouse: TMemberHouse;
+  MM_House: TMM_House;
 
 implementation
 
@@ -32,7 +32,7 @@ implementation
 
 {$R *.dfm}
 
-procedure TMemberHouse.DataModuleDestroy(Sender: TObject);
+procedure TMM_House.DataModuleDestroy(Sender: TObject);
 begin
 //  DeallocateHWND(fHandle);
   inherited;
@@ -58,7 +58,7 @@ end;
 //  end;
 //end;
 
-procedure TMemberHouse.DataModuleCreate(Sender: TObject);
+procedure TMM_House.DataModuleCreate(Sender: TObject);
 //var
 //IniFileName: string;
 begin

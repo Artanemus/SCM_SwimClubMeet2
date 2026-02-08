@@ -150,8 +150,8 @@
             <Form>MM_CORE</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="MEMBERS\dmMMD_House.pas">
-            <Form>MemberHouse</Form>
+        <DCCReference Include="MEMBERS\dmMM_House.pas">
+            <Form>MM_House</Form>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <DCCReference Include="DATA\uDefines.pas"/>
@@ -315,6 +315,11 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="DIALOGS\Lane\uPickerStage.pas"/>
+        <DCCReference Include="MEMBERS\MM_FRAMES\frFrameMM_SwimClub.pas">
+            <Form>frameMM_SwimClub</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

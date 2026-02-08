@@ -1,8 +1,8 @@
 object MM_CORE: TMM_CORE
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Height = 738
-  Width = 1139
+  Height = 472
+  Width = 928
   object tblContactNumType: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'ContactNumTypeID'
@@ -15,8 +15,8 @@ object MM_CORE: TMM_CORE
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2..ContactNumType'
-    Left = 88
-    Top = 472
+    Left = 704
+    Top = 176
     object tblContactNumTypeContactNumTypeID: TFDAutoIncField
       FieldName = 'ContactNumTypeID'
       Origin = 'ContactNumTypeID'
@@ -37,8 +37,8 @@ object MM_CORE: TMM_CORE
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2..Stroke'
-    Left = 88
-    Top = 352
+    Left = 704
+    Top = 56
   end
   object tblDistance: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -49,34 +49,35 @@ object MM_CORE: TMM_CORE
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2..Distance'
-    Left = 88
-    Top = 400
+    Left = 704
+    Top = 104
   end
   object dsMember: TDataSource
     DataSet = qMember
-    Left = 264
-    Top = 16
+    Left = 112
+    Top = 8
   end
   object tblGender: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    IndexFieldNames = 'GenderID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Gender'
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2..Gender'
-    Left = 88
-    Top = 304
+    Left = 704
+    Top = 8
   end
-  object dsGender: TDataSource
+  object dsluGender: TDataSource
     DataSet = tblGender
-    Left = 152
-    Top = 304
+    Left = 800
+    Top = 8
   end
   object dsContactNum: TDataSource
     DataSet = qryContactNum
-    Left = 272
-    Top = 72
+    Left = 216
+    Top = 64
   end
   object qryContactNum: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -96,15 +97,15 @@ object MM_CORE: TMM_CORE
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.ContactNum'
     UpdateOptions.KeyFields = 'ContactNumID'
     SQL.Strings = (
-      'USE [SwimClubMeet];'
+      'USE [SwimClubMeet2];'
       ''
       'SELECT ContactNum.ContactNumID'
       #9',ContactNum.Number'
       #9',ContactNum.ContactNumTypeID'
       #9',ContactNum.MemberID'
       'FROM ContactNum;')
-    Left = 168
-    Top = 72
+    Left = 112
+    Top = 64
     object qryContactNumContactNumID: TFDAutoIncField
       FieldName = 'ContactNumID'
       Origin = 'ContactNumID'
@@ -146,7 +147,7 @@ object MM_CORE: TMM_CORE
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.MemberRoleLink'
     UpdateOptions.KeyFields = 'MemberRoleID;MemberID'
     SQL.Strings = (
-      'USE SwimClubMeet;'
+      'USE SwimClubMeet2;'
       ''
       '--DECLARE @MemberID AS INTEGER;'
       '--SET @MemberID = 1; --:MEMBERID'
@@ -165,7 +166,7 @@ object MM_CORE: TMM_CORE
         '        --ON [MemberRoleLink].[MemberRoleID] = [MemberRole].[Mem' +
         'berRoleID]'
       '--WHERE [MemberRoleLink].[MemberID] = @MemberID;')
-    Left = 168
+    Left = 112
     Top = 128
     object qryMemberRoleLnkMemberRoleID: TIntegerField
       FieldName = 'MemberRoleID'
@@ -215,7 +216,7 @@ object MM_CORE: TMM_CORE
   end
   object dsMemberRoleLnk: TDataSource
     DataSet = qryMemberRoleLnk
-    Left = 272
+    Left = 216
     Top = 128
   end
   object tblMemberRole: TFDTable
@@ -226,11 +227,14 @@ object MM_CORE: TMM_CORE
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2.dbo.MemberRole'
-    Left = 88
-    Top = 528
+    Left = 704
+    Top = 232
   end
   object tblSwimClub: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
+    Filtered = True
+    Filter = '(IsClubGroup <> 1) AND (IsArchived <> 1)'
     IndexFieldNames = 'SwimClubID'
     DetailFields = 'SwimClubID'
     Connection = SCM2.scmConnection
@@ -239,16 +243,17 @@ object MM_CORE: TMM_CORE
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2..SwimClub'
-    Left = 88
-    Top = 592
+    Left = 704
+    Top = 296
   end
   object dsluSwimClub: TDataSource
     DataSet = tblSwimClub
-    Left = 184
-    Top = 592
+    Left = 808
+    Top = 296
   end
   object qMember: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     OnNewRecord = qMemberNewRecord
     Indexes = <
       item
@@ -331,8 +336,8 @@ object MM_CORE: TMM_CORE
       ''
       ''
       '')
-    Left = 168
-    Top = 16
+    Left = 16
+    Top = 8
     object qMemberMemberID: TFDAutoIncField
       FieldName = 'MemberID'
       Origin = 'MemberID'
@@ -422,5 +427,155 @@ object MM_CORE: TMM_CORE
       LookupCache = True
       Lookup = True
     end
+  end
+  object qryHouse: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
+    IndexFieldNames = 'SwimClubID'
+    MasterSource = dsSwimClub
+    MasterFields = 'SwimClubID'
+    DetailFields = 'SwmClubID'
+    Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.House'
+    UpdateOptions.KeyFields = 'HouseID'
+    Left = 320
+    Top = 320
+  end
+  object dsHouse: TDataSource
+    DataSet = qryHouse
+    Left = 424
+    Top = 320
+  end
+  object dsSwimClub: TDataSource
+    DataSet = qrySwimClub
+    Left = 320
+    Top = 256
+  end
+  object qrySwimClub: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
+    IndexFieldNames = 'SwimClubID'
+    MasterSource = dsMemberLink
+    MasterFields = 'SwimClubID'
+    DetailFields = 'SwimClubID'
+    Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.SwimClub'
+    UpdateOptions.KeyFields = 'SwimClubID'
+    SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
+      'SELECT [SwimClubID]'
+      '      ,[GUID]'
+      '      ,[NickName]'
+      '      ,[Caption]'
+      '      ,[Email]'
+      '      ,[ContactNum]'
+      '      ,[WebSite]'
+      '      ,[HeatAlgorithm]'
+      '      ,[EnableSimpleDQ]'
+      '      ,[NumOfLanes]'
+      '      ,[LenOfPool]'
+      '      ,[DefTeamSize]'
+      '      ,[StartOfSwimSeason]'
+      '      ,[CreatedOn]'
+      '      ,[LogoImg]'
+      '      ,[IsArchived]'
+      '      ,[IsClubGroup]'
+      '      ,[PoolTypeID]'
+      '      ,[SwimClubTypeID]'
+      '  FROM [SwimClubMeet2].[dbo].[SwimClub]'
+      '  WHERE IsClubGroup <> 1 AND IsArchived <> 1'
+      '')
+    Left = 216
+    Top = 256
+  end
+  object qryMemberLink: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
+    IndexFieldNames = 'MemberID'
+    MasterSource = dsMember
+    MasterFields = 'MemberID'
+    DetailFields = 'MemberID'
+    Connection = SCM2.scmConnection
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.MemberLink'
+    UpdateOptions.KeyFields = 'MemberID;SwimClubID'
+    SQL.Strings = (
+      'SELECT [MemberID]'
+      '      ,[SwimClubID]'
+      '      ,[HouseID]'
+      '      ,[IsArchived]'
+      '  FROM [SwimClubMeet2].[dbo].[MemberLink]')
+    Left = 112
+    Top = 192
+    object qryMemberLinkMemberID: TIntegerField
+      FieldName = 'MemberID'
+      Origin = 'MemberID'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object qryMemberLinkSwimClubID: TIntegerField
+      FieldName = 'SwimClubID'
+      Origin = 'SwimClubID'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object qryMemberLinkHouseID: TIntegerField
+      FieldName = 'HouseID'
+      Origin = 'HouseID'
+    end
+    object qryMemberLinkluHouseStr: TStringField
+      FieldKind = fkLookup
+      FieldName = 'luHouseStr'
+      LookupDataSet = tblHouse
+      LookupKeyFields = 'HouseID'
+      LookupResultField = 'Caption'
+      KeyFields = 'HouseID'
+      Size = 64
+      Lookup = True
+    end
+    object qryMemberLinkluSwimClubStr: TStringField
+      FieldKind = fkLookup
+      FieldName = 'luSwimClubStr'
+      LookupDataSet = tblSwimClub
+      LookupKeyFields = 'SwimClubID'
+      LookupResultField = 'Caption'
+      KeyFields = 'SwimClubID'
+      Size = 64
+      Lookup = True
+    end
+    object qryMemberLinkIsArchived: TBooleanField
+      FieldName = 'IsArchived'
+      Origin = 'IsArchived'
+      Required = True
+    end
+  end
+  object dsMemberLink: TDataSource
+    DataSet = qryMemberLink
+    Left = 216
+    Top = 192
+  end
+  object tblHouse: TFDTable
+    ActiveStoredUsage = [auDesignTime]
+    Active = True
+    IndexFieldNames = 'HouseID'
+    Connection = SCM2.scmConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.House'
+    UpdateOptions.KeyFields = 'HouseID'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
+    TableName = 'House'
+    Left = 704
+    Top = 360
+  end
+  object dsluHouse: TDataSource
+    DataSet = tblHouse
+    Left = 808
+    Top = 360
   end
 end

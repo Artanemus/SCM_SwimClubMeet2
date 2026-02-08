@@ -5,7 +5,8 @@ interface
 uses
   System.SysUtils, System.Classes, Vcl.BaseImageCollection,
 	SVGIconImageCollection, System.ImageList, Vcl.ImgList, Vcl.VirtualImageList,
-  SVGIconVirtualImageList, Vcl.ImageCollection, IconFontsImageCollection;
+  SVGIconVirtualImageList, Vcl.ImageCollection, IconFontsImageCollection,
+  Vcl.Controls, IconFontsImageListBase, IconFontsVirtualImageList;
 
 type
   TIMG = class(TDataModule)

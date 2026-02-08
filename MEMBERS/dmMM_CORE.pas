@@ -22,7 +22,7 @@ uses
 type
   TMM_CORE = class(TDataModule)
     dsContactNum: TDataSource;
-    dsGender: TDataSource;
+    dsluGender: TDataSource;
     dsluSwimClub: TDataSource;
     dsMember: TDataSource;
     dsMemberRoleLnk: TDataSource;
@@ -67,6 +67,20 @@ type
     qMemberArchivedOn: TSQLTimeStampField;
     qMemberTAGS: TWideMemoField;
     qMemberluGender: TStringField;
+    qryHouse: TFDQuery;
+    dsHouse: TDataSource;
+    dsSwimClub: TDataSource;
+    qrySwimClub: TFDQuery;
+    qryMemberLink: TFDQuery;
+    dsMemberLink: TDataSource;
+    qryMemberLinkMemberID: TIntegerField;
+    qryMemberLinkSwimClubID: TIntegerField;
+    qryMemberLinkHouseID: TIntegerField;
+    tblHouse: TFDTable;
+    dsluHouse: TDataSource;
+    qryMemberLinkluHouseStr: TStringField;
+    qryMemberLinkluSwimClubStr: TStringField;
+    qryMemberLinkIsArchived: TBooleanField;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure qDEPRECIATEDMemberOLDBeforeDelete(DataSet: TDataSet);

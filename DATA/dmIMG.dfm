@@ -13652,6 +13652,11 @@ object IMG: TIMG
         CollectionIndex = 40
         CollectionName = 'lock2-open'
         Name = 'lock2-open'
+      end
+      item
+        CollectionIndex = 91
+        CollectionName = 'info'
+        Name = 'info'
       end>
     ImageCollection = CollectionCore
     Width = 36
@@ -13717,8 +13722,8 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 984
-    Top = 144
+    Left = 768
+    Top = 112
   end
   object imglstNomCheckBox: TSVGIconVirtualImageList
     DisabledOpacity = 100
@@ -14632,7 +14637,7 @@ object IMG: TIMG
     Width = 24
     Height = 24
     Size = 24
-    Left = 776
-    Top = 112
+    Left = 768
+    Top = 168
   end
 end

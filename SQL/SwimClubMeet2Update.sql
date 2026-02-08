@@ -1,123 +1,113 @@
 USE [SwimClubMeet2]
 go
 
--- Drop Referencing Constraint SQL
+-- Dictionary Object Alter SQL
 
-ALTER TABLE dbo.Lane DROP CONSTRAINT FK_LaneTeam
+CREATE DEFAULT dbo.BIT_0 AS ((0))
 go
-ALTER TABLE dbo.TeamLink DROP CONSTRAINT FK_TeamLink
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.Lane.IsDisqualified'
+go
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.Lane.IsScratched'
+go
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.EventCategory.IsArchived'
+go
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.Member.EnableEmailOut'
+go
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.Member.EnableEmailNomineeForm'
+go
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.Member.EnableEmailSessionReport'
+go
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.ContactNum.IsArchived'
+go
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.House.IsArchived'
+go
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.SwimClub.IsArchived'
+go
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.SwimClub.IsClubGroup'
+go
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.MemberRole.IsArchived'
+go
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.MemberRoleLink.IsArchived'
+go
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.PoolType.IsArchived'
+go
+EXEC sp_bindefault 'dbo.BIT_0', 'dbo.SwimClubType.IsArchived'
+go
+
+-- Standard Alter Table SQL
+
+ALTER TABLE dbo.Team DROP CONSTRAINT DF__Team__TTB__2C938683
+go
+ALTER TABLE dbo.Team DROP CONSTRAINT DF__Team__PB__2D87AABC
+go
+ALTER TABLE dbo.Team DROP CONSTRAINT DF__Team__SeedTime__2E7BCEF5
+go
+ALTER TABLE dbo.Team ADD CONSTRAINT DF__Team__TTB__2C938683 DEFAULT (NULL) FOR TTB
+go
+ALTER TABLE dbo.Team ADD CONSTRAINT DF__Team__PB__2D87AABC DEFAULT (NULL) FOR PB
+go
+ALTER TABLE dbo.Team ADD CONSTRAINT DF__Team__SeedTime__2E7BCEF5 DEFAULT (NULL) FOR SeedTime
 go
 
 -- Drop Constraint, Rename and Create Table SQL
 
-EXEC sp_rename 'dbo.Team.PK_Team','PK_Team_02062026044919001','INDEX'
+EXEC sp_rename 'dbo.MemberLink.PK_MemberLink','PK_MemberL_02082026012222001','INDEX'
 go
-EXEC sp_rename 'dbo.DF__Team__SeedTime__2E7BCEF5', 'DF__Team___02062026044919002',OBJECT
+EXEC sp_rename 'dbo.HouseMemberLink','HouseMembe_02082026012222002'
 go
-EXEC sp_rename 'dbo.DF__Team__PB__2D87AABC', 'DF__Team___02062026044919003',OBJECT
+EXEC sp_rename 'dbo.MemberLinkSwimClub','MemberLink_02082026012222003'
 go
-EXEC sp_rename 'dbo.DF__Team__TTB__2C938683', 'DF__Team___02062026044919004',OBJECT
+EXEC sp_rename 'dbo.FK_MemberLink','FK_MemberL_02082026012222004'
 go
-EXEC sp_rename 'dbo.DF__Team__ABREV__2B9F624A', 'DF__Team___02062026044919005',OBJECT
+EXEC sp_rename 'dbo.MemberLink','MemberLink_02082026012222000',OBJECT
 go
-EXEC sp_rename 'dbo.DF__Team__TeamName__70B3A6A6', 'DF__Team___02062026044919006',OBJECT
-go
-EXEC sp_rename 'dbo.DF__Team__Caption__6FBF826D', 'DF__Team___02062026044919007',OBJECT
-go
-EXEC sp_rename 'dbo.Team','Team_02062026044919000',OBJECT
-go
-CREATE TABLE dbo.Team
+CREATE TABLE dbo.MemberLink
 (
-    TeamID        int            IDENTITY,
-    Caption       nvarchar(128)  CONSTRAINT DF__Team__Caption__6FBF826D DEFAULT (NULL) NULL,
-    TeamName      nvarchar(16)   CONSTRAINT DF__Team__TeamName__70B3A6A6 DEFAULT (NULL) NULL,
-    ABREV         nvarchar(16)   CONSTRAINT DF__Team__ABREV__2B9F624A DEFAULT (NULL) NULL,
-    TTB           time(7)        CONSTRAINT DF__Team__TTB__2C938683 DEFAULT (NULL) NULL,
-    PB            time(7)        CONSTRAINT DF__Team__PB__2D87AABC DEFAULT (NULL) NULL,
-    SeedTime      time(7)        CONSTRAINT DF__Team__SeedTime__2E7BCEF5 DEFAULT (NULL) NULL,
-    AutoBuildFlag bit            NULL,
-    EventID       int             NOT NULL
+    MemberID   int   NOT NULL,
+    SwimClubID int   NOT NULL,
+    IsArchived bit   NOT NULL,
+    HouseID    int  NULL
 )
 ON [PRIMARY]
 go
-if exists (select * from ::fn_listextendedproperty('MS_Description', 'schema', 'dbo', 'table', 'Team', 'column', 'PB'))
-BEGIN
-  exec sys.sp_dropextendedproperty 'MS_Description', 'schema', 'dbo', 'table', 'Team', 'column', 'PB'
-END
-exec sys.sp_addextendedproperty 'MS_Description', 'RaceTime, PB, TTB, SeedTime all use MS SQLEXPRESS TIME variable', 'schema', 'dbo', 'table', 'Team', 'column', 'PB'
+EXEC sp_bindefault 'BIT_0', 'dbo.MemberLink.IsArchived'
 go
-if exists (select * from ::fn_listextendedproperty('MS_Description', 'schema', 'dbo', 'table', 'Team', 'column', 'SeedTime'))
-BEGIN
-  exec sys.sp_dropextendedproperty 'MS_Description', 'schema', 'dbo', 'table', 'Team', 'column', 'SeedTime'
-END
-exec sys.sp_addextendedproperty 'MS_Description', 'RaceTime, PB, TTB, SeedTime all use MS SQLEXPRESS TIME variable', 'schema', 'dbo', 'table', 'Team', 'column', 'SeedTime'
-go
-GRANT DELETE ON dbo.Team TO SCM_Administrator
-go
-GRANT INSERT ON dbo.Team TO SCM_Administrator
-go
-GRANT SELECT ON dbo.Team TO SCM_Administrator
-go
-GRANT UPDATE ON dbo.Team TO SCM_Administrator
-go
-GRANT SELECT ON dbo.Team TO SCM_Guest
-go
-GRANT DELETE ON dbo.Team TO SCM_Marshall
-go
-GRANT INSERT ON dbo.Team TO SCM_Marshall
-go
-GRANT SELECT ON dbo.Team TO SCM_Marshall
-go
-GRANT UPDATE ON dbo.Team TO SCM_Marshall
+DROP TABLE dbo.Team_02062026044919000
 go
 
 -- Insert Data SQL
 
-SET IDENTITY_INSERT dbo.Team ON
-go
-INSERT INTO dbo.Team(
-                     TeamID,
-                     Caption,
-                     TeamName,
-                     ABREV,
-                     TTB,
-                     PB,
-                     SeedTime,
-                     AutoBuildFlag,
-                     EventID
-                    )
-              SELECT 
-                     TeamID,
-                     Caption,
-                     TeamName,
-                     ABREV,
-                     TTB,
-                     PB,
-                     SeedTime,
-                     AutoBuildFlag,
-                     0
-                FROM dbo.Team_02062026044919000 
-go
-SET IDENTITY_INSERT dbo.Team OFF
+INSERT INTO dbo.MemberLink(
+                           MemberID,
+                           SwimClubID,
+--                         IsArchived,
+                           HouseID
+                          )
+                    SELECT 
+                           MemberID,
+                           SwimClubID,
+--                         IsArchived,
+                           HouseID
+                      FROM dbo.MemberLink_02082026012222000 
 go
 
 -- Add Constraint SQL
 
-ALTER TABLE dbo.Team ADD CONSTRAINT PK_Team
-PRIMARY KEY NONCLUSTERED (TeamID)
+ALTER TABLE dbo.MemberLink ADD CONSTRAINT PK_MemberLink
+PRIMARY KEY CLUSTERED (MemberID,SwimClubID)
 go
 
 -- Add Referencing Foreign Keys SQL
 
-ALTER TABLE dbo.Lane ADD CONSTRAINT FK_LaneTeam
-FOREIGN KEY (TeamID)
-REFERENCES dbo.Team (TeamID)
+ALTER TABLE dbo.MemberLink ADD CONSTRAINT HouseMemberLink
+FOREIGN KEY (HouseID)
+REFERENCES dbo.House (HouseID)
 go
-ALTER TABLE dbo.TeamLink ADD CONSTRAINT FK_TeamLink
-FOREIGN KEY (TeamID)
-REFERENCES dbo.Team (TeamID)
+ALTER TABLE dbo.MemberLink ADD CONSTRAINT MemberLinkSwimClub
+FOREIGN KEY (SwimClubID)
+REFERENCES dbo.SwimClub (SwimClubID)
 go
-ALTER TABLE dbo.Team ADD CONSTRAINT FK_EventTeam
-FOREIGN KEY (EventID)
-REFERENCES dbo.Event (EventID)
+ALTER TABLE dbo.MemberLink ADD CONSTRAINT FK_MemberLink
+FOREIGN KEY (MemberID)
+REFERENCES dbo.Member (MemberID)
 go

@@ -41,7 +41,7 @@ object ManageMember: TManageMember
     object DBTextFullName: TDBText
       Left = 21
       Top = 6
-      Width = 154
+      Width = 151
       Height = 25
       AutoSize = True
       DataField = 'FName'
@@ -140,7 +140,7 @@ object ManageMember: TManageMember
     Top = 76
     Width = 1370
     Height = 659
-    ActivePage = TabSheet2
+    ActivePage = TabSheet1
     Align = alClient
     MultiLine = True
     TabHeight = 40
@@ -156,6 +156,7 @@ object ManageMember: TManageMember
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
+        ExplicitTop = -2
         object Label3: TLabel
           Left = 23
           Top = 227
@@ -213,16 +214,16 @@ object ManageMember: TManageMember
           ParentFont = False
         end
         object Label10: TLabel
-          Left = 732
-          Top = 176
+          Left = 884
+          Top = 99
           Width = 39
           Height = 19
           Alignment = taRightJustify
           Caption = 'Email'
         end
         object Label7: TLabel
-          Left = 586
-          Top = 143
+          Left = 738
+          Top = 66
           Width = 185
           Height = 19
           Alignment = taRightJustify
@@ -272,16 +273,16 @@ object ManageMember: TManageMember
           Caption = '(Checkboxes use Specificity.)'
         end
         object Label18: TLabel
-          Left = 508
-          Top = 107
+          Left = 660
+          Top = 30
           Width = 264
           Height = 19
           Alignment = taRightJustify
           Caption = 'Governing Body Registration Number'
         end
         object Label8: TLabel
-          Left = 853
-          Top = 143
+          Left = 1005
+          Top = 66
           Width = 277
           Height = 19
           Caption = '(Recommended - minimum of 4 digits)'
@@ -326,33 +327,6 @@ object ManageMember: TManageMember
           Height = 19
           Caption = 'Fields marked with an asterisk * are required.'
         end
-        object Label30: TLabel
-          Left = 564
-          Top = 244
-          Width = 207
-          Height = 19
-          Alignment = taRightJustify
-          Caption = '*Swim Club Memberships'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Tahoma'
-          Font.Style = [fsBold]
-          ParentFont = False
-        end
-        object vimgHelpBug: TVirtualImage
-          Left = 1189
-          Top = 214
-          Width = 25
-          Height = 26
-          ImageCollection = ImageCollectMember
-          ImageWidth = 0
-          ImageHeight = 0
-          ImageIndex = 4
-          ImageName = 'Info'
-          OnClick = btnInfoContactClick
-          OnMouseLeave = btnInfoMouseLeave
-        end
         object lblMiddleName: TLabel
           Left = 32
           Top = 137
@@ -381,7 +355,7 @@ object ManageMember: TManageMember
           Font.Style = []
           KeyField = 'GenderID'
           ListField = 'Caption'
-          ListSource = MM_CORE.dsGender
+          ListSource = MM_CORE.dsluGender
           NullValueKey = 32776
           ParentFont = False
           TabOrder = 5
@@ -405,8 +379,8 @@ object ManageMember: TManageMember
           TabOrder = 1
         end
         object DBedtMembershipNum: TDBEdit
-          Left = 777
-          Top = 140
+          Left = 929
+          Top = 63
           Width = 70
           Height = 27
           DataField = 'MembershipNum'
@@ -424,8 +398,8 @@ object ManageMember: TManageMember
           TabOrder = 8
         end
         object DBEdtEmail: TDBEdit
-          Left = 777
-          Top = 173
+          Left = 929
+          Top = 96
           Width = 407
           Height = 27
           DataField = 'Email'
@@ -466,8 +440,8 @@ object ManageMember: TManageMember
           TabOrder = 6
         end
         object RegistrationNum: TDBEdit
-          Left = 778
-          Top = 104
+          Left = 930
+          Top = 27
           Width = 184
           Height = 27
           DataField = 'MembershipStr'
@@ -511,40 +485,6 @@ object ManageMember: TManageMember
           DataSource = MM_CORE.dsMember
           TabOrder = 2
         end
-        object ListBox1: TListBox
-          Left = 777
-          Top = 244
-          Width = 406
-          Height = 349
-          Enabled = False
-          ItemHeight = 19
-          TabOrder = 13
-        end
-        object navSwimClub: TDBNavigator
-          Left = 1189
-          Top = 246
-          Width = 60
-          Height = 176
-          DataSource = MM_CORE.dsContactNum
-          VisibleButtons = [nbInsert, nbDelete, nbPost, nbCancel]
-          Hints.Strings = (
-            'First record'
-            'Prior record'
-            'Next record'
-            'Last record'
-            'Insert contact record'
-            'Delete contact record'
-            'Edit record'
-            'Post contact edit'
-            'Cancel contact edit'
-            'Refresh data'
-            'Apply updates'
-            'Cancel updates')
-          Kind = dbnVertical
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 14
-        end
         object DBedtMiddleName: TDBEdit
           Left = 144
           Top = 134
@@ -552,7 +492,41 @@ object ManageMember: TManageMember
           Height = 27
           DataField = 'MiddleName'
           DataSource = MM_CORE.dsMember
-          TabOrder = 15
+          TabOrder = 13
+        end
+        inline TframeMM_SwimClub1: TframeMM_SwimClub
+          Left = 602
+          Top = 150
+          Width = 734
+          Height = 445
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 14
+          ExplicitLeft = 602
+          ExplicitTop = 150
+          ExplicitHeight = 445
+          inherited pnlHeader: TPanel
+            ExplicitWidth = 734
+          end
+          inherited pnlCtrl: TPanel
+            Height = 407
+          end
+          inherited pnlBody: TPanel
+            Height = 401
+            ExplicitLeft = 120
+            ExplicitTop = 41
+            ExplicitWidth = 611
+            ExplicitHeight = 436
+            inherited Grid: TDBAdvGrid
+              Height = 401
+              ExplicitLeft = 0
+              ExplicitTop = 0
+            end
+          end
         end
       end
     end
@@ -865,7 +839,7 @@ object ManageMember: TManageMember
         DefaultRowHeight = 24
         DrawingStyle = gdsClassic
         FixedColor = clWhite
-        RowCount = 2
+        RowCount = 101
         FixedRows = 1
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -1510,6 +1484,105 @@ object ManageMember: TManageMember
           73
           105)
         RowHeights = (
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
+          24
           24
           24)
       end
@@ -2166,8 +2239,8 @@ object ManageMember: TManageMember
               42A70000000049454E44AE426082}
           end>
       end>
-    Left = 184
-    Top = 616
+    Left = 448
+    Top = 464
   end
   object VirtlImageListMember: TVirtualImageList
     Images = <
@@ -2209,8 +2282,8 @@ object ManageMember: TManageMember
     ImageCollection = ImageCollectMember
     Width = 32
     Height = 32
-    Left = 520
-    Top = 648
+    Left = 440
+    Top = 552
   end
   object BalloonHint1: TBalloonHint
     Delay = 100

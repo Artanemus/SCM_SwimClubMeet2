@@ -78,8 +78,8 @@ type
     function UpdateEntrantData(): boolean;
     function LocateMemberID(AMemberID: Integer; ADataSet: TDataSet): boolean;
     procedure UpdateGridTitleBar(ColumnID: Integer);
-    function NormalizeDistanceID(aDistanceID: integer): integer;
-    function GetEventDistanceID(aEventID: integer): integer;
+//    function NormalizeDistanceID(aDistanceID: integer): integer;
+//    function GetEventDistanceID(aEventID: integer): integer;
 
 
   public
@@ -217,6 +217,7 @@ begin
   if (Key = VK_ESCAPE) then ModalResult := mrCancel;
 end;
 
+{
 function TEntrantPickerCTRL.GetEventDistanceID(aEventID: integer): integer;
 var
 SQL: string;
@@ -230,6 +231,7 @@ begin
   if VarIsNull(v) or VarIsEmpty(v) or (v = 0) then exit;
   result := v;
 end;
+}
 
 function TEntrantPickerCTRL.LocateMemberID(AMemberID: Integer;
   ADataSet: TDataSet): boolean;
@@ -271,6 +273,7 @@ begin
   end;
 end;
 
+{
 function TEntrantPickerCTRL.NormalizeDistanceID(aDistanceID: integer): integer;
 var
   tbl: TFDTable;
@@ -314,6 +317,7 @@ begin
   tbl.Close;
   tbl.Free;
 end;
+}
 
 function TEntrantPickerCTRL.Prepare(LaneID: Integer): boolean;
 begin

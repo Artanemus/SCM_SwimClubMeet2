@@ -34,7 +34,7 @@ uses
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
   dmMM_CORE, uDefines, uSettings,
-  uSwimClub, uUtility, dmSCM2
+  uSwimClub, uUtility, dmSCM2, frFrameMM_SwimClub
 
   ;
 
@@ -92,14 +92,12 @@ type
     Label24: TLabel;
     Label25: TLabel;
     Label3: TLabel;
-    Label30: TLabel;
     Label4: TLabel;
     Label5: TLabel;
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
     lblMembersAge: TLabel;
-    ListBox1: TListBox;
     MemFile_AutoEdit: TAction;
     MemFile_Exit: TAction;
     MemSearch_FindMember: TAction;
@@ -115,8 +113,6 @@ type
     TabSheet3: TTabSheet;
     TabSheet4: TTabSheet;
     VirtlImageListMember: TVirtualImageList;
-    vimgHelpBug: TVirtualImage;
-    navSwimClub: TDBNavigator;
     dbgParaCode: TDBGrid;
     lblParaCodes: TLabel;
     vimgParaCodesInfo: TVirtualImage;
@@ -124,6 +120,7 @@ type
     ListGrid: TDBAdvGrid;
     DBedtMiddleName: TDBEdit;
     lblMiddleName: TLabel;
+    TframeMM_SwimClub1: TframeMM_SwimClub;
     procedure About2Click(Sender: TObject);
     procedure actnFilterClubExecute(Sender: TObject);
     procedure actnFilterExecute(Sender: TObject);

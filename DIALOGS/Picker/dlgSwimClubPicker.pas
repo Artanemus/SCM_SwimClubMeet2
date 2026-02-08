@@ -49,8 +49,12 @@ type
     procedure vimgClearFilterClick(Sender: TObject);
   private
     fSwimClubID: Integer;
+    fMemberID: integer;
+    function GetMemberID: integer;
+    procedure SetMemberID(const Value: integer);
   public
     property SwimClubID: integer read FSwimClubID write FSwimClubID;
+    property MemberID: integer read GetMemberID write SetMemberID;
   end;
 
 var
@@ -147,9 +151,11 @@ end;
 procedure TSwimClubPicker.FormCreate(Sender: TObject);
 begin
   fSwimClubID := 0;
+  fMemberID := 0;
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
   begin
     qrySwimClub.Connection := SCM2.scmConnection;
+    { :MEMBERID in query is <null> and filter is inactive.}
     qrySwimClub.Open;
   end
   else
@@ -178,10 +184,35 @@ begin
     btnCancelClick(self);
 end;
 
+function TSwimClubPicker.GetMemberID: integer;
+begin
+  result := fMemberID;
+end;
+
 procedure TSwimClubPicker.GridDblClick(Sender: TObject);
 begin
   // pick swimclub and close dlg.
   btnOKClick(self);
+end;
+
+procedure TSwimClubPicker.SetMemberID(const Value: integer);
+begin
+  fMemberID := Value;
+  if fMemberID <> 0 then
+  begin
+    try
+      // Exclude clubs that the member is already assigned too.
+      qrySwimClub.Close;
+      qrySwimClub.ParamByName('MEMBERID').AsInteger := fMemberID;
+      qrySwimClub.Prepare;
+      qrySwimClub.Open;
+    except on E: EFDDBEngineException do
+      begin
+        fSwimClubID := 0;
+        ModalResult := mrCancel;
+      end;
+    end;
+  end;
 end;
 
 procedure TSwimClubPicker.vimgClearFilterClick(Sender: TObject);

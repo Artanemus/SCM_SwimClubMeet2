@@ -1,4 +1,4 @@
-object MemberHouse: TMemberHouse
+object MM_House: TMM_House
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
   Height = 480

@@ -36,13 +36,6 @@ uses
   dlgNewSession in 'DIALOGS\Session\dlgNewSession.pas' {NewSession},
   dlgSwimClub_Manage in 'DIALOGS\SwimClub\dlgSwimClub_Manage.pas' {SwimClubManage},
   dlgPreferences in 'TOOLS\dlgPreferences.pas' {Preferences},
-  dlgMM_Delete in 'MEMBERS\dlgMM_Delete.pas' {MM_Delete},
-  dlgMM_Find_FName in 'MEMBERS\dlgMM_Find_FName.pas' {FindMember_FName},
-  dlgMM_Find_ID in 'MEMBERS\dlgMM_Find_ID.pas' {FindMember_ID},
-  dlgMM_Find_Membership in 'MEMBERS\dlgMM_Find_Membership.pas' {FindMember_Membership},
-  dlgMM_FilterBySwimClub in 'MEMBERS\dlgMM_FilterBySwimClub.pas' {MM_FilterBySwimClub},
-  dlgMM_FilterByParam in 'MEMBERS\dlgMM_FilterByParam.pas' {MM_FilterByParam},
-  dlgMM_About in 'MEMBERS\dlgMM_About.pas' {MM_About},
   dlgSwimClubPicker in 'DIALOGS\Picker\dlgSwimClubPicker.pas' {SwimClubPicker},
   dlgSwimClub_Reports in 'DIALOGS\SwimClub\dlgSwimClub_Reports.pas' {SwimClub_Reports},
   dlgMemberPicker in 'DIALOGS\Picker\dlgMemberPicker.pas' {MemberPicker},
@@ -65,7 +58,20 @@ uses
   dlgTeamPicker in 'DIALOGS\Lane\dlgTeamPicker.pas' {TeamPicker},
   dlgTeamPickerCTRL in 'DIALOGS\Lane\dlgTeamPickerCTRL.pas' {TeamPickerCTRL},
   uPickerStage in 'DIALOGS\Lane\uPickerStage.pas',
-  frFrameMM_SwimClub in 'MEMBERS\MM_FRAMES\frFrameMM_SwimClub.pas' {frameMM_SwimClub: TFrame};
+  frFrameMM_SwimClub in 'MEMBERS\MM_FRAMES\frFrameMM_SwimClub.pas' {frameMM_SwimClub: TFrame},
+  frFrameMM_ContactNum in 'MEMBERS\MM_FRAMES\frFrameMM_ContactNum.pas' {FrameMM_ContactNum: TFrame},
+  dlgMM_About in 'MEMBERS\MM_DIALOGS\dlgMM_About.pas' {MM_About},
+  dlgMM_Delete in 'MEMBERS\MM_DIALOGS\dlgMM_Delete.pas' {MM_Delete},
+  dlgMM_FilterByParam in 'MEMBERS\MM_DIALOGS\dlgMM_FilterByParam.pas' {MM_FilterByParam},
+  dlgMM_FilterBySwimClub in 'MEMBERS\MM_DIALOGS\dlgMM_FilterBySwimClub.pas' {MM_FilterBySwimClub},
+  dlgMM_Find in 'MEMBERS\MM_DIALOGS\dlgMM_Find.pas' {MM_Find},
+  dlgMM_Find_FName in 'MEMBERS\MM_DIALOGS\dlgMM_Find_FName.pas' {FindMember_FName},
+  dlgMM_Find_ID in 'MEMBERS\MM_DIALOGS\dlgMM_Find_ID.pas' {FindMember_ID},
+  dlgMM_Find_Membership in 'MEMBERS\MM_DIALOGS\dlgMM_Find_Membership.pas' {FindMember_Membership},
+  frFrameMM_ListMember in 'MEMBERS\MM_FRAMES\frFrameMM_ListMember.pas' {FrameMM_ListMember: TFrame},
+  frmMM_ParaOlympic in 'MEMBERS\frmMM_ParaOlympic.pas' {MM_ParaOlympic},
+  frmMM_Roles in 'MEMBERS\frmMM_Roles.pas' {MM_Roles},
+  frmMM_MetaData in 'MEMBERS\frmMM_MetaData.pas' {MM_MetaData};
 
 {$R *.res}
 

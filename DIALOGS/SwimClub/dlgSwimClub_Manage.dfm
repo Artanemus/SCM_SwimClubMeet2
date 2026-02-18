@@ -2692,13 +2692,14 @@ object SwimClubManage: TSwimClubManage
     TabOrder = 0
   end
   object pnlBody: TPanel
-    Left = 776
+    Left = 146
     Top = 41
     Width = 627
     Height = 575
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitLeft = 776
     object gSwimClub: TDBAdvGrid
       Left = 0
       Top = 0
@@ -3205,10 +3206,11 @@ object SwimClubManage: TSwimClubManage
   object splitvEdit: TSplitView
     Left = 146
     Top = 41
-    Width = 630
+    Width = 0
     Height = 575
     AnimationDelay = 30
     AnimationStep = 100
+    Opened = False
     OpenedWidth = 630
     Placement = svpLeft
     TabOrder = 3
@@ -3218,13 +3220,14 @@ object SwimClubManage: TSwimClubManage
     object pcntrlEdit: TPageControl
       Left = 0
       Top = 0
-      Width = 630
+      Width = 0
       Height = 575
       ActivePage = tsMain
       Align = alClient
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
+      ExplicitWidth = 630
       object tsMain: TTabSheet
         Caption = 'Options'
         ParentShowHint = False

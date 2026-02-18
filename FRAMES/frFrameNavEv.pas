@@ -36,7 +36,7 @@ type
   private
 
     function SelectNavEvItem(NavEvItem: TFrameNavEvItem): Integer; overload;
-    procedure SelectNoneNavEvItems;
+//    procedure SelectNoneNavEvItems;
     procedure FillNavEvItems;
     procedure CenterNavEvItem(IndexOfControl: integer);
   protected
@@ -78,7 +78,7 @@ begin
   // rudementary adjustment to scroll position...
   // doesn't center control. does nothing if already in view.
   scrBox.ScrollInView(cntrl);
-  pos := scrBox.HorzScrollBar.Position;
+//  pos := scrBox.HorzScrollBar.Position;
 
   // ASSERT : DELPHI VCL BUG ... reverts to inherited.
   scrBox.HorzScrollBar.Increment :=
@@ -285,6 +285,7 @@ begin
 
 end;
 
+{
 procedure TFrameNavEv.SelectNoneNavEvItems;
 var
   I: integer;
@@ -296,6 +297,8 @@ begin
     NavEvItem.Selected := false;
   end;
 end;
+}
+
 
 procedure TFrameNavEv.spbtnNavLeftClick(Sender: TObject);
 var

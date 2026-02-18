@@ -14061,6 +14061,31 @@ object IMG: TIMG
         CollectionIndex = 91
         CollectionName = 'info'
         Name = 'info'
+      end
+      item
+        CollectionIndex = 87
+        CollectionName = 'house'
+        Name = 'house'
+      end
+      item
+        CollectionIndex = 88
+        CollectionName = 'houses'
+        Name = 'houses'
+      end
+      item
+        CollectionIndex = 89
+        CollectionName = 'house-gear'
+        Name = 'house-gear'
+      end
+      item
+        CollectionIndex = 65
+        CollectionName = 'plus-box'
+        Name = 'plus-box'
+      end
+      item
+        CollectionIndex = 64
+        CollectionName = 'minus-box'
+        Name = 'minus-box'
       end>
     ImageCollection = CollectionCore
     Width = 48

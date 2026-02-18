@@ -149,6 +149,11 @@ type
     qryEventABREV: TWideStringField;
     qryLaneTTB: TTimeField;
     qryLanePB: TTimeField;
+    qryMemberLinkMemberID: TIntegerField;
+    qryMemberLinkSwimClubID: TIntegerField;
+    qryMemberLinkHouseID: TIntegerField;
+    qryMemberLinkIsArchived: TBooleanField;
+    qryMemberLinkIsArchivedAsInt: TIntegerField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterEdit(DataSet: TDataSet);

@@ -98,6 +98,10 @@ type
     FOnGridViewChange: TFrameNotifyEvent_GridViewChange;
     procedure SetGridView_ColVisibility;
     procedure SetGridView_IconIndex;
+
+  protected
+    procedure Loaded; override;
+
   public
 
     procedure UpdateUI(DoFullUpdate: Boolean = false);
@@ -413,6 +417,22 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TFrameEvent.Loaded;
+var
+  item: TDBGridColumnItem;
+begin
+  inherited;
+  // This executes after the DFM has loaded and ActionLinks have synced.
+  // Fix Delphi's disabling column settings.
+  item := Grid.ColumnByFieldName['luRound'];
+  if item <> nil then item.AllowBlank := true;
+  item := Grid.ColumnByFieldName['luEventCat'];
+  if item <> nil then item.AllowBlank := true;
+  item := Grid.ColumnByFieldName['luParalympicType'];
+  if item <> nil then item.AllowBlank := true;
+  // UNSAFE - Grid.Columns[?].AllowBlank := true;
 end;
 
 procedure TFrameEvent.SetGridView_ColVisibility;

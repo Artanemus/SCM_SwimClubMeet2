@@ -1,10 +1,11 @@
 object MM_CORE: TMM_CORE
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Height = 472
+  Height = 541
   Width = 928
   object tblContactNumType: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'ContactNumTypeID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -76,20 +77,19 @@ object MM_CORE: TMM_CORE
   end
   object dsContactNum: TDataSource
     DataSet = qryContactNum
-    Left = 216
-    Top = 64
+    Left = 232
+    Top = 72
   end
   object qryContactNum: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     Indexes = <
       item
         Active = True
-        Selected = True
         Name = 'mcMember_ContactNum'
         Fields = 'MemberID;ContactNumID'
         DescFields = 'ContactNumID'
       end>
-    IndexName = 'mcMember_ContactNum'
+    IndexFieldNames = 'MemberID'
     MasterSource = dsMember
     MasterFields = 'MemberID'
     DetailFields = 'MemberID'
@@ -97,24 +97,25 @@ object MM_CORE: TMM_CORE
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.ContactNum'
     UpdateOptions.KeyFields = 'ContactNumID'
     SQL.Strings = (
-      'USE [SwimClubMeet2];'
+      'USE [SwimClubMeet2]'
+      ';'
       ''
-      'SELECT ContactNum.ContactNumID'
-      #9',ContactNum.Number'
-      #9',ContactNum.ContactNumTypeID'
-      #9',ContactNum.MemberID'
-      'FROM ContactNum;')
+      'SELECT [ContactNumID]'
+      '      ,[NumStr]'
+      '      ,[IsArchived]'
+      '      ,[CreatedOn]'
+      '      ,[MemberID]'
+      '      ,[ContactNumTypeID]'
+      '      ,CAST([IsArchived] AS INT) AS IsArchivedAsInt      '
+      '  FROM [dbo].[ContactNum]'
+      ''
+      ';')
     Left = 112
-    Top = 64
+    Top = 72
     object qryContactNumContactNumID: TFDAutoIncField
       FieldName = 'ContactNumID'
       Origin = 'ContactNumID'
       ProviderFlags = [pfInWhere, pfInKey]
-    end
-    object qryContactNumNumber: TWideStringField
-      FieldName = 'Number'
-      Origin = 'Number'
-      Size = 30
     end
     object qryContactNumContactNumTypeID: TIntegerField
       FieldName = 'ContactNumTypeID'
@@ -133,11 +134,31 @@ object MM_CORE: TMM_CORE
       KeyFields = 'ContactNumTypeID'
       Lookup = True
     end
+    object qryContactNumNumStr: TWideStringField
+      FieldName = 'NumStr'
+      Origin = 'NumStr'
+      Size = 30
+    end
+    object qryContactNumIsArchived: TBooleanField
+      FieldName = 'IsArchived'
+      Origin = 'IsArchived'
+      Required = True
+    end
+    object qryContactNumCreatedOn: TSQLTimeStampField
+      FieldName = 'CreatedOn'
+      Origin = 'CreatedOn'
+    end
+    object qryContactNumIsArchivedAsInt: TIntegerField
+      FieldName = 'IsArchivedAsInt'
+      Origin = 'IsArchivedAsInt'
+      ReadOnly = True
+    end
   end
-  object qryMemberRoleLnk: TFDQuery
+  object qryMemberRoleLink: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    BeforePost = qryMemberRoleLnkBeforePost
-    OnNewRecord = qryMemberRoleLnkNewRecord
+    Active = True
+    BeforePost = qryMemberRoleLinkBeforePost
+    OnNewRecord = qryMemberRoleLinkNewRecord
     IndexFieldNames = 'MemberID'
     MasterSource = dsMember
     MasterFields = 'MemberID'
@@ -167,34 +188,34 @@ object MM_CORE: TMM_CORE
         'berRoleID]'
       '--WHERE [MemberRoleLink].[MemberID] = @MemberID;')
     Left = 112
-    Top = 128
-    object qryMemberRoleLnkMemberRoleID: TIntegerField
+    Top = 136
+    object qryMemberRoleLinkMemberRoleID: TIntegerField
       FieldName = 'MemberRoleID'
       Origin = 'MemberRoleID'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
-    object qryMemberRoleLnkMemberID: TIntegerField
+    object qryMemberRoleLinkMemberID: TIntegerField
       FieldName = 'MemberID'
       Origin = 'MemberID'
       ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
       Required = True
     end
-    object qryMemberRoleLnkCreatedOn: TSQLTimeStampField
+    object qryMemberRoleLinkCreatedOn: TSQLTimeStampField
       FieldName = 'CreatedOn'
       Origin = 'CreatedOn'
     end
-    object qryMemberRoleLnkIsActive: TBooleanField
+    object qryMemberRoleLinkIsActive: TBooleanField
       FieldName = 'IsActive'
       Origin = 'IsActive'
       Required = True
     end
-    object qryMemberRoleLnkIsArchived: TBooleanField
+    object qryMemberRoleLinkIsArchived: TBooleanField
       FieldName = 'IsArchived'
       Origin = 'IsArchived'
       Required = True
     end
-    object qryMemberRoleLnkluMemberRoleStr: TStringField
+    object qryMemberRoleLinkluMemberRoleStr: TStringField
       FieldKind = fkLookup
       FieldName = 'luMemberRoleStr'
       LookupDataSet = tblMemberRole
@@ -204,23 +225,24 @@ object MM_CORE: TMM_CORE
       Required = True
       Lookup = True
     end
-    object qryMemberRoleLnkElectedOn: TSQLTimeStampField
+    object qryMemberRoleLinkElectedOn: TSQLTimeStampField
       FieldName = 'StartOn'
       Origin = 'ElectedOn'
-      OnGetText = qryMemberRoleLnkElectedOnGetText
+      OnGetText = qryMemberRoleLinkElectedOnGetText
     end
-    object qryMemberRoleLnkRetiredOn: TSQLTimeStampField
+    object qryMemberRoleLinkRetiredOn: TSQLTimeStampField
       FieldName = 'EndOn'
       Origin = 'RetiredOn'
     end
   end
-  object dsMemberRoleLnk: TDataSource
-    DataSet = qryMemberRoleLnk
-    Left = 216
-    Top = 128
+  object dsMemberRoleLink: TDataSource
+    DataSet = qryMemberRoleLink
+    Left = 232
+    Top = 136
   end
   object tblMemberRole: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'MemberRoleID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -441,21 +463,41 @@ object MM_CORE: TMM_CORE
     UpdateOptions.EnableUpdate = False
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.House'
     UpdateOptions.KeyFields = 'HouseID'
-    Left = 320
-    Top = 320
+    SQL.Strings = (
+      'USE [SwimClubMeet2]'
+      ';'
+      ''
+      'SELECT [HouseID]'
+      '      ,[Caption]'
+      '      ,[Motto]'
+      '      ,[Color]'
+      '      ,[LogoImg]'
+      '      ,[IsArchived]'
+      '      ,[IsActive]'
+      '      ,[CreatedOn]'
+      '      ,[SwimClubID]'
+      '  FROM [dbo].[House]'
+      ''
+      ';'
+      ''
+      ''
+      '')
+    Left = 336
+    Top = 328
   end
   object dsHouse: TDataSource
     DataSet = qryHouse
-    Left = 424
-    Top = 320
+    Left = 440
+    Top = 328
   end
   object dsSwimClub: TDataSource
     DataSet = qrySwimClub
-    Left = 320
-    Top = 256
+    Left = 336
+    Top = 264
   end
   object qrySwimClub: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'SwimClubID'
     MasterSource = dsMemberLink
     MasterFields = 'SwimClubID'
@@ -492,11 +534,12 @@ object MM_CORE: TMM_CORE
       '  FROM [SwimClubMeet2].[dbo].[SwimClub]'
       '  WHERE IsClubGroup <> 1 AND IsArchived <> 1'
       '')
-    Left = 216
-    Top = 256
+    Left = 232
+    Top = 264
   end
   object qryMemberLink: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'MemberID'
     MasterSource = dsMember
     MasterFields = 'MemberID'
@@ -509,9 +552,10 @@ object MM_CORE: TMM_CORE
       '      ,[SwimClubID]'
       '      ,[HouseID]'
       '      ,[IsArchived]'
+      '      ,CAST([IsArchived] AS INT) AS IsArchivedAsInt'
       '  FROM [SwimClubMeet2].[dbo].[MemberLink]')
     Left = 112
-    Top = 192
+    Top = 200
     object qryMemberLinkMemberID: TIntegerField
       FieldName = 'MemberID'
       Origin = 'MemberID'
@@ -553,11 +597,16 @@ object MM_CORE: TMM_CORE
       Origin = 'IsArchived'
       Required = True
     end
+    object qryMemberLinkIsArchivedAsInt: TIntegerField
+      FieldName = 'IsArchivedAsInt'
+      Origin = 'IsArchivedAsInt'
+      ReadOnly = True
+    end
   end
   object dsMemberLink: TDataSource
     DataSet = qryMemberLink
-    Left = 216
-    Top = 192
+    Left = 232
+    Top = 200
   end
   object tblHouse: TFDTable
     ActiveStoredUsage = [auDesignTime]

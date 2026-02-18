@@ -37,6 +37,7 @@ type
     spbtnReport: TSpeedButton;
     pnlG: TPanel;
     AdvEditEditLink1: TAdvEditEditLink;
+    actnLn_Renumber: TAction;
     procedure actnLn_GenericUpdate(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
@@ -52,6 +53,9 @@ type
     procedure gridKeyPress(Sender: TObject; var Key: Char);
   private
     { Private declarations }
+  protected
+    procedure Loaded; override;
+
   public
     procedure UpdateUI(DoFullUpdate: boolean = false);
     procedure OnPreferenceChange();
@@ -242,6 +246,18 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TFrameLane.Loaded;
+var
+  item: TDBGridColumnItem;
+begin
+  inherited;
+  // This executes after the DFM has loaded and ActionLinks have synced.
+  // Fix Delphi's disabling column settings.
+  item := Grid.ColumnByFieldName['luDQ'];
+  if item <> nil then item.AllowBlank := true;
+    // UNSAFE - Grid.Columns[?].AllowBlank := true;
 end;
 
 procedure TFrameLane.OnEventTypeChange(AEventTypeID: Integer);

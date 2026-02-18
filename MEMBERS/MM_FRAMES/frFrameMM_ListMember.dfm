@@ -1,43 +1,145 @@
-object frameMM_SwimClub: TframeMM_SwimClub
+object FrameMM_ListMember: TFrameMM_ListMember
   Left = 0
   Top = 0
-  Width = 727
-  Height = 480
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -16
-  Font.Name = 'Segoe UI'
-  Font.Style = []
-  ParentBackground = False
-  ParentColor = False
-  ParentFont = False
+  Width = 397
+  Height = 799
   TabOrder = 0
-  object pnlBody: TPanel
-    Left = 117
-    Top = 38
-    Width = 610
-    Height = 442
-    Align = alClient
+  object rpnlSearch: TRelativePanel
+    Left = 0
+    Top = 0
+    Width = 397
+    Height = 49
+    ControlCollection = <
+      item
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = False
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = True
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = True
+      end
+      item
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = False
+        AlignLeftWithPanel = True
+        AlignRightWithPanel = True
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = True
+      end
+      item
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = False
+        AlignLeftWithPanel = True
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = True
+      end
+      item
+        Control = vimgSearch
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = False
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+      end
+      item
+        Control = edtSearch
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = False
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+      end
+      item
+        Control = btnClearSearch
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = False
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+      end>
+    Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitLeft = 126
-    ExplicitTop = 41
-    ExplicitWidth = 592
-    ExplicitHeight = 430
-    object Grid: TDBAdvGrid
+    DesignSize = (
+      397
+      49)
+    object vimgSearch: TVirtualImage
+      AlignWithMargins = True
+      Left = 10
+      Top = 7
+      Width = 34
+      Height = 34
+      Margins.Left = 10
+      Margins.Top = 0
+      Margins.Right = 10
+      Margins.Bottom = 0
+      Anchors = []
+      ImageCollection = IMG.CollectionCore
+      ImageWidth = 0
+      ImageHeight = 0
+      ImageIndex = 67
+      ImageName = 'Search'
+      Enabled = False
+    end
+    object edtSearch: TEdit
+      AlignWithMargins = True
+      Left = 50
+      Top = 10
+      Width = 215
+      Height = 23
+      Margins.Left = 50
+      Margins.Top = 0
+      Margins.Right = 110
+      Margins.Bottom = 0
+      Anchors = []
+      TabOrder = 0
+      OnChange = edtSearchChange
+    end
+    object btnClearSearch: TButton
+      Tag = 1
+      AlignWithMargins = True
+      Left = 276
+      Top = 8
+      Width = 89
+      Height = 32
+      Margins.Left = 10
+      Margins.Top = 0
+      Margins.Right = 10
+      Margins.Bottom = 0
+      Anchors = []
+      Caption = 'Clear'
+      ImageIndex = 0
+      ImageName = 'clear'
+      Images = IMG.imglstMiscButtons
+      TabOrder = 1
+      OnClick = btnClearSearchClick
+    end
+  end
+  object pnlList: TPanel
+    Left = 0
+    Top = 49
+    Width = 397
+    Height = 750
+    Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 1
+    object grid: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 610
-      Height = 442
+      Width = 397
+      Height = 750
       Cursor = crDefault
       Align = alClient
       Color = clWhite
-      ColCount = 4
-      DefaultRowHeight = 34
+      ColCount = 2
+      DefaultRowHeight = 32
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 2
+      RowCount = 101
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -48,13 +150,10 @@ object frameMM_SwimClub: TframeMM_SwimClub
       ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
-      OnDrawCell = GridDrawCell
       GridLineColor = 15987699
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
-      OnGetDisplText = GridGetDisplText
-      OnClickCell = GridClickCell
-      OnCanEditCell = GridCanEditCell
+      HTMLKeepLineBreak = False
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
       ActiveCellFont.Height = -12
@@ -110,11 +209,11 @@ object frameMM_SwimClub: TframeMM_SwimClub
         'Larger than'
         'Smaller than'
         'Clear')
-      FixedColWidth = 20
-      FixedRowHeight = 34
+      FixedColWidth = 0
+      FixedRowHeight = 0
       FixedFont.Charset = DEFAULT_CHARSET
       FixedFont.Color = clBlack
-      FixedFont.Height = -12
+      FixedFont.Height = -16
       FixedFont.Name = 'Tahoma'
       FixedFont.Style = [fsBold]
       FloatFormat = '%.2f'
@@ -177,43 +276,14 @@ object frameMM_SwimClub: TframeMM_SwimClub
           CheckFalse = 'N'
           CheckTrue = 'Y'
           Color = clWindow
-          FieldName = 'SwimClubID'
+          FieldName = 'MemberID'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
-          Header = ' '
           HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 20
-        end
-        item
-          AllowBlank = True
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWindow
-          FieldName = 'luSwimClubStr'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          Header = 'SwimClub'
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
+          HeaderFont.Color = clWindowText
           HeaderFont.Height = -16
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
@@ -221,71 +291,42 @@ object frameMM_SwimClub: TframeMM_SwimClub
           PrintFont.Charset = DEFAULT_CHARSET
           PrintFont.Color = clWindowText
           PrintFont.Height = -16
-          PrintFont.Name = 'Tahoma'
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 0
+        end
+        item
+          Alignment = taRightJustify
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWindow
+          FieldName = 'MemberID'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clWindowText
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          HTMLTemplate = 
+            '<FONT size="12"><#FName></FONT><BR><FONT size="10">Age: <#Age> G' +
+            'ender: <#ABREV> Club: <#NickName></FONT>'
+          Images = IMG.imglstSessGrid
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clWindowText
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
           Width = 300
-        end
-        item
-          AllowBlank = True
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWindow
-          FieldName = 'luHouseStr'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          Header = 'House'
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -16
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 200
-        end
-        item
-          Alignment = taCenter
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWhite
-          DataImageField = True
-          FieldName = 'IsArchivedAsInt'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          Header = ' '
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = clBlack
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          HeaderAlignment = taCenter
-          Images = IMG.imglstSwimClubArchived
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clBlack
-          PrintFont.Height = -16
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          UseLookupEditor = False
-          Width = 55
         end>
-      DataSource = MM_CORE.dsMemberLink
+      DataSource = MM_CORE.dsMember
       InvalidPicture.Data = {
         055449636F6E0000010001002020200000000000A81000001600000028000000
         2000000040000000010020000000000000100000000000000000000000000000
@@ -423,142 +464,292 @@ object frameMM_SwimClub: TframeMM_SwimClub
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
-      ExplicitWidth = 592
-      ExplicitHeight = 430
+      ExplicitTop = 6
       ColWidths = (
-        20
-        300
-        200
-        55)
+        0
+        300)
+      RowHeights = (
+        0
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32)
     end
   end
-  object pnlHeader: TPanel
-    Left = 0
-    Top = 0
-    Width = 727
-    Height = 38
-    Align = alTop
-    BevelEdges = [beBottom]
-    BevelOuter = bvNone
-    ParentBackground = False
-    TabOrder = 1
-    ExplicitWidth = 721
-    object lblHeader: TLabel
-      Left = 0
-      Top = 0
-      Width = 727
-      Height = 38
-      Align = alClient
-      Alignment = taCenter
-      Caption = '*SWIMMING CLUB MEMBERSHIP'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentFont = False
-      Layout = tlCenter
-      ExplicitWidth = 248
-      ExplicitHeight = 21
-    end
+  object dsM: TDataSource
+    DataSet = qM
+    Left = 184
+    Top = 144
   end
-  object spnlCTRL: TStackPanel
-    Left = 0
-    Top = 38
-    Width = 117
-    Height = 442
-    Align = alLeft
-    BevelOuter = bvNone
-    ControlCollection = <
+  object qM: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
+    FilterOptions = [foCaseInsensitive]
+    Indexes = <
       item
-        Control = spbtnAdd
-        HorizontalPositioning = sphpFill
+        Active = True
+        Selected = True
+        Name = 'idxFilterOff'
+        Fields = 'MemberID'
       end
       item
-        Control = spbtnRemove
-        HorizontalPositioning = sphpFill
+        Active = True
+        Name = 'idxHideArchived'
+        Fields = 'MemberID'
+        Options = [soDescending]
+        Filter = 'IsArchived=false'
       end
       item
-        Control = spbtnArchive
-        HorizontalPositioning = sphpFill
+        Active = True
+        Name = 'idxHideInActive'
+        Fields = 'MemberID'
+        Filter = 'IsActive=true'
       end
       item
-        Control = spbtnClearHouse
-        HorizontalPositioning = sphpFill
+        Active = True
+        Name = 'idxHideNonSwimmer'
+        Fields = 'MemberID'
+        Filter = 'IsSwimmer=true'
       end
       item
-        Control = spbtnMM_Info
+        Active = True
+        Name = 'idxArchivedInActive'
+        Fields = 'MemberID'
+        Filter = 'IsArchived=false and IsActive=true'
+      end
+      item
+        Active = True
+        Name = 'idxArchivedInActiveNonSwimmer'
+        Fields = 'MemberID'
+        Filter = 'IsArchived=false and IsActive=true and IsSwimmer=true'
+      end
+      item
+        Active = True
+        Name = 'idxInActiveNonSwimmer'
+        Fields = 'MemberID'
+        Filter = 'IsActive=true and IsSwimmer=true'
+      end
+      item
+        Active = True
+        Name = 'idxArchivedNonSwimmer'
+        Fields = 'MemberID'
+        Filter = 'IsArchived=false and IsSwimmer=true'
       end>
-    HorizontalPositioning = sphpCenter
-    ParentBackground = False
-    Spacing = 8
-    TabOrder = 2
-    ExplicitLeft = 3
-    ExplicitTop = 3
-    ExplicitHeight = 430
-    object spbtnAdd: TSpeedButton
-      Left = 0
-      Top = 0
-      Width = 117
-      Height = 48
-      Caption = 'Add'
-      ImageIndex = 12
-      ImageName = 'plus-box'
-      Images = IMG.imglstSwimClubCntrl
-      Margin = 4
-      OnClick = spbtnAddClick
+    IndexName = 'idxFilterOff'
+    Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvCheckRequired, uvCheckReadOnly, uvCheckUpdatable]
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Member'
+    UpdateOptions.KeyFields = 'MemberID'
+    SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
+      'SELECT [MemberID],'
+      '       [MembershipNum],'
+      '       [MembershipStr],'
+      '       [FirstName],'
+      '       [MiddleName],'
+      '       [LastName],'
+      '       [DOB],'
+      '       [IsActive],'
+      '       IsSwimmer,'
+      '       IsArchived,'
+      '       [Email],'
+      '       [GenderID],'
+      
+        '       CONCAT(Member.FirstName, '#39' '#39', UPPER(Member.LastName)) AS ' +
+        'FName,'
+      '       CreatedOn,'
+      '       ArchivedOn,'
+      '       TAGS'
+      'FROM [SwimClubMeet2].[dbo].[Member];  '
+      ''
+      '     '
+      ''
+      ''
+      ''
+      '')
+    Left = 88
+    Top = 144
+    object qMMemberID: TFDAutoIncField
+      FieldName = 'MemberID'
+      Origin = 'MemberID'
+      ProviderFlags = [pfInWhere, pfInKey]
     end
-    object spbtnRemove: TSpeedButton
-      Left = 0
-      Top = 56
-      Width = 117
-      Height = 48
-      Caption = 'Remove'
-      ImageIndex = 13
-      ImageName = 'minus-box'
-      Images = IMG.imglstSwimClubCntrl
-      Margin = 4
-      OnClick = spbtnRemoveClick
+    object qMMembershipNum: TIntegerField
+      FieldName = 'MembershipNum'
+      Origin = 'MembershipNum'
     end
-    object spbtnArchive: TSpeedButton
-      Left = 0
-      Top = 112
-      Width = 117
-      Height = 48
-      Caption = 'Archive'
-      ImageIndex = 5
-      ImageName = 'archive'
-      Images = IMG.imglstSwimClubCntrl
-      Margin = 4
+    object qMMembershipStr: TWideStringField
+      FieldName = 'MembershipStr'
+      Origin = 'MembershipStr'
+      Size = 24
     end
-    object spbtnClearHouse: TSpeedButton
-      Left = 0
-      Top = 168
-      Width = 117
-      Height = 48
-      Caption = 'Clear'#13#10'House'
-      ImageIndex = 9
-      ImageName = 'house'
-      Images = IMG.imglstSwimClubCntrl
-      Margin = 4
-      OnClick = spbtnClearHouseClick
+    object qMFirstName: TWideStringField
+      FieldName = 'FirstName'
+      Origin = 'FirstName'
+      Size = 128
     end
-    object spbtnMM_Info: TSpeedButton
-      Left = 0
-      Top = 224
-      Width = 117
-      Height = 48
-      Caption = 'Info'
-      ImageIndex = 8
-      ImageName = 'info'
-      Images = IMG.imglstSwimClubCntrl
-      Margin = 4
-      OnClick = spbtnMM_InfoClick
-      OnMouseLeave = spbtnMM_InfoMouseLeave
+    object qMMiddleName: TWideStringField
+      FieldName = 'MiddleName'
+      Origin = 'MiddleName'
+      Size = 128
     end
-  end
-  object bhMM: TBalloonHint
-    Left = 336
-    Top = 224
+    object qMLastName: TWideStringField
+      FieldName = 'LastName'
+      Origin = 'LastName'
+      Size = 128
+    end
+    object qMDOB: TSQLTimeStampField
+      FieldName = 'DOB'
+      Origin = 'DOB'
+    end
+    object qMIsActive: TBooleanField
+      FieldName = 'IsActive'
+      Origin = 'IsActive'
+      Required = True
+    end
+    object qMIsSwimmer: TBooleanField
+      FieldName = 'IsSwimmer'
+      Origin = 'IsSwimmer'
+      Required = True
+    end
+    object qMIsArchived: TBooleanField
+      FieldName = 'IsArchived'
+      Origin = 'IsArchived'
+      Required = True
+    end
+    object qMEmail: TWideStringField
+      FieldName = 'Email'
+      Origin = 'Email'
+      Size = 256
+    end
+    object qMGenderID: TIntegerField
+      FieldName = 'GenderID'
+      Origin = 'GenderID'
+    end
+    object qMFName: TWideStringField
+      FieldName = 'FName'
+      Origin = 'FName'
+      ReadOnly = True
+      Required = True
+      Size = 257
+    end
+    object qMCreatedOn: TSQLTimeStampField
+      FieldName = 'CreatedOn'
+      Origin = 'CreatedOn'
+    end
+    object qMArchivedOn: TSQLTimeStampField
+      FieldName = 'ArchivedOn'
+      Origin = 'ArchivedOn'
+    end
+    object qMTAGS: TWideMemoField
+      FieldName = 'TAGS'
+      Origin = 'TAGS'
+      BlobType = ftWideMemo
+    end
+    object qMluGender: TStringField
+      FieldKind = fkLookup
+      FieldName = 'luGender'
+      LookupKeyFields = 'GenderID'
+      LookupResultField = 'Caption'
+      KeyFields = 'GenderID'
+      LookupCache = True
+      Lookup = True
+    end
   end
 end

@@ -25,22 +25,21 @@ type
     dsluGender: TDataSource;
     dsluSwimClub: TDataSource;
     dsMember: TDataSource;
-    dsMemberRoleLnk: TDataSource;
+    dsMemberRoleLink: TDataSource;
     qryContactNum: TFDQuery;
     qryContactNumContactNumID: TFDAutoIncField;
     qryContactNumContactNumTypeID: TIntegerField;
     qryContactNumlu: TStringField;
     qryContactNumMemberID: TIntegerField;
-    qryContactNumNumber: TWideStringField;
-    qryMemberRoleLnk: TFDQuery;
-    qryMemberRoleLnkCreatedOn: TSQLTimeStampField;
-    qryMemberRoleLnkElectedOn: TSQLTimeStampField;
-    qryMemberRoleLnkIsActive: TBooleanField;
-    qryMemberRoleLnkIsArchived: TBooleanField;
-    qryMemberRoleLnkluMemberRoleStr: TStringField;
-    qryMemberRoleLnkMemberID: TIntegerField;
-    qryMemberRoleLnkMemberRoleID: TIntegerField;
-    qryMemberRoleLnkRetiredOn: TSQLTimeStampField;
+    qryMemberRoleLink: TFDQuery;
+    qryMemberRoleLinkCreatedOn: TSQLTimeStampField;
+    qryMemberRoleLinkElectedOn: TSQLTimeStampField;
+    qryMemberRoleLinkIsActive: TBooleanField;
+    qryMemberRoleLinkIsArchived: TBooleanField;
+    qryMemberRoleLinkluMemberRoleStr: TStringField;
+    qryMemberRoleLinkMemberID: TIntegerField;
+    qryMemberRoleLinkMemberRoleID: TIntegerField;
+    qryMemberRoleLinkRetiredOn: TSQLTimeStampField;
     tblContactNumType: TFDTable;
     tblContactNumTypeCaption: TWideStringField;
     tblContactNumTypeContactNumTypeID: TFDAutoIncField;
@@ -81,6 +80,11 @@ type
     qryMemberLinkluHouseStr: TStringField;
     qryMemberLinkluSwimClubStr: TStringField;
     qryMemberLinkIsArchived: TBooleanField;
+    qryContactNumNumStr: TWideStringField;
+    qryContactNumIsArchived: TBooleanField;
+    qryContactNumCreatedOn: TSQLTimeStampField;
+    qryMemberLinkIsArchivedAsInt: TIntegerField;
+    qryContactNumIsArchivedAsInt: TIntegerField;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure qDEPRECIATEDMemberOLDBeforeDelete(DataSet: TDataSet);
@@ -91,12 +95,12 @@ type
     procedure qryMemberMETADATAGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
     procedure qryMemberMETADATASetText(Sender: TField; const Text: string);
-    procedure qryMemberRoleLnkBeforePost(DataSet: TDataSet);
-    procedure qryMemberRoleLnkElectedOnGetText(Sender: TField; var Text: string;
+    procedure qryMemberRoleLinkBeforePost(DataSet: TDataSet);
+    procedure qryMemberRoleLinkElectedOnGetText(Sender: TField; var Text: string;
       DisplayText: Boolean);
-    procedure qryMemberRoleLnkElectedOnSetText(Sender: TField;
+    procedure qryMemberRoleLinkElectedOnSetText(Sender: TField;
       const Text: string);
-    procedure qryMemberRoleLnkNewRecord(DataSet: TDataSet);
+    procedure qryMemberRoleLinkNewRecord(DataSet: TDataSet);
   private
     fHandle: HWND;
     fIsActive: Boolean;
@@ -140,45 +144,61 @@ begin
   begin
 
     qMember.Connection := SCM2.scmConnection;
-    qryContactNum.Connection := SCM2.scmConnection;
-    qryMemberRoleLnk.Connection := SCM2.scmConnection;
+    Self.qryContactNum.Connection := SCM2.scmConnection;
+    Self.qryMemberRoleLink.Connection := SCM2.scmConnection;
+    Self.qryMemberLink.Connection := SCM2.scmConnection;
+    Self.qrySwimClub.Connection := SCM2.scmConnection;
+    Self.qryHouse.Connection := SCM2.scmConnection;
+
     // lookup tables.
+    tblGender.Connection := SCM2.scmConnection;
     tblStroke.Connection := SCM2.scmConnection;
     tblDistance.Connection := SCM2.scmConnection;
-    tblGender.Connection := SCM2.scmConnection;
     tblContactNumType.Connection := SCM2.scmConnection;
     tblMemberRole.Connection := SCM2.scmConnection;
     tblSwimClub.Connection := SCM2.scmConnection;
+    tblHouse.Connection := SCM2.scmConnection;
 
-
-    qryContactNum.DisableControls;
-    qryMemberRoleLnk.DisableControls;
+    Self.qryHouse.DisableControls;
+    Self.qrySwimClub.DisableControls;
+    Self.qryMemberLink.DisableControls;
+    Self.qryMemberRoleLink.DisableControls;
+    Self.qryContactNum.DisableControls;
     qMember.DisableControls;
     try
       try
         // Lookup tables...
+        tblGender.Open;
         tblStroke.Open;
         tblDistance.Open;
-        tblGender.Open;
         tblContactNumType.Open;
         tblMemberRole.Open;
+        tblSwimClub.Open;
+        tblHouse.Open;
 
         qMember.Open;
         if qMember.Active then
         begin
-          qryContactNum.Open;
-          qryMemberRoleLnk.Open;
+          Self.qryMemberLink.Open;
+          Self.qrySwimClub.Open;
+          Self.qryHouse.Open;
+          Self.qryContactNum.Open;
+          Self.qryMemberRoleLink.Open;
           fIsActive := True;
         end;
       except
         on E: EFDDBEngineException do
           SCM2.FDGUIxErrorDialog.Execute(E);
+
       end;
     finally
       begin
         qMember.EnableControls;
-        qryContactNum.EnableControls;
-        qryMemberRoleLnk.EnableControls;
+        Self.qryContactNum.EnableControls;
+        Self.qryMemberRoleLink.EnableControls;
+        Self.qryMemberLink.EnableControls;
+        Self.qrySwimClub.EnableControls;
+        Self.qryHouse.EnableControls;
       end;
     end;
   end;
@@ -198,8 +218,12 @@ procedure TMM_CORE.DataModuleCreate(Sender: TObject);
 begin
   FIsActive := false;
   qMember.Connection := nil;
-  qryContactNum.Connection := nil;
-  qryMemberRoleLnk.Connection := nil;
+  Self.qrySwimClub.Connection := nil;
+  Self.qryMemberLink.Connection := nil;
+  Self.qryContactNum.Connection := nil;
+  Self.qryMemberRoleLink.Connection := nil;
+  Self.qryHouse.Connection := nil;
+
   tblStroke.Connection := nil;
   tblDistance.Connection := nil;
   tblGender.Connection := nil;
@@ -224,7 +248,7 @@ begin
     tblContactNumType.Close;
     tblMemberRole.Close;
     qryContactNum.Close;
-    qryMemberRoleLnk.Close;
+    qryMemberRoleLink.Close;
     qMember.Close;
   finally
     fIsActive := false;
@@ -255,7 +279,7 @@ begin
 
   qMember.DisableControls;
   qryContactNum.DisableControls;
-  qryMemberRoleLnk.DisableControls;
+  qryMemberRoleLink.DisableControls;
 
   try
     try
@@ -264,7 +288,7 @@ begin
         if result then
         begin
           qryContactNum.ApplyMaster;
-          qryMemberRoleLnk.ApplyMaster;
+          qryMemberRoleLink.ApplyMaster;
         end;
       end
     except
@@ -274,7 +298,7 @@ begin
   finally
     qMember.EnableControls;
     qryContactNum.EnableControls;
-    qryMemberRoleLnk.EnableControls;
+    qryMemberRoleLink.EnableControls;
 
   end;
 end;
@@ -456,7 +480,7 @@ begin
   Sender.AsString := Text;
 end;
 
-procedure TMM_CORE.qryMemberRoleLnkBeforePost(DataSet: TDataSet);
+procedure TMM_CORE.qryMemberRoleLinkBeforePost(DataSet: TDataSet);
 var
   // SQL: string;
   // v: variant;
@@ -497,7 +521,7 @@ begin
 
 end;
 
-procedure TMM_CORE.qryMemberRoleLnkElectedOnGetText(Sender: TField;
+procedure TMM_CORE.qryMemberRoleLinkElectedOnGetText(Sender: TField;
   var Text: string; DisplayText: Boolean);
 var
   LFormatSettings: TFormatSettings;
@@ -510,7 +534,7 @@ begin
     Text := FormatDateTime('dd.mm.yy', Sender.AsDateTime, LFormatSettings);
 end;
 
-procedure TMM_CORE.qryMemberRoleLnkElectedOnSetText(Sender: TField;
+procedure TMM_CORE.qryMemberRoleLinkElectedOnSetText(Sender: TField;
   const Text: string);
 var
   dt: TDateTime;
@@ -540,7 +564,7 @@ begin
   end;
 end;
 
-procedure TMM_CORE.qryMemberRoleLnkNewRecord(DataSet: TDataSet);
+procedure TMM_CORE.qryMemberRoleLinkNewRecord(DataSet: TDataSet);
 var
   fld: TField;
 begin
@@ -600,7 +624,7 @@ procedure TMM_CORE.UpdateFilterByParam(hideArchived, hideInactive,
     hideNonSwimmer: Boolean);
 begin
   qryContactNum.DisableControls;
-  qryMemberRoleLnk.DisableControls;
+  qryMemberRoleLink.DisableControls;
   qMember.DisableControls;
 
   if hideArchived and not hideInactive and not hideNonSwimmer then
@@ -622,13 +646,13 @@ begin
   try
     begin
       qryContactNum.ApplyMaster;
-      qryMemberRoleLnk.ApplyMaster;
+      qryMemberRoleLink.ApplyMaster;
     end;
   finally
     begin
       qMember.EnableControls;
       qryContactNum.EnableControls;
-      qryMemberRoleLnk.EnableControls;
+      qryMemberRoleLink.EnableControls;
     end;
 
   end;

@@ -1081,7 +1081,7 @@ object CORE: TCORE
   end
   object dsMemberLink: TDataSource
     DataSet = qryMemberLink
-    Left = 448
+    Left = 480
     Top = 72
   end
   object dsMember: TDataSource
@@ -1094,15 +1094,44 @@ object CORE: TCORE
     MasterSource = dsSwimClub
     MasterFields = 'SwimClubID'
     DetailFields = 'SwimClubID'
+    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.MemberLink'
     UpdateOptions.KeyFields = 'SwimClubID;MemberID'
     SQL.Strings = (
       'SELECT [MemberID]'
       '      ,[SwimClubID]'
       '      ,[HouseID]'
+      '      ,[IsArchived]'
+      '      ,CAST([IsArchived] AS INT) AS IsArchivedAsInt'
       '  FROM [SwimClubMeet2].[dbo].[MemberLink]')
-    Left = 352
+    Left = 384
     Top = 72
+    object qryMemberLinkMemberID: TIntegerField
+      FieldName = 'MemberID'
+      Origin = 'MemberID'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object qryMemberLinkSwimClubID: TIntegerField
+      FieldName = 'SwimClubID'
+      Origin = 'SwimClubID'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object qryMemberLinkHouseID: TIntegerField
+      FieldName = 'HouseID'
+      Origin = 'HouseID'
+    end
+    object qryMemberLinkIsArchived: TBooleanField
+      FieldName = 'IsArchived'
+      Origin = 'IsArchived'
+      Required = True
+    end
+    object qryMemberLinkIsArchivedAsInt: TIntegerField
+      FieldName = 'IsArchivedAsInt'
+      Origin = 'IsArchivedAsInt'
+      ReadOnly = True
+    end
   end
   object tblEventType: TFDTable
     ActiveStoredUsage = [auDesignTime]

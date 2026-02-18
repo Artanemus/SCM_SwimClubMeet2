@@ -46,30 +46,11 @@ type
     File_Exit: TAction;
     File_ExportClub: TAction;
     File_ImportClub: TAction;
-    Heat_AutoBuild: TAction;
-    Heat_BatchBuildHeats: TAction;
-    Heat_BatchMarshallReport: TAction;
-    Heat_BatchTimeKeeperReport: TAction;
-    Heat_Delete: TAction;
-    Heat_MarshallReport: TAction;
-    Heat_MoveDown: TAction;
-    Heat_MoveUp: TAction;
-    Heat_NewRecord: TAction;
-    Heat_PrintSet: TAction;
-    Heat_Renumber: TAction;
-    Heat_Report: TAction;
-    Heat_TimeKeeperReport: TAction;
-    Heat_ToggleStatus: TAction;
     Help_About: TAction;
     Help_LocalHelp: TAction;
     Help_OnlineHelp: TAction;
     Help_Website: TAction;
-    Lane_EmptyLane: TAction;
-    Lane_MoveDown: TAction;
-    Lane_MoveUp: TAction;
     Lane_Renumber: TAction;
-    Lane_Strike: TAction;
-    Lane_SwapLanes: TAction;
     Members_Export: TAction;
     Members_Import: TAction;
     Members_Manage: TAction;
@@ -104,20 +85,17 @@ type
     pnlEvent: TPanel;
     pnlFilterMember: TPanel;
     pnlNominate: TPanel;
-    frFilterMember: TFrameFilterMember;
     Member_Stats: TAction;
     Member_CheckData: TAction;
     SwimClub_Reports: TAction;
-    frNominate: TFrameNominate;
-    pnlHeader: TPanel;
+    pnlNavEv: TPanel;
     pnlBody: TPanel;
     pnlHeat: TPanel;
-    frHeat: TFrameHeat;
-    frSession: TFrameSession;
     pnlLane: TPanel;
-    frLane: TFrameLane;
-    frNavEv: TFrameNavEv;
-    frEvent: TFrameEvent;
+    Member_Roles: TAction;
+    Member_ParaOlympic: TAction;
+    Member_MetaData: TAction;
+    Member_Reports: TAction;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -145,6 +123,13 @@ type
   private
 
     fCueToMemberID: integer;
+    frSession: TFrameSession;
+    frEvent: TFrameEvent;
+    frHeat: TFrameHeat;
+    frLane: TFrameLane;
+    frFilterMember: TFrameFilterMember;
+    frNominate: TFrameNominate;
+    frNavEv: TFrameNavEv;
 
 //    procedure HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
 //      NavEvItem: TFrameNavEvItem);
@@ -340,11 +325,48 @@ begin
 
   // No connection established ...initialize UI state...
   PageControl.ActivePageIndex := 0; // tabsheet 0
+
+  { C O N S T R U C T I O N   O F   T F A M E S . }
+  { --------------------------------------------- }
+  frSession := TFrameSession.Create(Self);
+  frSession.Parent := pnlSession;
+  frSession.Align := alClient;
+  pnlSession.Caption := '';
+
+  frEvent := TFrameEvent.Create(Self);
+  frEvent.Parent := pnlEvent;
+  frEvent.Align := alClient;
   frEvent.actnEv_GridView.Checked := false; // default: collapsed gridview.
   frEvent.OnGridViewChanged := HandleOnGridViewChange; // assign event handle.
+  pnlEvent.Caption := '';
 
+  frHeat := TFrameHeat.Create(Self);
+  frHeat.Parent := pnlHeat;
+  frHeat.Align := alClient;
+  pnlHeat.Caption := '';
+
+  frLane := TFrameLane.Create(Self);
+  frLane.Parent := pnlLane;
+  frLane.Align := alClient;
   // Adjust display of columns based on Settings.EnableDQcodes state.
   frLane.OnPreferenceChange;
+  pnlLane.Caption := '';
+
+  frNavEv := TFrameNavEv.Create(Self);
+  frNavEv.Parent := pnlNavEv;
+  frNavEv.Align := alClient;
+  pnlNavEv.Caption := '';
+
+  frFilterMember := TFrameFilterMember.Create(Self);
+  frFilterMember.Parent := pnlFilterMember;
+  frFilterMember.Align := alClient;
+  pnlFilterMember.Caption := '';
+
+  frNominate := TFrameNominate.Create(Self);
+  frNominate.Parent := pnlNominate;
+  frNominate.Align := alClient;
+  pnlNominate.Caption := '';
+  { --------------------------------------------- }
 
   SetPanelAndFrame_Visibility(); // hide all panels displaying frames.
 
@@ -358,6 +380,23 @@ begin
       Settings.LastSwimClubPK := uSwimClub.PK;
     Settings.Free;
   end;
+
+  // Free TFrames...
+  if Assigned(frFilterMember) then
+    FreeAndNil(frFilterMember);
+  if Assigned(frNominate) then
+    FreeAndNil(frNominate);
+  if Assigned(frNavEv) then
+    FreeAndNil(frNavEv);
+  if Assigned(frLane) then
+    FreeAndNil(frLane);
+  if Assigned(frHeat) then
+    FreeAndNil(frHeat);
+  if Assigned(frEvent) then
+    FreeAndNil(frEvent);
+  if Assigned(frSession) then
+    FreeAndNil(frSession);
+
 end;
 
 procedure TMain2.FormShow(Sender: TObject);

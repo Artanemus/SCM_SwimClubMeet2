@@ -1032,6 +1032,12 @@ object FrameLane: TFrameLane
       ImageName = 'report'
       OnUpdate = actnLn_GenericUpdate
     end
+    object actnLn_Renumber: TAction
+      Category = 'Lanes'
+      Caption = 'Renumber'
+      ImageIndex = 24
+      ImageName = 'sort'
+    end
   end
   object pumenuLane: TPopupMenu
     Left = 520

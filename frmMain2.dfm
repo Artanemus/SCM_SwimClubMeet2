@@ -2829,7 +2829,7 @@ object Main2: TMain2
     Width = 1131
     Height = 662
     Margins.Top = 10
-    ActivePage = tabSession
+    ActivePage = tabHeats
     Align = alClient
     TabOrder = 3
     OnChange = PageControlChange
@@ -2843,129 +2843,10 @@ object Main2: TMain2
         Margins.Top = 10
         Align = alLeft
         BevelOuter = bvNone
+        Caption = 'Panel for TFrameSession (frSession)'
         TabOrder = 0
-        inline frSession: TFrameSession
-          Left = 0
-          Top = 0
-          Width = 417
-          Height = 626
-          Align = alClient
-          TabOrder = 0
-          ExplicitWidth = 417
-          ExplicitHeight = 626
-          inherited pnlBody: TPanel
-            Width = 359
-            Height = 626
-            ExplicitWidth = 359
-            ExplicitHeight = 626
-            inherited pnlG: TPanel
-              Width = 359
-              Height = 626
-              ExplicitWidth = 359
-              ExplicitHeight = 626
-              inherited grid: TDBAdvGrid
-                Width = 359
-                Height = 626
-                ExplicitWidth = 359
-                ExplicitHeight = 626
-              end
-            end
-          end
-          inherited rpnlCntrl: TRelativePanel
-            Height = 626
-            ControlCollection = <
-              item
-                Control = frSession.spbtnSessVisiblity
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = True
-                AlignVerticalCenterWithPanel = False
-              end
-              item
-                Control = frSession.spbtnSessLockState
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frSession.spbtnSessVisiblity
-              end
-              item
-                Control = frSession.ShapeSessBar1
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frSession.spbtnSessLockState
-              end
-              item
-                Control = frSession.spbtnSessEdit
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frSession.ShapeSessBar1
-              end
-              item
-                Control = frSession.spbtnSessNew
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frSession.spbtnSessEdit
-              end
-              item
-                Control = frSession.spbtnSessClone
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frSession.spbtnSessNew
-              end
-              item
-                Control = frSession.spbtnSessDelete
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frSession.spbtnSessClone
-              end
-              item
-                Control = frSession.ShapeSessBar2
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frSession.spbtnSessDelete
-              end
-              item
-                Control = frSession.spbtnSessReport
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frSession.ShapeSessBar2
-              end>
-            ExplicitHeight = 626
-          end
-        end
+        ExplicitLeft = -1
+        ExplicitTop = 4
       end
       object pnlEvent: TPanel
         Left = 417
@@ -2974,132 +2855,8 @@ object Main2: TMain2
         Height = 626
         Align = alClient
         BevelOuter = bvNone
+        Caption = 'Panel for TFrameEvent (frEvent)'
         TabOrder = 1
-        inline frEvent: TFrameEvent
-          Left = 0
-          Top = 0
-          Width = 706
-          Height = 626
-          Align = alClient
-          TabOrder = 0
-          ExplicitWidth = 706
-          ExplicitHeight = 626
-          inherited pnlBody: TPanel
-            Width = 648
-            Height = 626
-            ExplicitWidth = 648
-            ExplicitHeight = 626
-            inherited pnlG: TPanel
-              Width = 648
-              Height = 626
-              ExplicitWidth = 648
-              ExplicitHeight = 626
-              inherited grid: TDBAdvGrid
-                Width = 648
-                Height = 626
-                ExplicitWidth = 648
-                ExplicitHeight = 626
-                RowHeights = (
-                  32
-                  32)
-              end
-            end
-          end
-          inherited rpnlCntrl: TRelativePanel
-            Height = 626
-            ControlCollection = <
-              item
-                Control = frEvent.ShapeEvBar1
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frEvent.spbtnEvGridView
-              end
-              item
-                Control = frEvent.ShapeEvBar2
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frEvent.spbtnEvIndvTeam
-              end
-              item
-                Control = frEvent.spbtnEvDelete
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frEvent.spbtnEvNew
-              end
-              item
-                Control = frEvent.spbtnEvDown
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frEvent.spbtnEvUp
-              end
-              item
-                Control = frEvent.spbtnEvGridView
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = True
-                AlignVerticalCenterWithPanel = False
-              end
-              item
-                Control = frEvent.spbtnEvNew
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frEvent.spbtnEvDown
-              end
-              item
-                Control = frEvent.spbtnEvReport
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frEvent.ShapeEvBar2
-              end
-              item
-                Control = frEvent.spbtnEvUp
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frEvent.ShapeEvBar1
-              end
-              item
-                Control = frEvent.spbtnEvIndvTeam
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frEvent.spbtnEvDelete
-              end>
-            ExplicitHeight = 626
-          end
-        end
       end
     end
     object tabNominate: TTabSheet
@@ -3112,142 +2869,8 @@ object Main2: TMain2
         Height = 626
         Align = alLeft
         BevelOuter = bvNone
+        Caption = 'Panel for TFrameFilterMember (frFilterMember)'
         TabOrder = 0
-        inline frFilterMember: TFrameFilterMember
-          Left = 0
-          Top = 0
-          Width = 433
-          Height = 626
-          Align = alClient
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          ParentFont = False
-          TabOrder = 0
-          ExplicitWidth = 433
-          ExplicitHeight = 626
-          inherited rpnlCntrl: TRelativePanel
-            Height = 626
-            ControlCollection = <
-              item
-                Control = frFilterMember.ShapeMemBar1
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frFilterMember.spbtnPB
-              end
-              item
-                Control = frFilterMember.lblNomWarning
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-              end
-              item
-                Control = frFilterMember.spbtnMemDetails
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-              end
-              item
-                Control = frFilterMember.spbtnPB
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-                Below = frFilterMember.spbtnMemDetails
-              end
-              item
-                Control = frFilterMember.spbtnReport
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = False
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-              end
-              item
-                Control = frFilterMember.spbtnSort
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = False
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = False
-                AlignVerticalCenterWithPanel = False
-              end>
-            ExplicitHeight = 626
-          end
-          inherited pnlBody: TPanel
-            Width = 375
-            Height = 626
-            ExplicitWidth = 375
-            ExplicitHeight = 626
-            inherited pnlList: TPanel
-              Width = 375
-              Height = 626
-              ExplicitWidth = 375
-              ExplicitHeight = 626
-              inherited rpnlSearch: TRelativePanel
-                Width = 375
-                ControlCollection = <
-                  item
-                    Control = frFilterMember.btnClearSearch
-                    AlignBottomWithPanel = False
-                    AlignHorizontalCenterWithPanel = False
-                    AlignLeftWithPanel = False
-                    AlignRightWithPanel = True
-                    AlignTopWithPanel = False
-                    AlignVerticalCenterWithPanel = True
-                  end
-                  item
-                    Control = frFilterMember.edtSearch
-                    AlignBottomWithPanel = False
-                    AlignHorizontalCenterWithPanel = False
-                    AlignLeftWithPanel = True
-                    AlignRightWithPanel = True
-                    AlignTopWithPanel = False
-                    AlignVerticalCenterWithPanel = True
-                  end
-                  item
-                    Control = frFilterMember.vimgSearch
-                    AlignBottomWithPanel = False
-                    AlignHorizontalCenterWithPanel = False
-                    AlignLeftWithPanel = True
-                    AlignRightWithPanel = False
-                    AlignTopWithPanel = False
-                    AlignVerticalCenterWithPanel = True
-                  end>
-                ExplicitWidth = 375
-                inherited btnClearSearch: TButton
-                  Left = 276
-                  ExplicitLeft = 276
-                end
-                inherited edtSearch: TEdit
-                  Width = 215
-                  ExplicitWidth = 215
-                end
-              end
-              inherited grid: TDBAdvGrid
-                Width = 375
-                Height = 577
-                ExplicitWidth = 375
-                ExplicitHeight = 577
-              end
-            end
-          end
-        end
       end
       object pnlNominate: TPanel
         Left = 433
@@ -3256,121 +2879,22 @@ object Main2: TMain2
         Height = 626
         Align = alClient
         BevelOuter = bvNone
+        Caption = 'Panel for TFrameNominate (frNominate)'
         TabOrder = 1
-        inline frNominate: TFrameNominate
-          Left = 0
-          Top = 0
-          Width = 690
-          Height = 626
-          Align = alClient
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          ParentFont = False
-          TabOrder = 0
-          ExplicitWidth = 690
-          ExplicitHeight = 626
-          inherited rpnlCntrl: TRelativePanel
-            Height = 626
-            ControlCollection = <
-              item
-                Control = frNominate.dbtxtNominateFullName
-                AlignBottomWithPanel = False
-                AlignHorizontalCenterWithPanel = True
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = False
-                AlignTopWithPanel = True
-                AlignVerticalCenterWithPanel = False
-              end>
-            ExplicitHeight = 626
-          end
-          inherited pnlBody: TPanel
-            Width = 632
-            Height = 626
-            ExplicitWidth = 632
-            ExplicitHeight = 626
-            inherited pnlG: TPanel
-              Width = 632
-              Height = 626
-              ExplicitWidth = 632
-              ExplicitHeight = 626
-              inherited grid: TDBAdvGrid
-                Width = 632
-                Height = 626
-                ExplicitLeft = 0
-                ExplicitWidth = 632
-                ExplicitHeight = 626
-              end
-            end
-          end
-        end
       end
     end
     object tabHeats: TTabSheet
       Caption = 'Heats'
       ImageIndex = 2
-      object pnlHeader: TPanel
+      object pnlNavEv: TPanel
         Left = 0
         Top = 0
         Width = 1123
         Height = 80
         Align = alTop
         BevelOuter = bvNone
+        Caption = 'Panel for TFrameNavEv (frNavEv)'
         TabOrder = 0
-        inline frNavEv: TFrameNavEv
-          Left = 0
-          Top = 0
-          Width = 1123
-          Height = 80
-          Align = alClient
-          TabOrder = 0
-          StyleElements = [seClient, seBorder]
-          ExplicitWidth = 1123
-          ExplicitHeight = 80
-          inherited rpnlBody: TRelativePanel
-            Width = 1123
-            Height = 80
-            ControlCollection = <
-              item
-                Control = frNavEv.spbtnNavLeft
-                AlignBottomWithPanel = True
-                AlignHorizontalCenterWithPanel = False
-                AlignLeftWithPanel = True
-                AlignRightWithPanel = False
-                AlignTopWithPanel = True
-                AlignVerticalCenterWithPanel = True
-              end
-              item
-                Control = frNavEv.spbtnNavRight
-                AlignBottomWithPanel = True
-                AlignHorizontalCenterWithPanel = False
-                AlignLeftWithPanel = False
-                AlignRightWithPanel = True
-                AlignTopWithPanel = True
-                AlignVerticalCenterWithPanel = True
-              end>
-            ExplicitWidth = 1123
-            ExplicitHeight = 80
-            inherited spbtnNavLeft: TSpeedButton
-              Height = 80
-              ExplicitHeight = 80
-            end
-            inherited spbtnNavRight: TSpeedButton
-              Left = 1075
-              Height = 80
-              ExplicitLeft = 1075
-              ExplicitHeight = 80
-            end
-          end
-          inherited scrBox: TScrollBox
-            Width = 1027
-            Height = 80
-            ExplicitWidth = 1027
-            ExplicitHeight = 80
-          end
-        end
       end
       object pnlBody: TPanel
         Left = 0
@@ -3387,176 +2911,8 @@ object Main2: TMain2
           Height = 546
           Align = alLeft
           BevelOuter = bvNone
+          Caption = 'Panel for TFrameHeat (frHeat)'
           TabOrder = 0
-          inline frHeat: TFrameHeat
-            Left = 0
-            Top = 0
-            Width = 219
-            Height = 546
-            Align = alClient
-            TabOrder = 0
-            ExplicitWidth = 219
-            ExplicitHeight = 546
-            inherited rpnlCntrl: TRelativePanel
-              Height = 546
-              ControlCollection = <
-                item
-                  Control = frHeat.spbtnMoveUp
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = True
-                  AlignVerticalCenterWithPanel = False
-                end
-                item
-                  Control = frHeat.spbtnMoveDown
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frHeat.spbtnMoveUp
-                end
-                item
-                  Control = frHeat.spbtnToggleStatus
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frHeat.spbtnMoveDown
-                end
-                item
-                  Control = frHeat.spbtnNew
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frHeat.spbtnToggleStatus
-                end
-                item
-                  Control = frHeat.spbtnDelete
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frHeat.spbtnNew
-                end
-                item
-                  Control = frHeat.ShapeHtBar1
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frHeat.spbtnDelete
-                end
-                item
-                  Control = frHeat.spbtnAutoBuild
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frHeat.ShapeHtBar1
-                end
-                item
-                  Control = frHeat.ShapeHtBar2
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frHeat.spbtnAutoBuild
-                end
-                item
-                  Control = frHeat.spbtnMarshall
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frHeat.ShapeHtBar2
-                end
-                item
-                  Control = frHeat.spbtnTimeKeeper
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frHeat.spbtnMarshall
-                end
-                item
-                  Control = frHeat.spbtnAllLogs
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frHeat.spbtnTimeKeeper
-                end
-                item
-                  Control = frHeat.ShapeHtBar3
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frHeat.spbtnAllLogs
-                end
-                item
-                  Control = frHeat.spbtnReport
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frHeat.ShapeHtBar3
-                end>
-              ExplicitHeight = 546
-            end
-            inherited pnlBody: TPanel
-              Width = 161
-              Height = 546
-              ExplicitWidth = 161
-              ExplicitHeight = 546
-              inherited lblMsgEmpty: TLabel
-                Width = 136
-                Height = 63
-                Font.Height = -16
-                ExplicitWidth = 136
-                ExplicitHeight = 63
-              end
-              inherited pnlG: TPanel
-                Width = 161
-                Height = 546
-                ExplicitWidth = 161
-                ExplicitHeight = 546
-                inherited grid: TDBAdvGrid
-                  Width = 161
-                  Height = 546
-                  ExplicitWidth = 161
-                  ExplicitHeight = 546
-                end
-              end
-            end
-          end
         end
         object pnlLane: TPanel
           Left = 219
@@ -3565,112 +2921,8 @@ object Main2: TMain2
           Height = 546
           Align = alClient
           BevelOuter = bvNone
+          Caption = 'Panel for TFrameLane (frLane)'
           TabOrder = 1
-          inline frLane: TFrameLane
-            Left = 0
-            Top = 0
-            Width = 904
-            Height = 546
-            Align = alClient
-            TabOrder = 0
-            ExplicitWidth = 904
-            ExplicitHeight = 546
-            inherited rpnlCntrl: TRelativePanel
-              Height = 546
-              ControlCollection = <
-                item
-                  Control = frLane.spbtnMoveUp
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = True
-                  AlignVerticalCenterWithPanel = False
-                end
-                item
-                  Control = frLane.spbtnMoveDown
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frLane.spbtnMoveUp
-                end
-                item
-                  Control = frLane.spbtnSwitch
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frLane.spbtnMoveDown
-                end
-                item
-                  Control = frLane.spbtnDelete
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frLane.spbtnSwitch
-                end
-                item
-                  Control = frLane.spbtnDeleteForever
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frLane.spbtnDelete
-                end
-                item
-                  Control = frLane.ShapeLnBar1
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frLane.spbtnDeleteForever
-                end
-                item
-                  Control = frLane.spbtnReport
-                  AlignBottomWithPanel = False
-                  AlignHorizontalCenterWithPanel = True
-                  AlignLeftWithPanel = False
-                  AlignRightWithPanel = False
-                  AlignTopWithPanel = False
-                  AlignVerticalCenterWithPanel = False
-                  Below = frLane.ShapeLnBar1
-                end>
-              ExplicitHeight = 546
-            end
-            inherited pnlBody: TPanel
-              Width = 846
-              Height = 546
-              ExplicitWidth = 846
-              ExplicitHeight = 546
-              inherited pnlG: TPanel
-                Width = 846
-                Height = 546
-                ExplicitWidth = 846
-                ExplicitHeight = 546
-                inherited grid: TDBAdvGrid
-                  Width = 846
-                  Height = 546
-                  ExplicitWidth = 846
-                  ExplicitHeight = 546
-                  RowHeights = (
-                    32
-                    32)
-                end
-              end
-            end
-          end
         end
       end
     end
@@ -3743,125 +2995,12 @@ object Main2: TMain2
           item
             Items = <
               item
-                Action = Heat_MoveUp
-                Caption = '&Move Up'
-                ImageIndex = 6
-                ImageName = 'up'
-                ShortCut = 16422
-              end
-              item
-                Action = Heat_MoveDown
-                Caption = 'M&ove Down'
-                ImageIndex = 7
-                ImageName = 'down'
-                ShortCut = 16424
-              end
-              item
-                Action = Heat_ToggleStatus
-                Caption = '&Toggle Heat Status'
-                ImageName = 'HeatStatusToggle'
-                ShortCut = 16468
-              end
-              item
-                Action = Heat_NewRecord
-                Caption = '&New Heat...'
-                ImageIndex = 8
-                ImageName = 'new'
-                ShortCut = 16429
-              end
-              item
-                Action = Heat_Delete
-                Caption = '&Delete Heat...'
-                ImageIndex = 9
-                ImageName = 'delete'
-                ShortCut = 16430
-              end
-              item
-                Action = Heat_AutoBuild
-                Caption = '&AutoBuild Heats...'
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Heat_MarshallReport
-                Caption = 'Ma&rshall sheet*'
-                ImageIndex = 12
-                ImageName = 'marshall'
-              end
-              item
-                Action = Heat_TimeKeeperReport
-                Caption = 'T&ime Keeper sheet*'
-                ImageName = 'TimeKeeper'
-              end
-              item
-                Action = Heat_PrintSet
-                Caption = '&Print Set'
-                ImageName = 'BatchPrint'
-              end
-              item
-                Action = Heat_Report
-                Caption = '&Heat Report*'
-                ImageIndex = 15
-                ImageName = 'report'
-              end
-              item
                 Caption = '-'
-              end
-              item
-                Action = Heat_BatchBuildHeats
-                Caption = '&Build ALL Heats...'
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Heat_BatchMarshallReport
-                Caption = 'Print A&LL Marshall Reports...'
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Heat_BatchTimeKeeperReport
-                Caption = 'Print ALL Tim&ekeeper Reports...'
-                ImageName = 'AutoBuild'
-              end
-              item
-                Visible = False
-                Action = Heat_Renumber
-                ImageName = 'Cycle'
               end>
             Caption = '&Heats'
           end
           item
             Items = <
-              item
-                Action = Lane_MoveUp
-                Caption = '&Move Up'
-                ImageIndex = 6
-                ImageName = 'up'
-                ShortCut = 16422
-              end
-              item
-                Action = Lane_MoveDown
-                Caption = 'M&ove Down'
-                ImageIndex = 7
-                ImageName = 'down'
-                ShortCut = 16424
-              end
-              item
-                Action = Lane_SwapLanes
-                Caption = '&Swap Lanes...'
-                ImageName = 'Shuffle'
-              end
-              item
-                Action = Lane_EmptyLane
-                Caption = '&Empty Lane'
-                ImageIndex = 9
-                ImageName = 'delete'
-                ShortCut = 16472
-              end
-              item
-                Action = Lane_Strike
-                Caption = 'S&trike Entrant'
-                ImageName = 'DeleteForever'
-                ShortCut = 16430
-              end
               item
                 Action = Lane_Renumber
                 Caption = '&Renumber Lanes'
@@ -3978,13 +3117,15 @@ object Main2: TMain2
               end
               item
                 Action = SwimClub_Stats
-                Caption = 'C&lub Dashboard...'
+                Caption = 'C&lub Statistics...'
                 ImageIndex = 28
                 ImageName = 'query-stats'
               end
               item
                 Action = SwimClub_Reports
                 Caption = 'Cl&ub Reports...'
+                ImageIndex = 15
+                ImageName = 'report'
               end
               item
                 Caption = '-'
@@ -4012,246 +3153,32 @@ object Main2: TMain2
           item
             Items = <
               item
-                Action = frSession.actnSess_Visibilty
-                Caption = '&Toggle Visibility'
-                ImageIndex = 3
-                ImageName = 'visible_on'
+                Caption = '-'
               end
               item
-                Action = frSession.actnSess_Lock
-                Caption = '&Lock/Unlock'
-                ImageIndex = 16
-                ImageName = 'lock2'
-              end
-              item
-                Action = frSession.actnSess_Edit
-                Caption = '&Edit Session...'
-                ImageIndex = 20
-                ImageName = 'edit'
-              end
-              item
-                Action = frSession.actnSess_New
-                Caption = '&New Session...'
-                ImageIndex = 8
-                ImageName = 'new'
-              end
-              item
-                Action = frSession.actnSess_Clone
-                Caption = '&Clone Session...'
-                ImageIndex = 23
-                ImageName = 'clone'
-              end
-              item
-                Action = frSession.actnSess_Delete
-                Caption = '&Delete Session...'
-                ImageIndex = 9
-                ImageName = 'delete'
-              end
-              item
-                Action = frSession.actnSess_Report
-                Caption = '&Session Report...'
-                ImageIndex = 15
-                ImageName = 'report'
-              end
-              item
-                Action = frSession.actnSess_Export
-                Caption = 'E&xport...'
-                ImageIndex = 22
-                ImageName = 'out'
-              end
-              item
-                Action = frSession.actnSess_Import
-                Caption = '&Import...'
-                ImageIndex = 21
-                ImageName = 'in'
-              end
-              item
-                Action = frSession.actnSess_Search
-                Caption = 'Se&arch...'
-                ImageIndex = 33
-                ImageName = 'search'
-              end
-              item
-                Action = frSession.actnSess_Sort
-                Caption = 'S&ort...'
-                ImageIndex = 24
-                ImageName = 'sort'
-              end
-              item
-                Action = frSession.actnSess_Stats
-                ImageName = 'stats'
-              end
-              item
-                Action = frSession.actnSess_Schedule
-                Caption = 'Sc&hedule Session...'
+                Caption = '-'
               end>
             Caption = 'S&essions'
-            ImageName = 'EmptyFrame'
           end
           item
             Items = <
+              item
+                Caption = '-'
+              end
+              item
+                Caption = '-'
+              end
               item
                 Caption = '-'
               end>
             Caption = 'E&vents'
           end
           item
-            Items = <
-              item
-                Caption = '&Switch Name'
-                ImageIndex = 18
-                ImageName = 'switch'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Caption = 'M&ember'#39's Nomination Report'
-                ImageIndex = 15
-                ImageName = 'report'
-              end
-              item
-                Caption = '&Member'#39's Details...'
-                ImageName = 'Member'
-              end
-              item
-                Caption = '&Quick view PBs...'
-                ImageName = 'Member'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Caption = '&Clear event nominations...'
-                ImageIndex = 9
-                ImageName = 'delete'
-              end
-              item
-                Caption = 'C&lear session nominations...'
-                ImageIndex = 9
-                ImageName = 'delete'
-              end>
-            Caption = 'Nom&inate'
-          end
-          item
-            Items = <
-              item
-                Action = Heat_MoveUp
-                Caption = '&Move Up'
-                ImageIndex = 6
-                ImageName = 'up'
-                ShortCut = 16422
-              end
-              item
-                Action = Heat_MoveDown
-                Caption = 'M&ove Down'
-                ImageIndex = 7
-                ImageName = 'down'
-                ShortCut = 16424
-              end
-              item
-                Action = Heat_ToggleStatus
-                Caption = '&Toggle Heat Status'
-                ImageName = 'HeatStatusToggle'
-                ShortCut = 16468
-              end
-              item
-                Action = Heat_NewRecord
-                Caption = '&New Heat...'
-                ImageIndex = 8
-                ImageName = 'new'
-                ShortCut = 16429
-              end
-              item
-                Action = Heat_Delete
-                Caption = '&Delete Heat...'
-                ImageIndex = 9
-                ImageName = 'delete'
-                ShortCut = 16430
-              end
-              item
-                Action = Heat_AutoBuild
-                Caption = '&AutoBuild Heats...'
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Heat_MarshallReport
-                Caption = 'Ma&rshall sheet*'
-                ImageIndex = 12
-                ImageName = 'marshall'
-              end
-              item
-                Action = Heat_TimeKeeperReport
-                Caption = 'T&ime Keeper sheet*'
-                ImageName = 'TimeKeeper'
-              end
-              item
-                Action = Heat_PrintSet
-                Caption = '&Print Set'
-                ImageName = 'BatchPrint'
-              end
-              item
-                Action = Heat_Report
-                Caption = '&Heat Report*'
-                ImageIndex = 15
-                ImageName = 'report'
-              end
-              item
-                Action = Heat_BatchBuildHeats
-                Caption = '&Build ALL Heats...'
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Heat_BatchMarshallReport
-                Caption = 'Print A&LL Marshall Reports...'
-                ImageName = 'AutoBuild'
-              end
-              item
-                Action = Heat_BatchTimeKeeperReport
-                Caption = 'Print ALL Tim&ekeeper Reports...'
-                ImageName = 'AutoBuild'
-              end
-              item
-                Visible = False
-                Action = Heat_Renumber
-                ImageName = 'Cycle'
-              end>
             Caption = '&Heats'
+            ImageName = 'EmptyFrame'
           end
           item
             Items = <
-              item
-                Action = Lane_MoveUp
-                Caption = '&Move Up'
-                ImageIndex = 6
-                ImageName = 'up'
-                ShortCut = 16422
-              end
-              item
-                Action = Lane_MoveDown
-                Caption = 'M&ove Down'
-                ImageIndex = 7
-                ImageName = 'down'
-                ShortCut = 16424
-              end
-              item
-                Action = Lane_SwapLanes
-                Caption = '&Swap Lanes...'
-                ImageName = 'Shuffle'
-              end
-              item
-                Action = Lane_EmptyLane
-                Caption = '&Empty Lane'
-                ImageIndex = 9
-                ImageName = 'delete'
-                ShortCut = 16472
-              end
-              item
-                Action = Lane_Strike
-                Caption = 'S&trike Entrant'
-                ImageName = 'DeleteForever'
-                ShortCut = 16430
-              end
               item
                 Action = Lane_Renumber
                 Caption = '&Renumber Lanes'
@@ -4307,7 +3234,21 @@ object Main2: TMain2
               end
               item
                 Action = Member_Stats
-                Caption = 'Mem&ber'#39's Stats...'
+                Caption = '&Statistics...'
+                ImageIndex = 28
+                ImageName = 'query-stats'
+              end
+              item
+                Action = Member_Roles
+                Caption = '&Roles...'
+              end
+              item
+                Action = Member_ParaOlympic
+                Caption = '&Paraolympic...'
+              end
+              item
+                Action = Member_MetaData
+                Caption = 'Me&taData...'
               end
               item
                 Caption = '-'
@@ -4315,19 +3256,29 @@ object Main2: TMain2
               item
                 Action = Members_Export
                 Caption = '&Export Members...'
-                ImageName = 'Export'
+                ImageIndex = 22
+                ImageName = 'out'
               end
               item
                 Action = Members_Import
                 Caption = '&Import Members...'
-                ImageName = 'import'
+                ImageIndex = 21
+                ImageName = 'in'
               end
               item
                 Caption = '-'
               end
               item
+                Action = Member_Reports
+                Caption = 'Mem&ber Reports'
+                ImageIndex = 15
+                ImageName = 'report'
+              end
+              item
                 Action = Member_CheckData
                 Caption = '&Check Members Data...'
+                ImageIndex = 31
+                ImageName = 'cog'
               end>
             Caption = '&Members'
           end
@@ -4407,18 +3358,9 @@ object Main2: TMain2
           end>
         ActionBar = actnMainMenuBar
       end>
-    LinkedActionLists = <
-      item
-        ActionList = frHeat.actnlistHeat
-        Caption = 'actnlstHeats'
-      end
-      item
-        ActionList = frSession.actnlstSession
-        Caption = 'actnlstSession'
-      end>
     Images = IMG.imglstMenuBar
-    Left = 672
-    Top = 56
+    Left = 696
+    Top = 232
     StyleName = 'Platform Default'
     object Help_About: TAction
       Category = 'Help'
@@ -4449,80 +3391,12 @@ object Main2: TMain2
       Category = 'Tools'
       Caption = 'Qualify Times...'
     end
-    object Lane_MoveUp: TAction
-      Category = 'Lanes'
-      Caption = 'Move Up'
-      Hint = 'Move the entrant up a lane.'
-      ImageIndex = 6
-      ImageName = 'Up'
-      ShortCut = 16422
-    end
-    object Lane_MoveDown: TAction
-      Category = 'Lanes'
-      Caption = 'Move Down'
-      Hint = 'Move the entrant down a lane.'
-      ImageIndex = 7
-      ImageName = 'Down'
-      ShortCut = 16424
-    end
-    object Lane_SwapLanes: TAction
-      Category = 'Lanes'
-      Caption = 'Swap Lanes...'
-      Hint = 'Opens the swap lanes dialogue.'
-      ImageName = 'Shuffle'
-    end
-    object Lane_EmptyLane: TAction
-      Category = 'Lanes'
-      Caption = 'Empty Lane'
-      Hint = 'Empty the lane. Members remain nominated.'
-      ImageIndex = 9
-      ImageName = 'Delete'
-      ShortCut = 16472
-    end
-    object Lane_Strike: TAction
-      Category = 'Lanes'
-      Caption = 'Strike Entrant'
-      Hint = 'Remove nomination and empty the lane.'
-      ImageName = 'DeleteForever'
-      ShortCut = 16430
-    end
     object Lane_Renumber: TAction
       Category = 'Lanes'
       Caption = 'Renumber Lanes'
       Hint = 'Sort lane placements. '
       ImageIndex = 24
       ImageName = 'Sort'
-    end
-    object Heat_MoveUp: TAction
-      Category = 'Heats'
-      Caption = 'Move Up'
-      Hint = 'Move the heat up the stack.'
-      ImageIndex = 6
-      ImageName = 'Up'
-      ShortCut = 16422
-    end
-    object Heat_MoveDown: TAction
-      Category = 'Heats'
-      Caption = 'Move Down'
-      Hint = 'Move the heat down the stack.'
-      ImageIndex = 7
-      ImageName = 'Down'
-      ShortCut = 16424
-    end
-    object Heat_ToggleStatus: TAction
-      Category = 'Heats'
-      Caption = 'Toggle Heat Status'
-      Hint = 'Toggle the heat status'
-      ImageName = 'HeatStatusToggle'
-      ShortCut = 16468
-    end
-    object Heat_NewRecord: TAction
-      Category = 'Heats'
-      Caption = 'New Heat...'
-      Hint = 'Create a new heat'
-      ImageIndex = 8
-      ImageName = 'New'
-      ShortCut = 16429
     end
     object SCM_Refresh: TAction
       Category = 'SCM2'
@@ -4531,70 +3405,9 @@ object Main2: TMain2
       ImageIndex = 5
       ImageName = 'Refresh'
     end
-    object Heat_Delete: TAction
-      Category = 'Heats'
-      Caption = 'Delete Heat...'
-      Hint = 'Delete the selected heat.'
-      ImageIndex = 9
-      ImageName = 'Delete'
-      ShortCut = 16430
-    end
-    object Heat_AutoBuild: TAction
-      Category = 'Heats'
-      Caption = 'AutoBuild Heats...'
-      Hint = 'Auto-build heats.'
-      ImageName = 'AutoBuild'
-    end
-    object Heat_MarshallReport: TAction
-      Category = 'Heats'
-      Caption = 'Marshall sheet*'
-      Hint = 'Display a marshall'#39's sheet for all heats.'
-      ImageIndex = 12
-      ImageName = 'Marshall'
-    end
-    object Heat_TimeKeeperReport: TAction
-      Category = 'Heats'
-      Caption = 'Time Keeper sheet*'
-      Hint = 'Display a timekeeper'#39's sheet for the selected heat.'
-      ImageName = 'TimeKeeper'
-    end
     object Tools_Swimmercategory: TAction
       Category = 'Tools'
       Caption = 'Swimmer Categories...'
-    end
-    object Heat_PrintSet: TAction
-      Category = 'Heats'
-      Caption = 'Print Set'
-      Hint = 'Print all sheets (marshall and timekeepers).'
-      ImageName = 'BatchPrint'
-    end
-    object Heat_Report: TAction
-      Category = 'Heats'
-      Caption = 'Heat Report*'
-      Hint = 'Display a heat report.'
-      ImageIndex = 15
-      ImageName = 'Report'
-    end
-    object Heat_BatchBuildHeats: TAction
-      Category = 'Heats'
-      Caption = 'Build ALL Heats...'
-      ImageName = 'AutoBuild'
-    end
-    object Heat_BatchMarshallReport: TAction
-      Category = 'Heats'
-      Caption = 'Print ALL Marshall Reports...'
-      ImageName = 'AutoBuild'
-    end
-    object Heat_BatchTimeKeeperReport: TAction
-      Category = 'Heats'
-      Caption = 'Print ALL Timekeeper Reports...'
-      ImageName = 'AutoBuild'
-    end
-    object Heat_Renumber: TAction
-      Category = 'Heats'
-      Caption = 'Renumber'
-      ImageName = 'Cycle'
-      Visible = False
     end
     object Tools_Score: TAction
       Category = 'Tools'
@@ -4698,12 +3511,14 @@ object Main2: TMain2
     object Members_Export: TAction
       Category = 'Members'
       Caption = 'Export Members...'
-      ImageName = 'Export'
+      ImageIndex = 22
+      ImageName = 'out'
     end
     object Members_Import: TAction
       Category = 'Members'
       Caption = 'Import Members...'
-      ImageName = 'import'
+      ImageIndex = 21
+      ImageName = 'in'
     end
     object SwimClub_Houses: TAction
       Category = 'SwimClub'
@@ -4713,7 +3528,7 @@ object Main2: TMain2
     end
     object SwimClub_Stats: TAction
       Category = 'SwimClub'
-      Caption = 'Club Dashboard...'
+      Caption = 'Club Statistics...'
       ImageIndex = 28
       ImageName = 'Query-Stats'
     end
@@ -4738,19 +3553,43 @@ object Main2: TMain2
     end
     object Member_Stats: TAction
       Category = 'Members'
-      Caption = 'Member'#39's Stats...'
+      Caption = 'Statistics...'
+      ImageIndex = 28
+      ImageName = 'query-stats'
       OnExecute = Member_StatsExecute
       OnUpdate = GenericActionUpdate
     end
     object Member_CheckData: TAction
       Category = 'Members'
       Caption = 'Check Members Data...'
+      ImageIndex = 31
+      ImageName = 'cog'
     end
     object SwimClub_Reports: TAction
       Category = 'SwimClub'
       Caption = 'Club Reports...'
+      ImageIndex = 15
+      ImageName = 'report'
       OnExecute = SwimClub_ReportsExecute
       OnUpdate = GenericActionUpdate
+    end
+    object Member_Roles: TAction
+      Category = 'Members'
+      Caption = 'Roles...'
+    end
+    object Member_ParaOlympic: TAction
+      Category = 'Members'
+      Caption = 'Paraolympic...'
+    end
+    object Member_MetaData: TAction
+      Category = 'Members'
+      Caption = 'MetaData...'
+    end
+    object Member_Reports: TAction
+      Category = 'Members'
+      Caption = 'Member Reports'
+      ImageIndex = 15
+      ImageName = 'report'
     end
   end
 end

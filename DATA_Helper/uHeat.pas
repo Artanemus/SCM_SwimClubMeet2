@@ -145,8 +145,6 @@ begin
   if (uHeat.HeatStatusID() = 1) or (DoExclude = false) then
   begin
     //if (uHeat.HeatStatusID() = 1) or (DoExclude = false) then
-
-
     CORE.qryLane.DisableControls;
     try
       doRenumber := uHeat.DeleteLanes();
@@ -164,7 +162,10 @@ begin
       end
     finally
       if doRenumber then
+      begin
         uHeat.RenumberLanes(false); // don't relocate  ... depreciated
+        // ALT method ... call EXEC -- dbo.Renumber
+      end;
       CORE.qryLane.ApplyMaster;
       CORE.qryLane.EnableControls;
     end;

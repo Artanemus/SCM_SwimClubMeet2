@@ -11,6 +11,7 @@ uses
 
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.Grids, Vcl.Menus, Vcl.ActnList, Vcl.Buttons, vcl.ImgList,
+  Vcl.ActnMan,
 
   AdvUtil, AdvObj, AdvGrid, DBAdvGrid, Vcl.WinXCtrls,
 
@@ -32,6 +33,7 @@ type
       Boolean) of object;
 
   TFrameEvent = class(TFrame)
+    actnEv_ClearCell: TAction;
     actnEv_Delete: TAction;
     actnEv_EventType: TAction;
     actnEv_Export: TAction;
@@ -47,7 +49,8 @@ type
     actnEv_Schedule: TAction;
     actnEv_SemiFinals: TAction;
     actnEv_Stats: TAction;
-    actnlstEvent: TActionList;
+    actnlist: TActionList;
+    ClearCell1: TMenuItem;
     DeleteEvent1: TMenuItem;
     EventReport1: TMenuItem;
     EventType1: TMenuItem;
@@ -59,6 +62,7 @@ type
     NewEvent1: TMenuItem;
     oogleGridView1: TMenuItem;
     pnlBody: TPanel;
+    pnlG: TPanel;
     pumenuEvent: TPopupMenu;
     rpnlCntrl: TRelativePanel;
     ShapeEvBar1: TShape;
@@ -70,9 +74,6 @@ type
     spbtnEvNew: TSpeedButton;
     spbtnEvReport: TSpeedButton;
     spbtnEvUp: TSpeedButton;
-    pnlG: TPanel;
-    actnEv_ClearCell: TAction;
-    ClearCell1: TMenuItem;
     procedure actnEv_DeleteExecute(Sender: TObject);
     procedure actnEv_DeleteUpdate(Sender: TObject);
     procedure actnEv_EventTypeExecute(Sender: TObject);
@@ -98,18 +99,14 @@ type
     FOnGridViewChange: TFrameNotifyEvent_GridViewChange;
     procedure SetGridView_ColVisibility;
     procedure SetGridView_IconIndex;
-
   protected
     procedure Loaded; override;
-
   public
-
+    procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
     procedure UpdateUI(DoFullUpdate: Boolean = false);
-
     // Notify main form of a grid view change (expand/collapse)...
     property OnGridViewChanged: TFrameNotifyEvent_GridViewChange
       read FOnGridViewChange write FOnGridViewChange;
-
   end;
 
 implementation
@@ -414,6 +411,27 @@ begin
         end;
       finally
         grid.EndUpdate;
+      end;
+    end;
+  end;
+end;
+
+procedure TFrameEvent.LinkActionsToMenu(AParentMenuItem: TActionClientItem);
+var
+  i: integer;
+  NewItem: TActionClientItem;
+  AAction: TAction;
+begin
+  if not Assigned(AParentMenuItem) then exit;
+  for i := 0 to actnlist.ActionCount - 1 do
+  begin
+    AAction := TAction(actnlist.Actions[i]);
+    if Assigned(AAction) then
+    begin
+      NewItem := AParentMenuItem.Items.Add;
+      if Assigned(NewItem) then
+      begin
+        NewItem.Action := AAction;
       end;
     end;
   end;

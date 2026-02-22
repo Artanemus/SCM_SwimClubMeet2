@@ -2,7 +2,7 @@ object Main2: TMain2
   Left = 0
   Top = 0
   Caption = 'SwimClubMeet V2 (Build #)'
-  ClientHeight = 799
+  ClientHeight = 819
   ClientWidth = 1137
   Color = clBtnFace
   CustomTitleBar.Control = pnlTitleBar
@@ -2785,7 +2785,7 @@ object Main2: TMain2
   object StatusBar: TStatusBar
     AlignWithMargins = True
     Left = 3
-    Top = 757
+    Top = 777
     Width = 1131
     Height = 39
     Font.Charset = DEFAULT_CHARSET
@@ -2827,7 +2827,7 @@ object Main2: TMain2
     Left = 3
     Top = 89
     Width = 1131
-    Height = 662
+    Height = 682
     Margins.Top = 10
     ActivePage = tabHeats
     Align = alClient
@@ -2839,20 +2839,18 @@ object Main2: TMain2
         Left = 0
         Top = 0
         Width = 417
-        Height = 626
+        Height = 646
         Margins.Top = 10
         Align = alLeft
         BevelOuter = bvNone
         Caption = 'Panel for TFrameSession (frSession)'
         TabOrder = 0
-        ExplicitLeft = -1
-        ExplicitTop = 4
       end
       object pnlEvent: TPanel
         Left = 417
         Top = 0
         Width = 706
-        Height = 626
+        Height = 646
         Align = alClient
         BevelOuter = bvNone
         Caption = 'Panel for TFrameEvent (frEvent)'
@@ -2866,7 +2864,7 @@ object Main2: TMain2
         Left = 0
         Top = 0
         Width = 433
-        Height = 626
+        Height = 646
         Align = alLeft
         BevelOuter = bvNone
         Caption = 'Panel for TFrameFilterMember (frFilterMember)'
@@ -2876,7 +2874,7 @@ object Main2: TMain2
         Left = 433
         Top = 0
         Width = 690
-        Height = 626
+        Height = 646
         Align = alClient
         BevelOuter = bvNone
         Caption = 'Panel for TFrameNominate (frNominate)'
@@ -2900,7 +2898,7 @@ object Main2: TMain2
         Left = 0
         Top = 80
         Width = 1123
-        Height = 546
+        Height = 566
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
@@ -2908,7 +2906,7 @@ object Main2: TMain2
           Left = 0
           Top = 0
           Width = 219
-          Height = 546
+          Height = 566
           Align = alLeft
           BevelOuter = bvNone
           Caption = 'Panel for TFrameHeat (frHeat)'
@@ -2918,7 +2916,7 @@ object Main2: TMain2
           Left = 219
           Top = 0
           Width = 904
-          Height = 546
+          Height = 566
           Align = alClient
           BevelOuter = bvNone
           Caption = 'Panel for TFrameLane (frLane)'
@@ -2929,152 +2927,6 @@ object Main2: TMain2
   end
   object actnManager: TActionManager
     ActionBars = <
-      item
-        Items = <
-          item
-            Items = <
-              item
-                Caption = '-'
-              end>
-            Caption = '&Session'
-          end
-          item
-            Items = <
-              item
-                Action = File_ExportClub
-                Caption = 'E&xport Club...'
-                ImageName = 'Export'
-              end
-              item
-                Action = File_ImportClub
-                Caption = '&Import Club...'
-                ImageName = 'import'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = SwimClub_Switch
-                Caption = '&Switch Clubs ...'
-                ImageIndex = 18
-                ImageName = 'switch'
-              end
-              item
-                Action = SwimClub_Manage
-                Caption = '&Manage Swim Clubs ...'
-                ImageName = 'folder_managed'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = File_Exit
-                Caption = '&Exit'
-                ImageIndex = 32
-                ImageName = 'exit'
-              end>
-            Caption = '&File'
-          end
-          item
-            Items = <
-              item
-                Caption = '-'
-              end
-              item
-                Caption = '-'
-              end>
-            Caption = '&Events'
-          end
-          item
-            Items = <
-              item
-                Caption = '-'
-              end>
-            Caption = '&Nominate'
-          end
-          item
-            Items = <
-              item
-                Caption = '-'
-              end>
-            Caption = '&Heats'
-          end
-          item
-            Items = <
-              item
-                Action = Lane_Renumber
-                Caption = '&Renumber Lanes'
-                ImageIndex = 24
-                ImageName = 'sort'
-              end>
-            Caption = 'En&trants'
-          end
-          item
-            Items = <
-              item
-                Action = Tools_QualifyTimes
-                Caption = '&Qualify Times...'
-              end
-              item
-                Action = Tools_Swimmercategory
-                Caption = 'S&wimmer Categories...'
-              end
-              item
-                Action = Tools_Score
-                Caption = '&Score, Place, Points...'
-              end
-              item
-                Action = Tools_Divisions
-                Caption = '&Divisions...'
-              end
-              item
-                Action = Tools_LeaderBoard
-                Caption = '&LeaderBoard...'
-              end
-              item
-                Action = Tools_DisqualifyCodes
-                Caption = 'D&isqualification Codes...'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = Tools_Preferences
-                Caption = '&Preferences...'
-              end>
-            Caption = 'T&ools'
-          end
-          item
-            Items = <
-              item
-                Action = Help_About
-                Caption = '&About...'
-                ImageIndex = 29
-                ImageName = 'info'
-              end
-              item
-                Action = Help_LocalHelp
-                Caption = '&Help...'
-                ImageIndex = 30
-                ImageName = 'help'
-              end
-              item
-                Action = Help_OnlineHelp
-                Caption = '&Online Help...'
-                ImageIndex = 30
-                ImageName = 'help'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Action = Help_Website
-                Caption = '&SCM2 Homepage...'
-                ImageName = 'home'
-              end>
-            Caption = 'He&lp'
-          end>
-      end
       item
         Items = <
           item
@@ -3154,9 +3006,6 @@ object Main2: TMain2
             Items = <
               item
                 Caption = '-'
-              end
-              item
-                Caption = '-'
               end>
             Caption = 'S&essions'
           end
@@ -3164,63 +3013,27 @@ object Main2: TMain2
             Items = <
               item
                 Caption = '-'
-              end
-              item
-                Caption = '-'
-              end
-              item
-                Caption = '-'
               end>
             Caption = 'E&vents'
           end
           item
+            Items = <
+              item
+                Caption = '-'
+              end>
             Caption = '&Heats'
-            ImageName = 'EmptyFrame'
           end
           item
             Items = <
               item
-                Action = Lane_Renumber
-                Caption = '&Renumber Lanes'
-                ImageIndex = 24
-                ImageName = 'sort'
+                Caption = '-'
               end>
             Caption = '&Lanes'
           end
           item
             Items = <
               item
-                Action = Team_ClearSlot
-                Caption = '&Empty Slot'
-                ImageIndex = 9
-                ImageName = 'delete'
-              end
-              item
-                Action = Team_StrikeSlot
-                Caption = '&Strike Slot'
-                ImageName = 'DeleteForever'
-              end
-              item
-                Action = Team_AddSlot
-                Caption = '&Add Slot'
-                ImageName = 'add'
-              end
-              item
-                Action = Team_RemoveSlot
-                Caption = '&Remove Slot'
-                ImageName = 'remove'
-              end
-              item
-                Action = Team_MoveUpSlot
-                Caption = '&Move Up'
-                ImageIndex = 6
-                ImageName = 'up'
-              end
-              item
-                Action = Team_MoveDownSlot
-                Caption = 'M&ove Down'
-                ImageIndex = 7
-                ImageName = 'down'
+                Caption = '-'
               end>
             Caption = '&Teams'
           end
@@ -3358,9 +3171,13 @@ object Main2: TMain2
           end>
         ActionBar = actnMainMenuBar
       end>
+    LinkedActionLists = <
+      item
+        Caption = '(No Name)'
+      end>
     Images = IMG.imglstMenuBar
-    Left = 696
-    Top = 232
+    Left = 424
+    Top = 240
     StyleName = 'Platform Default'
     object Help_About: TAction
       Category = 'Help'
@@ -3390,13 +3207,6 @@ object Main2: TMain2
     object Tools_QualifyTimes: TAction
       Category = 'Tools'
       Caption = 'Qualify Times...'
-    end
-    object Lane_Renumber: TAction
-      Category = 'Lanes'
-      Caption = 'Renumber Lanes'
-      Hint = 'Sort lane placements. '
-      ImageIndex = 24
-      ImageName = 'Sort'
     end
     object SCM_Refresh: TAction
       Category = 'SCM2'
@@ -3452,40 +3262,6 @@ object Main2: TMain2
     object SCM_StatusBar: TAction
       Category = 'SCM2'
       Caption = 'SCM_StatusBar'
-    end
-    object Team_ClearSlot: TAction
-      Category = 'Teams'
-      Caption = 'Empty Slot'
-      Hint = 'Clear team entrant from slot.'
-      ImageIndex = 9
-      ImageName = 'Delete'
-    end
-    object Team_StrikeSlot: TAction
-      Category = 'Teams'
-      Caption = 'Strike Slot'
-      ImageName = 'DeleteForever'
-    end
-    object Team_AddSlot: TAction
-      Category = 'Teams'
-      Caption = 'Add Slot'
-      ImageName = 'add'
-    end
-    object Team_RemoveSlot: TAction
-      Category = 'Teams'
-      Caption = 'Remove Slot'
-      ImageName = 'remove'
-    end
-    object Team_MoveUpSlot: TAction
-      Category = 'Teams'
-      Caption = 'Move Up'
-      ImageIndex = 6
-      ImageName = 'Up'
-    end
-    object Team_MoveDownSlot: TAction
-      Category = 'Teams'
-      Caption = 'Move Down'
-      ImageIndex = 7
-      ImageName = 'Down'
     end
     object SwimClub_Switch: TAction
       Category = 'SwimClub'

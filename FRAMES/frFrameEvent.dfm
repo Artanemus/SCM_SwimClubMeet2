@@ -718,7 +718,6 @@ object FrameEvent: TFrameEvent
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitLeft = 1
         ColWidths = (
           20
           0
@@ -991,7 +990,7 @@ object FrameEvent: TFrameEvent
       Spacing = 5
     end
   end
-  object actnlstEvent: TActionList
+  object actnlist: TActionList
     Images = IMG.imglstMenuBar
     Left = 200
     Top = 104

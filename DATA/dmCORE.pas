@@ -154,6 +154,7 @@ type
     qryMemberLinkHouseID: TIntegerField;
     qryMemberLinkIsArchived: TBooleanField;
     qryMemberLinkIsArchivedAsInt: TIntegerField;
+    qryNominees: TFDQuery;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterEdit(DataSet: TDataSet);

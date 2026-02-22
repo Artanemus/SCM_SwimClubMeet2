@@ -34,7 +34,7 @@ uses
   frFrameNavEv,
   frFrameNavEvItem,
   frFrameHeat,
-  frFrameLane;
+  frFrameLane, Vcl.Menus;
 
 type
   TMain2 = class(TForm)
@@ -50,7 +50,6 @@ type
     Help_LocalHelp: TAction;
     Help_OnlineHelp: TAction;
     Help_Website: TAction;
-    Lane_Renumber: TAction;
     Members_Export: TAction;
     Members_Import: TAction;
     Members_Manage: TAction;
@@ -68,12 +67,6 @@ type
     tabHeats: TTabSheet;
     tabNominate: TTabSheet;
     tabSession: TTabSheet;
-    Team_AddSlot: TAction;
-    Team_ClearSlot: TAction;
-    Team_MoveDownSlot: TAction;
-    Team_MoveUpSlot: TAction;
-    Team_RemoveSlot: TAction;
-    Team_StrikeSlot: TAction;
     Tools_DisqualifyCodes: TAction;
     Tools_Divisions: TAction;
     Tools_FireDAC: TAction;
@@ -277,6 +270,8 @@ begin
 end;
 
 procedure TMain2.FormCreate(Sender: TObject);
+var
+  item: TActionListItem;
 begin
 
   // Setting font size at design time is ignored.
@@ -332,6 +327,10 @@ begin
   frSession.Parent := pnlSession;
   frSession.Align := alClient;
   pnlSession.Caption := '';
+  // in order for menu item 'Session' to be enabled, a single item (seperator)
+  // has to be added at design time.
+  {TODO -oBSA -cGeneral : Why is this so and how to fix it.}
+  frSession.LinkActionsToMenu(TActionClientItem(actnManager.ActionBars[0].Items[2]));
 
   frEvent := TFrameEvent.Create(Self);
   frEvent.Parent := pnlEvent;
@@ -339,11 +338,13 @@ begin
   frEvent.actnEv_GridView.Checked := false; // default: collapsed gridview.
   frEvent.OnGridViewChanged := HandleOnGridViewChange; // assign event handle.
   pnlEvent.Caption := '';
+  frEvent.LinkActionsToMenu(TActionClientItem(actnManager.ActionBars[0].Items[3]));
 
   frHeat := TFrameHeat.Create(Self);
   frHeat.Parent := pnlHeat;
   frHeat.Align := alClient;
   pnlHeat.Caption := '';
+  frHeat.LinkActionsToMenu(TActionClientItem(actnManager.ActionBars[0].Items[4]));
 
   frLane := TFrameLane.Create(Self);
   frLane.Parent := pnlLane;
@@ -351,6 +352,7 @@ begin
   // Adjust display of columns based on Settings.EnableDQcodes state.
   frLane.OnPreferenceChange;
   pnlLane.Caption := '';
+  frLane.LinkActionsToMenu(TActionClientItem(actnManager.ActionBars[0].Items[5]));
 
   frNavEv := TFrameNavEv.Create(Self);
   frNavEv.Parent := pnlNavEv;
@@ -366,7 +368,18 @@ begin
   frNominate.Parent := pnlNominate;
   frNominate.Align := alClient;
   pnlNominate.Caption := '';
+
+
   { --------------------------------------------- }
+
+  item := TActionListItem(actnManager.LinkedActionLists.Add()); // TCollectionItem.
+  item.ActionList := frSession.actnlist;
+  item := TActionListItem(actnManager.LinkedActionLists.Add()); // TCollectionItem.
+  item.ActionList := frEvent.actnlist;
+  item := TActionListItem(actnManager.LinkedActionLists.Add()); // TCollectionItem.
+  item.ActionList := frHeat.actnlist;
+  item := TActionListItem(actnManager.LinkedActionLists.Add()); // TCollectionItem.
+  item.ActionList := frLane.actnlist;
 
   SetPanelAndFrame_Visibility(); // hide all panels displaying frames.
 

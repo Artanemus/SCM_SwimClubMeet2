@@ -13663,8 +13663,8 @@ object IMG: TIMG
     Height = 36
     ApplyFixedColorToRootOnly = True
     Size = 36
-    Left = 984
-    Top = 88
+    Left = 880
+    Top = 168
   end
   object imglstLaneCntrl: TSVGIconVirtualImageList
     Images = <
@@ -13717,6 +13717,11 @@ object IMG: TIMG
         CollectionIndex = 66
         CollectionName = 'swap'
         Name = 'swap'
+      end
+      item
+        CollectionIndex = 90
+        CollectionName = 'query-stats'
+        Name = 'query-stats'
       end>
     ImageCollection = CollectionCore
     Width = 48
@@ -14187,8 +14192,8 @@ object IMG: TIMG
     Width = 48
     Height = 48
     Size = 48
-    Left = 984
-    Top = 32
+    Left = 880
+    Top = 112
   end
   object imglstHeatStrokeEx: TSVGIconVirtualImageList
     Images = <

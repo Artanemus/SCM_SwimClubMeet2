@@ -573,7 +573,7 @@ object CORE: TCORE
       'SELECT L.[LaneID]'
       '      ,L.[LaneNum]'
       '      ,L.[RaceTime]'
-      '      ,L.[ClubRecord]'
+      '      ,Nominee.[ClubRecord]'
       '      ,L.[IsDisqualified]'
       '      ,L.[IsScratched]'
       '      ,L.[HeatID]'
@@ -749,6 +749,7 @@ object CORE: TCORE
         DescFields = 'EventID'
       end>
     IndexFieldNames = 'NomineeID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn.ss.zzz'
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Nominee'
@@ -770,18 +771,19 @@ object CORE: TCORE
       #9','#39', '#39
       #9',UPPER([LastName])'
       #9'), 0, 48) AS FullName '
+      ' ,ClubRecord'
       '  FROM [SwimClubMeet2].[dbo].[Nominee]'
       
         '  LEFT JOIN [Member] ON [Nominee].[MemberID] = [Member].[MemberI' +
         'D]'
       '')
     Left = 848
-    Top = 216
+    Top = 128
   end
   object dsNominee: TDataSource
     DataSet = qryNominee
-    Left = 960
-    Top = 216
+    Left = 944
+    Top = 128
   end
   object qryTeam: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -1609,11 +1611,14 @@ object CORE: TCORE
   end
   object qryMemberMetrics: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Connection = SCM2.scmConnection
     SQL.Strings = (
       'USE SwimClubMeet2;'
       ''
       'DECLARE @MemberID INTEGER = :MEMBERID;  -- :MEMBERID'
-      'DECLARE @SeedDate DATETIME = :SeedDate;'
+      
+        'DECLARE @SeedDate DATETIME = :SeedDate; -- AsOf: Today, Session,' +
+        ' Meet, Season - DATE'
       'DECLARE @EventID INTEGER = :EVENTID;'
       'DECLARE @Algorithm INTEGER = :ALGORITHM; -- 1; -- '
       'DECLARE @CalcDefRT INTEGER = :CALCDEFRT;  --1; -- '
@@ -1621,6 +1626,8 @@ object CORE: TCORE
       ''
       'DECLARE @DistanceID INTEGER;'
       'DECLARE @StrokeID INTEGER;'
+      'DECLARE @AGE AS INTEGER;'
+      'DECLARE @DOB AS DATETIME;'
       ''
       
         'SET @DistanceID = (SELECT DistanceID FROM dbo.Event WHERE [Event' +
@@ -1628,26 +1635,31 @@ object CORE: TCORE
       
         'SET @StrokeID = (SELECT StrokeID FROM dbo.Event WHERE [Event].Ev' +
         'entID = @EventID);'
+      
+        'SET @DOB = (SELECT DOB FROM dbo.Member WHERE Member.MemberID = @' +
+        'MemberID);'
+      'SET @AGE = (SELECT dbo.SwimmerAge(@SeedDate,@DOB));'
       ''
       'if @SeedDate IS NULL SET @SeedDate = GETDATE();'
       ''
       'SELECT m.MemberID,'
-      '  dbo.SwimmerAge(@SeedDate, m.DOB) AS DOB,'
+      '  @DOB AS DOB,'
       
         '  dbo.TimeToBeat(@Algorithm, @CalcDefRT, @Percent, m.MemberID, @' +
         'DistanceID, @StrokeID, @SeedDate) AS TTB,'
       
         '  dbo.PersonalBest(m.MemberID, @DistanceID, @StrokeID, @SeedDate' +
         ') AS PB,'
-      '  dbo.SwimmerAge(@SeedDate,m.DOB) AS Age, '
-      '  PBT.[RaceTime] AS SeedTime'
+      '  @AGE AS Age, '
+      '  PBT.[RaceTime] AS PBSeedTime,'
+      '  dbo.ClubRaceTimeRecord(@EventID, @AGE, m.GenderID)'
       'FROM [SwimClubMeet2].[dbo].[Member] m'
       
         'LEFT JOIN [dbo].[PB] AS PBT ON m.MemberID = PBT.MemberID AND PBT' +
         '.DistanceID = @DistanceID AND PBT.StrokeID = @StrokeID'
       'WHERE m.MemberID = @MemberID;')
     Left = 848
-    Top = 152
+    Top = 336
     ParamData = <
       item
         Name = 'MEMBERID'
@@ -1708,5 +1720,26 @@ object CORE: TCORE
     DataSet = tblDisqualifyCode
     Left = 176
     Top = 640
+  end
+  object qryNominees: TFDQuery
+    Connection = SCM2.scmConnection
+    SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
+      'DECLARE @EventID as INTEGER;'
+      'SET @EventID = :EVENTID;'
+      ''
+      'SELECT MemberID, EventID, PB, TTB, ClubRecord'
+      '    FROM [SwimClubMeet2].[dbo].[Nominee]'
+      '    WHERE EventID = @EventID;')
+    Left = 848
+    Top = 280
+    ParamData = <
+      item
+        Name = 'EVENTID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = Null
+      end>
   end
 end

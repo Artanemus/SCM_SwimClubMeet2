@@ -18,8 +18,16 @@ uses
   function GetSeedDate(): TDate;
   function NewNominee(aMemberID, aEventID: integer): integer;
   function DeleteNominee(aMemberID, aEventID: integer): boolean;
+  function RefreshStats(aEventID: integer): boolean;
+  function RefreshStat(aEventID, aMemberID: integer): boolean;
   procedure ToogleNomination();
 
+  procedure GetStatSettings(
+    out Algorithm: integer; out CalcDefRT: integer; out Percent: double);
+
+  procedure GetMetrics(aEventID, aMemberID: integer;
+    out TTB: TDateTime; out PB: TDateTime;
+    out ClubRecord: TDateTime; out PBSeedTime: TDateTime; out AGE: integer);
 
 implementation
 
@@ -83,62 +91,159 @@ begin
 
 end;
 
+procedure GetStatSettings(
+  out Algorithm: integer; out CalcDefRT: integer; out Percent: double);
+begin
+  if Assigned(Settings) then //Algorithm
+  begin
+    Algorithm := Settings.ttb_algorithmIndx;
+    CalcDefRT := ORD(Settings.ttb_calcDefRT);
+    Percent := Settings.ttb_calcDefRTpercent;
+  end
+  else
+  begin
+    { D E F A U L T S }
+    // Calculate the entrant's average RT from top 3 race-times
+    Algorithm := 1;
+    // If no RT exists ...
+    // 0 - ignore
+    // 1 - Calculate race-time from the average times of (filtered) swimmers
+    // 2 - use SeedTime
+    CalcDefRT := 1;
+    // The (bottom) percent to select from ...
+    Percent := 50.0;
+  end;
+end;
+
+procedure GetMetrics(aEventID, aMemberID: integer;
+  out TTB: TDateTime; out PB: TDateTime;
+  out ClubRecord: TDateTime; out PBSeedTime: TDateTime; out AGE: integer);
+var
+  Algorithm, CalcDefRT: integer;
+  Percent: double;
+Begin
+  // initialise out params.
+  TTB := 0;
+  PB := 0;
+  ClubRecord := 0;
+  PBSeedTime := 0;
+  AGE := 0;
+
+  GetStatSettings(Algorithm, CalcDefRT, Percent);
+  CORE.qryMemberMetrics.Connection := SCM2.scmConnection;
+  CORE.qryMemberMetrics.Close;
+  CORE.qryMemberMetrics.ParamByName('MEMBERID').AsInteger := aMemberID;
+  CORE.qryMemberMetrics.ParamByName('EVENTID').AsInteger := aEventID;
+  CORE.qryMemberMetrics.ParamByName('SEEDDATE').AsDateTime :=
+    uNominee.GetSeedDate();
+  CORE.qryMemberMetrics.ParamByName('ALGORITHM').AsInteger := Algorithm;
+  CORE.qryMemberMetrics.ParamByName('CALCDEFRT').AsInteger := CalcDefRT;
+  CORE.qryMemberMetrics.ParamByName('PERCENT').AsFloat := Percent;
+  CORE.qryMemberMetrics.Prepare;
+  try
+    CORE.qryMemberMetrics.Open;
+    if CORE.qryMemberMetrics.Active then
+    begin
+      // predicted time to beat (based on historical performance data)
+      TTB := CORE.qryMemberMetrics.ParamByName('TTB').AsDateTime;
+      // personal best time for [stroke, distance].
+      PB := CORE.qryMemberMetrics.ParamByName('PB').AsDateTime;
+      // club record race-time for [age, gender, stroke, distance].
+      ClubRecord := CORE.qryMemberMetrics.ParamByName('ClubRecord').AsDateTime;
+      // an estimated race-time assigned during nomination..
+      // i.e. new member with no historical data or member hasn't ever
+      // swum this [stroke, distance].
+      PBSeedTime := CORE.qryMemberMetrics.ParamByName('PBSeedTime').AsDateTime;
+      // members AGE as of SEEDDATE.
+      AGE := CORE.qryMemberMetrics.ParamByName('AGE').AsInteger;
+    end;
+  except on E: EFDDBEngineException do
+    exit;
+  end;
+End;
+
+function RefreshStats(aEventID: integer): boolean;
+var
+  aMemberID: integer;
+begin
+  result := false;
+  if aEventID = 0 then exit;
+  if not Assigned(CORE) then exit;
+  if not CORE.IsActive then exit;
+
+  CORE.qryNominees.Connection := SCM2.scmConnection;
+  CORE.qryNominees.ParamByName('EVENTID').AsInteger := aEventID;
+  CORE.qryNominees.Prepare;
+  try
+    CORE.qryNominees.Open;
+    if CORE.qryNominees.Active then
+    begin
+      while not CORE.qryNominees.Eof do
+      begin
+        aMemberID := CORE.qryNominees.FieldByName('MemberID').AsInteger;
+        RefreshStat(aEventID, aMemberID);
+        CORE.qryNominees.Next;
+      end;
+    end;
+    { Refresh on SwimClubMeet2.dbo.qryLane may be needed...}
+  except on E: EFDDBEngineException do
+    exit;
+  end;
+
+end;
+
+function RefreshStat(aEventID, aMemberID: integer): boolean;
+var
+  TTB, PB, ClubRecord, PBSeedTime: TDateTime;
+  AGE: integer;
+  rtn, found: boolean;
+begin
+  GetMetrics(aEventID, aMemberID, TTB, PB, ClubRecord, PBSeedTime, AGE);
+  if rtn then
+  begin
+    found := uNominee.Locate_Nominee(aMemberID, aEventID);
+    if found then
+    begin
+      CORE.qryNominee.CheckBrowseMode;
+      try
+        CORE.qryNominee.Edit;
+        CORE.qryNominee.FieldByName('TTB').AsDateTime := TTB;
+        CORE.qryNominee.FieldByName('PB').AsDateTime := PB;
+        CORE.qryNominee.FieldByName('ClubRecord').AsDateTime := ClubRecord;
+        CORE.qryNominee.Post;
+      except
+      on E: EFDDBEngineException do
+        begin
+          CORE.qryNominee.Cancel;
+          SCM2.FDGUIxErrorDialog.Execute(E);
+        end;
+      end;
+    end;
+  end;
+end;
+
 function NewNominee(aMemberID, aEventID: integer): integer;
+var
+  TTB, PB, ClubRecord, PBSeedTime: TDateTime;
+  AGE: integer;
 begin
   result := 0;
 
   if not Assigned(CORE) then exit;
   if not CORE.IsActive then exit;
   if CORE.qryEvent.IsEmpty then exit;
-
+  GetMetrics(aEventID, aMemberID, TTB, PB, ClubRecord, PBSeedTime, AGE);
   CORE.qryNominee.CheckBrowseMode;
   CORE.qryNominee.DisableControls();
   try
     begin
-      try
-      begin
-        CORE.qryMemberMetrics.Connection := SCM2.scmConnection;
-        CORE.qryMemberMetrics.Close;
-        CORE.qryMemberMetrics.ParamByName('MEMBERID').AsInteger := aMemberID;
-        CORE.qryMemberMetrics.ParamByName('EVENTID').AsInteger := aEventID;
-
-        // SeedDate - Used to calculate AGE.
-        // StartOfSeason, StartOfSession, Today's Date.
-        CORE.qryMemberMetrics.ParamByName('SEEDDATE').AsDateTime := uNominee.GetSeedDate();
-
-        if Assigned(Settings) then     //Algorithm
-        begin
-           CORE.qryMemberMetrics.ParamByName('ALGORITHM').AsInteger := Settings.ttb_algorithmIndx;
-           CORE.qryMemberMetrics.ParamByName('CALCDEFRT').AsInteger := ORD(Settings.ttb_calcDefRT);
-           CORE.qryMemberMetrics.ParamByName('PERCENT').AsFloat := Settings.ttb_calcDefRTpercent;
-        end
-        else
-        begin
-          // Calculate the entrant's average RT from top 3 race-times
-          CORE.qryMemberMetrics.ParamByName('ALGORITHM').AsInteger := 1;
-          // If no RT exists ...
-          // 0 - ignore
-          // 1 - Calculate race-time from the average times of (filtered) swimmers
-          // 2 - use SeedTime
-          CORE.qryMemberMetrics.ParamByName('CALCDEFRT').AsInteger := 1;
-           // The (bottom) percent to select from ... default is 50%.
-          CORE.qryMemberMetrics.ParamByName('PERCENT').AsFloat := 50.0;
-        end;
-
-        CORE.qryMemberMetrics.Prepare;
-        CORE.qryMemberMetrics.Open;
-      end;
-      except
-        on E: EFDDBEngineException do
-            SCM2.FDGUIxErrorDialog.Execute(E);
-      end;
-
-      try
+            try
         CORE.qryNominee.Insert;
-        CORE.qryNominee.FieldByName('AGE').AsInteger := CORE.qryMemberMetrics.FieldByName('AGE').AsInteger;
-        CORE.qryNominee.FieldByName('TTB').AsDateTime := CORE.qryMemberMetrics.FieldByName('TTB').AsDateTime;
-        CORE.qryNominee.FieldByName('PB').AsDateTime :=CORE.qryMemberMetrics.FieldByName('PB').AsDateTime;
-        CORE.qryNominee.FieldByName('SeedTime').AsDateTime := CORE.qryMemberMetrics.FieldByName('SeedTime').AsDateTime;
+        CORE.qryNominee.FieldByName('AGE').AsInteger := AGE;
+        CORE.qryNominee.FieldByName('TTB').AsDateTime := TTB;
+        CORE.qryNominee.FieldByName('PB').AsDateTime := PB;
+        CORE.qryNominee.FieldByName('PBSeedTime').AsDateTime := PBSeedTime;
+        CORE.qryNominee.FieldByName('ClubRecord').AsDateTime := ClubRecord;
         CORE.qryNominee.FieldByName('MemberID').AsInteger := aMemberID;
         CORE.qryNominee.FieldByName('EventID').AsInteger := aEventID;
         CORE.qryNominee.Post;
@@ -193,26 +298,26 @@ var
   SeedDateAuto: scmSeedDateAuto;
 begin
   result := Date;
-  SeedDateAuto := scmSeeddateAuto.sdaTodaysDate;
+  SeedDateAuto := scmSeeddateAuto.sdaTodaysDate; // DEFAULT Assignment.
 
-  if Assigned(Settings) then
+  if Assigned(Settings) then  // use USER PREFERENCES if available.
     if Settings.SeedDateAuto in [1..5] then
       SeedDateAuto := scmSeedDateAuto(Settings.SeedDateAuto);
 
   case SeedDateAuto of
-    sdaTodaysDate:
+    sdaTodaysDate:  // today's date.
       result := Date();
-    sdaSessionDate:
+    sdaSessionDate: // current session date.
       result := uSession.SessionDT;
-    sdaStartOfSeason:
+    sdaStartOfSeason: // start of the swimming season date.
       result := uSwimClub.StartOfSwimSeason;
-    sdaCustomDate:
+    sdaCustomDate: // custom date assigned in preferences.
     begin
       if Assigned(Settings) then
        If (Settings.CustomSeedDate <> 0) then
         result := Settings.CustomSeedDate;
     end;
-    sdaMeetDate:
+    sdaMeetDate: // date of the meet (or carnival)
     begin
     // PK := uMeet.GetMeetID_WithSession(SessionID)
 //      if (PK <> 0) then

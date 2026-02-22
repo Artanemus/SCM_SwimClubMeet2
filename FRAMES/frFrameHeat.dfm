@@ -767,7 +767,7 @@ object FrameHeat: TFrameHeat
       end
     end
   end
-  object actnlistHeat: TActionList
+  object actnlist: TActionList
     Images = IMG.imglstMenuBar
     Left = 112
     Top = 96

@@ -78,6 +78,15 @@ object FrameLane: TFrameLane
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
         Below = ShapeLnBar1
+      end
+      item
+        Control = spbtnRefreshStats
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = False
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
       end>
     Align = alLeft
     BevelOuter = bvNone
@@ -177,6 +186,21 @@ object FrameLane: TFrameLane
       Anchors = []
       ImageIndex = 8
       ImageName = 'report'
+      Images = IMG.imglstLaneCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object spbtnRefreshStats: TSpeedButton
+      Tag = 8
+      Left = 4
+      Top = 310
+      Width = 48
+      Height = 48
+      Anchors = []
+      Caption = 'Refresh Stats'
+      ImageIndex = 10
+      ImageName = 'query-stats'
       Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -972,6 +996,7 @@ object FrameLane: TFrameLane
           FFC003FF}
         ShowBooleanFields = True
         ShowUnicode = False
+        ExplicitLeft = 1
         ColWidths = (
           20
           57
@@ -986,7 +1011,7 @@ object FrameLane: TFrameLane
       end
     end
   end
-  object actnlistLane: TActionList
+  object actnlist: TActionList
     Images = IMG.imglstMenuBar
     Left = 520
     Top = 224
@@ -1038,27 +1063,16 @@ object FrameLane: TFrameLane
       ImageIndex = 24
       ImageName = 'sort'
     end
+    object actnLn_RefreshStats: TAction
+      Category = 'Lanes'
+      Caption = 'Refresh Stats.'
+      Hint = 'Refresh stats - PB, TTB and Club Record.'
+      OnExecute = actnLn_RefreshStatsExecute
+      OnUpdate = actnLn_GenericUpdate
+    end
   end
   object pumenuLane: TPopupMenu
     Left = 520
     Top = 304
-  end
-  object AdvEditEditLink1: TAdvEditEditLink
-    Tag = 0
-    WantKeyLeftRight = True
-    WantKeyUpDown = False
-    WantKeyHomeEnd = True
-    WantKeyPriorNext = False
-    EditAlign = eaLeft
-    EditColor = clWindow
-    MaxLength = 0
-    ModifiedColor = clRed
-    EditType = etString
-    ShowModified = False
-    Precision = 0
-    Signed = False
-    ExcelStyleDecimalSeparator = False
-    Left = 706
-    Top = 120
   end
 end

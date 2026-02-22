@@ -8,6 +8,7 @@ uses
 
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.WinXCtrls, Vcl.Grids, Vcl.ImgList,
+  Vcl.ActnMan,
 
   Data.DB,
 
@@ -41,7 +42,7 @@ type
     actnHt_SheetSet: TAction;
     actnHt_TimeKeeperSheets: TAction;
     actnHt_ToggleStatus: TAction;
-    actnlistHeat: TActionList;
+    actnlist: TActionList;
     ALLTimeKeeperSets1: TMenuItem;
     AutoBuild1: TMenuItem;
     Delete1: TMenuItem;
@@ -57,6 +58,7 @@ type
     New1: TMenuItem;
     oggleStatus1: TMenuItem;
     pnlBody: TPanel;
+    pnlG: TPanel;
     pumenuHeat: TPopupMenu;
     rpnlCntrl: TRelativePanel;
     ShapeHtBar1: TShape;
@@ -73,7 +75,6 @@ type
     spbtnReport: TSpeedButton;
     spbtnTimeKeeper: TSpeedButton;
     spbtnToggleStatus: TSpeedButton;
-    pnlG: TPanel;
     procedure actnHt_GenericUpdate(Sender: TObject);
     procedure actnHt_ToggleStatusExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
@@ -83,6 +84,7 @@ type
     procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
   public
+    procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
     procedure UpdateUI(DoFullUpdate: boolean = false);
   end;
 
@@ -162,6 +164,27 @@ procedure TFrameHeat.gridGetCellColor(Sender: TObject; ARow, ACol: Integer;
 begin
   ABrush.Color := $00494131;
 
+end;
+
+procedure TFrameHeat.LinkActionsToMenu(AParentMenuItem: TActionClientItem);
+var
+  i: integer;
+  NewItem: TActionClientItem;
+  AAction: TAction;
+begin
+  if not Assigned(AParentMenuItem) then exit;
+  for i := 0 to actnlist.ActionCount - 1 do
+  begin
+    AAction := TAction(actnlist.Actions[i]);
+    if Assigned(AAction) then
+    begin
+      NewItem := AParentMenuItem.Items.Add;
+      if Assigned(NewItem) then
+      begin
+        NewItem.Action := AAction;
+      end;
+    end;
+  end;
 end;
 
 procedure TFrameHeat.UpdateUI(DoFullUpdate: boolean = false);

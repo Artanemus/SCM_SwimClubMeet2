@@ -24,7 +24,7 @@ uses
 type
 
   TFrameSession = class(TFrame)
-    actnlstSession: TActionList;
+    actnlist: TActionList;
     actnSess_Clone: TAction;
     actnSess_Delete: TAction;
     actnSess_Edit: TAction;
@@ -87,6 +87,7 @@ type
   protected
     procedure Loaded; override;
   public
+    procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
     procedure UpdateUI(DoFullUpdate: boolean = false);
   end;
 
@@ -436,6 +437,27 @@ begin
   end;
 
 
+end;
+
+procedure TFrameSession.LinkActionsToMenu(AParentMenuItem: TActionClientItem);
+var
+  i: integer;
+  NewItem: TActionClientItem;
+  AAction: TAction;
+begin
+  if not Assigned(AParentMenuItem) then exit;
+  for i := 0 to actnlist.ActionCount - 1 do
+  begin
+    AAction := TAction(actnlist.Actions[i]);
+    if Assigned(AAction) then
+    begin
+      NewItem := AParentMenuItem.Items.Add;
+      if Assigned(NewItem) then
+      begin
+        NewItem.Action := AAction;
+      end;
+    end;
+  end;
 end;
 
 procedure TFrameSession.Loaded;

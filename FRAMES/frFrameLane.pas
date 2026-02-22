@@ -8,37 +8,40 @@ uses
 
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.WinXCtrls, Vcl.Grids, Vcl.ImgList, Vcl.ActnList, Vcl.Menus, Vcl.Buttons,
+  Vcl.ActnMan,
 
   Data.DB,
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
-  dmIMG, dmSCM2, dmCORE, uDefines, AsgLinks, uLane;
+  dmIMG, dmSCM2, dmCORE, uDefines, uSettings;
 
 type
   TFrameLane = class(TFrame)
-    rpnlCntrl: TRelativePanel;
-    spbtnMoveUp: TSpeedButton;
-    actnlistLane: TActionList;
-    pumenuLane: TPopupMenu;
-    pnlBody: TPanel;
-    grid: TDBAdvGrid;
-    spbtnMoveDown: TSpeedButton;
-    spbtnSwitch: TSpeedButton;
-    spbtnDelete: TSpeedButton;
-    spbtnDeleteForever: TSpeedButton;
-    actnLn_MoveUp: TAction;
-    actnLn_MoveDown: TAction;
-    actnLn_Swap: TAction;
+    actnlist: TActionList;
     actnLn_Delete: TAction;
     actnLn_DeleteForever: TAction;
-    actnln_Report: TAction;
-    ShapeLnBar1: TShape;
-    spbtnReport: TSpeedButton;
-    pnlG: TPanel;
-    AdvEditEditLink1: TAdvEditEditLink;
+    actnLn_MoveDown: TAction;
+    actnLn_MoveUp: TAction;
     actnLn_Renumber: TAction;
+    actnln_Report: TAction;
+    actnLn_Swap: TAction;
+    grid: TDBAdvGrid;
+    pnlBody: TPanel;
+    pnlG: TPanel;
+    pumenuLane: TPopupMenu;
+    rpnlCntrl: TRelativePanel;
+    ShapeLnBar1: TShape;
+    spbtnDelete: TSpeedButton;
+    spbtnDeleteForever: TSpeedButton;
+    spbtnMoveDown: TSpeedButton;
+    spbtnMoveUp: TSpeedButton;
+    spbtnReport: TSpeedButton;
+    spbtnSwitch: TSpeedButton;
+    actnLn_RefreshStats: TAction;
+    spbtnRefreshStats: TSpeedButton;
     procedure actnLn_GenericUpdate(Sender: TObject);
+    procedure actnLn_RefreshStatsExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
     procedure gridEllipsClick(Sender: TObject; ACol, ARow: Integer; var S: string);
@@ -51,16 +54,13 @@ type
     procedure gridGetEditText(Sender: TObject; ACol, ARow: LongInt; var Value:
         string);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
-  private
-    { Private declarations }
   protected
     procedure Loaded; override;
-
   public
-    procedure UpdateUI(DoFullUpdate: boolean = false);
-    procedure OnPreferenceChange();
+    procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
     procedure OnEventTypeChange(AEventTypeID: Integer);
-
+    procedure OnPreferenceChange();
+    procedure UpdateUI(DoFullUpdate: boolean = false);
   end;
 
 implementation
@@ -68,7 +68,7 @@ implementation
 {$R *.dfm}
 
 uses
-  uSession, uEvent, uHeat, uSettings, uPickerStage;
+  uSession, uEvent, uHeat, uLane, uNominee, uPickerStage;
 
 procedure TFrameLane.actnLn_GenericUpdate(Sender: TObject);
 var
@@ -83,6 +83,16 @@ begin
       DoEnable := true;
   end;
   TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TFrameLane.actnLn_RefreshStatsExecute(Sender: TObject);
+begin
+  LockDrawing;
+  // refresh the member's stats held in tblNominate
+  uNominee.RefreshStats(uEvent.PK);
+  // ... and push to lanes.
+  uLane.RefreshStats(uHeat.PK);
+  UnlockDrawing;
 end;
 
 procedure TFrameLane.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var
@@ -243,6 +253,27 @@ begin
         end;
       finally
         grid.EndUpdate;
+      end;
+    end;
+  end;
+end;
+
+procedure TFrameLane.LinkActionsToMenu(AParentMenuItem: TActionClientItem);
+var
+  i: integer;
+  NewItem: TActionClientItem;
+  AAction: TAction;
+begin
+  if not Assigned(AParentMenuItem) then exit;
+  for i := 0 to actnlist.ActionCount - 1 do
+  begin
+    AAction := TAction(actnlist.Actions[i]);
+    if Assigned(AAction) then
+    begin
+      NewItem := AParentMenuItem.Items.Add;
+      if Assigned(NewItem) then
+      begin
+        NewItem.Action := AAction;
       end;
     end;
   end;

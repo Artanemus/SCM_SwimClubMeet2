@@ -165,6 +165,8 @@ type
     procedure qryHeatAfterScroll(DataSet: TDataSet);
     procedure qryLaneAfterScroll(DataSet: TDataSet);
     procedure qryLaneBeforePost(DataSet: TDataSet);
+    procedure qryLaneClubRecordGetText(Sender: TField; var Text: string;
+        DisplayText: Boolean);
     procedure qryLanePBGetText(Sender: TField; var Text: string; DisplayText:
         Boolean);
     procedure qryLaneRaceTimeGetText(Sender: TField; var Text: string; DisplayText:
@@ -477,6 +479,28 @@ procedure TCORE.qryLaneBeforePost(DataSet: TDataSet);
 begin
   ;
 
+end;
+
+procedure TCORE.qryLaneClubRecordGetText(Sender: TField; var Text: string;
+    DisplayText: Boolean);
+var
+  Hour, Min, Sec, MSec: word;
+begin
+  // CALLED BY TimeToBeat AND PersonalBest (Read Only fields)
+  // this FIXES display format issues.
+  DecodeTime(Sender.AsDateTime, Hour, Min, Sec, MSec);
+  // DisplayText is true if the field's value is to be used for display only;
+  // false if the string is to be used for editing the field's value.
+  // "%" [index ":"] ["-"] [width] ["." prec] type
+  if DisplayText then
+  begin
+    if (Min > 0) then Text := Format('%0:2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec])
+    else if ((Min = 0) and (Sec > 0)) then
+        Text := Format('%1:2u.%2:3.3u', [Min, Sec, MSec])
+
+    else if ((Min = 0) and (Sec = 0)) then Text := '';
+  end
+  else Text := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
 end;
 
 procedure TCORE.qryLanePBGetText(Sender: TField; var Text: string; DisplayText:

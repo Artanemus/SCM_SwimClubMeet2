@@ -47,6 +47,19 @@ const
  scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate);
  scmSortState = (stUnsorted, stAscend, stDescend);
 
+   TSCMSwimmerMetrics = record
+    // Use to reference ...
+    // Swimmer, Nominee, SwimClub, distance, stroke, AGE, Gender.
+    // SwimClubMeet2.dbo.ClubRecord(EventID, AGE, Gender);
+    MemberID: integer;
+    EventID: integer;
+    TTB: TDateTime;
+    PB: TDateTime;
+    ClubRecord: TDateTime;
+    PBSeedTime: TDateTime;
+    AGE: integer;
+    GenderABREV: string;
+   end;
 
 
 /// <Remarks>

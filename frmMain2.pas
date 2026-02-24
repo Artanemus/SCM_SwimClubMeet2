@@ -853,7 +853,12 @@ begin
   dlg.ShowModal;
   dlg.Free;
 
-  // enable/disable FINA codes....
+  if Assigned(frlane) then
+  begin
+    // enable/disable FINA codes....
+    frLane.OnPreferenceChange;
+  end;
+
   // show/hide debug info.
 
 end;

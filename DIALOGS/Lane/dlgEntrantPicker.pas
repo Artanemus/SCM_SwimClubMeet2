@@ -140,7 +140,7 @@ begin
       ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
       Prepare;
       Open;
-      if (Active) then uLane.LocateNominee(aNomineeID);
+      if (Active) then uLane.LocateOnNominee(aNomineeID);
     finally
       EnableControls();
       Grid.EndUpdate;

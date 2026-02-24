@@ -47,7 +47,7 @@ function ScatterLanes(index, NumOfPoolLanes: integer): integer;
 function CheckInternetA: boolean;
 function CheckInternetB: boolean;
 
-function GetStyleTabSheetElementColor: TColor;
+{function GetStyleTabSheetElementColor: TColor;}
 function GetStyledPanelColor: TColor;
 function GetStyledPanelElementColor: TColor;
 
@@ -114,6 +114,7 @@ begin
   end;
 end;
 
+{
 function GetStyleTabSheetElementColor: TColor;
 var
   LDetails: TThemedElementDetails;
@@ -138,6 +139,7 @@ begin
     Result := clBtnFace; // Fallback 2: Standard Windows (No Style)
   end;
 end;
+}
 
 function GetRecordPosition(ADataset: TDataSet): TRecordPos;
 begin

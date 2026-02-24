@@ -12,27 +12,28 @@ uses
 
   function Assert(): boolean;
   function ClearLane(DoExclude: Boolean = true): boolean;
-	function StrikeLane(DoExclude: Boolean = true): boolean;
+  function DeleteAllSplits(DoExclude: Boolean = true): integer;
+  function DeleteAllWatches(DoExclude: Boolean = true): integer;
   function DeleteLane: boolean;
+  function DeleteSplit(aSplitTimeID: integer): integer;
+  function DeleteWatch(aWatchTimeID: integer): integer;
   function GetLaneID(): integer; // Assert - SAFE.
+  function GetMemberID(): integer; // zero - failed.
   function LastLaneNum: integer;
   function Locate(aLaneID: integer): Boolean;
-	function LocateNominee(aNomineeID: integer): boolean;
-	function LocateTeam(aTeamID: integer): boolean;
-  function PK(): integer; // NO CHECKS. RTNS: Primary key.
+  function LocateOnNominee(aNomineeID: integer): boolean;
+  function LocateTeam(aTeamID: integer): boolean;
   function MoveDownLane(ADataSet: TDataSet): Boolean;
   function MoveUpLane(ADataSet: TDataSet): Boolean;
-  function DeleteSplit(aSplitTimeID: integer): integer;
-  function DeleteAllSplits(DoExclude: Boolean = true): integer;
-  function DeleteWatch(aWatchTimeID: integer): integer;
-  function DeleteAllWatches(DoExclude: Boolean = true): integer;
-  procedure NewLane();
+  function PK(): integer; // NO CHECKS. RTNS: Primary key.
+  function StrikeLane(DoExclude: Boolean = true): boolean;
 
+  procedure NewLane();
 
 implementation
 
 uses
- uSwimClub, uSession, uEvent, uHeat;
+ uSwimClub, uSession, uEvent, uHeat, uNominee;
 
 
 function Assert: Boolean;
@@ -96,6 +97,25 @@ begin
   end;
 end;
 
+function GetMemberID(): integer;
+var
+  SQL: string;
+  v: variant;
+begin
+  result := 0;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected then
+  begin
+    SQL := '''
+      USE SwimClubMeet2;
+      SELECT n.MemberID FROM [SwimClubMeet2].[dbo].[Lane] l
+      INNER JOIN [dbo].[Nominee] n ON l.NomineeID = n.NomineeID
+      WHERE l.LaneID = :ID;
+      ''';
+    v := SCM2.scmConnection.ExecSQLScalar(SQL, [uLane.PK]);
+    if not VarIsEmpty(v) then
+      result := v;
+  end;
+end;
 
 function GetLaneID(): integer;
 begin
@@ -327,7 +347,7 @@ begin
   end;
 end;
 
-function LocateNominee(aNomineeID: integer): boolean;
+function LocateOnNominee(aNomineeID: integer): boolean;
 var
   SearchOptions: TLocateOptions;
 begin
@@ -395,6 +415,7 @@ begin
 //  result := SCM2.MoveUpLane(ADataSet);
   result := true;
 end;
+
 
 
 

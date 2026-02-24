@@ -29,9 +29,7 @@ function NextID(aHeatID: integer): integer; // uses HeatNum
 function PK(): integer; // NO CHECKS. RTNS: Primary key.
 function PrevID(aHeatID: integer): integer; // uses HeatNum
 function RenumberLanes(DoLocate: Boolean = true): integer; deprecated;
-function RenumberLanesAdv(DoLocate: Boolean = true): integer;
-function RenumberLanesAdvINDV(DoLocate: Boolean = true): integer;
-function RenumberLanesAdvTEAM(DoLocate: Boolean = true): integer;
+function RenumberLanesAdv(DoLocate: Boolean = true): integer; deprecated
 function PadLanes()	: integer;
 function TrimLanes(DoExclude: Boolean = true): integer;
 //function ClearGutters(DoExclude: Boolean = true): integer;
@@ -357,47 +355,24 @@ end;
 
 function RenumberLanesAdv(DoLocate: Boolean = true): integer;
 var
-evType: scmEventType;
-begin
-  result := 0;
-  if not Assigned(SCM2) or not SCM2.scmConnection.Connected then exit;
-  if CORE.dsHeat.DataSet.IsEmpty then exit;
-  CORE.qryWatchTime.DisableControls;
-  CORE.qrySplitTime.DisableControls;
-  CORE.qryLane.DisableControls;
-  CORE.qryHeat.DisableControls;
-  try
-  { if DoLocate then aLaneID := uLane.PK; }
-  evType := uEvent.getEventType;
-  if evType = scmEventType.etINDV then
-    result := uHeat.RenumberLanesAdvINDV(true) // do relocate.
-  else if evType = scmEventType.etTeam then
-    result := uHeat.RenumberLanesAdvTEAM(true) // do relocate.
-  finally
-    {if DoLocate then
-      uLane.Locate(aLaneID); }
-    CORE.qryWatchTime.ApplyMaster;
-    CORE.qrySplitTime.ApplyMaster;
-    CORE.qryHeat.EnableControls;
-    CORE.qryLane.EnableControls;
-    CORE.qryWatchTime.EnableControls;
-    CORE.qrySplitTime.EnableControls;
-  end;
-end;
-
-function RenumberLanesAdvINDV(DoLocate: Boolean = true): integer;
-var
-  laneNum, i: integer;
+  aLaneID, laneNum, i: integer;
   qry: TFDQuery;
   SQL: string;
 begin
   result := 0;
   i := 0;
+  aLaneID := 0;
+  if not Assigned(SCM2) or not SCM2.scmConnection.Connected then exit;
+  if CORE.dsHeat.DataSet.IsEmpty then exit;
+  CORE.qryWatchTime.DisableControls;
+  CORE.qrySplitTime.DisableControls;
+  CORE.qryLane.DisableControls;
   try
-    {if DoLocate then aLaneID := uLane.PK;}
-    qry := TFDQuery.Create(CORE);
-    qry.Connection := SCM2.scmConnection;
-    {
+    if DoLocate then aLaneID := uLane.PK;
+    try
+      qry := TFDQuery.Create(CORE);
+      qry.Connection := SCM2.scmConnection;
+      {
       SwimClubMeet2.dbo.Nominee joined on SwimClubMeet2.dbo.Lane.NomineeID (FK).
       If Lane.NomineeID is null then the lane is empty.
       If the Lane.NomineeID is not null then a swimmer has been assigned to lane.
@@ -406,7 +381,7 @@ begin
         Place swimmers with TTB first (sorted on TTB - fastest to slowest)...
         followed by swimmers with no TTB ...
         followed by empty lanes.
-    }
+      }
     SQL := '''
       Lane.LaneID,
       SELECT
@@ -435,134 +410,48 @@ begin
         ORDER BY SortOn ASC, TTB DESC;
       ''';
 
-//  qry.UpdateOptions.KeyFields := 'LaneID';
-//  qry.UpdateOptions.UpdateTableName := 'SwimClubMeet2..Lane';
-
-  qry.SQL.Text := SQL;
-  qry.IndexFieldNames := 'SortOn;TTB';
-  qry.ParamByName('HEATID').AsInteger := uHeat.PK; // only lanes in this heat
-  qry.Prepare;
-  qry.Open;
-  if qry.Active then
-  begin
-    // Perform a scatter of lanes. Fastest are in center lanes. Slowest
-    // are in outer lanes. Empty lanes are most outer.
-    i := 0; // NOTE: ScatterLanes is based 0
-    while not qry.Eof do
-    begin
-      laneNum := uUtility.ScatterLanes(i, uSwimClub.NumberOfLanes);
-      {
-      if uLane.Locate(qry.FieldByName('LaneID').AsInteger) then
+      qry.UpdateOptions.KeyFields := 'LaneID';
+      qry.UpdateOptions.UpdateTableName := 'SwimClubMeet2..Lane';
+      qry.SQL.Text := SQL;
+      qry.IndexFieldNames := 'SortOn;TTB';
+      qry.ParamByName('HEATID').AsInteger := uHeat.PK; // only lanes in this heat
+      qry.Prepare;
+      qry.Open;
+      if qry.Active then
       begin
-        try
-          CORE.qryLane.Edit;
-          CORE.qryLane.FieldByName('LaneNum').AsInteger :=
-            qry.FieldByName('laneNum').AsInteger;
-          CORE.qryLane.Post;
-        except on E: Exception do
-            CORE.qryLane.Cancel;
+        // Perform a scatter of lanes. Fastest are in center lanes. Slowest
+        // are in outer lanes. Empty lanes are most outer.
+        i := 0; // NOTE: ScatterLanes is based 0
+        while not qry.Eof do
+        begin
+          laneNum := uUtility.ScatterLanes(i, uSwimClub.NumberOfLanes);
+          try
+            qry.Edit;
+            qry.FieldByName('LaneNum').AsInteger := laneNum;
+            qry.Post;
+          except on E: Exception do
+              qry.Cancel;
+          end;
+          i := i + 1;
+          qry.Next;
         end;
+        qry.free;
       end;
-      }
-      i := i + 1;
-      qry.Next;
+
+    finally
+      result := i;
     end;
-    qry.free;
-  end;
 
   finally
-    result := i;
-  end;
-end;
-
-function RenumberLanesAdvTeam(DoLocate: Boolean = true): integer;
-var
-  aLaneID, laneNum, i: integer;
-  qry: TFDQuery;
-  SQL: string;
-begin
-  result := 0;
-  i := 0;
-  try
-    {if DoLocate then aLaneID := uLane.PK;}
-    qry := TFDQuery.Create(CORE);
-    qry.Connection := SCM2.scmConnection;
-    {
-      SwimClubMeet2.dbo.Nominee joined on SwimClubMeet2.dbo.Lane.NomineeID (FK).
-      If Lane.NomineeID is null then the lane is empty.
-      If the Lane.NomineeID is not null then a swimmer has been assigned to lane.
-      NOTE: Assumed: TTBs have been calculated.
-      Build an ordered list of lanes in this order ...
-        Place swimmers with TTB first (sorted on TTB - fastest to slowest)...
-        followed by swimmers with no TTB ...
-        followed by empty lanes.
-    }
-    SQL := '''
-      Lane.LaneID,
-      SELECT
-        -- Estimated race time for the swimmer in the lane.
-        CASE
-          WHEN (Lane.TeamID IS NULL) THEN 0
-          WHEN (Lane.TeamID IS NOT NULL) AND
-            (Team.TTB IS NOT NULL) THEN Team.TTB
-          ELSE 0
-        END AS TTB,
-
-        CASE
-          WHEN (Lane.TeamID IS NULL) THEN 2
-          -- Team but no data.
-          WHEN (Lane.TeamID IS NOT NULL)
-            AND (CAST(CAST(Team.TTB AS DATETIME) AS FLOAT) = 0) THEN 1
-          -- Team with TTB data.
-          ELSE 0
-        END AS SortOn,
-        Lane.LaneNum,
-        Lane.TeamID
-        FROM SwimClubMeet2.dbo.Lane
-        LEFT JOIN Team ON Lane.TeamID = Team.TeamID
-        -- TFDQuery param
-        WHERE Lane.HeatID = :HEATID
-        ORDER BY SortOn ASC, TTB DESC;
-      ''';
-
-//  qry.UpdateOptions.KeyFields := 'LaneID';
-//  qry.UpdateOptions.UpdateTableName := 'SwimClubMeet2..Lane';
-
-  qry.SQL.Text := SQL;
-  qry.IndexFieldNames := 'SortOn;TTB';
-  qry.ParamByName('HEATID').AsInteger := uHeat.PK; // only lanes in this heat
-  qry.Prepare;
-  qry.Open;
-  if qry.Active then
-  begin
-    // Perform a scatter of lanes. Fastest are in center lanes. Slowest
-    // are in outer lanes. Empty lanes are most outer.
-    i := 0; // NOTE: ScatterLanes is based 0
-    while not qry.Eof do
-    begin
-      laneNum := uUtility.ScatterLanes(i, uSwimClub.NumberOfLanes);
-      {
-      if uLane.Locate(qry.FieldByName('LaneID').AsInteger) then
-      begin
-        try
-          CORE.qryLane.Edit;
-          CORE.qryLane.FieldByName('LaneNum').AsInteger :=
-            qry.FieldByName('laneNum').AsInteger;
-          CORE.qryLane.Post;
-        except on E: Exception do
-            CORE.qryLane.Cancel;
-        end;
-      end;
-      }
-      i := i + 1;
-      qry.Next;
-    end;
-    qry.Free;
+    CORE.qryLane.Refresh;
+    if DoLocate then uLane.Locate(aLaneID);
+    CORE.qryLane.EnableControls;
+    CORE.qryWatchTime.EnableControls;
+    CORE.qrySplitTime.EnableControls;
+    CORE.qryWatchTime.ApplyMaster;
+    CORE.qrySplitTime.ApplyMaster;
   end;
 
-  finally
-    result := i;
-  end;
 end;
 
 procedure ToggleStatus;
@@ -621,7 +510,7 @@ end;
 
 function TrimLanes(DoExclude: Boolean = true): integer;
 var
-  NumOfLanes, Lanes, aHeatStatusID: integer;
+  NumOfLanes, Lanes: integer;
 begin
   // NOTE: if renumbering is needed, this must be done by caller.
   result := 0;
@@ -629,21 +518,21 @@ begin
   if (uHeat.HeatStatusID = 1) or (DoExclude = false) then
   begin // Remove excess lanes.
     NumOfLanes := uSwimClub.NumberOfLanes; // number of lanes in club pool.
-    Lanes := CountLanes();
+    Lanes := uHeat.CountLanes();
     if Lanes > NumOfLanes then
     begin
       CORE.qryLane.DisableControls;
-
+      DetailTBLs_DisableCNTRLs;
       try
         CORE.qryLane.First;
         // pass 1: look for empty swimming lanes.
         while not CORE.qryLane.eof do
         begin
+          // found candidate for delete.
           if CORE.qryLane.FieldByName('TeamID').IsNull and
           CORE.qryLane.FieldByName('NomineeID').IsNull then
           begin
-            {
-            if uLane.DeleteLane() then // candidate for delete.
+            if uLane.DeleteLane() then
             begin
               Dec(Lanes);
               if Lanes <= NumOfLanes then
@@ -653,7 +542,6 @@ begin
             end
             else
               CORE.qryLane.next;
-            }
           end
           else
             CORE.qryLane.next;
@@ -663,10 +551,10 @@ begin
         begin
           // pass 2: trim from end...
         end;
-
-
       finally
         CORE.qryLane.EnableControls;
+        DetailTBLs_ApplyMaster;
+        DetailTBLs_EnableCNTRLs;
       end;
     end;
   end;

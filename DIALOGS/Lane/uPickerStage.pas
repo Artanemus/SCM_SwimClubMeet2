@@ -16,8 +16,6 @@ uses
 type
 
   TPickerStage = class(TComponent)
-  private
-    fEventType: scmEventType;
   public
     function Stage(AEventType: scmEventType; ALaneID: Integer; DoAltMethod:
         Boolean): Boolean;

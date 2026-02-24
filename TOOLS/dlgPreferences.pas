@@ -68,6 +68,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure prefEnableDQcodesClick(Sender: TObject);
     procedure spbtnMembersAgeMouseLeave(Sender: TObject);
   private
     procedure ReadPreferences();
@@ -139,6 +140,11 @@ begin
     Key := 0;
     ModalResult := mrOK;
   end;
+end;
+
+procedure TPreferences.prefEnableDQcodesClick(Sender: TObject);
+begin
+  Settings.EnableDQcodes := prefEnableDQcodes.Checked;
 end;
 
 procedure TPreferences.ReadPreferences();

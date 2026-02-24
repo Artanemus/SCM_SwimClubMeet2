@@ -11,7 +11,10 @@ uses
 
   Data.DB,
 
-  FireDAC.Comp.Client, FireDAC.Stan.Param, FireDAC.Stan.Error ;
+  FireDAC.Comp.Client, FireDAC.Stan.Param, FireDAC.Stan.Error,
+
+  uDefines ;
+
 
   function Locate_FilterMember(aMemberID: integer): Boolean;
   function Locate_Nominee(aMemberID, aEventID: integer): Boolean;
@@ -25,15 +28,13 @@ uses
   procedure GetStatSettings(
     out Algorithm: integer; out CalcDefRT: integer; out Percent: double);
 
-  procedure GetMetrics(aEventID, aMemberID: integer;
-    out TTB: TDateTime; out PB: TDateTime;
-    out ClubRecord: TDateTime; out PBSeedTime: TDateTime; out AGE: integer);
+  procedure GetMetrics(var aMetrics: TSCMSwimmerMetrics);
 
 implementation
 
 uses
 
-dmCORE, dmSCM2, uDefines, uSettings, uSwimClub, uSession, uEvent ;
+dmCORE, dmSCM2, uSettings, uSwimClub, uSession, uEvent ;
 
 function DeleteNominee(aMemberID, aEventID: integer): boolean;
 var
@@ -115,25 +116,26 @@ begin
   end;
 end;
 
-procedure GetMetrics(aEventID, aMemberID: integer;
-  out TTB: TDateTime; out PB: TDateTime;
-  out ClubRecord: TDateTime; out PBSeedTime: TDateTime; out AGE: integer);
+procedure GetMetrics(var aMetrics: TSCMSwimmerMetrics);
 var
   Algorithm, CalcDefRT: integer;
   Percent: double;
 Begin
+  if (aMetrics.MemberID = 0) OR (aMetrics.EventID = 0) then exit;
+
   // initialise out params.
-  TTB := 0;
-  PB := 0;
-  ClubRecord := 0;
-  PBSeedTime := 0;
-  AGE := 0;
+  aMetrics.TTB := 0;
+  aMetrics.PB := 0;
+  aMetrics.ClubRecord := 0;
+  aMetrics.PBSeedTime := 0;
+  aMetrics.AGE := 0;
+  aMetrics.GenderABREV := '';
 
   GetStatSettings(Algorithm, CalcDefRT, Percent);
   CORE.qryMemberMetrics.Connection := SCM2.scmConnection;
   CORE.qryMemberMetrics.Close;
-  CORE.qryMemberMetrics.ParamByName('MEMBERID').AsInteger := aMemberID;
-  CORE.qryMemberMetrics.ParamByName('EVENTID').AsInteger := aEventID;
+  CORE.qryMemberMetrics.ParamByName('MEMBERID').AsInteger := aMetrics.MemberID;
+  CORE.qryMemberMetrics.ParamByName('EVENTID').AsInteger := aMetrics.EventID;
   CORE.qryMemberMetrics.ParamByName('SEEDDATE').AsDateTime :=
     uNominee.GetSeedDate();
   CORE.qryMemberMetrics.ParamByName('ALGORITHM').AsInteger := Algorithm;
@@ -145,17 +147,19 @@ Begin
     if CORE.qryMemberMetrics.Active then
     begin
       // predicted time to beat (based on historical performance data)
-      TTB := CORE.qryMemberMetrics.ParamByName('TTB').AsDateTime;
+      aMetrics.TTB := CORE.qryMemberMetrics.FieldByName('TTB').AsDateTime;
       // personal best time for [stroke, distance].
-      PB := CORE.qryMemberMetrics.ParamByName('PB').AsDateTime;
+      aMetrics.PB := CORE.qryMemberMetrics.FieldByName('PB').AsDateTime;
       // club record race-time for [age, gender, stroke, distance].
-      ClubRecord := CORE.qryMemberMetrics.ParamByName('ClubRecord').AsDateTime;
+      aMetrics.ClubRecord := CORE.qryMemberMetrics.FieldByName('ClubRecord').AsDateTime;
       // an estimated race-time assigned during nomination..
       // i.e. new member with no historical data or member hasn't ever
       // swum this [stroke, distance].
-      PBSeedTime := CORE.qryMemberMetrics.ParamByName('PBSeedTime').AsDateTime;
+      aMetrics.PBSeedTime := CORE.qryMemberMetrics.FieldByName('PBSeedTime').AsDateTime;
       // members AGE as of SEEDDATE.
-      AGE := CORE.qryMemberMetrics.ParamByName('AGE').AsInteger;
+      aMetrics.AGE := CORE.qryMemberMetrics.FieldByName('AGE').AsInteger;
+      // Gender ABBREVIATION 'M' Male, 'F' Female, 'X' Mixed or EMPTY.
+      aMetrics.GenderABREV := CORE.qryMemberMetrics.FieldByName('GenderABREV').AsString;
     end;
   except on E: EFDDBEngineException do
     exit;
@@ -194,29 +198,31 @@ end;
 
 function RefreshStat(aEventID, aMemberID: integer): boolean;
 var
-  TTB, PB, ClubRecord, PBSeedTime: TDateTime;
-  AGE: integer;
-  rtn, found: boolean;
+  Metrics: TSCMSwimmerMetrics;
+  foundit: boolean;
 begin
-  GetMetrics(aEventID, aMemberID, TTB, PB, ClubRecord, PBSeedTime, AGE);
-  if rtn then
+  result := false;
+  Metrics.MemberID := aMemberID;
+  Metrics.EventID := aEventID;
+  GetMetrics(Metrics);
+  foundit := uNominee.Locate_Nominee(aMemberID, aEventID);
+  if foundit then
   begin
-    found := uNominee.Locate_Nominee(aMemberID, aEventID);
-    if found then
-    begin
-      CORE.qryNominee.CheckBrowseMode;
-      try
-        CORE.qryNominee.Edit;
-        CORE.qryNominee.FieldByName('TTB').AsDateTime := TTB;
-        CORE.qryNominee.FieldByName('PB').AsDateTime := PB;
-        CORE.qryNominee.FieldByName('ClubRecord').AsDateTime := ClubRecord;
-        CORE.qryNominee.Post;
-      except
-      on E: EFDDBEngineException do
-        begin
-          CORE.qryNominee.Cancel;
-          SCM2.FDGUIxErrorDialog.Execute(E);
-        end;
+    CORE.qryNominee.CheckBrowseMode;
+    try
+      CORE.qryNominee.Edit;
+      CORE.qryNominee.FieldByName('TTB').AsDateTime := Metrics.TTB;
+      CORE.qryNominee.FieldByName('PB').AsDateTime := Metrics.PB;
+      CORE.qryNominee.FieldByName('ClubRecord').AsDateTime := Metrics.ClubRecord;
+      CORE.qryNominee.FieldByName('AGE').AsINteger := Metrics.AGE;
+      CORE.qryNominee.FieldByName('PBSeedTime').AsDateTime := Metrics.PBSeedTime;
+      CORE.qryNominee.Post;
+      result := true;
+    except
+    on E: EFDDBEngineException do
+      begin
+        CORE.qryNominee.Cancel;
+        SCM2.FDGUIxErrorDialog.Execute(E);
       end;
     end;
   end;
@@ -224,26 +230,27 @@ end;
 
 function NewNominee(aMemberID, aEventID: integer): integer;
 var
-  TTB, PB, ClubRecord, PBSeedTime: TDateTime;
-  AGE: integer;
+  Metrics: TSCMSwimmerMetrics;
 begin
   result := 0;
 
   if not Assigned(CORE) then exit;
   if not CORE.IsActive then exit;
   if CORE.qryEvent.IsEmpty then exit;
-  GetMetrics(aEventID, aMemberID, TTB, PB, ClubRecord, PBSeedTime, AGE);
+  Metrics.MemberID := aMemberID;
+  Metrics.EventID := aEventID;
+  GetMetrics(Metrics);
   CORE.qryNominee.CheckBrowseMode;
   CORE.qryNominee.DisableControls();
   try
     begin
             try
         CORE.qryNominee.Insert;
-        CORE.qryNominee.FieldByName('AGE').AsInteger := AGE;
-        CORE.qryNominee.FieldByName('TTB').AsDateTime := TTB;
-        CORE.qryNominee.FieldByName('PB').AsDateTime := PB;
-        CORE.qryNominee.FieldByName('PBSeedTime').AsDateTime := PBSeedTime;
-        CORE.qryNominee.FieldByName('ClubRecord').AsDateTime := ClubRecord;
+        CORE.qryNominee.FieldByName('AGE').AsInteger := Metrics.AGE;
+        CORE.qryNominee.FieldByName('TTB').AsDateTime := Metrics.TTB;
+        CORE.qryNominee.FieldByName('PB').AsDateTime := Metrics.PB;
+        CORE.qryNominee.FieldByName('PBSeedTime').AsDateTime := Metrics.PBSeedTime;
+        CORE.qryNominee.FieldByName('ClubRecord').AsDateTime := Metrics.ClubRecord;
         CORE.qryNominee.FieldByName('MemberID').AsInteger := aMemberID;
         CORE.qryNominee.FieldByName('EventID').AsInteger := aEventID;
         CORE.qryNominee.Post;

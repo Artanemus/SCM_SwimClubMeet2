@@ -1,8 +1,10 @@
 object FrameLane: TFrameLane
   Left = 0
   Top = 0
-  Width = 926
+  Width = 965
   Height = 480
+  ParentShowHint = False
+  ShowHint = True
   TabOrder = 0
   object rpnlCntrl: TRelativePanel
     Left = 0
@@ -82,11 +84,22 @@ object FrameLane: TFrameLane
       item
         Control = spbtnRefreshStats
         AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = False
+        AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
+        Below = spbtnReport
+      end
+      item
+        Control = spbtnSplitTime
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnRefreshStats
       end>
     Align = alLeft
     BevelOuter = bvNone
@@ -193,14 +206,26 @@ object FrameLane: TFrameLane
     end
     object spbtnRefreshStats: TSpeedButton
       Tag = 8
-      Left = 4
-      Top = 310
+      Left = 5
+      Top = 304
+      Width = 48
+      Height = 48
+      Action = actnLn_RefreshStat
+      Anchors = []
+      ImageIndex = 10
+      Images = IMG.imglstLaneCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object spbtnSplitTime: TSpeedButton
+      Tag = 8
+      Left = 5
+      Top = 352
       Width = 48
       Height = 48
       Anchors = []
-      Caption = 'Refresh Stats'
-      ImageIndex = 10
-      ImageName = 'query-stats'
+      Caption = 'Split-Times'
       Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -210,24 +235,26 @@ object FrameLane: TFrameLane
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 868
+    Width = 907
     Height = 480
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Use NEW to start building events.'
     TabOrder = 1
+    ExplicitWidth = 868
     object pnlG: TPanel
       Left = 0
       Top = 0
-      Width = 868
+      Width = 907
       Height = 480
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
+      ExplicitWidth = 868
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 868
+        Width = 907
         Height = 480
         Cursor = crDefault
         Align = alClient
@@ -247,6 +274,8 @@ object FrameLane: TFrameLane
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
+        OnDrawCell = gridDrawCell
+        OnFixedCellClick = gridFixedCellClick
         OnGetEditMask = gridGetEditMask
         OnGetEditText = gridGetEditText
         OnKeyPress = gridKeyPress
@@ -653,7 +682,7 @@ object FrameLane: TFrameLane
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 168
+            Width = 220
           end
           item
             AllowBlank = True
@@ -677,6 +706,7 @@ object FrameLane: TFrameLane
             HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
+            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clBlack
@@ -687,6 +717,7 @@ object FrameLane: TFrameLane
           end
           item
             AllowBlank = True
+            Alignment = taRightJustify
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -705,6 +736,7 @@ object FrameLane: TFrameLane
             HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
+            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clBlack
@@ -715,6 +747,7 @@ object FrameLane: TFrameLane
           end
           item
             AllowBlank = True
+            Alignment = taRightJustify
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -733,6 +766,7 @@ object FrameLane: TFrameLane
             HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
+            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clBlack
@@ -831,6 +865,7 @@ object FrameLane: TFrameLane
           end
           item
             AllowBlank = True
+            Alignment = taRightJustify
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -849,6 +884,7 @@ object FrameLane: TFrameLane
             HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
+            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clBlack
@@ -996,11 +1032,11 @@ object FrameLane: TFrameLane
           FFC003FF}
         ShowBooleanFields = True
         ShowUnicode = False
-        ExplicitLeft = 1
+        ExplicitWidth = 868
         ColWidths = (
           20
           57
-          168
+          220
           112
           112
           112
@@ -1018,6 +1054,7 @@ object FrameLane: TFrameLane
     object actnLn_MoveUp: TAction
       Category = 'Lanes'
       Caption = 'Move Up'
+      Hint = 'Move swimmer up lane.'
       ImageIndex = 6
       ImageName = 'up'
       OnUpdate = actnLn_GenericUpdate
@@ -1025,6 +1062,7 @@ object FrameLane: TFrameLane
     object actnLn_MoveDown: TAction
       Category = 'Lanes'
       Caption = 'Move Down'
+      Hint = 'Move swimmer down lane.'
       ImageIndex = 7
       ImageName = 'down'
       OnUpdate = actnLn_GenericUpdate
@@ -1032,6 +1070,7 @@ object FrameLane: TFrameLane
     object actnLn_Swap: TAction
       Category = 'Lanes'
       Caption = 'Swap Lanes'
+      Hint = 'Swap swimmers in lanes..'
       ImageIndex = 38
       ImageName = 'swap2'
       OnUpdate = actnLn_GenericUpdate
@@ -1039,13 +1078,15 @@ object FrameLane: TFrameLane
     object actnLn_Delete: TAction
       Category = 'Lanes'
       Caption = 'Empty Lane'
+      Hint = 'Remove swimmer from lane. (Swimmer'#39's nomination is maintained.)'
       ImageIndex = 9
       ImageName = 'delete'
       OnUpdate = actnLn_GenericUpdate
     end
     object actnLn_DeleteForever: TAction
       Category = 'Lanes'
-      Caption = 'Remove Nomination'
+      Caption = 'Strike Lane'
+      Hint = 'Remove swimmer from lane and delete nomination to event.'
       ImageIndex = 10
       ImageName = 'delete-forever'
       OnUpdate = actnLn_GenericUpdate
@@ -1053,6 +1094,7 @@ object FrameLane: TFrameLane
     object actnln_Report: TAction
       Category = 'Lanes'
       Caption = 'Lane Report'
+      Hint = 'Pick lane report to view and print/export.'
       ImageIndex = 15
       ImageName = 'report'
       OnUpdate = actnLn_GenericUpdate
@@ -1060,15 +1102,24 @@ object FrameLane: TFrameLane
     object actnLn_Renumber: TAction
       Category = 'Lanes'
       Caption = 'Renumber'
-      ImageIndex = 24
-      ImageName = 'sort'
+      Hint = 'Scatter and renumber lanes.'
+      ImageIndex = 36
+      ImageName = 'renumber'
     end
-    object actnLn_RefreshStats: TAction
+    object actnLn_RefreshStat: TAction
       Category = 'Lanes'
       Caption = 'Refresh Stats.'
       Hint = 'Refresh stats - PB, TTB and Club Record.'
-      OnExecute = actnLn_RefreshStatsExecute
+      ImageIndex = 28
+      ImageName = 'query-stats'
+      OnExecute = actnLn_RefreshStatExecute
       OnUpdate = actnLn_GenericUpdate
+    end
+    object actnLn_SplitTime: TAction
+      Category = 'Lanes'
+      Caption = 'Split-Times'
+      ImageIndex = 13
+      ImageName = 'stopwatch'
     end
   end
   object pumenuLane: TPopupMenu

@@ -2771,6 +2771,15 @@ object IMG: TIMG
           ' 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-' +
           '3.175 2.138T12 22"/></svg>'
         FixedColor = clDarkgoldenrod
+      end
+      item
+        IconName = 'hamburger'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 32 32"><path fill="none" stroke="currentColor" str' +
+          'oke-linecap="round" stroke-linejoin="round" stroke-width="2" d="' +
+          'M5 8h22M5 16h22M5 24h22"/></svg>'
+        FixedColor = clDarkgoldenrod
       end>
     Left = 496
     Top = 16
@@ -14662,6 +14671,11 @@ object IMG: TIMG
         CollectionIndex = 117
         CollectionName = 'circle-down'
         Name = 'circle-down'
+      end
+      item
+        CollectionIndex = 118
+        CollectionName = 'hamburger'
+        Name = 'hamburger'
       end>
     ImageCollection = CollectionCore
     Width = 24

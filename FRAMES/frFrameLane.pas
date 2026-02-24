@@ -38,13 +38,18 @@ type
     spbtnMoveUp: TSpeedButton;
     spbtnReport: TSpeedButton;
     spbtnSwitch: TSpeedButton;
-    actnLn_RefreshStats: TAction;
+    actnLn_RefreshStat: TAction;
     spbtnRefreshStats: TSpeedButton;
+    actnLn_SplitTime: TAction;
+    spbtnSplitTime: TSpeedButton;
     procedure actnLn_GenericUpdate(Sender: TObject);
-    procedure actnLn_RefreshStatsExecute(Sender: TObject);
+    procedure actnLn_RefreshStatExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
+    procedure gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
+        State: TGridDrawState);
     procedure gridEllipsClick(Sender: TObject; ACol, ARow: Integer; var S: string);
+    procedure gridFixedCellClick(Sender: TObject; ACol, ARow: LongInt);
     procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
     procedure gridGetEditMask(Sender: TObject; ACol, ARow: LongInt; var Value:
@@ -85,14 +90,24 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TFrameLane.actnLn_RefreshStatsExecute(Sender: TObject);
+procedure TFrameLane.actnLn_RefreshStatExecute(Sender: TObject);
+var
+  aMemberID: integer;
 begin
-  LockDrawing;
-  // refresh the member's stats held in tblNominate
-  uNominee.RefreshStats(uEvent.PK);
-  // ... and push to lanes.
-  uLane.RefreshStats(uHeat.PK);
-  UnlockDrawing;
+  if not (Assigned(CORE) and CORE.IsActive) then exit;
+  aMemberID := uLane.GetMemberID; // obtain the member's ID for the current lane.
+  if aMemberID > 0 then
+  begin
+    LockDrawing;
+    grid.BeginUpdate;
+    try
+      uNominee.RefreshStat(uEvent.PK, aMemberID); // Calc-Reload tblNominate metrics
+      CORE.qryLane.Refresh; // refresh the lane's stats
+    finally
+      grid.EndUpdate;
+      UnlockDrawing;
+    end;
+  end;
 end;
 
 procedure TFrameLane.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var
@@ -114,6 +129,18 @@ begin
       begin
         CanEdit := false;
       end;
+  end;
+end;
+
+procedure TFrameLane.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
+    TRect; State: TGridDrawState);
+var
+  G: TDBAdvGrid;
+begin
+  G := TDBAdvGrid(Sender);
+  if (ARow = 0) and (ACol = 0)then
+  begin
+    IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 6);
   end;
 end;
 
@@ -141,6 +168,15 @@ begin
   if Success then
   begin
     // post ststus message?...
+  end;
+end;
+
+procedure TFrameLane.gridFixedCellClick(Sender: TObject; ACol, ARow: LongInt);
+begin
+  if (ARow = 0) and (ACol = 0) then
+  begin
+    // display dlg to select column visibility...
+    ;
   end;
 end;
 

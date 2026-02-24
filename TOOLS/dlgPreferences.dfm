@@ -26,7 +26,6 @@ object Preferences: TPreferences
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 365
     DesignSize = (
       695
       48)
@@ -46,10 +45,9 @@ object Preferences: TPreferences
     Top = 0
     Width = 695
     Height = 436
-    ActivePage = TabSheet7
+    ActivePage = TabSheet6
     Align = alClient
     TabOrder = 1
-    ExplicitHeight = 365
     object TabSheet2: TTabSheet
       Caption = 'TTB'
       object Label7: TLabel
@@ -313,6 +311,7 @@ object Preferences: TPreferences
           'Enable FINA disqualification codes. (Else use the simplified met' +
           'hod of disqualification.)'
         TabOrder = 0
+        OnClick = prefEnableDQcodesClick
       end
       object prefShowDebugInfo: TCheckBox
         Left = 32

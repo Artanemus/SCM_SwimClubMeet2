@@ -587,9 +587,16 @@ object CORE: TCORE
       '                        Member.FirstName'
       '                       , '#39' '#39
       '                       , UPPER(Member.LastName)'
+      '                       , '#39' ('#39
+      
+        '                       , dbo.SwimmerGenderToString(Nominee.Membe' +
+        'rID)'
+      '                       , '#39'.'#39
+      '                       , Nominee.AGE'
+      '                       , '#39')'#39
       '                     ),48)'
-      '           WHEN L.[TeamID] IS NOT NULL THEN'
-      '           Team.TeamName'
+      '          -- WHEN L.[TeamID] IS NOT NULL THEN'
+      '           -- Team.TeamName'
       ''
       '       END AS FullName'
       '       ,'
@@ -606,9 +613,9 @@ object CORE: TCORE
         'rID)'
       '                     ), 12)'
       
-        '           WHEN E.EventTypeID = 2 AND L.[TeamID] IS NOT NULL THE' +
-        'N'
-      '             Team.ABREV'
+        '           --WHEN E.EventTypeID = 2 AND L.[TeamID] IS NOT NULL T' +
+        'HEN'
+      '             --Team.ABREV'
       '            ELSE NULL'
       '       END AS Stat'
       '       '
@@ -618,9 +625,9 @@ object CORE: TCORE
         'THEN'
       '               [Nominee].TTB'
       
-        '           WHEN E.EventTypeID = 2 AND L.[TeamID] IS NOT NULL THE' +
-        'N'
-      '               [Team].TTB'
+        '           --WHEN E.EventTypeID = 2 AND L.[TeamID] IS NOT NULL T' +
+        'HEN'
+      '               --[Team].TTB'
       '           ELSE NULL '
       '           '
       '       END AS TTB       '
@@ -630,11 +637,16 @@ object CORE: TCORE
         'THEN'
       '               [Nominee].PB'
       
-        '           WHEN E.EventTypeID = 2 AND L.[TeamID] IS NOT NULL THE' +
-        'N'
-      '               [Team].PB'
+        '           --WHEN E.EventTypeID = 2 AND L.[TeamID] IS NOT NULL T' +
+        'HEN'
+      '               --[Team].PB'
       '            ELSE NULL'
-      '       END AS PB       '
+      '       END AS PB'
+      '     ,E.EventTypeID '
+      '     ,Nominee.AGE'
+      
+        '     ,dbo.SwimmerGenderToString(Nominee.MemberID) AS GenderABREV' +
+        '      '
       '     '
       '       '
       '  FROM [SwimClubMeet2].[dbo].[Lane] AS L'
@@ -697,6 +709,7 @@ object CORE: TCORE
       DisplayWidth = 10
       FieldName = 'ClubRecord'
       Origin = 'ClubRecord'
+      OnGetText = qryLaneClubRecordGetText
       DisplayFormat = 'nn:ss.zzz'
       EditMask = '!00:00.000;1;0'
     end
@@ -762,7 +775,7 @@ object CORE: TCORE
       '      ,[TTB]'
       '      ,[PB]'
       '      ,[IsEntrant]'
-      '      ,[SeedTime]'
+      '      ,[PBSeedTime]'
       '      ,[AutoBuildFlag]'
       '      ,[Nominee].[EventID]'
       '      ,[Nominee].[MemberID]'
@@ -1462,6 +1475,7 @@ object CORE: TCORE
   end
   object qryNominate: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Connection = SCM2.scmConnection
     SQL.Strings = (
       'USE SwimClubMeet2;'
       ''
@@ -1644,6 +1658,7 @@ object CORE: TCORE
       ''
       'SELECT m.MemberID,'
       '  @DOB AS DOB,'
+      '  dbo.SwimmerGenderToString(m.MemberID) AS GenderABREV,'
       
         '  dbo.TimeToBeat(@Algorithm, @CalcDefRT, @Percent, m.MemberID, @' +
         'DistanceID, @StrokeID, @SeedDate) AS TTB,'
@@ -1652,7 +1667,7 @@ object CORE: TCORE
         ') AS PB,'
       '  @AGE AS Age, '
       '  PBT.[RaceTime] AS PBSeedTime,'
-      '  dbo.ClubRaceTimeRecord(@EventID, @AGE, m.GenderID)'
+      '  dbo.ClubRecord(@EventID, @AGE, m.GenderID) AS ClubRecord'
       'FROM [SwimClubMeet2].[dbo].[Member] m'
       
         'LEFT JOIN [dbo].[PB] AS PBT ON m.MemberID = PBT.MemberID AND PBT' +

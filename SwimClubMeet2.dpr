@@ -71,7 +71,8 @@ uses
   frFrameMM_ListMember in 'MEMBERS\MM_FRAMES\frFrameMM_ListMember.pas' {FrameMM_ListMember: TFrame},
   frmMM_ParaOlympic in 'MEMBERS\frmMM_ParaOlympic.pas' {MM_ParaOlympic},
   frmMM_Roles in 'MEMBERS\frmMM_Roles.pas' {MM_Roles},
-  frmMM_MetaData in 'MEMBERS\frmMM_MetaData.pas' {MM_MetaData};
+  frmMM_MetaData in 'MEMBERS\frmMM_MetaData.pas' {MM_MetaData},
+  dlgLaneColumnPicker in 'DIALOGS\Lane\dlgLaneColumnPicker.pas' {LaneColumnPicker};
 
 {$R *.res}
 

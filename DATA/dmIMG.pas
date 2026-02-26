@@ -40,6 +40,7 @@ type
     imglstEventCell: TSVGIconVirtualImageList;
     imglstEventPopupMenu: TSVGIconVirtualImageList;
     imglstLaneCell: TSVGIconVirtualImageList;
+    imglstLaneEventType: TSVGIconVirtualImageList;
   private
     { Private declarations }
 

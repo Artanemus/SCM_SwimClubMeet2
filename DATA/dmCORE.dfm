@@ -599,8 +599,9 @@ object CORE: TCORE
       '           -- Team.TeamName'
       ''
       '       END AS FullName'
+      ''
+      '       /* '
       '       ,'
-      '        '
       '       CASE'
       
         '           WHEN E.EventTypeID = 1 AND L.[NomineeID] IS NOT NULL ' +
@@ -618,6 +619,7 @@ object CORE: TCORE
       '             --Team.ABREV'
       '            ELSE NULL'
       '       END AS Stat'
+      '       */'
       '       '
       '     , CASE'
       
@@ -661,12 +663,21 @@ object CORE: TCORE
       FieldName = 'LaneID'
       Origin = 'LaneID'
       ProviderFlags = [pfInWhere, pfInKey]
+      Visible = False
     end
     object qryLaneLaneNum: TIntegerField
+      DisplayLabel = 'Lane Number'
       FieldName = 'LaneNum'
       Origin = 'LaneNum'
     end
+    object qryLaneFullName: TWideStringField
+      DisplayLabel = 'Entrants Full Name'
+      FieldName = 'FullName'
+      Origin = 'FullName'
+      Size = 257
+    end
     object qryLaneRaceTime: TTimeField
+      DisplayLabel = 'Race-Time'
       DisplayWidth = 10
       FieldName = 'RaceTime'
       Origin = 'RaceTime'
@@ -676,6 +687,7 @@ object CORE: TCORE
       EditMask = '!00:00.000;1;0'
     end
     object qryLaneTTB: TTimeField
+      DisplayLabel = 'TTB (Time To Beat.)'
       DisplayWidth = 10
       FieldName = 'TTB'
       Origin = 'TTB'
@@ -685,6 +697,7 @@ object CORE: TCORE
       EditMask = '!00:00.000;1;0'
     end
     object qryLanePB: TTimeField
+      DisplayLabel = 'PB (Personal Best)'
       DisplayWidth = 10
       FieldName = 'PB'
       Origin = 'PB'
@@ -694,49 +707,17 @@ object CORE: TCORE
       EditMask = '!00:00.000;1;0'
     end
     object qryLaneIsDisqualified: TBooleanField
+      DisplayLabel = 'Is Disqualified'
       FieldName = 'IsDisqualified'
       Origin = 'IsDisqualified'
     end
     object qryLaneIsScratched: TBooleanField
+      DisplayLabel = 'Is Scratched'
       FieldName = 'IsScratched'
       Origin = 'IsScratched'
     end
-    object qryLaneDisqualifyCodeID: TIntegerField
-      FieldName = 'DisqualifyCodeID'
-      Origin = 'DisqualifyCodeID'
-    end
-    object qryLaneClubRecord: TTimeField
-      DisplayWidth = 10
-      FieldName = 'ClubRecord'
-      Origin = 'ClubRecord'
-      OnGetText = qryLaneClubRecordGetText
-      DisplayFormat = 'nn:ss.zzz'
-      EditMask = '!00:00.000;1;0'
-    end
-    object qryLaneHeatID: TIntegerField
-      FieldName = 'HeatID'
-      Origin = 'HeatID'
-    end
-    object qryLaneTeamID: TIntegerField
-      FieldName = 'TeamID'
-      Origin = 'TeamID'
-    end
-    object qryLaneNomineeID: TIntegerField
-      FieldName = 'NomineeID'
-      Origin = 'NomineeID'
-    end
-    object qryLaneFullName: TWideStringField
-      FieldName = 'FullName'
-      Origin = 'FullName'
-      Size = 257
-    end
-    object qryLaneStat: TWideStringField
-      FieldName = 'Stat'
-      Origin = 'Stat'
-      ReadOnly = True
-      Size = 4000
-    end
     object qryLaneluDQ: TStringField
+      DisplayLabel = 'DQ CODE'
       FieldKind = fkLookup
       FieldName = 'luDQ'
       LookupDataSet = tblDisqualifyCode
@@ -744,6 +725,53 @@ object CORE: TCORE
       LookupResultField = 'ABREV'
       KeyFields = 'DisqualifyCodeID'
       Lookup = True
+    end
+    object qryLaneClubRecord: TTimeField
+      DisplayLabel = 'Club Record'
+      DisplayWidth = 10
+      FieldName = 'ClubRecord'
+      Origin = 'ClubRecord'
+      Visible = False
+      OnGetText = qryLaneClubRecordGetText
+      DisplayFormat = 'nn:ss.zzz'
+      EditMask = '!00:00.000;1;0'
+    end
+    object qryLaneGenderABREV: TWideStringField
+      Alignment = taCenter
+      DisplayLabel = 'Gender (M,F,X)'
+      FieldName = 'GenderABREV'
+      Origin = 'GenderABREV'
+      ReadOnly = True
+      Size = 2
+    end
+    object qryLaneAGE: TIntegerField
+      FieldName = 'AGE'
+      Origin = 'AGE'
+    end
+    object qryLaneEventTypeID: TIntegerField
+      DisplayLabel = 'Event Type (INDV.RELAY)'
+      FieldName = 'EventTypeID'
+      Origin = 'EventTypeID'
+    end
+    object qryLaneHeatID: TIntegerField
+      FieldName = 'HeatID'
+      Origin = 'HeatID'
+      Visible = False
+    end
+    object qryLaneNomineeID: TIntegerField
+      FieldName = 'NomineeID'
+      Origin = 'NomineeID'
+      Visible = False
+    end
+    object qryLaneTeamID: TIntegerField
+      FieldName = 'TeamID'
+      Origin = 'TeamID'
+      Visible = False
+    end
+    object qryLaneDisqualifyCodeID: TIntegerField
+      DisplayLabel = 'FINA Disqualify Code'
+      FieldName = 'DisqualifyCodeID'
+      Origin = 'DisqualifyCodeID'
     end
   end
   object dsLane: TDataSource

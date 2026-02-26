@@ -22,7 +22,8 @@ uses
   function NewNominee(aMemberID, aEventID: integer): integer;
   function DeleteNominee(aMemberID, aEventID: integer): boolean;
   function RefreshStats(aEventID: integer): boolean;
-  function RefreshStat(aEventID, aMemberID: integer): boolean;
+  function RefreshStat(aEventID, aMemberID: integer): boolean; overload;
+  function RefreshStat(aNomineeID: integer): boolean; overload;
   procedure ToogleNomination();
 
   procedure GetStatSettings(
@@ -195,6 +196,60 @@ begin
   end;
 
 end;
+
+function RefreshStat(aNomineeID: integer): boolean;
+var
+  aMemberID, aEventID: integer;
+  Metrics: TSCMSwimmerMetrics;
+  foundit: boolean;
+  SQL: string;
+  v: variant;
+begin
+  SQL := '''
+    SELECT TOP (1) EventID FROM SwimClubMeet2.dbo.Nominee
+    WHERE Nominee.NomineID = :ID;
+    ''';
+  v := SCM2.scmConnection.ExecSQLScalar(SQL, [aNomineeID]) ;
+  if not VarIsClear(v) then
+  begin
+    aEventID := v;
+    SQL := '''
+      SELECT TOP (1) MemberID FROM SwimClubMeet2.dbo.Nominee
+      WHERE Nominee.NomineID = :ID;
+      ''';
+    v := SCM2.scmConnection.ExecSQLScalar(SQL, [aNomineeID]) ;
+    if not VarIsClear(v) then
+    begin
+      aMemberID := v;
+      Metrics.MemberID := aMemberID;
+      Metrics.EventID := aEventID;
+      GetMetrics(Metrics);
+      foundit := uNominee.Locate_Nominee(aMemberID, aEventID);
+      if foundit then
+      begin
+        CORE.qryNominee.CheckBrowseMode;
+        try
+          CORE.qryNominee.Edit;
+          CORE.qryNominee.FieldByName('TTB').AsDateTime := Metrics.TTB;
+          CORE.qryNominee.FieldByName('PB').AsDateTime := Metrics.PB;
+          CORE.qryNominee.FieldByName('ClubRecord').AsDateTime := Metrics.ClubRecord;
+          CORE.qryNominee.FieldByName('AGE').AsINteger := Metrics.AGE;
+          CORE.qryNominee.FieldByName('PBSeedTime').AsDateTime := Metrics.PBSeedTime;
+          CORE.qryNominee.Post;
+          result := true;
+        except
+        on E: EFDDBEngineException do
+          begin
+            CORE.qryNominee.Cancel;
+            SCM2.FDGUIxErrorDialog.Execute(E);
+          end;
+        end;
+      end;
+
+    end;
+  end;
+end;
+
 
 function RefreshStat(aEventID, aMemberID: integer): boolean;
 var

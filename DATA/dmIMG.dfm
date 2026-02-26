@@ -14676,6 +14676,11 @@ object IMG: TIMG
         CollectionIndex = 118
         CollectionName = 'hamburger'
         Name = 'hamburger'
+      end
+      item
+        CollectionIndex = 102
+        CollectionName = 'INDV_RELAY'
+        Name = 'INDV_RELAY'
       end>
     ImageCollection = CollectionCore
     Width = 24
@@ -14683,5 +14688,41 @@ object IMG: TIMG
     Size = 24
     Left = 768
     Top = 168
+  end
+  object imglstLaneEventType: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 0
+        CollectionName = 'EmptyFrame'
+        Name = 'EmptyFrame'
+      end
+      item
+        CollectionIndex = 72
+        CollectionName = 'INDV'
+        Disabled = True
+        Name = 'INDV_Disabled'
+      end
+      item
+        CollectionIndex = 15
+        CollectionName = 'RELAY_DOT'
+        Disabled = True
+        Name = 'RELAY_DOT_Disabled'
+      end
+      item
+        CollectionIndex = 72
+        CollectionName = 'INDV'
+        Name = 'INDV'
+      end
+      item
+        CollectionIndex = 15
+        CollectionName = 'RELAY_DOT'
+        Name = 'RELAY_DOT'
+      end>
+    ImageCollection = CollectionCore
+    Width = 24
+    Height = 24
+    Size = 24
+    Left = 768
+    Top = 224
   end
 end

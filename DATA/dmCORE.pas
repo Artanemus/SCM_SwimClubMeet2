@@ -142,7 +142,6 @@ type
     qryLaneTeamID: TIntegerField;
     qryLaneNomineeID: TIntegerField;
     qryLaneFullName: TWideStringField;
-    qryLaneStat: TWideStringField;
     tblDisqualifyCode: TFDTable;
     luDisqualifyCode: TDataSource;
     qryLaneluDQ: TStringField;
@@ -155,6 +154,9 @@ type
     qryMemberLinkIsArchived: TBooleanField;
     qryMemberLinkIsArchivedAsInt: TIntegerField;
     qryNominees: TFDQuery;
+    qryLaneEventTypeID: TIntegerField;
+    qryLaneAGE: TIntegerField;
+    qryLaneGenderABREV: TWideStringField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterEdit(DataSet: TDataSet);

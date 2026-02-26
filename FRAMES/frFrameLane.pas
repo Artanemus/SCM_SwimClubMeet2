@@ -59,6 +59,9 @@ type
     procedure gridGetEditText(Sender: TObject; ACol, ARow: LongInt; var Value:
         string);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
+  private
+    DefGridColWidths: Array of integer;
+
   protected
     procedure Loaded; override;
   public
@@ -73,7 +76,7 @@ implementation
 {$R *.dfm}
 
 uses
-  uSession, uEvent, uHeat, uLane, uNominee, uPickerStage;
+  uSession, uEvent, uHeat, uLane, uNominee, uPickerStage, dlgLaneColumnPicker;
 
 procedure TFrameLane.actnLn_GenericUpdate(Sender: TObject);
 var
@@ -91,56 +94,73 @@ begin
 end;
 
 procedure TFrameLane.actnLn_RefreshStatExecute(Sender: TObject);
-var
-  aMemberID: integer;
 begin
   if not (Assigned(CORE) and CORE.IsActive) then exit;
+  LockDrawing;
+  grid.BeginUpdate;
+  try
+    uNominee.RefreshStat(CORE.qryLane.FieldByName('NomineeID').AsInteger);
+    CORE.qryLane.Refresh; // refresh the lane's stats
+  finally
+    grid.EndUpdate;
+    UnlockDrawing;
+  end;
+
+
+  {
   aMemberID := uLane.GetMemberID; // obtain the member's ID for the current lane.
   if aMemberID > 0 then
   begin
     LockDrawing;
     grid.BeginUpdate;
     try
-      uNominee.RefreshStat(uEvent.PK, aMemberID); // Calc-Reload tblNominate metrics
+      uNominee.RefreshStat(uEvent.PK(), aMemberID); // Calc-Reload tblNominate metrics
       CORE.qryLane.Refresh; // refresh the lane's stats
     finally
       grid.EndUpdate;
       UnlockDrawing;
     end;
   end;
+  }
+
 end;
 
 procedure TFrameLane.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var
     CanEdit: Boolean);
+var
+  G: TDBAdvGrid;
+  indx: integer;
 begin
+  G := TDBAdvGrid(Sender);
   CanEdit := false;
+  indx := G.FieldIndexAtColumn[ACol];
   case uHeat.HeatStatusID of
-    1: // OPEN.
-      begin // swimmer/team, racetime, s, q, dQ.
-        if ACol in [2, 3, 6, 7, 8] then
-          CanEdit := true;
-      end;
-    2: // RACED.
-      begin // racetime, s, q, dQ.
-        if ACol in [3, 6, 7, 8] then
-          CanEdit := true;
-      end;
+    1: // OPEN. swimmer/team, racetime, s, q, dQ.
+        if indx in [2, 3, 6, 7, 8] then CanEdit := true;
+    2: // RACED. racetime, s, q, dQ.
+        if indx in [3, 6, 7, 8] then CanEdit := true;
     3: // CLOSED.
-      begin
         CanEdit := false;
-      end;
   end;
 end;
 
 procedure TFrameLane.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
-    TRect; State: TGridDrawState);
+  TRect; State: TGridDrawState);
 var
   G: TDBAdvGrid;
+  item: TDBGridColumnItem;
 begin
   G := TDBAdvGrid(Sender);
-  if (ARow = 0) and (ACol = 0)then
+  if (ARow = 0) then // GRID's HEADER BAR.
   begin
-    IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 6);
+    // This method deals with sorted columns and correctly draws ...
+    item := G.Columns[ACol];
+    if item.FieldName = 'LaneID' then  // Hamburger
+      IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 6);
+    if item.FieldName = 'GenderABREV' then  // male-female
+      IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 3);
+    if item.FieldName = 'EventTypeID' then  // Event Type IND-R
+      IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 7);
   end;
 end;
 
@@ -154,29 +174,59 @@ begin
   success := false;
   G := TDBAdvGrid(Sender);
   G.BeginUpdate;
-  if (ARow >= G.FixedRows) and (ACol = 2) then
+  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'FullName') then
   begin
     stage := TPickerStage.Create(Self);
-    // deal with the ellipse button getting clicked...
     if ((GetKeyState(VK_CONTROL) and 128) = 128) then
+      // List members pool for nomination and entrant assignment.
       success := stage.Stage(uEvent.GetEventType,  uLane.PK, true)
     else
+      // List nominee pool for entrant assignment
       success := stage.Stage(uEvent.GetEventType,  uLane.PK, false);
     stage.free;
   end;
   G.EndUpdate;
+
   if Success then
   begin
-    // post ststus message?...
+    // Update date main for metrics? (post status message, etc... )
   end;
 end;
 
 procedure TFrameLane.gridFixedCellClick(Sender: TObject; ACol, ARow: LongInt);
+var
+  dlg: TLaneColumnPicker;
+  I, indx: Integer;
+  fld: TField;
+  item: TDBGridColumnItem;
 begin
   if (ARow = 0) and (ACol = 0) then
   begin
     // display dlg to select column visibility...
-    ;
+    dlg := TLaneColumnPicker.Create(Self);
+    dlg.ShowModal();
+    // iterate over results and adjust column visibility.
+    for I := 0 to dlg.clbLane.Items.Count - 1 do
+    begin
+      fld := TField(dlg.clbLane.Items.Objects[I]);
+      item := Grid.ColumnByFieldName[fld.FieldName];
+      if Assigned(item) and Assigned(fld) then
+      begin
+        if fld.Visible and (item.Width = 0) then
+        begin
+          // lookup default column widths...
+          indx := fld.index;
+          if indx in [Low(DefGridColWidths)..High(DefGridColWidths)] then
+          begin
+            if DefGridColWidths[indx] <> -1 then
+              item.Width := DefGridColWidths[indx];
+          end;
+        end
+        else if (not fld.Visible) and (item.Width <> 0) then
+          item.Width := 0;
+      end;
+    end;
+    dlg.Free;
   end;
 end;
 
@@ -209,7 +259,7 @@ var
   G: TDBAdvGrid;
 begin
   G := TDBAdvGrid(Sender);
-  if (ARow >= G.FixedRows) and (ACol = 3) then
+  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'RaceTime') then
   begin
     Value := '!00:00.000;1;0';
   end;
@@ -221,15 +271,15 @@ var
   G: TDBAdvGrid;
 begin
   G := TDBAdvGrid(Sender);
-  if (ARow >= G.FixedRows) and (ACol = 3) then
+  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'RaceTime') then
   begin
     AEditor := edNumeric;
   end;
-  if (ARow >= G.FixedRows) and (ACol = 2) then
+  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'FullName') then
   begin
     AEditor := edEditBtn;
     Grid.BtnEdit.EditorEnabled := False; // disables typing
-    Grid.BtnEdit.ButtonCaption := '...'; // optional
+    Grid.BtnEdit.ButtonCaption := '..'; // optional
   end;
 end;
 
@@ -241,7 +291,7 @@ var
   dt: TDateTime;
 begin
   G := TDBAdvGrid(Sender);
-  if (ARow >= G.FixedRows) and (ACol = 3 )then
+  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'RaceTime')then
   begin
     // This method FIXES display format issues.
     dt := G.DataSource.DataSet.FieldByName('RaceTime').AsDateTime;
@@ -251,6 +301,9 @@ begin
 end;
 
 procedure TFrameLane.gridKeyPress(Sender: TObject; var Key: Char);
+var
+  G: TDBAdvGrid;
+  indx: integer;
 begin
   {TODO -oBSA -cGeneral :
     Clear lookup cells, whether in edit state of not, using the BACKSPACE key.
@@ -260,8 +313,10 @@ begin
 //      begin
 //      end;
 
-  if (grid.row >= grid.FixedRows) and
-      (grid.RealColIndex(grid.Col) in [2, 3, 8]) then
+  G := TDBAdvGrid(Sender);
+  indx := G.FieldIndexAtColumn[G.Col]; // fields index on tag at TFrameLane.Loaded..
+  // FullName (Entrant.RelayTeam, Race-Time, luDQ).
+  if (grid.row >= grid.FixedRows) and (indx in [2, 3, 8]) then
   begin
     if (Key = char(VK_BACK)) then
     begin
@@ -272,7 +327,8 @@ begin
             begin
               if (CORE.qryLane.State <> dsEdit) then
                 CORE.qryLane.Edit;
-              case (grid.RealColIndex(grid.Col)) of
+
+              case (indx) of
                 2:
                 CORE.qryLane.FieldByName('FullName').Clear;
                 3:
@@ -317,39 +373,81 @@ end;
 
 procedure TFrameLane.Loaded;
 var
-  item: TDBGridColumnItem;
+  item: TCollectionItem;
+  fld: TField;
 begin
   inherited;
-  // This executes after the DFM has loaded and ActionLinks have synced.
-  // Fix Delphi's disabling column settings.
-  item := Grid.ColumnByFieldName['luDQ'];
-  if item <> nil then item.AllowBlank := true;
-    // UNSAFE - Grid.Columns[?].AllowBlank := true;
+  // Store a snap-shot of design-time field/column state.
+  Grid.SetColumnOrder;
+
+  // snapshot of design-time columnwidths used in TDBAdvGrid.
+  SetLength(DefGridColWidths,CORE.qryLane.Fields.Count);
+  for fld in CORE.qryLane.Fields do
+  begin
+    item := Grid.ColumnByFieldName[fld.FieldName];
+    if Assigned(item) then
+      DefGridColWidths[fld.Index] := TDBGridColumnItem(item).Width
+    else DefGridColWidths[fld.Index] := -1;
+  end;
+
+  // ASSERT field visibility. Default SCMv1 schema.
+  CORE.qryLane.FieldByName('LaneID').Visible := false;
+  CORE.qryLane.FieldByName('ClubRecord').Visible := false;
+  CORE.qryLane.FieldByName('HeatID').Visible := false;
+  CORE.qryLane.FieldByName('TeamID').Visible := false;
+  CORE.qryLane.FieldByName('NomineeID').Visible := false;
+  CORE.qryLane.FieldByName('GenderABREV').Visible := false;
+  CORE.qryLane.FieldByName('AGE').Visible := false;
+  CORE.qryLane.FieldByName('EventTypeID').Visible := false;
+
+  // Set ... Simplified or FINA disqualification codes.
+  OnPreferenceChange;
+
+  // ASSERT additional grid column visibility (via Column Width)
+  Grid.ColumnByFieldName['ClubRecord'].Width := 0;
+  Grid.ColumnByFieldName['GenderABREV'].Width := 0;
+  Grid.ColumnByFieldName['AGE'].Width := 0;
+  Grid.ColumnByFieldName['EventTypeID'].Width := 0;
+
+  OnEventTypeChange(CORE.qryLane.FieldByName('EventTypeID').AsInteger);
+
 end;
 
 procedure TFrameLane.OnEventTypeChange(AEventTypeID: Integer);
+var
+  item: TDBGridColumnItem;
 begin
+  item := Grid.ColumnByFieldName['FullName'];
   if AEventTypeID = 2 then
-    Grid.Columns[2].Header := 'Relay Team'
+    item.Header := 'Relay Team'
   else
-    Grid.Columns[2].Header := 'Entrant';
+    item.Header := 'Entrant';
 end;
 
 procedure TFrameLane.OnPreferenceChange;
 begin
   LockDrawing;
   Grid.BeginUpdate;
-  // default - use simplified method of disqualification
-  Grid.Columns[8].Width := 0;
-  Grid.Columns[6].Width := 39;
-  Grid.Columns[7].Width := 39;
+
+  CORE.qryLane.FieldByName('luDQ').Visible := false;
+  CORE.qryLane.FieldByName('IsScratched').Visible := true;
+  CORE.qryLane.FieldByName('IsDisqualified').Visible := true;
+
+  Grid.ColumnByFieldName['luDQ'].Width := 0;
+  Grid.ColumnByFieldName['IsScratched'].Width := 39;
+  Grid.ColumnByFieldName['IsDisqualified'].Width := 39;
   try
     if Assigned(Settings) and Settings.EnableDQcodes then
     begin
-      Grid.Columns[8].Width := 64;
-      Grid.Columns[6].Width := 0;
-      Grid.Columns[7].Width := 0;
+      CORE.qryLane.FieldByName('luDQ').Visible := true;
+      CORE.qryLane.FieldByName('IsScratched').Visible := false;
+      CORE.qryLane.FieldByName('IsDisqualified').Visible := false;
+
+      Grid.ColumnByFieldName['luDQ'].Width := 54;
+      Grid.ColumnByFieldName['IsScratched'].Width := 0;
+      Grid.ColumnByFieldName['IsDisqualified'].Width := 0;
     end;
+
   finally
     Grid.EndUpdate;
     UnlockDrawing;

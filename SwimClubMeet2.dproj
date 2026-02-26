@@ -353,6 +353,10 @@
             <Form>MM_MetaData</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="DIALOGS\Lane\dlgLaneColumnPicker.pas">
+            <Form>LaneColumnPicker</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

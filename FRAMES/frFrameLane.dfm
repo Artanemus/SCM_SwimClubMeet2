@@ -1,7 +1,7 @@
 object FrameLane: TFrameLane
   Left = 0
   Top = 0
-  Width = 965
+  Width = 1101
   Height = 480
   ParentShowHint = False
   ShowHint = True
@@ -235,31 +235,29 @@ object FrameLane: TFrameLane
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 907
+    Width = 1043
     Height = 480
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Use NEW to start building events.'
     TabOrder = 1
-    ExplicitWidth = 868
     object pnlG: TPanel
       Left = 0
       Top = 0
-      Width = 907
+      Width = 1043
       Height = 480
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitWidth = 868
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 907
+        Width = 1043
         Height = 480
         Cursor = crDefault
         Align = alClient
         Color = clWhite
-        ColCount = 10
+        ColCount = 13
         DefaultRowHeight = 32
         DrawingStyle = gdsClassic
         FixedColor = clWhite
@@ -270,7 +268,7 @@ object FrameLane: TFrameLane
         Font.Height = -16
         Font.Name = 'Segoe UI'
         Font.Style = []
-        Options = [goVertLine, goHorzLine, goRangeSelect, goTabs, goFixedRowDefAlign]
+        Options = [goVertLine, goHorzLine, goRangeSelect, goColMoving, goTabs, goFixedRowDefAlign]
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
@@ -892,6 +890,92 @@ object FrameLane: TFrameLane
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
             Width = 112
+          end
+          item
+            Alignment = taCenter
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'GenderABREV'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = ' '
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            Name = 'lnGenderABREV'
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 32
+          end
+          item
+            Alignment = taRightJustify
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'AGE'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = 'Age'
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 34
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            DataImageField = True
+            FieldName = 'EventTypeID'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = ' '
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            Images = IMG.imglstLaneEventType
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 34
           end>
         DataSource = CORE.dsLane
         InvalidPicture.Data = {
@@ -1032,7 +1116,6 @@ object FrameLane: TFrameLane
           FFC003FF}
         ShowBooleanFields = True
         ShowUnicode = False
-        ExplicitWidth = 868
         ColWidths = (
           20
           57
@@ -1043,7 +1126,10 @@ object FrameLane: TFrameLane
           39
           36
           64
-          112)
+          112
+          32
+          34
+          34)
       end
     end
   end

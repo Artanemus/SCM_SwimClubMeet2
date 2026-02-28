@@ -75,7 +75,10 @@ type
     spbtnReport: TSpeedButton;
     spbtnTimeKeeper: TSpeedButton;
     spbtnToggleStatus: TSpeedButton;
+    actnHT_RefreshStats: TAction;
+    RefreshStats1: TMenuItem;
     procedure actnHt_GenericUpdate(Sender: TObject);
+    procedure actnHT_RefreshStatsExecute(Sender: TObject);
     procedure actnHt_ToggleStatusExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
@@ -92,6 +95,8 @@ implementation
 
 {$R *.dfm}
 
+uses uNominee;
+
 procedure TFrameHeat.actnHt_GenericUpdate(Sender: TObject);
 var
   DoEnable: boolean;
@@ -105,6 +110,23 @@ begin
       DoEnable := true;
   end;
   TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TFrameHeat.actnHT_RefreshStatsExecute(Sender: TObject);
+begin
+  if not (Assigned(CORE) and CORE.IsActive) then exit;
+  CORE.qryLane.DisableControls;
+  try
+      CORE.qryLane.First;
+      while not CORE.qryLane.Eof do
+      begin
+        uNominee.RefreshStat(CORE.qryLane.FieldByName('NomineeID').AsInteger);
+        CORE.qryLane.next;
+      end;
+      CORE.qryLane.Refresh; // refresh the lane's stats
+  finally
+    CORE.qryLane.EnableControls;
+  end;
 end;
 
 procedure TFrameHeat.actnHt_ToggleStatusExecute(Sender: TObject);

@@ -381,6 +381,7 @@ object FrameHeat: TFrameHeat
         RowCount = 2
         FixedRows = 1
         Options = [goRangeSelect, goRowSelect, goFixedRowDefAlign]
+        PopupMenu = pumenuHeat
         ScrollBars = ssBoth
         TabOrder = 0
         StyleElements = [seFont, seBorder]
@@ -864,6 +865,12 @@ object FrameHeat: TFrameHeat
       ImageIndex = 36
       ImageName = 'renumber'
     end
+    object actnHT_RefreshStats: TAction
+      Category = 'Heats'
+      Caption = 'Refresh Lane Stats'
+      OnExecute = actnHT_RefreshStatsExecute
+      OnUpdate = actnHt_GenericUpdate
+    end
   end
   object pumenuHeat: TPopupMenu
     Left = 114
@@ -909,6 +916,9 @@ object FrameHeat: TFrameHeat
     end
     object HeatReport1: TMenuItem
       Action = actnHt_Report
+    end
+    object RefreshStats1: TMenuItem
+      Action = actnHT_RefreshStats
     end
   end
 end

@@ -587,13 +587,6 @@ object CORE: TCORE
       '                        Member.FirstName'
       '                       , '#39' '#39
       '                       , UPPER(Member.LastName)'
-      '                       , '#39' ('#39
-      
-        '                       , dbo.SwimmerGenderToString(Nominee.Membe' +
-        'rID)'
-      '                       , '#39'.'#39
-      '                       , Nominee.AGE'
-      '                       , '#39')'#39
       '                     ),48)'
       '          -- WHEN L.[TeamID] IS NOT NULL THEN'
       '           -- Team.TeamName'
@@ -1654,6 +1647,8 @@ object CORE: TCORE
   object qryMemberMetrics: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     Connection = SCM2.scmConnection
+    FormatOptions.AssignedValues = [fvFmtDisplayTime]
+    FormatOptions.FmtDisplayTime = 'nn:ss:.zzz'
     SQL.Strings = (
       'USE SwimClubMeet2;'
       ''
@@ -1671,6 +1666,8 @@ object CORE: TCORE
       'DECLARE @AGE AS INTEGER;'
       'DECLARE @DOB AS DATETIME;'
       ''
+      'if @SeedDate IS NULL SET @SeedDate = GETDATE();'
+      ''
       
         'SET @DistanceID = (SELECT DistanceID FROM dbo.Event WHERE [Event' +
         '].EventID = @EventID);'
@@ -1682,7 +1679,6 @@ object CORE: TCORE
         'MemberID);'
       'SET @AGE = (SELECT dbo.SwimmerAge(@SeedDate,@DOB));'
       ''
-      'if @SeedDate IS NULL SET @SeedDate = GETDATE();'
       ''
       'SELECT m.MemberID,'
       '  @DOB AS DOB,'
@@ -1695,7 +1691,9 @@ object CORE: TCORE
         ') AS PB,'
       '  @AGE AS Age, '
       '  PBT.[RaceTime] AS PBSeedTime,'
-      '  dbo.ClubRecord(@EventID, @AGE, m.GenderID) AS ClubRecord'
+      
+        '  dbo.ClubRecord(@EventID, @AGE, m.GenderID, @SeedDate) AS ClubR' +
+        'ecord'
       'FROM [SwimClubMeet2].[dbo].[Member] m'
       
         'LEFT JOIN [dbo].[PB] AS PBT ON m.MemberID = PBT.MemberID AND PBT' +

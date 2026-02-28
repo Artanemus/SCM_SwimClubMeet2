@@ -268,7 +268,7 @@ object FrameLane: TFrameLane
         Font.Height = -16
         Font.Name = 'Segoe UI'
         Font.Style = []
-        Options = [goVertLine, goHorzLine, goRangeSelect, goColMoving, goTabs, goFixedRowDefAlign]
+        Options = [goVertLine, goHorzLine, goRangeSelect, goColSizing, goColMoving, goTabs, goFixedRowDefAlign]
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
@@ -284,6 +284,7 @@ object FrameLane: TFrameLane
         OnCanEditCell = gridCanEditCell
         OnGetEditorType = gridGetEditorType
         OnEllipsClick = gridEllipsClick
+        HTMLKeepLineBreak = False
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
         ActiveCellFont.Height = -12
@@ -674,6 +675,7 @@ object FrameLane: TFrameLane
             HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
+            HTMLTemplate = '<IND x="2"><FONT Size="12"<B><#FullName></B>'
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clBlack
@@ -1116,6 +1118,7 @@ object FrameLane: TFrameLane
           FFC003FF}
         ShowBooleanFields = True
         ShowUnicode = False
+        OnGetHTMLTemplate = gridGetHTMLTemplate
         ColWidths = (
           20
           57

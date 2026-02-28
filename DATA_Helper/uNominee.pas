@@ -205,9 +205,10 @@ var
   SQL: string;
   v: variant;
 begin
+  Result := false;
   SQL := '''
     SELECT TOP (1) EventID FROM SwimClubMeet2.dbo.Nominee
-    WHERE Nominee.NomineID = :ID;
+    WHERE Nominee.NomineeID = :ID;
     ''';
   v := SCM2.scmConnection.ExecSQLScalar(SQL, [aNomineeID]) ;
   if not VarIsClear(v) then
@@ -215,7 +216,7 @@ begin
     aEventID := v;
     SQL := '''
       SELECT TOP (1) MemberID FROM SwimClubMeet2.dbo.Nominee
-      WHERE Nominee.NomineID = :ID;
+      WHERE Nominee.NomineeID = :ID;
       ''';
     v := SCM2.scmConnection.ExecSQLScalar(SQL, [aNomineeID]) ;
     if not VarIsClear(v) then
@@ -245,7 +246,6 @@ begin
           end;
         end;
       end;
-
     end;
   end;
 end;

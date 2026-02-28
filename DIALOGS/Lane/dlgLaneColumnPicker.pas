@@ -12,19 +12,26 @@ uses
 
   Data.DB,
 
-  dmSCM2, dmCORE, dmIMG, uDefines, uSettings;
+  dmSCM2, dmCORE, dmIMG, uDefines, uSettings, Vcl.Buttons, Vcl.WinXPanels;
 
 type
   TLaneColumnPicker = class(TForm)
     pnlBody: TPanel;
     clbLane: TCheckListBox;
+    spnlFooter: TStackPanel;
+    spbtnSaveGridMetrics: TSpeedButton;
+    spbtnLoadGridMetrics: TSpeedButton;
+    spbtnResetGrigLayout: TSpeedButton;
     procedure clbLaneClickCheck(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure spbtnResetGrigLayoutClick(Sender: TObject);
   private
     { Private declarations }
+    fDoReset: boolean;
   public
     { Public declarations }
+    property DoReset: boolean read FDoReset write FDoReset;
   end;
 
 var
@@ -45,11 +52,16 @@ end;
 procedure TLaneColumnPicker.FormCreate(Sender: TObject);
 var
   fld: TField;
-  I, indx: Integer;
+  I: Integer;
 begin
-  // Fill list check-box
-  if CORE.qryLane.IsEmpty then exit;
+  fDoReset := false;
+  if CORE.qryLane.IsEmpty then
+  begin
+    ModalResult := mrCancel;
+    Close;
+  end;
 
+  // Fill list check-box
   for I := 0 to CORE.qryLane.Fields.Count-1 do
   begin
     // filter out PK and FK
@@ -59,7 +71,7 @@ begin
     if fld.FieldName = 'TeamID' then continue;
     if fld.FieldName = 'NomineeID' then continue;
 
-
+    // Include EventTypeID in list...
     // if fld.FieldName = 'EventTypeID' then continue;
 
     // filter out DQ/simplified disqualification
@@ -73,8 +85,9 @@ begin
       if (fld.FieldName = 'luDQ')
         OR  (fld.FieldName = 'DisqualifyCodeID') then continue;
     end;
-    // filter MISC, unused.
-    if fld.FieldName = 'Stat' then continue;
+
+    // filter MISC, unused. (Dropped from CORE.qryLane.)
+    // if fld.FieldName = 'Stat' then continue;
 
     clbLane.AddItem(fld.DisplayLabel, fld);
   end;
@@ -96,6 +109,12 @@ begin
     Key := 0;
     ModalResult := mrOk;
   end;
+end;
+
+procedure TLaneColumnPicker.spbtnResetGrigLayoutClick(Sender: TObject);
+begin
+  fDoReset := true;
+  ModalResult := mrOK;
 end;
 
 end.

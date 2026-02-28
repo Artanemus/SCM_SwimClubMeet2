@@ -58,9 +58,14 @@ type
         TEditorType);
     procedure gridGetEditText(Sender: TObject; ACol, ARow: LongInt; var Value:
         string);
+    procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
+        HTMLTemplate: string; Fields: TFields);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
   private
     DefGridColWidths: Array of integer;
+    fColumnStatesString: String;
+
+    procedure SetDefGridSchemaState();
 
   protected
     procedure Loaded; override;
@@ -98,31 +103,15 @@ begin
   if not (Assigned(CORE) and CORE.IsActive) then exit;
   LockDrawing;
   grid.BeginUpdate;
+  CORE.qryLane.DisableControls;
   try
     uNominee.RefreshStat(CORE.qryLane.FieldByName('NomineeID').AsInteger);
     CORE.qryLane.Refresh; // refresh the lane's stats
   finally
+    CORE.qryLane.DisableControls;
     grid.EndUpdate;
     UnlockDrawing;
   end;
-
-
-  {
-  aMemberID := uLane.GetMemberID; // obtain the member's ID for the current lane.
-  if aMemberID > 0 then
-  begin
-    LockDrawing;
-    grid.BeginUpdate;
-    try
-      uNominee.RefreshStat(uEvent.PK(), aMemberID); // Calc-Reload tblNominate metrics
-      CORE.qryLane.Refresh; // refresh the lane's stats
-    finally
-      grid.EndUpdate;
-      UnlockDrawing;
-    end;
-  end;
-  }
-
 end;
 
 procedure TFrameLane.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var
@@ -199,34 +188,55 @@ var
   I, indx: Integer;
   fld: TField;
   item: TDBGridColumnItem;
+  mr: TModalResult;
 begin
   if (ARow = 0) and (ACol = 0) then
   begin
-    // display dlg to select column visibility...
-    dlg := TLaneColumnPicker.Create(Self);
-    dlg.ShowModal();
-    // iterate over results and adjust column visibility.
-    for I := 0 to dlg.clbLane.Items.Count - 1 do
-    begin
-      fld := TField(dlg.clbLane.Items.Objects[I]);
-      item := Grid.ColumnByFieldName[fld.FieldName];
-      if Assigned(item) and Assigned(fld) then
+    Grid.BeginUpdate;
+    try
+      // display dlg to select column visibility...
+      dlg := TLaneColumnPicker.Create(Self);
+      mr := dlg.ShowModal();
+      if (mr = mrOK) then
       begin
-        if fld.Visible and (item.Width = 0) then
+        if dlg.DoReset then
         begin
-          // lookup default column widths...
-          indx := fld.index;
-          if indx in [Low(DefGridColWidths)..High(DefGridColWidths)] then
-          begin
-            if DefGridColWidths[indx] <> -1 then
-              item.Width := DefGridColWidths[indx];
-          end;
+          Grid.ResetColumnOrder;
+          // Restore layout. Displays ALL fields - as per design time...
+          Grid.StringToColumnStates(fColumnStatesString);
+          // Conform to SCM v1 schema ...
+          SetDefGridSchemaState();
         end
-        else if (not fld.Visible) and (item.Width <> 0) then
-          item.Width := 0;
+        else
+        begin
+          // iterate over results and adjust column visibility.
+          for I := 0 to dlg.clbLane.Items.Count - 1 do
+          begin
+            fld := TField(dlg.clbLane.Items.Objects[I]);
+            item := Grid.ColumnByFieldName[fld.FieldName];
+            if Assigned(item) and Assigned(fld) then
+            begin
+              if fld.Visible and (item.Width = 0) then
+              begin
+                // lookup default column widths...
+                indx := fld.index;
+                if indx in [Low(DefGridColWidths)..High(DefGridColWidths)] then
+                begin
+                  if DefGridColWidths[indx] <> -1 then
+                    item.Width := DefGridColWidths[indx];
+                end;
+              end
+              else if (not fld.Visible) and (item.Width <> 0) then
+                item.Width := 0;
+            end;
+          end;
+        end;
       end;
+      dlg.Free;
+
+    finally
+      Grid.EndUpdate;
     end;
-    dlg.Free;
   end;
 end;
 
@@ -297,6 +307,53 @@ begin
     dt := G.DataSource.DataSet.FieldByName('RaceTime').AsDateTime;
     DecodeTime(dt, Hour, Min, Sec, MSec);
     Value := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
+  end;
+end;
+
+procedure TFrameLane.gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer;
+    var HTMLTemplate: string; Fields: TFields);
+var
+  G: TDBAdvGrid;
+  ColIsVisible, ColIsEmpty: boolean;
+  fld: TField;
+  v: variant;
+  I: Integer;
+begin
+  G := TDBAdvGrid(Sender);
+  ColIsVisible := false;
+  ColIsEmpty := false;
+
+  // NOTE: be careful not to use GetCell, etc. Results in cyclic routine.
+  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'FullName') then
+  begin
+    for I := 0 to Fields.Count - 1 do
+    begin
+      fld := Fields[I];
+      if Assigned(fld) then
+      begin
+        if fld.FieldName = 'FullName' then
+        begin
+          v := fld.Value;
+          if VarIsNull(v) then
+            ColIsEmpty := true;
+        end;
+        if (fld.FieldName = 'AGE') or (fld.FieldName = 'GenderABREV') then
+        begin
+          if fld.Visible  then
+            ColIsVisible := true;
+        end;
+      end;
+    end;
+
+    if ColIsVisible or ColIsEmpty then
+      // Keep to simple output: show Entrant's or Team's FullName.
+      HTMLTemplate := '<IND x="2"><FONT Size="12"><B><#FullName></B>'
+    else
+    begin
+      // Add additional text output: Include AGE and Gender.
+      HTMLTemplate :=
+        '<IND x="2"><FONT Size="12"><B><#FullName></B> (<#GenderABREV>,<#AGE>)';
+    end;
   end;
 end;
 
@@ -371,26 +428,15 @@ begin
   end;
 end;
 
-procedure TFrameLane.Loaded;
+
+procedure TFrameLane.SetDefGridSchemaState();
 var
-  item: TCollectionItem;
-  fld: TField;
+fld: Tfield;
 begin
-  inherited;
-  // Store a snap-shot of design-time field/column state.
-  Grid.SetColumnOrder;
+  // Set ALL fields too visible...
+  for fld in CORE.qryLane.Fields do fld.Visible := true;
 
-  // snapshot of design-time columnwidths used in TDBAdvGrid.
-  SetLength(DefGridColWidths,CORE.qryLane.Fields.Count);
-  for fld in CORE.qryLane.Fields do
-  begin
-    item := Grid.ColumnByFieldName[fld.FieldName];
-    if Assigned(item) then
-      DefGridColWidths[fld.Index] := TDBGridColumnItem(item).Width
-    else DefGridColWidths[fld.Index] := -1;
-  end;
-
-  // ASSERT field visibility. Default SCMv1 schema.
+  // ASSERT field visibility per SCM (version 1) schema.
   CORE.qryLane.FieldByName('LaneID').Visible := false;
   CORE.qryLane.FieldByName('ClubRecord').Visible := false;
   CORE.qryLane.FieldByName('HeatID').Visible := false;
@@ -409,8 +455,34 @@ begin
   Grid.ColumnByFieldName['AGE'].Width := 0;
   Grid.ColumnByFieldName['EventTypeID'].Width := 0;
 
-  OnEventTypeChange(CORE.qryLane.FieldByName('EventTypeID').AsInteger);
+end;
 
+
+
+procedure TFrameLane.Loaded;
+var
+  item: TCollectionItem;
+  fld: TField;
+begin
+  inherited;
+  // Store a snap-shot of design-time field/column state.
+  Grid.SetColumnOrder;
+  // store state into string
+  fColumnStatesString := Grid.ColumnStatesToString;
+
+  // snapshot of design-time columnwidths used in TDBAdvGrid.
+  SetLength(DefGridColWidths,CORE.qryLane.Fields.Count);
+  for fld in CORE.qryLane.Fields do
+  begin
+    item := Grid.ColumnByFieldName[fld.FieldName];
+    if Assigned(item) then
+      DefGridColWidths[fld.Index] := TDBGridColumnItem(item).Width
+    else DefGridColWidths[fld.Index] := -1;
+  end;
+  // most of the UI work is done here. (Shared procedure).
+  SetDefGridSchemaState();
+
+  OnEventTypeChange(CORE.qryLane.FieldByName('EventTypeID').AsInteger);
 end;
 
 procedure TFrameLane.OnEventTypeChange(AEventTypeID: Integer);

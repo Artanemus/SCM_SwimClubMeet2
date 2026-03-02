@@ -52,10 +52,12 @@ procedure TMM_Find.btnFindFNameClick(Sender: TObject);
 var
   dlg: TFindMember_FName;
 begin
+  Visible := False;
   dlg := TFindMember_FName.Create(Self);
   if IsPositiveResult(dlg.ShowModal()) then
     GotoMember(dlg.MemberID); // LOCATE MEMBER IN qryMember
   dlg.Free;
+  Close();
 end;
 
 procedure TMM_Find.btnGotoIDClick(Sender: TObject);
@@ -65,11 +67,13 @@ var
 begin
   if assigned(MM_CORE) then
   begin
+    Visible := False;
     dlg := TFindMember_ID.Create(Self);
-    rtn := dlg.ShowModal;
+    rtn := dlg.ShowModal();
     if IsPositiveResult(rtn) then
       GotoMember(dlg.MemberID);  // LOCATE MEMBER IN qryMember
     dlg.Free;
+    Close();
   end;
 end;
 
@@ -80,11 +84,13 @@ var
 begin
   if assigned(MM_CORE) then
   begin
+    Visible := False;
     dlg := TFindMember_Membership.Create(Self);
     rtn := dlg.ShowModal;
     if IsPositiveResult(rtn) then
       GotoMember(dlg.MemberID); // LOCATE MEMBER IN qryMember
     dlg.Free;
+    Close();
   end;
 end;
 

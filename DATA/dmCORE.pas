@@ -169,6 +169,7 @@ type
     procedure qryLaneBeforePost(DataSet: TDataSet);
     procedure qryLaneClubRecordGetText(Sender: TField; var Text: string;
         DisplayText: Boolean);
+    procedure qryLaneClubRecordSetText(Sender: TField; const Text: string);
     procedure qryLanePBGetText(Sender: TField; var Text: string; DisplayText:
         Boolean);
     procedure qryLaneRaceTimeGetText(Sender: TField; var Text: string; DisplayText:
@@ -488,6 +489,9 @@ procedure TCORE.qryLaneClubRecordGetText(Sender: TField; var Text: string;
 var
   Hour, Min, Sec, MSec: word;
 begin
+  Text := '';
+  if Sender.IsNull then exit;
+
   // CALLED BY TimeToBeat AND PersonalBest (Read Only fields)
   // this FIXES display format issues.
   DecodeTime(Sender.AsDateTime, Hour, Min, Sec, MSec);
@@ -503,6 +507,42 @@ begin
     else if ((Min = 0) and (Sec = 0)) then Text := '';
   end
   else Text := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
+end;
+
+procedure TCORE.qryLaneClubRecordSetText(Sender: TField; const Text: string);
+var
+  Min, Sec, MSec: word;
+  s: string;
+  dt: TDateTime;
+  i: integer;
+  failed: Boolean;
+begin
+  s := Text;
+  failed := false;
+
+  // Take the user input that was entered into the time mask and replace
+  // spaces with '0'. Resulting in a valid TTime string.
+  // UnicodeString is '1-based'
+  for i := 1 to Length(s) do
+  begin
+    if (s[i] = ' ') then s[i] := '0';
+  end;
+
+  // SubString is '0-based'
+  Min := StrToIntDef(s.SubString(0, 2), 0);
+  Sec := StrToIntDef(s.SubString(3, 2), 0);
+  MSec := StrToIntDef(s.SubString(6, 3), 0);
+  try
+    begin
+      dt := EncodeTime(0, Min, Sec, MSec);
+      Sender.AsDateTime := dt;
+    end;
+  except
+    failed := true;
+  end;
+
+  if failed then Sender.Clear; // Sets the value of the field to NULL
+
 end;
 
 procedure TCORE.qryLanePBGetText(Sender: TField; var Text: string; DisplayText:

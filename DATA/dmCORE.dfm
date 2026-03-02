@@ -462,7 +462,6 @@ object CORE: TCORE
       DisplayWidth = 6
       FieldName = 'HeatNum'
       Origin = 'HeatNum'
-      ReadOnly = True
     end
     object qryHeatHeatStatusID: TIntegerField
       FieldName = 'HeatStatusID'
@@ -659,6 +658,7 @@ object CORE: TCORE
       Visible = False
     end
     object qryLaneLaneNum: TIntegerField
+      Alignment = taCenter
       DisplayLabel = 'Lane Number'
       FieldName = 'LaneNum'
       Origin = 'LaneNum'
@@ -670,8 +670,9 @@ object CORE: TCORE
       Size = 257
     end
     object qryLaneRaceTime: TTimeField
+      Alignment = taRightJustify
       DisplayLabel = 'Race-Time'
-      DisplayWidth = 10
+      DisplayWidth = 9
       FieldName = 'RaceTime'
       Origin = 'RaceTime'
       OnGetText = qryLaneRaceTimeGetText
@@ -680,21 +681,21 @@ object CORE: TCORE
       EditMask = '!00:00.000;1;0'
     end
     object qryLaneTTB: TTimeField
+      Alignment = taRightJustify
       DisplayLabel = 'TTB (Time To Beat.)'
-      DisplayWidth = 10
+      DisplayWidth = 9
       FieldName = 'TTB'
       Origin = 'TTB'
-      ReadOnly = True
       OnGetText = qryLaneTTBGetText
       DisplayFormat = 'nn:ss.zzz'
       EditMask = '!00:00.000;1;0'
     end
     object qryLanePB: TTimeField
+      Alignment = taRightJustify
       DisplayLabel = 'PB (Personal Best)'
-      DisplayWidth = 10
+      DisplayWidth = 9
       FieldName = 'PB'
       Origin = 'PB'
-      ReadOnly = True
       OnGetText = qryLanePBGetText
       DisplayFormat = 'nn:ss.zzz'
       EditMask = '!00:00.000;1;0'
@@ -720,12 +721,14 @@ object CORE: TCORE
       Lookup = True
     end
     object qryLaneClubRecord: TTimeField
+      Alignment = taRightJustify
       DisplayLabel = 'Club Record'
-      DisplayWidth = 10
+      DisplayWidth = 9
       FieldName = 'ClubRecord'
       Origin = 'ClubRecord'
       Visible = False
       OnGetText = qryLaneClubRecordGetText
+      OnSetText = qryLaneClubRecordSetText
       DisplayFormat = 'nn:ss.zzz'
       EditMask = '!00:00.000;1;0'
     end
@@ -734,15 +737,16 @@ object CORE: TCORE
       DisplayLabel = 'Gender (M,F,X)'
       FieldName = 'GenderABREV'
       Origin = 'GenderABREV'
-      ReadOnly = True
       Size = 2
     end
     object qryLaneAGE: TIntegerField
+      DisplayWidth = 2
       FieldName = 'AGE'
       Origin = 'AGE'
     end
     object qryLaneEventTypeID: TIntegerField
       DisplayLabel = 'Event Type (INDV.RELAY)'
+      DisplayWidth = 2
       FieldName = 'EventTypeID'
       Origin = 'EventTypeID'
     end
@@ -1740,7 +1744,6 @@ object CORE: TCORE
       end>
   end
   object tblDisqualifyCode: TFDTable
-    Active = True
     IndexFieldNames = 'DisqualifyCodeID'
     DetailFields = 'DisqualifyCodeID'
     Connection = SCM2.scmConnection

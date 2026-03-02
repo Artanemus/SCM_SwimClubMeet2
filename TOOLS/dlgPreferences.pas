@@ -26,7 +26,7 @@ uses
 
 type
   TPreferences = class(TForm)
-    btn1: TSpeedButton;
+    infoBugAutoBuild: TSpeedButton;
     btnClose: TButton;
     Label7: TLabel;
     Label8: TLabel;
@@ -62,6 +62,8 @@ type
     btnDate: TButton;
     spbtnMembersAge: TSpeedButton;
     BalloonHintPreferences: TBalloonHint;
+    ts_Charts: TTabSheet;
+    procedure infoBugAutoBuildMouseLeave(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure btnDateClick(Sender: TObject);
     procedure btnTodayClick(Sender: TObject);
@@ -85,6 +87,11 @@ implementation
 
 uses uUtility, System.UITypes, dlgscmDatePicker;
 
+
+procedure TPreferences.infoBugAutoBuildMouseLeave(Sender: TObject);
+begin
+  BalloonHintPreferences.HideHint;
+end;
 
 procedure TPreferences.btnCloseClick(Sender: TObject);
 begin

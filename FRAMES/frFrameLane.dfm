@@ -268,7 +268,7 @@ object FrameLane: TFrameLane
         Font.Height = -16
         Font.Name = 'Segoe UI'
         Font.Style = []
-        Options = [goVertLine, goHorzLine, goRangeSelect, goColSizing, goColMoving, goTabs, goFixedRowDefAlign]
+        Options = [goVertLine, goHorzLine, goRangeSelect, goColSizing, goColMoving, goEditing, goTabs, goFixedRowDefAlign]
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
@@ -641,7 +641,7 @@ object FrameLane: TFrameLane
             Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
-            Header = 'Lane#'
+            Header = 'Lane'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = clBlack
             HeaderFont.Height = -16
@@ -653,29 +653,28 @@ object FrameLane: TFrameLane
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 57
+            Width = 42
           end
           item
             Borders = []
             BorderPen.Color = clSilver
-            ButtonHeight = 24
+            ButtonWidth = 32
+            ButtonHeight = 18
+            ButtonCaption = '...'
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWhite
-            Editor = edEditBtn
             FieldName = 'FullName'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clBlack
             Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
-            Header = 'Swimmer...Team'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = clBlack
             HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
-            HTMLTemplate = '<IND x="2"><FONT Size="12"<B><#FullName></B>'
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clBlack
@@ -713,7 +712,7 @@ object FrameLane: TFrameLane
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 112
+            Width = 90
           end
           item
             AllowBlank = True
@@ -743,7 +742,7 @@ object FrameLane: TFrameLane
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 112
+            Width = 90
           end
           item
             AllowBlank = True
@@ -773,7 +772,7 @@ object FrameLane: TFrameLane
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 112
+            Width = 90
           end
           item
             Alignment = taCenter
@@ -833,7 +832,7 @@ object FrameLane: TFrameLane
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 36
+            Width = 39
           end
           item
             AllowBlank = True
@@ -861,17 +860,21 @@ object FrameLane: TFrameLane
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
+            Width = 36
           end
           item
             AllowBlank = True
             Alignment = taRightJustify
             Borders = []
             BorderPen.Color = clSilver
+            ButtonWidth = 22
             ButtonHeight = 18
+            ButtonCaption = '..'
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWhite
+            EditMask = '!00:00.000;1;0'
+            Editor = edEditBtn
             FieldName = 'ClubRecord'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clBlack
@@ -891,7 +894,7 @@ object FrameLane: TFrameLane
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 112
+            Width = 100
           end
           item
             Alignment = taCenter
@@ -1118,18 +1121,17 @@ object FrameLane: TFrameLane
           FFC003FF}
         ShowBooleanFields = True
         ShowUnicode = False
-        OnGetHTMLTemplate = gridGetHTMLTemplate
         ColWidths = (
           20
-          57
+          42
           220
-          112
-          112
-          112
+          90
+          90
+          90
+          39
           39
           36
-          64
-          112
+          100
           32
           34
           34)

@@ -115,6 +115,8 @@ end;
 procedure TFrameHeat.actnHT_RefreshStatsExecute(Sender: TObject);
 begin
   if not (Assigned(CORE) and CORE.IsActive) then exit;
+  LockDrawing;
+  grid.beginUpdate;
   CORE.qryLane.DisableControls;
   try
       CORE.qryLane.First;
@@ -124,8 +126,11 @@ begin
         CORE.qryLane.next;
       end;
       CORE.qryLane.Refresh; // refresh the lane's stats
+      CORE.qryLane.First;
   finally
     CORE.qryLane.EnableControls;
+    grid.EndUpdate;
+    UnLockDrawing;
   end;
 end;
 

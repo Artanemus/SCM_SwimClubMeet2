@@ -3,7 +3,7 @@ object LaneColumnPicker: TLaneColumnPicker
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Lane - Column Picker...'
-  ClientHeight = 397
+  ClientHeight = 400
   ClientWidth = 268
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,30 +20,35 @@ object LaneColumnPicker: TLaneColumnPicker
     Left = 0
     Top = 0
     Width = 268
-    Height = 285
+    Height = 264
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitHeight = 352
+    ExplicitHeight = 285
     object clbLane: TCheckListBox
       Left = 0
       Top = 0
       Width = 268
-      Height = 285
+      Height = 264
       Align = alClient
       ItemHeight = 21
       TabOrder = 0
       OnClickCheck = clbLaneClickCheck
-      ExplicitHeight = 352
+      ExplicitHeight = 285
     end
   end
   object spnlFooter: TStackPanel
     Left = 0
-    Top = 285
+    Top = 264
     Width = 268
-    Height = 112
+    Height = 136
     Align = alBottom
     ControlCollection = <
+      item
+        Control = spbtnClose
+        HorizontalPositioning = sphpFill
+        VerticalPositioning = spvpTop
+      end
       item
         Control = spbtnSaveGridMetrics
         HorizontalPositioning = sphpFill
@@ -61,10 +66,17 @@ object LaneColumnPicker: TLaneColumnPicker
       end>
     Spacing = 4
     TabOrder = 1
-    ExplicitTop = 240
-    object spbtnSaveGridMetrics: TSpeedButton
+    object spbtnClose: TSpeedButton
       Left = 1
       Top = 1
+      Width = 266
+      Height = 22
+      Caption = 'CLOSE'
+      OnClick = spbtnCloseClick
+    end
+    object spbtnSaveGridMetrics: TSpeedButton
+      Left = 1
+      Top = 27
       Width = 266
       Height = 32
       Caption = 'Save Layout'
@@ -72,14 +84,14 @@ object LaneColumnPicker: TLaneColumnPicker
     end
     object spbtnLoadGridMetrics: TSpeedButton
       Left = 1
-      Top = 37
+      Top = 63
       Width = 266
       Height = 32
       Caption = 'Load Layout'
     end
     object spbtnResetGrigLayout: TSpeedButton
       Left = 1
-      Top = 73
+      Top = 99
       Width = 266
       Height = 32
       Caption = 'RESET'

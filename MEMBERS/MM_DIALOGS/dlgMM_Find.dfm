@@ -5,13 +5,15 @@ object MM_Find: TMM_Find
   Caption = 'Manage Members - FIND...'
   ClientHeight = 307
   ClientWidth = 363
-  Color = clBtnFace
+  Color = 752556
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -16
   Font.Name = 'Segoe UI'
   Font.Style = []
+  KeyPreview = True
   Position = poOwnerFormCenter
+  StyleElements = [seFont, seBorder]
   OnKeyDown = FormKeyDown
   TextHeight = 21
   object imgFind: TSVGIconImage
@@ -20,6 +22,7 @@ object MM_Find: TMM_Find
     Width = 36
     Height = 36
     AutoSize = False
+    Opacity = 128
     ImageList = IMG.imglstMiscButtons
     ImageIndex = 8
     ImageName = 'search'

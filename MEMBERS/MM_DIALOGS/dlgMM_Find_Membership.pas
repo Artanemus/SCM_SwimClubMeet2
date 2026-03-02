@@ -152,7 +152,9 @@ procedure TFindMember_Membership.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key = VK_RETURN) then
-    btnGotoClick(self)
+  begin
+    btnGotoClick(self);
+  end
   else
   begin
     if (Key = VK_ESCAPE) then

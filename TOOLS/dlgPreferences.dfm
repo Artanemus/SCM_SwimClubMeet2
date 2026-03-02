@@ -45,7 +45,7 @@ object Preferences: TPreferences
     Top = 0
     Width = 695
     Height = 436
-    ActivePage = TabSheet6
+    ActivePage = tab1
     Align = alClient
     TabOrder = 1
     object TabSheet2: TTabSheet
@@ -142,9 +142,9 @@ object Preferences: TPreferences
         Font.Style = [fsBold, fsUnderline]
         ParentFont = False
       end
-      object btn1: TSpeedButton
-        Left = 568
-        Top = 123
+      object infoBugAutoBuild: TSpeedButton
+        Left = 139
+        Top = 21
         Width = 33
         Height = 33
         Hint = 'Club Members'
@@ -228,6 +228,7 @@ object Preferences: TPreferences
         Layout = blGlyphTop
         Margin = 0
         Visible = False
+        OnMouseLeave = infoBugAutoBuildMouseLeave
       end
       object lblSeedDepth2: TLabel
         Left = 435
@@ -304,23 +305,23 @@ object Preferences: TPreferences
       ImageIndex = 6
       object prefEnableDQcodes: TCheckBox
         Left = 32
-        Top = 43
+        Top = 27
         Width = 649
-        Height = 20
+        Height = 54
         Caption = 
-          'Enable FINA disqualification codes. (Else use the simplified met' +
-          'hod of disqualification.)'
+          'Enable FINA disqualification codes. '#13#10'(Else use the simplified m' +
+          'ethod of disqualification.)'
         TabOrder = 0
         OnClick = prefEnableDQcodesClick
       end
       object prefShowDebugInfo: TCheckBox
         Left = 32
-        Top = 69
+        Top = 109
         Width = 633
         Height = 65
         Caption = 
-          'Show Debug Information. (Reveals a panel showing Primary Keys of' +
-          ' selected Sessions, Event, Heats, etc.) '
+          'Show Debug Information. '#13#10'(Reveals a panel showing Primary Keys ' +
+          'of selected Session, Event, Heats, etc.) '
         TabOrder = 1
         WordWrap = True
       end
@@ -331,29 +332,12 @@ object Preferences: TPreferences
       DesignSize = (
         687
         400)
-      object Label19: TLabel
-        Left = 112
-        Top = 11
-        Width = 357
-        Height = 21
-        Caption = 'Number of data points to display in members chart.'
-      end
-      object Label20: TLabel
-        Left = 112
-        Top = 38
-        Width = 415
-        Height = 42
-        Caption = 
-          '(Range: 10-1000. Default: 26. Typically: 1 unit = 1 club night. ' +
-          '26 units = 1 swimming season.)'
-        WordWrap = True
-      end
       object lblMembersAge: TLabel
-        Left = 48
-        Top = 96
-        Width = 104
+        Left = 24
+        Top = 16
+        Width = 162
         Height = 21
-        Caption = 'Member'#39's Age.'
+        Caption = 'Member'#39's Age in Years.'
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clWindowText
         Font.Height = -16
@@ -362,16 +346,16 @@ object Preferences: TPreferences
         ParentFont = False
       end
       object lblCustomDate: TLabel
-        Left = 48
-        Top = 316
+        Left = 24
+        Top = 236
         Width = 99
         Height = 21
         Caption = 'Custom Date...'
         Enabled = False
       end
       object spbtnMembersAge: TSpeedButton
-        Left = 327
-        Top = 131
+        Left = 303
+        Top = 51
         Width = 33
         Height = 33
         Hint = 
@@ -467,6 +451,83 @@ object Preferences: TPreferences
         ShowHint = True
         OnMouseLeave = spbtnMembersAgeMouseLeave
       end
+      object rgrpMembersAge: TRadioGroup
+        Left = 24
+        Top = 43
+        Width = 273
+        Height = 187
+        Caption = 'Age as of...'
+        Items.Strings = (
+          'Start of swimming season.'
+          'The meet date.'
+          'The session date.'
+          'Use current date (Today).'
+          'Use custom date...')
+        TabOrder = 0
+      end
+      object datePickerCustom: TDatePicker
+        Left = 24
+        Top = 263
+        Date = 45889.000000000000000000
+        DateFormat = 'dd/mm/yyyy'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        TabOrder = 1
+      end
+      object btnToday: TButton
+        Tag = 1
+        Left = 180
+        Top = 263
+        Width = 93
+        Height = 32
+        Hint = 'Assign todays date to custom.'
+        Caption = 'Today'
+        ImageIndex = 4
+        ImageName = 'today'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 2
+        OnClick = btnTodayClick
+      end
+      object btnDate: TButton
+        Tag = 1
+        Left = 279
+        Top = 263
+        Width = 121
+        Height = 32
+        Hint = 'Calendar style date picker.'
+        Caption = 'Date Picker '
+        ImageIndex = 1
+        ImageName = 'pick-date'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 3
+        OnClick = btnDateClick
+      end
+    end
+    object ts_Charts: TTabSheet
+      Caption = 'Charts'
+      ImageIndex = 4
+      object Label19: TLabel
+        Left = 112
+        Top = 11
+        Width = 294
+        Height = 21
+        Caption = 'Number of data points to display in charts.'
+      end
+      object Label20: TLabel
+        Left = 112
+        Top = 38
+        Width = 430
+        Height = 42
+        Caption = 
+          'Range: 10-1000. Default: 26. '#13#10'Typically: 1 unit = 1 club night.' +
+          ' 26 units = 1 swimming season.'
+        WordWrap = True
+      end
       object prefMemberChartDataPoints: TEdit
         Left = 48
         Top = 8
@@ -476,67 +537,11 @@ object Preferences: TPreferences
         TabOrder = 0
         Text = '26'
       end
-      object rgrpMembersAge: TRadioGroup
-        Left = 48
-        Top = 123
-        Width = 273
-        Height = 187
-        Caption = 'Calculated using ....'
-        Items.Strings = (
-          'Start of swimming season.'
-          'The meet date.'
-          'The session date.'
-          'Use current date (Today).'
-          'Use custom date...')
-        TabOrder = 1
-      end
-      object datePickerCustom: TDatePicker
-        Left = 48
-        Top = 343
-        Date = 45889.000000000000000000
-        DateFormat = 'dd/mm/yyyy'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        TabOrder = 2
-      end
-      object btnToday: TButton
-        Tag = 1
-        Left = 204
-        Top = 343
-        Width = 93
-        Height = 32
-        Hint = 'Assign todays date to custom.'
-        Caption = 'Today'
-        ImageIndex = 4
-        ImageName = 'today'
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 3
-        OnClick = btnTodayClick
-      end
-      object btnDate: TButton
-        Tag = 1
-        Left = 303
-        Top = 343
-        Width = 121
-        Height = 32
-        Hint = 'Calendar style date picker.'
-        Caption = 'Date Picker '
-        ImageIndex = 1
-        ImageName = 'pick-date'
-        ParentShowHint = False
-        ShowHint = True
-        TabOrder = 4
-        OnClick = btnDateClick
-      end
     end
   end
   object BalloonHintPreferences: TBalloonHint
     Delay = 0
-    Left = 428
-    Top = 152
+    Left = 92
+    Top = 232
   end
 end

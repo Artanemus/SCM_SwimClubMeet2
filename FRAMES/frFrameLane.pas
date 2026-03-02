@@ -14,7 +14,7 @@ uses
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
-  dmIMG, dmSCM2, dmCORE, uDefines, uSettings;
+  dmIMG, dmSCM2, dmCORE, uDefines, uSettings, Vcl.StdCtrls;
 
 type
   TFrameLane = class(TFrame)
@@ -58,8 +58,6 @@ type
         TEditorType);
     procedure gridGetEditText(Sender: TObject; ACol, ARow: LongInt; var Value:
         string);
-    procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
-        HTMLTemplate: string; Fields: TFields);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
   private
     DefGridColWidths: Array of integer;
@@ -81,7 +79,8 @@ implementation
 {$R *.dfm}
 
 uses
-  uSession, uEvent, uHeat, uLane, uNominee, uPickerStage, dlgLaneColumnPicker;
+  uSession, uEvent, uHeat, uLane, uNominee,
+  uPickerStage, dlgLaneColumnPicker, ASGEdit;
 
 procedure TFrameLane.actnLn_GenericUpdate(Sender: TObject);
 var
@@ -118,19 +117,42 @@ procedure TFrameLane.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var
     CanEdit: Boolean);
 var
   G: TDBAdvGrid;
-  indx: integer;
+  fld: TField;
 begin
   G := TDBAdvGrid(Sender);
   CanEdit := false;
-  indx := G.FieldIndexAtColumn[ACol];
-  case uHeat.HeatStatusID of
-    1: // OPEN. swimmer/team, racetime, s, q, dQ.
-        if indx in [2, 3, 6, 7, 8] then CanEdit := true;
-    2: // RACED. racetime, s, q, dQ.
-        if indx in [3, 6, 7, 8] then CanEdit := true;
-    3: // CLOSED.
-        CanEdit := false;
+  fld := G.FieldAtColumn[Acol];
+  if Assigned(fld) then
+  begin
+    case uHeat.HeatStatusID of
+      1: // OPEN. swimmer/team, racetime, s, q, dQ.
+      begin
+          // if indx in [2, 3, 6, 7, 8] then CanEdit := true;
+        if fld.FieldName = 'FullName' then CanEdit := true
+        else if fld.FieldName = 'RaceTime' then CanEdit := true
+        else if fld.FieldName = 'IsScratched' then CanEdit := true
+        else if fld.FieldName = 'IsDisQualified' then CanEdit := true
+        else if fld.FieldName = 'luDQ' then CanEdit := true
+        else if fld.FieldName = 'ClubRecord' then CanEdit := true;
+      end;
+      2: // RACED. racetime, s, q, dQ.
+      begin
+         // if indx in [3, 6, 7, 8] then CanEdit := true;
+        if fld.FieldName = 'RaceTime' then CanEdit := true
+        else if fld.FieldName = 'IsScratched' then CanEdit := true
+        else if fld.FieldName = 'IsDisQualified' then CanEdit := true
+        else if fld.FieldName = 'luDQ' then CanEdit := true
+        else if fld.FieldName = 'ClubRecord' then
+          CanEdit := true;
+      end;
+      3: // CLOSED.
+          CanEdit := false;
+    end;
   end;
+
+
+
+
 end;
 
 procedure TFrameLane.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
@@ -159,22 +181,36 @@ var
   G: TDBAdvGrid;
   stage: TPickerStage;
   success: boolean;
+  fld: TField;
 begin
   success := false;
   G := TDBAdvGrid(Sender);
-  G.BeginUpdate;
-  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'FullName') then
+  fld := G.FieldAtColumn[ACol];
+  if Assigned(fld) then
   begin
-    stage := TPickerStage.Create(Self);
-    if ((GetKeyState(VK_CONTROL) and 128) = 128) then
-      // List members pool for nomination and entrant assignment.
-      success := stage.Stage(uEvent.GetEventType,  uLane.PK, true)
-    else
-      // List nominee pool for entrant assignment
-      success := stage.Stage(uEvent.GetEventType,  uLane.PK, false);
-    stage.free;
+    G.BeginUpdate;
+    if (ARow >= G.FixedRows) then
+    begin
+      if fld.FieldName = 'FullName' then
+      begin
+        stage := TPickerStage.Create(Self);
+        if ((GetKeyState(VK_CONTROL) and 128) = 128) then
+          // List members pool for nomination and entrant assignment.
+          success := stage.Stage(uEvent.GetEventType,  uLane.PK, true)
+        else
+          // List nominee pool for entrant assignment
+          success := stage.Stage(uEvent.GetEventType,  uLane.PK, false);
+        stage.free;
+      end;
+      if fld.FieldName = 'ClubRecord' then
+      begin
+        // display a balloon hint with details on record
+        // who swum the time, the date, age, gender, etc
+        stage := nil;
+      end;
+    end;
+    G.EndUpdate;
   end;
-  G.EndUpdate;
 
   if Success then
   begin
@@ -192,6 +228,7 @@ var
 begin
   if (ARow = 0) and (ACol = 0) then
   begin
+    LockDrawing;
     Grid.BeginUpdate;
     try
       // display dlg to select column visibility...
@@ -236,6 +273,7 @@ begin
 
     finally
       Grid.EndUpdate;
+      UnLockDrawing;
     end;
   end;
 end;
@@ -264,32 +302,56 @@ begin
 end;
 
 procedure TFrameLane.gridGetEditMask(Sender: TObject; ACol, ARow: LongInt; var
-    Value: string);
+  Value: string);
 var
   G: TDBAdvGrid;
+  fld: TField;
 begin
   G := TDBAdvGrid(Sender);
-  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'RaceTime') then
+  fld := G.FieldAtColumn[ACol];
+  if Assigned(fld) then
   begin
-    Value := '!00:00.000;1;0';
+    if (ARow >= G.FixedRows) and (fld.FieldName = 'RaceTime') then
+    begin
+      Value := '!00:00.000;1;0';
+    end;
   end;
 end;
 
 procedure TFrameLane.gridGetEditorType(Sender: TObject; ACol, ARow: Integer;
-    var AEditor: TEditorType);
+  var AEditor: TEditorType);
 var
   G: TDBAdvGrid;
+  fld: TField;
 begin
   G := TDBAdvGrid(Sender);
-  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'RaceTime') then
+  fld := G.FieldAtColumn[ACol];
+  if Assigned(fld) then
   begin
-    AEditor := edNumeric;
-  end;
-  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'FullName') then
-  begin
-    AEditor := edEditBtn;
-    Grid.BtnEdit.EditorEnabled := False; // disables typing
-    Grid.BtnEdit.ButtonCaption := '..'; // optional
+    if (ARow >= G.FixedRows) then
+    begin
+      if fld.FieldName = 'RaceTime' then AEditor := edNumeric
+      else if fld.FieldName = 'FullName' then
+      begin
+        AEditor := edEditBtn;
+        Grid.BtnEdit.EditorEnabled := False; // disables typing
+        Grid.BtnEdit.ButtonAlign := TButtonAlign(btnRight);
+
+        {DOES NOTHING ... USE grid.Column[..] button params }
+//        Grid.BtnEdit.ButtonCaption := '...'; // optional
+//        Grid.BtnEdit.ButtonWidth := 32;
+//        Grid.BtnEdit.Button.ButtonCaption := '...'
+      end
+      else if fld.FieldName = 'ClubRecord' then
+      begin
+        AEditor := edEditBtn;
+        Grid.BtnEdit.EditorEnabled := False; // disables typing
+        Grid.BtnEdit.ButtonAlign := TButtonAlign(btnLeft);
+//        Grid.BtnEdit.ButtonCaption := '.'; // optional
+//        Grid.BtnEdit.ButtonWidth := 12;
+//        Grid.BtnEdit.Button.ButtonCaption := '.'
+      end;
+    end;
   end;
 end;
 
@@ -307,53 +369,6 @@ begin
     dt := G.DataSource.DataSet.FieldByName('RaceTime').AsDateTime;
     DecodeTime(dt, Hour, Min, Sec, MSec);
     Value := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
-  end;
-end;
-
-procedure TFrameLane.gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer;
-    var HTMLTemplate: string; Fields: TFields);
-var
-  G: TDBAdvGrid;
-  ColIsVisible, ColIsEmpty: boolean;
-  fld: TField;
-  v: variant;
-  I: Integer;
-begin
-  G := TDBAdvGrid(Sender);
-  ColIsVisible := false;
-  ColIsEmpty := false;
-
-  // NOTE: be careful not to use GetCell, etc. Results in cyclic routine.
-  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'FullName') then
-  begin
-    for I := 0 to Fields.Count - 1 do
-    begin
-      fld := Fields[I];
-      if Assigned(fld) then
-      begin
-        if fld.FieldName = 'FullName' then
-        begin
-          v := fld.Value;
-          if VarIsNull(v) then
-            ColIsEmpty := true;
-        end;
-        if (fld.FieldName = 'AGE') or (fld.FieldName = 'GenderABREV') then
-        begin
-          if fld.Visible  then
-            ColIsVisible := true;
-        end;
-      end;
-    end;
-
-    if ColIsVisible or ColIsEmpty then
-      // Keep to simple output: show Entrant's or Team's FullName.
-      HTMLTemplate := '<IND x="2"><FONT Size="12"><B><#FullName></B>'
-    else
-    begin
-      // Add additional text output: Include AGE and Gender.
-      HTMLTemplate :=
-        '<IND x="2"><FONT Size="12"><B><#FullName></B> (<#GenderABREV>,<#AGE>)';
-    end;
   end;
 end;
 
@@ -428,7 +443,6 @@ begin
   end;
 end;
 
-
 procedure TFrameLane.SetDefGridSchemaState();
 var
 fld: Tfield;
@@ -457,14 +471,17 @@ begin
 
 end;
 
-
-
 procedure TFrameLane.Loaded;
 var
   item: TCollectionItem;
   fld: TField;
 begin
   inherited;
+//  Grid.PageMode := true;
+//  Grid.Options := Grid.Options + [goEditing];
+//  Grid.BtnEdit.ButtonCaption := '...';
+//  Grid.BtnEdit.EditorEnabled := false;
+
   // Store a snap-shot of design-time field/column state.
   Grid.SetColumnOrder;
   // store state into string

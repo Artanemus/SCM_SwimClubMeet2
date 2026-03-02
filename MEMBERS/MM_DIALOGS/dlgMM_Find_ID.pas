@@ -148,14 +148,38 @@ end;
 procedure TFindMember_ID.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+
   if (Key = VK_RETURN) then
-    btnGotoClick(self)
+  begin
+    Key := 0;
+    btnGotoClick(self);
+  end
   else
   begin
     if (Key = VK_ESCAPE) then
-      btnCancelClick(self);
+    begin
+      Key := 0;
+      fMemberID := 0;
+      ModalResult := mrCancel;
+    end;
   end;
+{
+  case Key of
+    VK_RETURN:
+    begin
+      Key := 0;
+      btnGoto.Click();
+    end;
+    VK_ESCAPE:
+      begin
+        Key := 0;
+        fMemberID := 0;
+        ModalResult := mrCancel;
+      end;
+  end;
+}
 end;
+
 
 procedure TFindMember_ID.FormShow(Sender: TObject);
 begin

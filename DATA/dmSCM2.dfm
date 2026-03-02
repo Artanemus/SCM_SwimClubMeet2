@@ -7,7 +7,6 @@ object SCM2: TSCM2
     Params.Strings = (
       'ConnectionDef=MSSQL_SCM2')
     ConnectedStoredUsage = [auDesignTime]
-    Connected = True
     LoginPrompt = False
     AfterConnect = scmConnectionAfterConnect
     AfterDisconnect = scmConnectionAfterDisconnect

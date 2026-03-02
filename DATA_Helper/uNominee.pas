@@ -219,7 +219,7 @@ begin
       WHERE Nominee.NomineeID = :ID;
       ''';
     v := SCM2.scmConnection.ExecSQLScalar(SQL, [aNomineeID]) ;
-    if not VarIsClear(v) then
+    if not VarIsNull(v) then
     begin
       aMemberID := v;
       Metrics.MemberID := aMemberID;

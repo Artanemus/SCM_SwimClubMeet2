@@ -22,9 +22,11 @@ type
     spbtnSaveGridMetrics: TSpeedButton;
     spbtnLoadGridMetrics: TSpeedButton;
     spbtnResetGrigLayout: TSpeedButton;
+    spbtnClose: TSpeedButton;
     procedure clbLaneClickCheck(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure spbtnCloseClick(Sender: TObject);
     procedure spbtnResetGrigLayoutClick(Sender: TObject);
   private
     { Private declarations }
@@ -55,6 +57,7 @@ var
   I: Integer;
 begin
   fDoReset := false;
+
   if CORE.qryLane.IsEmpty then
   begin
     ModalResult := mrCancel;
@@ -107,8 +110,15 @@ begin
   if Key = VK_ESCAPE then
   begin
     Key := 0;
+    fDoReset := false;
     ModalResult := mrOk;
   end;
+end;
+
+procedure TLaneColumnPicker.spbtnCloseClick(Sender: TObject);
+begin
+  fDoReset := false;
+  ModalResult := mrOK;
 end;
 
 procedure TLaneColumnPicker.spbtnResetGrigLayoutClick(Sender: TObject);

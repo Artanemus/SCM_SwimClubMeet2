@@ -120,7 +120,7 @@ object ManageMember: TManageMember
     Top = 76
     Width = 1277
     Height = 659
-    ActivePage = tsMisc
+    ActivePage = tsRequired
     Align = alClient
     MultiLine = True
     TabHeight = 40
@@ -207,7 +207,7 @@ object ManageMember: TManageMember
           ParentFont = False
         end
         object dblblMemberID: TDBText
-          Left = 123
+          Left = 144
           Top = 27
           Width = 177
           Height = 30

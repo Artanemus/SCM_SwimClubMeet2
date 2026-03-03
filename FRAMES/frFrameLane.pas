@@ -233,6 +233,7 @@ begin
     try
       // display dlg to select column visibility...
       dlg := TLaneColumnPicker.Create(Self);
+      dlg.SortItemsToMatchGrid(Grid);
       mr := dlg.ShowModal();
       if (mr = mrOK) then
       begin

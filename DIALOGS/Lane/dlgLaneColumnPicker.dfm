@@ -3,7 +3,7 @@ object LaneColumnPicker: TLaneColumnPicker
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Lane - Column Picker...'
-  ClientHeight = 400
+  ClientHeight = 486
   ClientWidth = 268
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,28 +20,33 @@ object LaneColumnPicker: TLaneColumnPicker
     Left = 0
     Top = 0
     Width = 268
-    Height = 264
+    Height = 334
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitHeight = 285
+    ExplicitHeight = 264
     object clbLane: TCheckListBox
       Left = 0
       Top = 0
       Width = 268
-      Height = 264
+      Height = 334
       Align = alClient
-      ItemHeight = 21
+      CheckBoxPadding = 4
+      ItemHeight = 25
+      Items.Strings = (
+        'line 1'
+        'line 2'
+        'line 3')
       TabOrder = 0
       OnClickCheck = clbLaneClickCheck
-      ExplicitHeight = 285
+      ExplicitHeight = 248
     end
   end
   object spnlFooter: TStackPanel
     Left = 0
-    Top = 264
+    Top = 334
     Width = 268
-    Height = 136
+    Height = 152
     Align = alBottom
     ControlCollection = <
       item
@@ -66,17 +71,18 @@ object LaneColumnPicker: TLaneColumnPicker
       end>
     Spacing = 4
     TabOrder = 1
+    ExplicitTop = 248
     object spbtnClose: TSpeedButton
       Left = 1
       Top = 1
       Width = 266
-      Height = 22
+      Height = 32
       Caption = 'CLOSE'
       OnClick = spbtnCloseClick
     end
     object spbtnSaveGridMetrics: TSpeedButton
       Left = 1
-      Top = 27
+      Top = 37
       Width = 266
       Height = 32
       Caption = 'Save Layout'
@@ -84,14 +90,14 @@ object LaneColumnPicker: TLaneColumnPicker
     end
     object spbtnLoadGridMetrics: TSpeedButton
       Left = 1
-      Top = 63
+      Top = 73
       Width = 266
       Height = 32
       Caption = 'Load Layout'
     end
     object spbtnResetGrigLayout: TSpeedButton
       Left = 1
-      Top = 99
+      Top = 109
       Width = 266
       Height = 32
       Caption = 'RESET'

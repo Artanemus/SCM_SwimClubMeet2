@@ -79,6 +79,7 @@ begin
     if fld.FieldName = 'HeatID' then continue;
     if fld.FieldName = 'TeamID' then continue;
     if fld.FieldName = 'NomineeID' then continue;
+    if fld.FieldName = 'DisqualifyCodeID' then continue;
     // Include EventTypeID in list...
     // if fld.FieldName = 'EventTypeID' then continue;
 
@@ -90,8 +91,7 @@ begin
     end
     else
     begin
-      if (fld.FieldName = 'luDQ')
-        OR  (fld.FieldName = 'DisqualifyCodeID') then continue;
+      if (fld.FieldName = 'luDQ') then continue;
     end;
 
     { 3. filter other MISC fields. }

@@ -46,6 +46,7 @@ type
     procedure actnLn_RefreshStatExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
+    procedure gridClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
         State: TGridDrawState);
     procedure gridEllipsClick(Sender: TObject; ACol, ARow: Integer; var S: string);
@@ -153,6 +154,15 @@ begin
 
 
 
+end;
+
+procedure TFrameLane.gridClickCell(Sender: TObject; ARow, ACol: Integer);
+var
+  item: TDBGridColumnItem;
+begin
+  // this param keeps getting scrubbed.
+  item := Grid.Columns[ACol];
+  if item.FieldName = 'luDQ' then item.AllowBlank := true;
 end;
 
 procedure TFrameLane.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
@@ -483,6 +493,9 @@ begin
 //  Grid.BtnEdit.ButtonCaption := '...';
 //  Grid.BtnEdit.EditorEnabled := false;
 
+  item := Grid.ColumnByFieldName['luDQ'];
+  TDBGridColumnItem(item).AllowBlank := true;
+
   // Store a snap-shot of design-time field/column state.
   Grid.SetColumnOrder;
   // store state into string
@@ -499,6 +512,8 @@ begin
   end;
   // most of the UI work is done here. (Shared procedure).
   SetDefGridSchemaState();
+
+
 
   OnEventTypeChange(CORE.qryLane.FieldByName('EventTypeID').AsInteger);
 end;

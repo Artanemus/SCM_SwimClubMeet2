@@ -281,6 +281,7 @@ object FrameLane: TFrameLane
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
         OnGetCellColor = gridGetCellColor
+        OnClickCell = gridClickCell
         OnCanEditCell = gridCanEditCell
         OnGetEditorType = gridGetEditorType
         OnEllipsClick = gridEllipsClick

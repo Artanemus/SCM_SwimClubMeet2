@@ -24,7 +24,6 @@ object LaneColumnPicker: TLaneColumnPicker
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitHeight = 264
     object clbLane: TCheckListBox
       Left = 0
       Top = 0
@@ -39,7 +38,6 @@ object LaneColumnPicker: TLaneColumnPicker
         'line 3')
       TabOrder = 0
       OnClickCheck = clbLaneClickCheck
-      ExplicitHeight = 248
     end
   end
   object spnlFooter: TStackPanel
@@ -71,7 +69,6 @@ object LaneColumnPicker: TLaneColumnPicker
       end>
     Spacing = 4
     TabOrder = 1
-    ExplicitTop = 248
     object spbtnClose: TSpeedButton
       Left = 1
       Top = 1

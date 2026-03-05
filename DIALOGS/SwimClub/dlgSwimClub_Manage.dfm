@@ -2692,14 +2692,14 @@ object SwimClubManage: TSwimClubManage
     TabOrder = 0
   end
   object pnlBody: TPanel
-    Left = 146
+    Left = 776
     Top = 41
     Width = 627
     Height = 575
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 776
+    ExplicitLeft = 146
     object gSwimClub: TDBAdvGrid
       Left = 0
       Top = 0
@@ -3206,11 +3206,10 @@ object SwimClubManage: TSwimClubManage
   object splitvEdit: TSplitView
     Left = 146
     Top = 41
-    Width = 0
+    Width = 630
     Height = 575
     AnimationDelay = 30
     AnimationStep = 100
-    Opened = False
     OpenedWidth = 630
     Placement = svpLeft
     TabOrder = 3
@@ -3220,101 +3219,68 @@ object SwimClubManage: TSwimClubManage
     object pcntrlEdit: TPageControl
       Left = 0
       Top = 0
-      Width = 0
+      Width = 630
       Height = 575
       ActivePage = tsMain
       Align = alClient
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
-      ExplicitWidth = 630
       object tsMain: TTabSheet
-        Caption = 'Options'
+        Caption = 'Required (*)'
         ParentShowHint = False
         ShowHint = True
         object lblClubName: TLabel
-          Left = 39
+          Left = 48
           Top = 80
-          Width = 78
+          Width = 85
           Height = 21
           Alignment = taRightJustify
-          Caption = 'Club Name'
+          Caption = 'Club Name*'
         end
         object lblNickname: TLabel
-          Left = 11
+          Left = 20
           Top = 112
-          Width = 106
+          Width = 113
           Height = 21
           Alignment = taRightJustify
-          Caption = 'Club Nickname'
-        end
-        object lblEmail: TLabel
-          Left = 79
-          Top = 150
-          Width = 38
-          Height = 21
-          Alignment = taRightJustify
-          Caption = 'Email'
-        end
-        object lblContactNum: TLabel
-          Left = 3
-          Top = 240
-          Width = 115
-          Height = 21
-          Alignment = taRightJustify
-          Caption = 'Contact Number'
-        end
-        object lblWebSite: TLabel
-          Left = 60
-          Top = 185
-          Width = 57
-          Height = 21
-          Alignment = taRightJustify
-          Caption = 'WebSite'
+          Caption = 'Club Nickname*'
         end
         object lblNumOfLanes: TLabel
-          Left = 1
-          Top = 275
-          Width = 116
+          Left = 10
+          Top = 150
+          Width = 123
           Height = 21
           Alignment = taRightJustify
-          Caption = 'Number of lanes'
+          Caption = 'Number of lanes*'
         end
         object lblPoolLength: TLabel
-          Left = 39
-          Top = 310
+          Left = 55
+          Top = 185
           Width = 78
           Height = 21
           Alignment = taRightJustify
           Caption = 'Pool length'
         end
         object lblMeters: TLabel
-          Left = 181
-          Top = 311
-          Width = 51
+          Left = 201
+          Top = 185
+          Width = 184
           Height = 21
           Alignment = taRightJustify
-          Caption = 'Meters.'
+          Caption = 'Rounded to nearest meter.'
         end
         object lblSeasonStart: TLabel
-          Left = 24
-          Top = 345
-          Width = 93
+          Left = 33
+          Top = 220
+          Width = 100
           Height = 21
           Alignment = taRightJustify
-          Caption = 'Season Starts'
-        end
-        object lblIsArchived: TLabel
-          Left = 56
-          Top = 385
-          Width = 61
-          Height = 21
-          Alignment = taRightJustify
-          Caption = 'Archived'
+          Caption = 'Season Starts*'
         end
         object imgIndxArchive: TSVGIconImage
-          Left = 123
-          Top = 377
+          Left = 74
+          Top = 12
           Width = 43
           Height = 41
           Hint = 'Toogle retirement of the club.'
@@ -3346,8 +3312,24 @@ object SwimClubManage: TSwimClubManage
           Enabled = False
           OnClick = imgIndxArchiveClick
         end
+        object lblClubType: TLabel
+          Left = 66
+          Top = 320
+          Width = 68
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Club Type'
+        end
+        object lblQualifyType: TLabel
+          Left = 61
+          Top = 358
+          Width = 73
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Pool Type*'
+        end
         object DBClubName: TDBEdit
-          Left = 123
+          Left = 139
           Top = 77
           Width = 387
           Height = 29
@@ -3356,7 +3338,7 @@ object SwimClubManage: TSwimClubManage
           TabOrder = 0
         end
         object DBNickName: TDBEdit
-          Left = 123
+          Left = 139
           Top = 112
           Width = 387
           Height = 29
@@ -3364,59 +3346,28 @@ object SwimClubManage: TSwimClubManage
           DataSource = CORE.dsSwimClub
           TabOrder = 1
         end
-        object DBEmail: TDBEdit
-          Left = 123
-          Top = 147
-          Width = 486
-          Height = 29
-          DataField = 'Email'
-          DataSource = CORE.dsSwimClub
-          TabOrder = 2
-        end
-        object DBContactNum: TDBEdit
-          Left = 123
-          Top = 237
-          Width = 166
-          Height = 29
-          Hint = 'Input is Alpha Numerical.'
-          DataField = 'ContactNum'
-          DataSource = CORE.dsSwimClub
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 3
-          TextHint = 'MB 018 018 018'
-        end
-        object DBWebSite: TDBEdit
-          Left = 123
-          Top = 182
-          Width = 486
-          Height = 29
-          DataField = 'WebSite'
-          DataSource = CORE.dsSwimClub
-          TabOrder = 4
-        end
         object DBEditNumOfLanes: TDBEdit
-          Left = 123
-          Top = 272
+          Left = 139
+          Top = 147
           Width = 56
           Height = 29
           DataField = 'NumOfLanes'
           DataSource = CORE.dsSwimClub
-          TabOrder = 5
+          TabOrder = 2
         end
         object DBPoolLength: TDBEdit
-          Left = 123
-          Top = 307
+          Left = 139
+          Top = 182
           Width = 56
           Height = 29
           Hint = 'Fractions of a meter are accepted.'
           DataField = 'LenOfPool'
           DataSource = CORE.dsSwimClub
-          TabOrder = 6
+          TabOrder = 3
         end
         object AdvDBDTPicker: TAdvDBDateTimePicker
-          Left = 123
-          Top = 342
+          Left = 139
+          Top = 217
           Width = 166
           Height = 29
           Hint = 'Uses the locale short time format.'
@@ -3429,7 +3380,7 @@ object SwimClubManage: TSwimClubManage
           ParentDoubleBuffered = False
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 7
+          TabOrder = 4
           BorderStyle = bsSingle
           Ctl3D = True
           DateTime = 43754.000000000000000000
@@ -3441,6 +3392,137 @@ object SwimClubManage: TSwimClubManage
           LabelFont.Style = []
           DataField = 'StartOfSwimSeason'
           DataSource = CORE.dsSwimClub
+        end
+        object DBLookupComboBox1: TDBLookupComboBox
+          Left = 140
+          Top = 320
+          Width = 338
+          Height = 29
+          DataField = 'SwimClubTypeID'
+          DataSource = CORE.dsSwimClub
+          ListSource = CORE.luSwimClubType
+          TabOrder = 5
+        end
+        object dbcboxArchive: TDBCheckBox
+          Left = 76
+          Top = 263
+          Width = 80
+          Height = 17
+          Alignment = taLeftJustify
+          Caption = 'Archive*'
+          DataField = 'IsArchived'
+          DataSource = CORE.dsSwimClub
+          TabOrder = 6
+        end
+        object DBLookupComboBox2: TDBLookupComboBox
+          Left = 140
+          Top = 358
+          Width = 338
+          Height = 29
+          DataField = 'QualifyTypeID'
+          DataSource = CORE.dsSwimClub
+          ListSource = CORE.luQualifyType
+          TabOrder = 7
+        end
+        object btnClearClubType: TButton
+          Tag = 1
+          Left = 493
+          Top = 317
+          Width = 92
+          Height = 30
+          Hint = 'Clear the house name.'
+          Caption = 'Clear'
+          ImageIndex = 0
+          ImageName = 'clear'
+          Images = IMG.imglstMiscButtons
+          TabOrder = 8
+        end
+        object btnClearQualifyType: TButton
+          Tag = 1
+          Left = 493
+          Top = 355
+          Width = 92
+          Height = 30
+          Hint = 'Clear the house name.'
+          Caption = 'Clear'
+          ImageIndex = 0
+          ImageName = 'clear'
+          Images = IMG.imglstMiscButtons
+          TabOrder = 9
+        end
+      end
+      object tsOptions2: TTabSheet
+        Caption = 'Contact Details'
+        ImageIndex = 1
+        object lblEmail: TLabel
+          Left = 79
+          Top = 148
+          Width = 38
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Email'
+        end
+        object lblWebSite: TLabel
+          Left = 60
+          Top = 183
+          Width = 57
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'WebSite'
+        end
+        object lblContactNum: TLabel
+          Left = 3
+          Top = 113
+          Width = 115
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Contact Number'
+        end
+        object lblAddress: TLabel
+          Left = 54
+          Top = 18
+          Width = 56
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Address'
+        end
+        object DBContactNum: TDBEdit
+          Left = 123
+          Top = 110
+          Width = 166
+          Height = 29
+          Hint = 'Input is Alpha Numerical.'
+          DataField = 'ContactNum'
+          DataSource = CORE.dsSwimClub
+          ParentShowHint = False
+          ShowHint = True
+          TabOrder = 0
+          TextHint = 'MB 018 018 018'
+        end
+        object DBWebSite: TDBEdit
+          Left = 123
+          Top = 180
+          Width = 486
+          Height = 29
+          DataField = 'WebSite'
+          DataSource = CORE.dsSwimClub
+          TabOrder = 1
+        end
+        object DBEmail: TDBEdit
+          Left = 123
+          Top = 145
+          Width = 486
+          Height = 29
+          DataField = 'Email'
+          DataSource = CORE.dsSwimClub
+          TabOrder = 2
+        end
+        object DBMemoAddress: TDBMemo
+          Left = 123
+          Top = 15
+          Width = 486
+          Height = 89
+          TabOrder = 3
         end
       end
       object tsLogo: TTabSheet
@@ -3510,17 +3592,17 @@ object SwimClubManage: TSwimClubManage
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitWidth = 622
+          ExplicitWidth = 0
           ExplicitHeight = 539
           inherited pnlHeader: TPanel
             Width = 622
-            ExplicitWidth = 622
+            ExplicitWidth = 0
           end
           inherited pnlFooter: TPanel
             Top = 498
             Width = 622
             ExplicitTop = 498
-            ExplicitWidth = 622
+            ExplicitWidth = 0
           end
           inherited rpnlBody: TRelativePanel
             Height = 459

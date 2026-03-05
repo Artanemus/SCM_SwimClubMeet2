@@ -303,6 +303,12 @@ begin
   if (ARow = 0) then
   begin
     case ACol of // Draw icons in the header line of the grid.
+      5: // EntrantType
+        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4,
+          Rect.top + 4, 4);
+      7: // EventStatus (ticked - all heats raced).
+        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4,
+          Rect.top + 4, 5);
       8:
         IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4,
           Rect.top + 4, 1);

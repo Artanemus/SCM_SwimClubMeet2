@@ -72,7 +72,13 @@ uses
   frmMM_ParaOlympic in 'MEMBERS\frmMM_ParaOlympic.pas' {MM_ParaOlympic},
   frmMM_Roles in 'MEMBERS\frmMM_Roles.pas' {MM_Roles},
   frmMM_MetaData in 'MEMBERS\frmMM_MetaData.pas' {MM_MetaData},
-  dlgLaneColumnPicker in 'DIALOGS\Lane\dlgLaneColumnPicker.pas' {LaneColumnPicker};
+  dlgLaneColumnPicker in 'DIALOGS\Lane\dlgLaneColumnPicker.pas' {LaneColumnPicker},
+  dlgQualifyTimes in 'TOOLS\dlgQualifyTimes.pas' {QualifyTimes},
+  rptQTDistStrokeReportA in 'REPORTS\QualifyTime\rptQTDistStrokeReportA.pas' {QTDistStrokeReportA: TDataModule},
+  rptQTMemberReportA in 'REPORTS\QualifyTime\rptQTMemberReportA.pas' {QTMemberReportA: TDataModule},
+  rptQTNotQualified in 'REPORTS\QualifyTime\rptQTNotQualified.pas' {QTNotQualified: TDataModule},
+  rptQTSessionReportA in 'REPORTS\QualifyTime\rptQTSessionReportA.pas' {QTSessionReportA: TDataModule},
+  rptQTTableReportA in 'REPORTS\QualifyTime\rptQTTableReportA.pas' {QTTableReportA: TDataModule};
 
 {$R *.res}
 

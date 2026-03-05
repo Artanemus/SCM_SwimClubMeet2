@@ -157,6 +157,10 @@ type
     qryLaneEventTypeID: TIntegerField;
     qryLaneAGE: TIntegerField;
     qryLaneGenderABREV: TWideStringField;
+    tblSwimClubType: TFDTable;
+    tblQualifyType: TFDTable;
+    luSwimClubType: TDataSource;
+    luQualifyType: TDataSource;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure qryEventAfterEdit(DataSet: TDataSet);
@@ -231,6 +235,8 @@ begin
     tblGender.Connection := SCM2.scmConnection;
     tblParalympicType.Connection := SCM2.scmConnection;
     tblDisqualifyCode.Connection := SCM2.scmConnection;
+    tblQualifyType.Connection := SCM2.scmConnection;
+    tblSwimClubType.Connection := SCM2.scmConnection;
 
     qryMemberLink.Connection := SCM2.scmConnection;
     qryMember.Connection := SCM2.scmConnection;
@@ -269,6 +275,8 @@ begin
         tblGender.Open;
         tblParalympicType.Open;
         tblDisqualifyCode.Open;
+        tblQualifyType.Open;
+        tblSwimClubType.Open;
 
         // members
         qryMemberLink.Open;

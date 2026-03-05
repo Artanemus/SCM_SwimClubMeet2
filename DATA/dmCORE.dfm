@@ -1,7 +1,7 @@
 object CORE: TCORE
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Height = 782
+  Height = 945
   Width = 1135
   object dsSwimClub: TDataSource
     DataSet = qrySwimClub
@@ -511,6 +511,7 @@ object CORE: TCORE
         Fields = 'SwimClubID'
       end>
     IndexName = 'indxHideArchived'
+    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..SwimClub'
     UpdateOptions.KeyFields = 'SwimClubID'
     SQL.Strings = (
@@ -530,7 +531,7 @@ object CORE: TCORE
       '      ,[StartOfSwimSeason]'
       '      ,[CreatedOn]'
       '      ,[LogoImg]'
-      '      ,[PoolTypeID]'
+      '      ,[QualifyTypeID]'
       '      ,[SwimClubTypeID]'
       '      ,[IsArchived]'
       '      ,[IsClubGroup]'
@@ -961,8 +962,8 @@ object CORE: TCORE
       ''
       'FROM TeamLink'
       'WHERE TeamID = @TeamID;')
-    Left = 616
-    Top = 544
+    Left = 672
+    Top = 440
     ParamData = <
       item
         Name = 'TEAMID'
@@ -1007,8 +1008,8 @@ object CORE: TCORE
   end
   object dsTeamLink: TDataSource
     DataSet = qryTeamLink
-    Left = 704
-    Top = 544
+    Left = 760
+    Top = 440
   end
   object qryMember: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -1785,5 +1786,31 @@ object CORE: TCORE
         ParamType = ptInput
         Value = Null
       end>
+  end
+  object tblSwimClubType: TFDTable
+    ActiveStoredUsage = [auDesignTime]
+    Connection = SCM2.scmConnection
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
+    Left = 72
+    Top = 704
+  end
+  object tblQualifyType: TFDTable
+    ActiveStoredUsage = [auDesignTime]
+    Connection = SCM2.scmConnection
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
+    Left = 72
+    Top = 768
+  end
+  object luSwimClubType: TDataSource
+    DataSet = tblSwimClubType
+    Left = 176
+    Top = 704
+  end
+  object luQualifyType: TDataSource
+    DataSet = tblQualifyType
+    Left = 176
+    Top = 768
   end
 end

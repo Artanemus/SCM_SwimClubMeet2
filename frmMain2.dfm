@@ -3207,6 +3207,7 @@ object Main2: TMain2
     object Tools_QualifyTimes: TAction
       Category = 'Tools'
       Caption = 'Qualify Times...'
+      OnExecute = Tools_QualifyTimesExecute
     end
     object SCM_Refresh: TAction
       Category = 'SCM2'

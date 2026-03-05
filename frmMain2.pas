@@ -112,6 +112,7 @@ type
     procedure SwimClub_ReportsExecute(Sender: TObject);
     procedure SwimClub_SwitchExecute(Sender: TObject);
     procedure Tools_PreferencesExecute(Sender: TObject);
+    procedure Tools_QualifyTimesExecute(Sender: TObject);
 
   private
 
@@ -166,7 +167,7 @@ implementation
 
 uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
-  frmManageMember, dlgSwimClub_Reports, frmMM_Stats, uEvent;
+  frmManageMember, dlgSwimClub_Reports, frmMM_Stats, uEvent, dlgQualifyTimes;
 
 {
   // Event handler:
@@ -878,6 +879,25 @@ begin
     frNavEv.UpdateUI(true);
 //    frNominate.UpdateUI(true);
 
+end;
+
+procedure TMain2.Tools_QualifyTimesExecute(Sender: TObject);
+var
+  dlg: TQualifyTimes;
+begin
+  if not (Assigned(SCM2) and SCM2.scmConnection.Connected) then
+  begin
+    ShowMessage('Cannot open Qualification Times: no database connection.');
+    Exit;
+  end;
+  try
+    dlg := TQualifyTimes.Create(Self);
+    dlg.ShowModal;
+    {TODO -oBSA -cGeneral : If qualification times change -
+      Nominee tabsheet may need a refresh...}
+  finally
+    dlg.Free;
+  end;
 end;
 
 

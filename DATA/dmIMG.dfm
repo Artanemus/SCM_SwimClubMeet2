@@ -14578,6 +14578,16 @@ object IMG: TIMG
         CollectionIndex = 104
         CollectionName = 'male-female'
         Name = 'male-female'
+      end
+      item
+        CollectionIndex = 102
+        CollectionName = 'INDV_RELAY'
+        Name = 'INDV_RELAY'
+      end
+      item
+        CollectionIndex = 55
+        CollectionName = 'post'
+        Name = 'post'
       end>
     ImageCollection = CollectionCore
     Width = 24

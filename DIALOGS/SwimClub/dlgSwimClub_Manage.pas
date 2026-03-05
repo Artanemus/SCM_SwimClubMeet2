@@ -65,7 +65,6 @@ type
     DBPoolLength: TDBEdit;
     actnArchive: TAction;
     splitvEdit: TSplitView;
-    lblIsArchived: TLabel;
     imgIndxArchive: TSVGIconImage;
     actnClose: TAction;
     DBTextPrimaryKey: TDBText;
@@ -77,6 +76,16 @@ type
     actnInfo: TAction;
     hintInfo: TBalloonHint;
     CGFrame: TFrameClubGroup;
+    lblClubType: TLabel;
+    lblQualifyType: TLabel;
+    DBLookupComboBox1: TDBLookupComboBox;
+    dbcboxArchive: TDBCheckBox;
+    DBLookupComboBox2: TDBLookupComboBox;
+    btnClearClubType: TButton;
+    btnClearQualifyType: TButton;
+    tsOptions2: TTabSheet;
+    DBMemoAddress: TDBMemo;
+    lblAddress: TLabel;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure actnArchiveExecute(Sender: TObject);

@@ -357,6 +357,35 @@
             <Form>LaneColumnPicker</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="TOOLS\dlgQualifyTimes.pas">
+            <Form>QualifyTimes</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="REPORTS\QualifyTime\rptQTDistStrokeReportA.pas">
+            <Form>QTDistStrokeReportA</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\QualifyTime\rptQTMemberReportA.pas">
+            <Form>QTMemberReportA</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\QualifyTime\rptQTNotQualified.pas">
+            <Form>QTNotQualified</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\QualifyTime\rptQTSessionReportA.pas">
+            <Form>QTSessionReportA</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\QualifyTime\rptQTTableReportA.pas">
+            <Form>QTTableReportA</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

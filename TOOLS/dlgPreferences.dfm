@@ -45,7 +45,7 @@ object Preferences: TPreferences
     Top = 0
     Width = 695
     Height = 436
-    ActivePage = tab1
+    ActivePage = TabSheet7
     Align = alClient
     TabOrder = 1
     object TabSheet2: TTabSheet

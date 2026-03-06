@@ -12,15 +12,13 @@ uses
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   FireDAC.Comp.Client, FireDAC.Comp.DataSet, Vcl.StdCtrls, Vcl.ExtCtrls,
-  Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, dmSCM2;
+  Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, dmSCM2, AdvUtil, AdvObj, BaseGrid,
+  AdvGrid, DBAdvGrid;
 
 type
   TQualifyTimes = class(TForm)
-    PageControl1: TPageControl;
+    pgcntrlMain: TPageControl;
     TabSheet1: TTabSheet;
-    DBGrid1: TDBGrid;
-    Panel1: TPanel;
-    Label3: TLabel;
     Panel3: TPanel;
     Label4: TLabel;
     Label5: TLabel;
@@ -46,7 +44,6 @@ type
     qryQualifyTrialDistID: TIntegerField;
     qryQualifyQualifyDistID: TIntegerField;
     qryQualifyStrokeID: TIntegerField;
-    qryQualifyIsShortCourse: TBooleanField;
     qryQualifyGenderID: TIntegerField;
     qryQualifyQualifyID: TFDAutoIncField;
     qryQualifyluQDistance: TStringField;
@@ -59,6 +56,10 @@ type
     luQualifyDist: TFDTable;
     luStroke: TFDTable;
     luGender: TFDTable;
+    GridLC: TDBGrid;
+    tabCntrl: TTabControl;
+    lblCourseDescription: TLabel;
+    Grid: TDBAdvGrid;
     procedure BtnCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure qryQualifyTrialTimeGetText(Sender: TField; var Text: string;

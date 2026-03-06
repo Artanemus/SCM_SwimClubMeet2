@@ -1512,10 +1512,10 @@ object CORE: TCORE
       'DECLARE @MemberID integer = :MEMBERID; --108;'
       'DECLARE @SessionID integer = :SESSIONID; --144;'
       'DECLARE @SeedDate DateTime = :SEEDDATE;'
-      'DECLARE @IsShortCourse BIT = :ISSHORTCOURSE;'
+      'DECLARE @SwimClubID integer = :SWIMCLUBID;'
       ''
       'IF @SeedDate IS NULL SET @SeedDate = GETDATE();'
-      'IF @IsShortCourse IS NULL SET @IsShortCourse = 0;'
+      'IF @SwimClubID IS NULL SET @SwimClubID = 1;'
       ''
       '--  check if temporary table exists and drop it'
       'IF OBJECT_ID('#39'tempdb..#ev'#39') IS NOT NULL'
@@ -1548,7 +1548,7 @@ object CORE: TCORE
       '    CASE WHEN n.MemberID = @MemberID then 1 else 0 end,'
       
         '  dbo.IsMemberQualified(@MemberID, @SeedDate, ee.DistanceID, ee.' +
-        'StrokeID, @IsShortCourse),'
+        'StrokeID, @SwimClubID),'
       '   s.StrokeID,'
       '   d.DistanceID,'
       '   d.Meters'
@@ -1591,10 +1591,10 @@ object CORE: TCORE
         Value = Null
       end
       item
-        Name = 'ISSHORTCOURSE'
-        DataType = ftByte
+        Name = 'SWIMCLUBID'
+        DataType = ftInteger
         ParamType = ptInput
-        Value = 0
+        Value = Null
       end>
     object qryNominateEventID: TIntegerField
       FieldName = 'EventID'

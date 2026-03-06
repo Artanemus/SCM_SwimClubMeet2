@@ -216,7 +216,7 @@ begin
       begin
         // display a balloon hint with details on record
         // who swum the time, the date, age, gender, etc
-        stage := nil;
+        ;
       end;
     end;
     G.EndUpdate;

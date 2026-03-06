@@ -890,14 +890,11 @@ begin
     ShowMessage('Cannot open Qualification Times: no database connection.');
     Exit;
   end;
-  try
-    dlg := TQualifyTimes.Create(Self);
-    dlg.ShowModal;
-    {TODO -oBSA -cGeneral : If qualification times change -
-      Nominee tabsheet may need a refresh...}
-  finally
-    dlg.Free;
-  end;
+  dlg := TQualifyTimes.Create(Self);
+  dlg.ShowModal;
+  {TODO -oBSA -cGeneral : If qualification times change -
+    Nominee tabsheet may need a refresh...}
+  dlg.Free;
 end;
 
 

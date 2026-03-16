@@ -62,6 +62,7 @@ begin
     CORE.qryHeat.DisableControls;
     CORE.qryEvent.DisableControls;
     CORE.qrySession.DisableControls;
+    CORE.qryPoolType.DisableControls;
 end;
 
 procedure DetailTBLs_ApplyMaster;
@@ -69,6 +70,7 @@ begin
   // FireDAC throws exception error if Master is empty?
   if CORE.qrySwimClub.RecordCount <> 0 then
   begin
+    CORE.qryPoolType.ApplyMaster;
     CORE.qrySession.ApplyMaster;
     if CORE.qrySession.RecordCount <> 0 then
     begin
@@ -93,6 +95,7 @@ end;
 
 procedure DetailTBLs_EnableCNTRLs;
 begin
+    CORE.qryPoolType.EnableControls;
     CORE.qrySession.EnableControls;
     CORE.qryEvent.EnableControls;
     CORE.qryHeat.EnableControls;

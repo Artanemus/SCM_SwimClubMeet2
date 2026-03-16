@@ -158,11 +158,34 @@ type
     qryLaneAGE: TIntegerField;
     qryLaneGenderABREV: TWideStringField;
     tblSwimClubType: TFDTable;
-    tblQualifyType: TFDTable;
     luSwimClubType: TDataSource;
-    luQualifyType: TDataSource;
+    qryPoolType: TFDQuery;
+    dsPoolType: TDataSource;
+    tblPooltype: TFDTable;
+    luPoolType: TDataSource;
+    qrySwimClubSwimClubID: TFDAutoIncField;
+    qrySwimClubNickName: TWideStringField;
+    qrySwimClubCaption: TWideStringField;
+    qrySwimClubEmail: TWideStringField;
+    qrySwimClubContactNum: TWideStringField;
+    qrySwimClubWebSite: TWideStringField;
+    qrySwimClubHeatAlgorithm: TIntegerField;
+    qrySwimClubEnableSimpleDQ: TBooleanField;
+    qrySwimClubNumOfLanes: TIntegerField;
+    qrySwimClubDefTeamSize: TIntegerField;
+    qrySwimClubLenOfPool: TFloatField;
+    qrySwimClubStartOfSwimSeason: TSQLTimeStampField;
+    qrySwimClubCreatedOn: TSQLTimeStampField;
+    qrySwimClubLogoImg: TBlobField;
+    qrySwimClubPoolTypeID: TIntegerField;
+    qrySwimClubSwimClubTypeID: TIntegerField;
+    qrySwimClubIsArchived: TBooleanField;
+    qrySwimClubIsClubGroup: TBooleanField;
+    qrySwimClubimgIndxArchived: TIntegerField;
+    qrySwimClubimgIndGroup: TIntegerField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
+    procedure dsSwimClubDataChange(Sender: TObject; Field: TField);
     procedure qryEventAfterEdit(DataSet: TDataSet);
     procedure qryEventAfterScroll(DataSet: TDataSet);
     procedure qryEventNewRecord(DataSet: TDataSet);
@@ -235,9 +258,11 @@ begin
     tblGender.Connection := SCM2.scmConnection;
     tblParalympicType.Connection := SCM2.scmConnection;
     tblDisqualifyCode.Connection := SCM2.scmConnection;
-    tblQualifyType.Connection := SCM2.scmConnection;
     tblSwimClubType.Connection := SCM2.scmConnection;
+    tblPooltype.Connection := SCM2.scmConnection;
 
+    qryPoolType.Connection := SCM2.scmConnection;
+    qryPoolType.UpdateOptions.ReadOnly := true; // except when using Custom Course.
     qryMemberLink.Connection := SCM2.scmConnection;
     qryMember.Connection := SCM2.scmConnection;
     qrySession.Connection := SCM2.scmConnection;
@@ -275,12 +300,14 @@ begin
         tblGender.Open;
         tblParalympicType.Open;
         tblDisqualifyCode.Open;
-        tblQualifyType.Open;
         tblSwimClubType.Open;
+        tblPoolType.Open;
 
         // members
         qryMemberLink.Open;
         qryMember.Open;
+
+        qryPoolType.Open;
         // DETAILED TABLES.
         // NOTE: indexes are used to toogle the visibility of locked sessions.
         qrySession.IndexName := 'indxShowAll';
@@ -374,16 +401,41 @@ begin
     qrySplitTime.Close;
     qryTeam.Close;
     qryTeamLink.Close;
+
     // lookup tables.
     tblStroke.Close;
     tblDistance.Close;
+    tblEventType.Close;
+    tblEventCat.Close;
+    tblRound.Close;
+    tblGender.Close;
+    tblParalympicType.Close;
+    tblDisqualifyCode.Close;
+    tblSwimClubType.Close;
+    tblPooltype.Close;
+
     // members
     qryMember.Close;
     qrymemberLink.Close;
+
+    qryPoolType.Close;
     // Master.
     qrySwimClub.Close;
   finally
     FIsActive := false;
+  end;
+end;
+
+procedure TCORE.dsSwimClubDataChange(Sender: TObject; Field: TField);
+begin
+  if not Assigned(Field) then exit;
+
+  if Field.FieldName = 'PoolTypeID' then
+  begin
+    if not Field.IsNull and (Field.Value = 5) then
+      qryPoolType.UpdateOptions.ReadOnly := false
+    else
+     qryPoolType.UpdateOptions.ReadOnly := true;
   end;
 end;
 

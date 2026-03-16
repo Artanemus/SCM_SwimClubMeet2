@@ -577,7 +577,6 @@ object FrameNominate: TFrameNominate
           FFC003FF}
         ShowUnicode = False
         OnGetHTMLTemplate = gridGetHTMLTemplate
-        ExplicitLeft = -4
         ColWidths = (
           20
           50

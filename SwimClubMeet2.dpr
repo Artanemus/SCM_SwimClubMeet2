@@ -78,7 +78,8 @@ uses
   rptQTMemberReportA in 'REPORTS\QualifyTime\rptQTMemberReportA.pas' {QTMemberReportA: TDataModule},
   rptQTNotQualified in 'REPORTS\QualifyTime\rptQTNotQualified.pas' {QTNotQualified: TDataModule},
   rptQTSessionReportA in 'REPORTS\QualifyTime\rptQTSessionReportA.pas' {QTSessionReportA: TDataModule},
-  rptQTTableReportA in 'REPORTS\QualifyTime\rptQTTableReportA.pas' {QTTableReportA: TDataModule};
+  rptQTTableReportA in 'REPORTS\QualifyTime\rptQTTableReportA.pas' {QTTableReportA: TDataModule},
+  dlgPoolTypes in 'TOOLS\dlgPoolTypes.pas' {PoolTypes};
 
 {$R *.res}
 

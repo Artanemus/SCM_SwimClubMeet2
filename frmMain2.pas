@@ -89,6 +89,7 @@ type
     Member_ParaOlympic: TAction;
     Member_MetaData: TAction;
     Member_Reports: TAction;
+    Tools_PoolType: TAction;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -111,6 +112,7 @@ type
     procedure SwimClub_ManageExecute(Sender: TObject);
     procedure SwimClub_ReportsExecute(Sender: TObject);
     procedure SwimClub_SwitchExecute(Sender: TObject);
+    procedure Tools_PoolTypeExecute(Sender: TObject);
     procedure Tools_PreferencesExecute(Sender: TObject);
     procedure Tools_QualifyTimesExecute(Sender: TObject);
 
@@ -167,7 +169,8 @@ implementation
 
 uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
-  frmManageMember, dlgSwimClub_Reports, frmMM_Stats, uEvent, dlgQualifyTimes;
+  frmManageMember, dlgSwimClub_Reports, frmMM_Stats, uEvent, dlgQualifyTimes,
+  dlgPoolTypes;
 
 {
   // Event handler:
@@ -879,6 +882,21 @@ begin
     frNavEv.UpdateUI(true);
 //    frNominate.UpdateUI(true);
 
+end;
+
+procedure TMain2.Tools_PoolTypeExecute(Sender: TObject);
+var
+  dlg: TPoolTypes;
+begin
+  if not (Assigned(SCM2) and SCM2.scmConnection.Connected) then
+  begin
+    ShowMessage('Cannot open Pool Types: no database connection.');
+    Exit;
+  end;
+  dlg := TPoolTypes.Create(Self);
+  dlg.ShowModal;
+  {TODO -oBSA -cGeneral : Perform any UI updates..}
+  dlg.Free;
 end;
 
 procedure TMain2.Tools_QualifyTimesExecute(Sender: TObject);

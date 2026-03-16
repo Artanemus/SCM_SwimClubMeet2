@@ -2727,7 +2727,9 @@ object Main2: TMain2
         OnPaint = pnlTitleBarCustomButtons1Paint
         OnClick = pnlTitleBarCustomButtons1Click
       end>
-    ExplicitWidth = 624
+    DesignSize = (
+      1137
+      37)
     object DBTextClubName: TDBText
       Left = 6
       Top = 0
@@ -3104,6 +3106,10 @@ object Main2: TMain2
                 Caption = '-'
               end
               item
+                Action = Tools_PoolType
+                Caption = 'P&ool Type...'
+              end
+              item
                 Action = Tools_QualifyTimes
                 Caption = '&Qualify Times...'
               end
@@ -3365,6 +3371,11 @@ object Main2: TMain2
       Caption = 'Member Reports'
       ImageIndex = 15
       ImageName = 'report'
+    end
+    object Tools_PoolType: TAction
+      Category = 'Tools'
+      Caption = 'Pool Type...'
+      OnExecute = Tools_PoolTypeExecute
     end
   end
 end

@@ -25,21 +25,6 @@ object QualifyTimes: TQualifyTimes
     TabOrder = 0
     object TabSheet1: TTabSheet
       Caption = 'Setup'
-      object GridLC: TDBGrid
-        Left = 0
-        Top = 488
-        Width = 716
-        Height = 203
-        Align = alBottom
-        DataSource = DSQualify
-        Options = [dgEditing, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
-        TabOrder = 0
-        TitleFont.Charset = DEFAULT_CHARSET
-        TitleFont.Color = clWindowText
-        TitleFont.Height = -16
-        TitleFont.Name = 'Segoe UI'
-        TitleFont.Style = []
-      end
       object tabCntrl: TTabControl
         AlignWithMargins = True
         Left = 3
@@ -49,45 +34,54 @@ object QualifyTimes: TQualifyTimes
         Margins.Top = 10
         Align = alTop
         Style = tsButtons
-        TabOrder = 1
+        TabOrder = 0
         Tabs.Strings = (
-          'LC'
           'SC'
-          'LCY'
+          'LC'
           'SCY'
-          'CCM'
-          'CCI')
+          'LCY'
+          'CC')
         TabIndex = 0
+        OnChange = tabCntrlChange
         object lblCourseDescription: TLabel
           Left = 4
           Top = 35
-          Width = 702
+          Width = 173
           Height = 21
-          Align = alTop
           Caption = 'Qualification Times for ....'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -16
           Font.Name = 'Segoe UI'
-          Font.Style = [fsBold]
+          Font.Style = []
           ParentFont = False
           Layout = tlCenter
-          ExplicitTop = 32
-          ExplicitWidth = 195
+        end
+        object DBTextPoolTypeStr: TDBText
+          Left = 183
+          Top = 28
+          Width = 227
+          Height = 30
+          AutoSize = True
+          DataField = 'PoolTypeStr'
+          DataSource = DSQualify
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -21
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
         end
         object Panel3: TPanel
           Left = 4
-          Top = 58
+          Top = 62
           Width = 702
-          Height = 97
+          Height = 93
           Align = alBottom
           BevelEdges = [beBottom]
           BevelKind = bkFlat
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitLeft = 0
-          ExplicitTop = 0
-          ExplicitWidth = 716
           object Label4: TLabel
             Left = 26
             Top = 7
@@ -139,19 +133,27 @@ object QualifyTimes: TQualifyTimes
         Left = 0
         Top = 172
         Width = 716
-        Height = 250
+        Height = 519
         Cursor = crDefault
-        Align = alTop
+        Align = alClient
+        Color = clWhite
         ColCount = 6
         DefaultRowHeight = 32
         DrawingStyle = gdsClassic
         FixedColor = clWhite
         RowCount = 20
         FixedRows = 1
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
+        ParentFont = False
         ScrollBars = ssBoth
-        TabOrder = 2
-        GridLineColor = 13948116
-        GridFixedLineColor = 11250603
+        TabOrder = 1
+        GridLineColor = 15987699
+        GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
@@ -165,6 +167,7 @@ object QualifyTimes: TQualifyTimes
         ControlLook.FixedGradientTo = clWhite
         ControlLook.FixedGradientMirrorFrom = clWhite
         ControlLook.FixedGradientMirrorTo = clWhite
+        ControlLook.FixedGradientHoverFrom = clGray
         ControlLook.FixedGradientHoverTo = clWhite
         ControlLook.FixedGradientHoverMirrorFrom = clWhite
         ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -210,7 +213,7 @@ object QualifyTimes: TQualifyTimes
         FixedColWidth = 20
         FixedRowHeight = 0
         FixedFont.Charset = DEFAULT_CHARSET
-        FixedFont.Color = 3881787
+        FixedFont.Color = clBlack
         FixedFont.Height = -12
         FixedFont.Name = 'Tahoma'
         FixedFont.Style = [fsBold]
@@ -569,7 +572,6 @@ object QualifyTimes: TQualifyTimes
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitTop = 171
         ColWidths = (
           20
           90
@@ -774,10 +776,10 @@ object QualifyTimes: TQualifyTimes
       '  Q.TrialTime,'
       '  Q.GenderID,'
       '  Q.QualifyTimeID,'
-      '  SUBSTRING(P.Caption, 0, 30) AS PTStr,'
-      '  P.ABREV AS PABREV,'
-      '  P.UnitCount,'
-      '  U.ABREV AS UnitTYypeStr'
+      '  SUBSTRING(P.Caption, 0, 30) AS PoolTypeStr,'
+      '  P.ABREV AS ABREV,'
+      '  P.LengthOfPool,'
+      '  U.ABREV AS UnitTypeStr'
       'FROM'
       '  dbo.QualifyTime Q'
       '  INNER JOIN PoolType P ON Q.PoolTypeID = P.PoolTypeID'
@@ -875,6 +877,12 @@ object QualifyTimes: TQualifyTimes
       DisplayFormat = 'nn:ss.zzz'
       EditMask = '!00:00.000;1;0'
     end
+    object qryQualifyPoolTypeStr: TWideStringField
+      FieldName = 'PoolTypeStr'
+      Origin = 'PoolTypeStr'
+      ReadOnly = True
+      Size = 30
+    end
   end
   object DSQualify: TDataSource
     DataSet = qryQualify
@@ -894,8 +902,8 @@ object QualifyTimes: TQualifyTimes
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'Distance'
-    Left = 420
-    Top = 520
+    Left = 588
+    Top = 312
   end
   object luQualifyDist: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -910,8 +918,8 @@ object QualifyTimes: TQualifyTimes
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'Distance'
-    Left = 420
-    Top = 424
+    Left = 588
+    Top = 368
   end
   object luStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -926,8 +934,8 @@ object QualifyTimes: TQualifyTimes
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'Stroke'
-    Left = 604
-    Top = 528
+    Left = 588
+    Top = 480
   end
   object luGender: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -942,7 +950,23 @@ object QualifyTimes: TQualifyTimes
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'Gender'
-    Left = 564
-    Top = 400
+    Left = 588
+    Top = 424
+  end
+  object tblPoolTypes: TFDTable
+    IndexFieldNames = 'PoolTypeID'
+    Connection = SCM2.scmConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.PoolType'
+    UpdateOptions.KeyFields = 'PoolTypeID'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
+    TableName = 'PoolType'
+    Left = 100
+    Top = 380
   end
 end

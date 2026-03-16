@@ -2699,7 +2699,6 @@ object SwimClubManage: TSwimClubManage
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 146
     object gSwimClub: TDBAdvGrid
       Left = 0
       Top = 0
@@ -3228,6 +3227,12 @@ object SwimClubManage: TSwimClubManage
       TabOrder = 0
       object tsMain: TTabSheet
         Caption = 'Required (*)'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -16
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
         ParentShowHint = False
         ShowHint = True
         object lblClubName: TLabel
@@ -3255,24 +3260,17 @@ object SwimClubManage: TSwimClubManage
           Caption = 'Number of lanes*'
         end
         object lblPoolLength: TLabel
-          Left = 55
-          Top = 185
-          Width = 78
+          Left = 154
+          Top = 428
+          Width = 100
           Height = 21
           Alignment = taRightJustify
-          Caption = 'Pool length'
-        end
-        object lblMeters: TLabel
-          Left = 201
-          Top = 185
-          Width = 184
-          Height = 21
-          Alignment = taRightJustify
-          Caption = 'Rounded to nearest meter.'
+          Caption = 'Length of Pool'
+          Enabled = False
         end
         object lblSeasonStart: TLabel
-          Left = 33
-          Top = 220
+          Left = 34
+          Top = 185
           Width = 100
           Height = 21
           Alignment = taRightJustify
@@ -3328,6 +3326,38 @@ object SwimClubManage: TSwimClubManage
           Alignment = taRightJustify
           Caption = 'Pool Type*'
         end
+        object lblUnitType: TLabel
+          Left = 383
+          Top = 425
+          Width = 157
+          Height = 21
+          Caption = '(Unit of Measurement)'
+          Enabled = False
+        end
+        object lblCourseType: TLabel
+          Left = 169
+          Top = 398
+          Width = 85
+          Height = 21
+          Alignment = taRightJustify
+          Caption = 'Course Type'
+          Enabled = False
+        end
+        object DBTextCourseType: TDBText
+          Left = 264
+          Top = 398
+          Width = 65
+          Height = 17
+          DataField = 'ABREV'
+          DataSource = CORE.dsPoolType
+          Enabled = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
         object DBClubName: TDBEdit
           Left = 139
           Top = 77
@@ -3355,19 +3385,9 @@ object SwimClubManage: TSwimClubManage
           DataSource = CORE.dsSwimClub
           TabOrder = 2
         end
-        object DBPoolLength: TDBEdit
-          Left = 139
-          Top = 182
-          Width = 56
-          Height = 29
-          Hint = 'Fractions of a meter are accepted.'
-          DataField = 'LenOfPool'
-          DataSource = CORE.dsSwimClub
-          TabOrder = 3
-        end
         object AdvDBDTPicker: TAdvDBDateTimePicker
-          Left = 139
-          Top = 217
+          Left = 140
+          Top = 182
           Width = 166
           Height = 29
           Hint = 'Uses the locale short time format.'
@@ -3380,7 +3400,7 @@ object SwimClubManage: TSwimClubManage
           ParentDoubleBuffered = False
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 4
+          TabOrder = 3
           BorderStyle = bsSingle
           Ctl3D = True
           DateTime = 43754.000000000000000000
@@ -3401,28 +3421,32 @@ object SwimClubManage: TSwimClubManage
           DataField = 'SwimClubTypeID'
           DataSource = CORE.dsSwimClub
           ListSource = CORE.luSwimClubType
-          TabOrder = 5
+          NullValueKey = 32776
+          TabOrder = 4
         end
         object dbcboxArchive: TDBCheckBox
-          Left = 76
-          Top = 263
+          Left = 77
+          Top = 228
           Width = 80
           Height = 17
           Alignment = taLeftJustify
           Caption = 'Archive*'
           DataField = 'IsArchived'
           DataSource = CORE.dsSwimClub
-          TabOrder = 6
+          TabOrder = 5
         end
         object DBLookupComboBox2: TDBLookupComboBox
           Left = 140
           Top = 358
           Width = 338
           Height = 29
-          DataField = 'QualifyTypeID'
+          DataField = 'PoolTypeID'
           DataSource = CORE.dsSwimClub
-          ListSource = CORE.luQualifyType
-          TabOrder = 7
+          KeyField = 'PoolTypeID'
+          ListField = 'Caption'
+          ListSource = CORE.luPoolType
+          NullValueKey = 32776
+          TabOrder = 6
         end
         object btnClearClubType: TButton
           Tag = 1
@@ -3430,12 +3454,12 @@ object SwimClubManage: TSwimClubManage
           Top = 317
           Width = 92
           Height = 30
-          Hint = 'Clear the house name.'
+          Hint = 'Clear the house name. (Alt+BkSp)'
           Caption = 'Clear'
           ImageIndex = 0
           ImageName = 'clear'
           Images = IMG.imglstMiscButtons
-          TabOrder = 8
+          TabOrder = 7
         end
         object btnClearQualifyType: TButton
           Tag = 1
@@ -3443,12 +3467,33 @@ object SwimClubManage: TSwimClubManage
           Top = 355
           Width = 92
           Height = 30
-          Hint = 'Clear the house name.'
+          Hint = 'Clear the house name. (Alt+BkSp)'
           Caption = 'Clear'
           ImageIndex = 0
           ImageName = 'clear'
           Images = IMG.imglstMiscButtons
+          TabOrder = 8
+        end
+        object dbeLengthOfPool: TDBEdit
+          Left = 260
+          Top = 425
+          Width = 45
+          Height = 29
+          DataField = 'LengthOfPool'
+          DataSource = CORE.luPoolType
           TabOrder = 9
+        end
+        object dblucmbUnitType: TDBLookupComboBox
+          Left = 321
+          Top = 425
+          Width = 56
+          Height = 29
+          DataField = 'UnitTypeID'
+          DataSource = CORE.dsPoolType
+          KeyField = 'UnitTypeID'
+          ListField = 'ABREV'
+          ListSource = luUnitType
+          TabOrder = 10
         end
       end
       object tsOptions2: TTabSheet
@@ -3592,17 +3637,17 @@ object SwimClubManage: TSwimClubManage
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitWidth = 0
+          ExplicitWidth = 622
           ExplicitHeight = 539
           inherited pnlHeader: TPanel
             Width = 622
-            ExplicitWidth = 0
+            ExplicitWidth = 622
           end
           inherited pnlFooter: TPanel
             Top = 498
             Width = 622
             ExplicitTop = 498
-            ExplicitWidth = 0
+            ExplicitWidth = 622
           end
           inherited rpnlBody: TRelativePanel
             Height = 459
@@ -3799,5 +3844,28 @@ object SwimClubManage: TSwimClubManage
   object hintInfo: TBalloonHint
     Left = 48
     Top = 352
+  end
+  object tblUnitType: TFDTable
+    ActiveStoredUsage = [auDesignTime]
+    Active = True
+    IndexFieldNames = 'UnitTypeID'
+    Connection = SCM2.scmConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.UnitType'
+    UpdateOptions.KeyFields = 'UnitTypeID'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
+    TableName = 'SwimClubMeet2.dbo.UnitType'
+    Left = 152
+    Top = 476
+  end
+  object luUnitType: TDataSource
+    DataSet = tblUnitType
+    Left = 216
+    Top = 476
   end
 end

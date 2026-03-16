@@ -1,27 +1,28 @@
 object CORE: TCORE
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Height = 945
-  Width = 1135
+  Height = 877
+  Width = 763
   object dsSwimClub: TDataSource
     DataSet = qrySwimClub
-    Left = 112
-    Top = 40
+    OnDataChange = dsSwimClubDataChange
+    Left = 96
+    Top = 8
   end
   object dsSession: TDataSource
     DataSet = qrySession
-    Left = 240
-    Top = 72
+    Left = 144
+    Top = 64
   end
   object dsEvent: TDataSource
     DataSet = qryEvent
-    Left = 240
-    Top = 128
+    Left = 192
+    Top = 120
   end
   object dsHeat: TDataSource
     DataSet = qryHeat
-    Left = 368
-    Top = 216
+    Left = 240
+    Top = 176
   end
   object qrySession: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -101,8 +102,8 @@ object CORE: TCORE
       'WHERE Session.SessionStatusID = 1'
       'ORDER BY Session.SessionStart DESC'
       '*/')
-    Left = 176
-    Top = 72
+    Left = 96
+    Top = 64
     object qrySessionSessionID: TFDAutoIncField
       FieldName = 'SessionID'
       Origin = 'SessionID'
@@ -216,8 +217,8 @@ object CORE: TCORE
       'ORDER BY Event.EventNum;'
       ''
       '')
-    Left = 176
-    Top = 128
+    Left = 144
+    Top = 120
     object qryEventEventID: TFDAutoIncField
       FieldName = 'EventID'
       Origin = 'EventID'
@@ -448,8 +449,8 @@ object CORE: TCORE
       'ORDER BY'
       '  Heat.HeatNum;'
       '    ')
-    Left = 296
-    Top = 216
+    Left = 192
+    Top = 176
     object qryHeatHeatID: TFDAutoIncField
       FieldName = 'HeatID'
       Origin = 'HeatID'
@@ -531,7 +532,7 @@ object CORE: TCORE
       '      ,[StartOfSwimSeason]'
       '      ,[CreatedOn]'
       '      ,[LogoImg]'
-      '      ,[QualifyTypeID]'
+      '      ,[PoolTypeID]'
       '      ,[SwimClubTypeID]'
       '      ,[IsArchived]'
       '      ,[IsClubGroup]'
@@ -544,7 +545,97 @@ object CORE: TCORE
       ''
       '')
     Left = 48
-    Top = 40
+    Top = 8
+    object qrySwimClubSwimClubID: TFDAutoIncField
+      FieldName = 'SwimClubID'
+      Origin = 'SwimClubID'
+      ProviderFlags = [pfInWhere, pfInKey]
+    end
+    object qrySwimClubNickName: TWideStringField
+      FieldName = 'NickName'
+      Origin = 'NickName'
+      Size = 128
+    end
+    object qrySwimClubCaption: TWideStringField
+      FieldName = 'Caption'
+      Origin = 'Caption'
+      Size = 128
+    end
+    object qrySwimClubEmail: TWideStringField
+      FieldName = 'Email'
+      Origin = 'Email'
+      Size = 128
+    end
+    object qrySwimClubContactNum: TWideStringField
+      FieldName = 'ContactNum'
+      Origin = 'ContactNum'
+      Size = 30
+    end
+    object qrySwimClubWebSite: TWideStringField
+      FieldName = 'WebSite'
+      Origin = 'WebSite'
+      Size = 256
+    end
+    object qrySwimClubHeatAlgorithm: TIntegerField
+      FieldName = 'HeatAlgorithm'
+      Origin = 'HeatAlgorithm'
+    end
+    object qrySwimClubEnableSimpleDQ: TBooleanField
+      FieldName = 'EnableSimpleDQ'
+      Origin = 'EnableSimpleDQ'
+    end
+    object qrySwimClubNumOfLanes: TIntegerField
+      FieldName = 'NumOfLanes'
+      Origin = 'NumOfLanes'
+    end
+    object qrySwimClubDefTeamSize: TIntegerField
+      FieldName = 'DefTeamSize'
+      Origin = 'DefTeamSize'
+    end
+    object qrySwimClubLenOfPool: TFloatField
+      FieldName = 'LenOfPool'
+      Origin = 'LenOfPool'
+    end
+    object qrySwimClubStartOfSwimSeason: TSQLTimeStampField
+      FieldName = 'StartOfSwimSeason'
+      Origin = 'StartOfSwimSeason'
+    end
+    object qrySwimClubCreatedOn: TSQLTimeStampField
+      FieldName = 'CreatedOn'
+      Origin = 'CreatedOn'
+    end
+    object qrySwimClubLogoImg: TBlobField
+      FieldName = 'LogoImg'
+      Origin = 'LogoImg'
+    end
+    object qrySwimClubPoolTypeID: TIntegerField
+      FieldName = 'PoolTypeID'
+      Origin = 'PoolTypeID'
+    end
+    object qrySwimClubSwimClubTypeID: TIntegerField
+      FieldName = 'SwimClubTypeID'
+      Origin = 'SwimClubTypeID'
+    end
+    object qrySwimClubIsArchived: TBooleanField
+      FieldName = 'IsArchived'
+      Origin = 'IsArchived'
+      Required = True
+    end
+    object qrySwimClubIsClubGroup: TBooleanField
+      FieldName = 'IsClubGroup'
+      Origin = 'IsClubGroup'
+      Required = True
+    end
+    object qrySwimClubimgIndxArchived: TIntegerField
+      FieldName = 'imgIndxArchived'
+      Origin = 'imgIndxArchived'
+      ReadOnly = True
+    end
+    object qrySwimClubimgIndGroup: TIntegerField
+      FieldName = 'imgIndGroup'
+      Origin = 'imgIndGroup'
+      ReadOnly = True
+    end
   end
   object qryLane: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -650,8 +741,8 @@ object CORE: TCORE
       '  LEFT JOIN [Team] ON l.Teamid = Team.teamid'
       '  LEFT JOIN [Heat] ON l.HeatID = [Heat].HeatID'
       '  LEFT JOIN [Event] AS E ON [Heat].EventID = E.EventID')
-    Left = 416
-    Top = 248
+    Left = 240
+    Top = 232
     object qryLaneLaneID: TFDAutoIncField
       FieldName = 'LaneID'
       Origin = 'LaneID'
@@ -774,8 +865,8 @@ object CORE: TCORE
   end
   object dsLane: TDataSource
     DataSet = qryLane
-    Left = 480
-    Top = 248
+    Left = 288
+    Top = 232
   end
   object qryNominee: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -816,13 +907,13 @@ object CORE: TCORE
         '  LEFT JOIN [Member] ON [Nominee].[MemberID] = [Member].[MemberI' +
         'D]'
       '')
-    Left = 848
-    Top = 128
+    Left = 552
+    Top = 600
   end
   object dsNominee: TDataSource
     DataSet = qryNominee
-    Left = 944
-    Top = 128
+    Left = 648
+    Top = 600
   end
   object qryTeam: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -862,20 +953,20 @@ object CORE: TCORE
       ''
       '')
     Left = 528
-    Top = 392
+    Top = 288
   end
   object dsTeam: TDataSource
     DataSet = qryTeam
-    Left = 616
-    Top = 392
+    Left = 576
+    Top = 288
   end
   object dsSplitTime: TDataSource
-    Left = 616
-    Top = 336
+    Left = 456
+    Top = 288
   end
   object dsWatchTime: TDataSource
-    Left = 616
-    Top = 280
+    Left = 336
+    Top = 288
   end
   object qrySplitTime: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -904,8 +995,8 @@ object CORE: TCORE
       'GO'
       ''
       '')
-    Left = 528
-    Top = 336
+    Left = 408
+    Top = 288
   end
   object qryWatchTime: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -936,8 +1027,8 @@ object CORE: TCORE
       'GO'
       ''
       '')
-    Left = 528
-    Top = 280
+    Left = 288
+    Top = 288
   end
   object qryTeamLink: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -962,8 +1053,8 @@ object CORE: TCORE
       ''
       'FROM TeamLink'
       'WHERE TeamID = @TeamID;')
-    Left = 672
-    Top = 440
+    Left = 576
+    Top = 344
     ParamData = <
       item
         Name = 'TEAMID'
@@ -981,8 +1072,8 @@ object CORE: TCORE
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2..Stroke'
-    Left = 72
-    Top = 264
+    Left = 128
+    Top = 496
   end
   object tblDistance: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -993,23 +1084,23 @@ object CORE: TCORE
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2..Distance'
-    Left = 72
-    Top = 312
+    Left = 128
+    Top = 552
   end
   object luStroke: TDataSource
     DataSet = tblStroke
-    Left = 176
-    Top = 264
+    Left = 192
+    Top = 496
   end
   object luDistance: TDataSource
     DataSet = tblDistance
-    Left = 176
-    Top = 312
+    Left = 192
+    Top = 552
   end
   object dsTeamLink: TDataSource
     DataSet = qryTeamLink
-    Left = 760
-    Top = 440
+    Left = 624
+    Top = 344
   end
   object qryMember: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -1104,8 +1195,8 @@ object CORE: TCORE
       '  FROM [SwimClubMeet2].[dbo].[Member]'
       '  ORDER BY [LastName]'
       '*/ ')
-    Left = 384
-    Top = 136
+    Left = 376
+    Top = 120
     ParamData = <
       item
         Name = 'SESSIONSTART'
@@ -1122,13 +1213,13 @@ object CORE: TCORE
   end
   object dsMemberLink: TDataSource
     DataSet = qryMemberLink
-    Left = 480
-    Top = 72
+    Left = 376
+    Top = 64
   end
   object dsMember: TDataSource
     DataSet = qryMember
-    Left = 480
-    Top = 136
+    Left = 424
+    Top = 120
   end
   object qryMemberLink: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -1145,8 +1236,8 @@ object CORE: TCORE
       '      ,[IsArchived]'
       '      ,CAST([IsArchived] AS INT) AS IsArchivedAsInt'
       '  FROM [SwimClubMeet2].[dbo].[MemberLink]')
-    Left = 384
-    Top = 72
+    Left = 328
+    Top = 64
     object qryMemberLinkMemberID: TIntegerField
       FieldName = 'MemberID'
       Origin = 'MemberID'
@@ -1181,13 +1272,13 @@ object CORE: TCORE
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2.dbo.EventType'
-    Left = 72
-    Top = 360
+    Left = 128
+    Top = 608
   end
   object luEventType: TDataSource
     DataSet = tblEventType
-    Left = 176
-    Top = 360
+    Left = 192
+    Top = 608
   end
   object tblGender: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -1196,8 +1287,8 @@ object CORE: TCORE
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2.dbo.Gender'
-    Left = 72
-    Top = 472
+    Left = 128
+    Top = 720
   end
   object tblRound: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -1206,8 +1297,8 @@ object CORE: TCORE
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2.dbo.Round'
-    Left = 72
-    Top = 528
+    Left = 128
+    Top = 776
   end
   object tblEventCat: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -1216,8 +1307,8 @@ object CORE: TCORE
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2.dbo.EventCategory'
-    Left = 72
-    Top = 416
+    Left = 128
+    Top = 664
   end
   object tblParalympicType: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -1226,28 +1317,28 @@ object CORE: TCORE
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2.dbo.ParalympicType'
-    Left = 72
-    Top = 584
+    Left = 288
+    Top = 496
   end
   object luEventCat: TDataSource
     DataSet = tblEventCat
-    Left = 176
-    Top = 416
+    Left = 192
+    Top = 664
   end
   object luGender: TDataSource
     DataSet = tblGender
-    Left = 176
-    Top = 472
+    Left = 192
+    Top = 720
   end
   object luRound: TDataSource
     DataSet = tblRound
-    Left = 176
-    Top = 528
+    Left = 192
+    Top = 776
   end
   object luParalympicType: TDataSource
     DataSet = tblParalympicType
-    Left = 176
-    Top = 584
+    Left = 352
+    Top = 496
   end
   object qryFilterMember: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -1427,8 +1518,8 @@ object CORE: TCORE
       ''
       ''
       '*/')
-    Left = 848
-    Top = 72
+    Left = 552
+    Top = 544
     ParamData = <
       item
         Name = 'SWIMCLUBID'
@@ -1496,8 +1587,8 @@ object CORE: TCORE
   end
   object dsFilterMember: TDataSource
     DataSet = qryFilterMember
-    Left = 944
-    Top = 72
+    Left = 648
+    Top = 544
   end
   object qryNominate: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -1569,8 +1660,8 @@ object CORE: TCORE
       ''
       ''
       '')
-    Left = 848
-    Top = 24
+    Left = 552
+    Top = 496
     ParamData = <
       item
         Name = 'MEMBERID'
@@ -1646,8 +1737,8 @@ object CORE: TCORE
   end
   object dsNominate: TDataSource
     DataSet = qryNominate
-    Left = 944
-    Top = 24
+    Left = 648
+    Top = 496
   end
   object qryMemberMetrics: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -1704,8 +1795,8 @@ object CORE: TCORE
         'LEFT JOIN [dbo].[PB] AS PBT ON m.MemberID = PBT.MemberID AND PBT' +
         '.DistanceID = @DistanceID AND PBT.StrokeID = @StrokeID'
       'WHERE m.MemberID = @MemberID;')
-    Left = 848
-    Top = 336
+    Left = 552
+    Top = 712
     ParamData = <
       item
         Name = 'MEMBERID'
@@ -1758,13 +1849,13 @@ object CORE: TCORE
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'DisqualifyCode'
-    Left = 72
-    Top = 640
+    Left = 288
+    Top = 552
   end
   object luDisqualifyCode: TDataSource
     DataSet = tblDisqualifyCode
-    Left = 176
-    Top = 640
+    Left = 352
+    Top = 552
   end
   object qryNominees: TFDQuery
     Connection = SCM2.scmConnection
@@ -1777,8 +1868,8 @@ object CORE: TCORE
       'SELECT MemberID, EventID, PB, TTB, ClubRecord'
       '    FROM [SwimClubMeet2].[dbo].[Nominee]'
       '    WHERE EventID = @EventID;')
-    Left = 848
-    Top = 280
+    Left = 552
+    Top = 656
     ParamData = <
       item
         Name = 'EVENTID'
@@ -1789,28 +1880,86 @@ object CORE: TCORE
   end
   object tblSwimClubType: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
+    IndexFieldNames = 'SwimClubTypeID'
     Connection = SCM2.scmConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.SwimClubType'
+    UpdateOptions.KeyFields = 'SwimClubTypeID'
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
-    Left = 72
-    Top = 704
-  end
-  object tblQualifyType: TFDTable
-    ActiveStoredUsage = [auDesignTime]
-    Connection = SCM2.scmConnection
-    CatalogName = 'SwimClubMeet2'
-    SchemaName = 'dbo'
-    Left = 72
-    Top = 768
+    TableName = 'SwimClubType'
+    Left = 288
+    Top = 608
   end
   object luSwimClubType: TDataSource
     DataSet = tblSwimClubType
-    Left = 176
-    Top = 704
+    Left = 352
+    Top = 608
   end
-  object luQualifyType: TDataSource
-    DataSet = tblQualifyType
-    Left = 176
-    Top = 768
+  object qryPoolType: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
+    Active = True
+    IndexFieldNames = 'PoolTypeID'
+    MasterSource = dsSwimClub
+    MasterFields = 'PoolTypeID'
+    DetailFields = 'PoolTypeID'
+    Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.PoolType'
+    UpdateOptions.KeyFields = 'PoolTypeID'
+    SQL.Strings = (
+      'USE [SwimClubMeet2];'
+      ''
+      ''
+      'SELECT [PoolTypeID]'
+      '      ,[Caption]'
+      '      ,[CaptionShort]'
+      '      ,[ABREV]'
+      '      ,[IsShortCourse]'
+      '      ,[LengthOfPool]'
+      '      ,[UnitTypeID]'
+      '  FROM [dbo].[PoolType]'
+      ''
+      ''
+      ''
+      '')
+    Left = 216
+    Top = 64
+  end
+  object dsPoolType: TDataSource
+    DataSet = qryPoolType
+    Left = 264
+    Top = 64
+  end
+  object tblPooltype: TFDTable
+    ActiveStoredUsage = [auDesignTime]
+    Active = True
+    IndexFieldNames = 'PoolTypeID'
+    Connection = SCM2.scmConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.PoolType'
+    UpdateOptions.KeyFields = 'PoolTypeID'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
+    TableName = 'SwimClubMeet2.dbo.PoolType'
+    Left = 288
+    Top = 664
+  end
+  object luPoolType: TDataSource
+    DataSet = tblPooltype
+    Left = 352
+    Top = 664
   end
 end

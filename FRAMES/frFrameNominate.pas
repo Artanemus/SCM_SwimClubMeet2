@@ -217,7 +217,8 @@ begin
         CORE.qryNominate.ParamByName('MEMBERID').AsInteger := CORE.qryFilterMember.FieldByName('MemberID').AsInteger;
         CORE.qryNominate.ParamByName('SESSIONID').AsInteger := uSession.PK;
         CORE.qryNominate.ParamByName('SEEDDATE').AsDateTime := uNominee.GetSeedDate();
-        CORE.qryNominate.ParamByName('ISSHORTCOURSE').AsByte := ORD(uSwimClub.IsShortCourse);
+        {SwimClubID needed for dbo.IsMemberQualified... works for multi-grouped clubs.}
+        CORE.qryNominate.ParamByName('SWIMCLUBID').AsInteger := uSwimClub.PK;
         CORE.qryNominate.Prepare;
         CORE.qryNominate.Open;
       end;

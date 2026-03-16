@@ -17,12 +17,12 @@ uses
 
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client, FireDAC.Stan.Intf,
 
   dmIMG, dmCORE, dmSCM2,
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid, SVGIconImage,
-  AdvDateTimePicker, AdvDBDateTimePicker, FireDAC.Stan.Intf, frFrameClubGroup;
+  AdvDateTimePicker, AdvDBDateTimePicker, frFrameClubGroup;
 
   //, hintlist;
 
@@ -54,7 +54,6 @@ type
     lblWebSite: TLabel;
     lblNumOfLanes: TLabel;
     lblPoolLength: TLabel;
-    lblMeters: TLabel;
     lblSeasonStart: TLabel;
     DBClubName: TDBEdit;
     DBNickName: TDBEdit;
@@ -62,7 +61,6 @@ type
     DBContactNum: TDBEdit;
     DBWebSite: TDBEdit;
     DBEditNumOfLanes: TDBEdit;
-    DBPoolLength: TDBEdit;
     actnArchive: TAction;
     splitvEdit: TSplitView;
     imgIndxArchive: TSVGIconImage;
@@ -86,6 +84,13 @@ type
     tsOptions2: TTabSheet;
     DBMemoAddress: TDBMemo;
     lblAddress: TLabel;
+    dbeLengthOfPool: TDBEdit;
+    lblUnitType: TLabel;
+    dblucmbUnitType: TDBLookupComboBox;
+    lblCourseType: TLabel;
+    tblUnitType: TFDTable;
+    luUnitType: TDataSource;
+    DBTextCourseType: TDBText;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure actnArchiveExecute(Sender: TObject);
@@ -140,6 +145,8 @@ procedure TSwimClubManage.FormDestroy(Sender: TObject);
 begin
   if qrySwimClubGroup.Active then
     qrySwimClubGroup.Close;
+  if tblUnitType.Active then
+    tblUnitType.Close;
   CORE.qrySwimClub.IndexName := 'indxHideArchived';
 end;
 
@@ -160,8 +167,13 @@ begin
   if Assigned(SCM2) then
   begin
     qrySwimClubGroup.Connection := SCM2.scmConnection;
+    tblUnitType.Connection := SCM2.scmConnection;
     if qrySwimClubGroup.Connection.Connected then
+    begin
       qrySwimClubGroup.Open;
+      tblUnitType.Open;
+    end;
+
   end;
 
   CGFrame.Initialize; // assigned connection but not active.

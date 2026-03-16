@@ -13,7 +13,7 @@ uses
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   FireDAC.Comp.Client, FireDAC.Comp.DataSet, Vcl.StdCtrls, Vcl.ExtCtrls,
   Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, dmSCM2, AdvUtil, AdvObj, BaseGrid,
-  AdvGrid, DBAdvGrid;
+  AdvGrid, DBAdvGrid, Vcl.DBCtrls;
 
 type
   TQualifyTimes = class(TForm)
@@ -56,10 +56,12 @@ type
     luQualifyDist: TFDTable;
     luStroke: TFDTable;
     luGender: TFDTable;
-    GridLC: TDBGrid;
     tabCntrl: TTabControl;
     lblCourseDescription: TLabel;
     Grid: TDBAdvGrid;
+    qryQualifyPoolTypeStr: TWideStringField;
+    DBTextPoolTypeStr: TDBText;
+    tblPoolTypes: TFDTable;
     procedure BtnCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure qryQualifyTrialTimeGetText(Sender: TField; var Text: string;
@@ -71,6 +73,7 @@ type
     procedure btnDistStrokeReportClick(Sender: TObject);
     procedure btnNotQualifyReportClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure tabCntrlChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -217,6 +220,9 @@ begin
 end;
 
 procedure TQualifyTimes.FormCreate(Sender: TObject);
+var
+  obj: TFields;
+  fld: TField;
 begin
   if not (Assigned(SCM2) and SCM2.scmConnection.Connected)  then
   raise Exception.Create('No database connection');   // or call Abort
@@ -227,6 +233,7 @@ begin
     luTrialDist.Connection := SCM2.scmConnection;
     luQualifyDist.Connection := SCM2.scmConnection;
     luGender.Connection := SCM2.scmConnection;
+    tblPooltypes.Connection := SCM2.scmConnection;
 
     luStroke.Active;
     luTrialDist.Active;
@@ -241,18 +248,24 @@ begin
     end;
   end;
 
+
+  // create the tabs
+  tabCntrl.tabs.Clear;
+  tblPooltypes.Open;
+  tblPooltypes.First;
+  while not tblPooltypes.Eof do
+  begin
+    obj := tblPooltypes.Fields;
+    tabCntrl.tabs.AddObject(tblPooltypes.FieldByName('ABREV').AsString, obj);
+    tblPooltypes.Next;
+  end;
+  tblPooltypes.First;
+  tabCntrl.TabIndex := 0;
+
   try
-    if uSwimClub.IsShortCourse then
-    begin
-      Label3.Caption := 'Qualification Times for Short Course Events (SC)';
-      qryQualify.ParamByName('ISSHORTCOURSE').AsBoolean := true;
-    end
-    else
-    begin
-      Label3.Caption := 'Qualification Times for Long Course Events (LC)';
-      qryQualify.ParamByName('ISSHORTCOURSE').AsBoolean := false;
-    end;
-    // ensures params changes are used
+    obj := TFields(tabCntrl.tabs.Objects[tabCntrl.TabIndex]);
+    fld := obj.FieldByName('PoolTypeID');
+    qryQualify.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
     qryQualify.Prepare();
     qryQualify.Open();
   except
@@ -262,13 +275,15 @@ begin
     end;
   end;
 
-  DBGrid1.DataSource := DSQualify;
-  PageControl1.TabIndex := 0;
+
+
 end;
 
 procedure TQualifyTimes.FormDestroy(Sender: TObject);
 begin
+  tabCntrl.tabs.Clear;
   qryQualify.Close;
+  tblPooltypes.Close;
 end;
 
 procedure TQualifyTimes.qryQualifyTrialTimeGetText(Sender: TField;
@@ -334,6 +349,44 @@ begin
   // set the racetime to nil.
   if failed then
     Sender.Clear; // Sets the value of the field to NULL
+
+end;
+
+procedure TQualifyTimes.tabCntrlChange(Sender: TObject);
+var
+  TC: TTabControl;
+  obj: TFields;
+  fld: TField;
+begin
+  TC := TTabControl(Sender);
+
+  try
+    LockDrawing;
+    Grid.BeginUpdate;
+    qryQualify.DisableControls;
+
+    try
+      obj := TFields(TC.tabs.Objects[tabCntrl.TabIndex]);
+      fld := obj.FieldByName('PoolTypeID');
+      qryQualify.Close();
+      qryQualify.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
+      qryQualify.Prepare();
+      qryQualify.Open();
+    except
+      on E: EFDDBEngineException do
+      begin
+        SCM2.FDGUIxErrorDialog.Execute(E);
+      end;
+    end;
+
+    // fld := obj.FieldByName('Caption');
+
+
+  finally
+    qryQualify.EnableControls;
+    Grid.EndUpdate;
+    UnlockDrawing;
+  end;
 
 end;
 

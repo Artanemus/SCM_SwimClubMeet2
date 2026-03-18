@@ -13,7 +13,7 @@ uses
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   FireDAC.Comp.Client, FireDAC.Comp.DataSet, Vcl.StdCtrls, Vcl.ExtCtrls,
   Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, dmSCM2, AdvUtil, AdvObj, BaseGrid,
-  AdvGrid, DBAdvGrid, Vcl.DBCtrls;
+  AdvGrid, DBAdvGrid, Vcl.DBCtrls, Vcl.Buttons;
 
 type
   TQualifyTimes = class(TForm)
@@ -52,9 +52,7 @@ type
     qryQualifyluGender: TStringField;
     qryQualifyTrialTime: TTimeField;
     DSQualify: TDataSource;
-    luTrialDist: TFDTable;
-    luQualifyDist: TFDTable;
-    luStroke: TFDTable;
+    tblQStroke: TFDTable;
     luGender: TFDTable;
     tabCntrl: TTabControl;
     lblCourseDescription: TLabel;
@@ -62,6 +60,13 @@ type
     qryQualifyPoolTypeStr: TWideStringField;
     DBTextPoolTypeStr: TDBText;
     tblPoolTypes: TFDTable;
+    qryTrialDist: TFDQuery;
+    qryQualifyDist: TFDQuery;
+    tblTStroke: TFDTable;
+    qryQualifyTrialStrokeID: TIntegerField;
+    qryQualifyluTStroke: TStringField;
+    lblTrialStroke: TLabel;
+    navGrid: TDBNavigator;
     procedure BtnCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure qryQualifyTrialTimeGetText(Sender: TField; var Text: string;
@@ -229,17 +234,17 @@ begin
 
   try
     qryQualify.Connection := SCM2.scmConnection;
-    luStroke.Connection := SCM2.scmConnection;
-    luTrialDist.Connection := SCM2.scmConnection;
-    luQualifyDist.Connection := SCM2.scmConnection;
+    tblQStroke.Connection := SCM2.scmConnection;
+    tblTStroke.Connection := SCM2.scmConnection;
+    qryTrialDist.Connection := SCM2.scmConnection;
+    qryQualifyDist.Connection := SCM2.scmConnection;
     luGender.Connection := SCM2.scmConnection;
     tblPooltypes.Connection := SCM2.scmConnection;
 
-    luStroke.Active;
-    luTrialDist.Active;
-    luQualifyDist.Active;
+    tblQStroke.Active;
+    tblTStroke.Active;
+
     luGender.Active;
-    luTrialDist.Active;
 
   except
     on E: EFDDBEngineException do
@@ -265,9 +270,19 @@ begin
   try
     obj := TFields(tabCntrl.tabs.Objects[tabCntrl.TabIndex]);
     fld := obj.FieldByName('PoolTypeID');
+
+    qryTrialDist.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
+    qryTrialDist.Prepare;
+    qryTrialDist.Open;
+
+    qryQualifyDist.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
+    qryQualifyDist.Prepare;
+    qryQualifyDist.Open;
+
     qryQualify.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
     qryQualify.Prepare();
     qryQualify.Open();
+
   except
     on E: EFDDBEngineException do
     begin
@@ -368,6 +383,18 @@ begin
     try
       obj := TFields(TC.tabs.Objects[tabCntrl.TabIndex]);
       fld := obj.FieldByName('PoolTypeID');
+
+      qryTrialDist.Close;
+    qryTrialDist.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
+    qryTrialDist.Prepare;
+    qryTrialDist.Open;
+
+    qryQualifyDist.Close;
+    qryQualifyDist.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
+    qryQualifyDist.Prepare;
+    qryQualifyDist.Open;
+
+
       qryQualify.Close();
       qryQualify.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
       qryQualify.Prepare();

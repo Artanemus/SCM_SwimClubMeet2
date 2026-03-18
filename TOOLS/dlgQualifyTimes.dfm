@@ -4,7 +4,7 @@ object QualifyTimes: TQualifyTimes
   BorderStyle = bsDialog
   Caption = 'Qualification Times...'
   ClientHeight = 768
-  ClientWidth = 724
+  ClientWidth = 725
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,18 +18,19 @@ object QualifyTimes: TQualifyTimes
   object pgcntrlMain: TPageControl
     Left = 0
     Top = 0
-    Width = 724
+    Width = 725
     Height = 727
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
+    ExplicitWidth = 724
     object TabSheet1: TTabSheet
       Caption = 'Setup'
       object tabCntrl: TTabControl
         AlignWithMargins = True
         Left = 3
         Top = 10
-        Width = 710
+        Width = 711
         Height = 159
         Margins.Top = 10
         Align = alTop
@@ -43,6 +44,7 @@ object QualifyTimes: TQualifyTimes
           'CC')
         TabIndex = 0
         OnChange = tabCntrlChange
+        ExplicitWidth = 710
         object lblCourseDescription: TLabel
           Left = 4
           Top = 35
@@ -75,34 +77,35 @@ object QualifyTimes: TQualifyTimes
         object Panel3: TPanel
           Left = 4
           Top = 62
-          Width = 702
+          Width = 703
           Height = 93
           Align = alBottom
           BevelEdges = [beBottom]
           BevelKind = bkFlat
           BevelOuter = bvNone
           TabOrder = 0
+          ExplicitWidth = 702
           object Label4: TLabel
             Left = 26
-            Top = 7
-            Width = 65
-            Height = 84
+            Top = 18
+            Width = 62
+            Height = 63
             Alignment = taCenter
-            Caption = 'The distance to QUALIFY.'
+            Caption = 'The'#13#10'QUALIFY'#13#10'distance.'
             WordWrap = True
           end
           object Label5: TLabel
-            Left = 266
-            Top = 26
+            Left = 226
+            Top = 18
             Width = 60
             Height = 63
             Alignment = taCenter
-            Caption = 'The TRIAL distance.'
+            Caption = 'The'#13#10'TRIAL'#13#10'distance.'
             WordWrap = True
           end
           object Label6: TLabel
-            Left = 450
-            Top = 26
+            Left = 530
+            Top = 18
             Width = 133
             Height = 63
             Alignment = taCenter
@@ -110,21 +113,30 @@ object QualifyTimes: TQualifyTimes
             WordWrap = True
           end
           object Label7: TLabel
-            Left = 112
-            Top = 47
-            Width = 75
-            Height = 42
+            Left = 120
+            Top = 18
+            Width = 79
+            Height = 63
             Alignment = taCenter
-            Caption = 'Swimming Stroke'
+            Caption = 'QUALIFY'#13#10'Swimming '#13#10'Stroke'
             WordWrap = True
           end
           object Label8: TLabel
-            Left = 363
-            Top = 68
+            Left = 443
+            Top = 60
             Width = 51
             Height = 21
             Alignment = taCenter
             Caption = 'Gender'
+            WordWrap = True
+          end
+          object lblTrialStroke: TLabel
+            Left = 306
+            Top = 18
+            Width = 73
+            Height = 63
+            Alignment = taCenter
+            Caption = 'TRIAL swimming stroke.'
             WordWrap = True
           end
         end
@@ -132,12 +144,12 @@ object QualifyTimes: TQualifyTimes
       object Grid: TDBAdvGrid
         Left = 0
         Top = 172
-        Width = 716
+        Width = 717
         Height = 519
         Cursor = crDefault
         Align = alClient
         Color = clWhite
-        ColCount = 6
+        ColCount = 7
         DefaultRowHeight = 32
         DrawingStyle = gdsClassic
         FixedColor = clWhite
@@ -331,7 +343,7 @@ object QualifyTimes: TQualifyTimes
             CheckTrue = 'Y'
             Color = clWindow
             EditLength = 20
-            FieldName = 'luStroke'
+            FieldName = 'luQStroke'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
@@ -348,10 +360,10 @@ object QualifyTimes: TQualifyTimes
             PrintFont.Height = -12
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 150
+            Width = 110
           end
           item
-            Alignment = taRightJustify
+            Alignment = taCenter
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -377,6 +389,32 @@ object QualifyTimes: TQualifyTimes
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
             Width = 90
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'luTStroke'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 110
           end
           item
             Alignment = taCenter
@@ -575,8 +613,9 @@ object QualifyTimes: TQualifyTimes
         ColWidths = (
           20
           90
-          150
+          110
           90
+          110
           90
           160)
         RowHeights = (
@@ -738,23 +777,32 @@ object QualifyTimes: TQualifyTimes
   object Panel2: TPanel
     Left = 0
     Top = 727
-    Width = 724
+    Width = 725
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitTop = 729
     DesignSize = (
-      724
+      725
       41)
     object BtnClose: TButton
-      Left = 606
+      Left = 641
       Top = 6
-      Width = 75
-      Height = 25
+      Width = 77
+      Height = 32
       Anchors = [akTop, akRight]
       Caption = 'Close'
       TabOrder = 0
       OnClick = BtnCloseClick
+    end
+    object navGrid: TDBNavigator
+      Left = 7
+      Top = 2
+      Width = 600
+      Height = 39
+      DataSource = DSQualify
+      TabOrder = 1
     end
   end
   object qryQualify: TFDQuery
@@ -772,10 +820,11 @@ object QualifyTimes: TQualifyTimes
       'SELECT'
       '  Q.TrialDistID,'
       '  Q.QualifyDistID,'
-      '  Q.StrokeID,'
+      '  Q.QualifyStrokeID,'
       '  Q.TrialTime,'
-      '  Q.GenderID,'
+      '  Q.TrialStrokeID,'
       '  Q.QualifyTimeID,'
+      '  Q.GenderID,'
       '  SUBSTRING(P.Caption, 0, 30) AS PoolTypeStr,'
       '  P.ABREV AS ABREV,'
       '  P.LengthOfPool,'
@@ -799,14 +848,18 @@ object QualifyTimes: TQualifyTimes
       Origin = 'TrialDistID'
       Visible = False
     end
+    object qryQualifyTrialStrokeID: TIntegerField
+      FieldName = 'TrialStrokeID'
+      Origin = 'TrialStrokeID'
+    end
     object qryQualifyQualifyDistID: TIntegerField
       FieldName = 'QualifyDistID'
       Origin = 'QualifyDistID'
       Visible = False
     end
     object qryQualifyStrokeID: TIntegerField
-      FieldName = 'StrokeID'
-      Origin = 'StrokeID'
+      FieldName = 'QualifyStrokeID'
+      Origin = 'QualifyStrokeID'
       Visible = False
     end
     object qryQualifyGenderID: TIntegerField
@@ -826,9 +879,9 @@ object QualifyTimes: TQualifyTimes
       DisplayWidth = 9
       FieldKind = fkLookup
       FieldName = 'luQDistance'
-      LookupDataSet = luQualifyDist
+      LookupDataSet = qryQualifyDist
       LookupKeyFields = 'DistanceID'
-      LookupResultField = 'Caption'
+      LookupResultField = 'DistStr'
       KeyFields = 'QualifyDistID'
       Lookup = True
     end
@@ -836,11 +889,11 @@ object QualifyTimes: TQualifyTimes
       DisplayLabel = 'Stroke'
       DisplayWidth = 16
       FieldKind = fkLookup
-      FieldName = 'luStroke'
-      LookupDataSet = luStroke
+      FieldName = 'luQStroke'
+      LookupDataSet = tblQStroke
       LookupKeyFields = 'StrokeID'
       LookupResultField = 'Caption'
-      KeyFields = 'StrokeID'
+      KeyFields = 'QualifyStrokeID'
       Lookup = True
     end
     object qryQualifyluTDistance: TStringField
@@ -849,9 +902,9 @@ object QualifyTimes: TQualifyTimes
       DisplayWidth = 9
       FieldKind = fkLookup
       FieldName = 'luTDistance'
-      LookupDataSet = luTrialDist
+      LookupDataSet = qryTrialDist
       LookupKeyFields = 'DistanceID'
-      LookupResultField = 'Caption'
+      LookupResultField = 'DistStr'
       KeyFields = 'TrialDistID'
       Lookup = True
     end
@@ -883,45 +936,22 @@ object QualifyTimes: TQualifyTimes
       ReadOnly = True
       Size = 30
     end
+    object qryQualifyluTStroke: TStringField
+      FieldKind = fkLookup
+      FieldName = 'luTStroke'
+      LookupDataSet = tblTStroke
+      LookupKeyFields = 'StrokeID'
+      LookupResultField = 'Caption'
+      KeyFields = 'TrialStrokeID'
+      Lookup = True
+    end
   end
   object DSQualify: TDataSource
     DataSet = qryQualify
     Left = 184
     Top = 496
   end
-  object luTrialDist: TFDTable
-    ActiveStoredUsage = [auDesignTime]
-    Active = True
-    IndexFieldNames = 'DistanceID'
-    Connection = SCM2.scmConnection
-    ResourceOptions.AssignedValues = [rvEscapeExpand]
-    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
-    UpdateOptions.EnableDelete = False
-    UpdateOptions.EnableInsert = False
-    UpdateOptions.EnableUpdate = False
-    CatalogName = 'SwimClubMeet2'
-    SchemaName = 'dbo'
-    TableName = 'Distance'
-    Left = 588
-    Top = 312
-  end
-  object luQualifyDist: TFDTable
-    ActiveStoredUsage = [auDesignTime]
-    Active = True
-    IndexFieldNames = 'DistanceID'
-    Connection = SCM2.scmConnection
-    ResourceOptions.AssignedValues = [rvEscapeExpand]
-    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
-    UpdateOptions.EnableDelete = False
-    UpdateOptions.EnableInsert = False
-    UpdateOptions.EnableUpdate = False
-    CatalogName = 'SwimClubMeet2'
-    SchemaName = 'dbo'
-    TableName = 'Distance'
-    Left = 588
-    Top = 368
-  end
-  object luStroke: TFDTable
+  object tblQStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]
     Active = True
     IndexFieldNames = 'StrokeID'
@@ -934,8 +964,8 @@ object QualifyTimes: TQualifyTimes
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'Stroke'
-    Left = 588
-    Top = 480
+    Left = 364
+    Top = 312
   end
   object luGender: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -950,8 +980,8 @@ object QualifyTimes: TQualifyTimes
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'Gender'
-    Left = 588
-    Top = 424
+    Left = 364
+    Top = 448
   end
   object tblPoolTypes: TFDTable
     IndexFieldNames = 'PoolTypeID'
@@ -968,5 +998,92 @@ object QualifyTimes: TQualifyTimes
     TableName = 'PoolType'
     Left = 100
     Top = 380
+  end
+  object qryTrialDist: TFDQuery
+    IndexFieldNames = 'DistanceID'
+    Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.PoolType'
+    UpdateOptions.KeyFields = 'PoolTypeID'
+    SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
+      'DEClARE @APoolTypeID int;'
+      'SET @APoolTypeID = :POOLTYPEID;'
+      'IF @APoolTypeID IS NULL OR @APoolTypeID=0 SET @APoolTypeID=1;'
+      ''
+      'SELECT P.PoolTypeID'
+      '      ,D.DistanceID'
+      '      ,CONCAT(D.Laps * P.LengthOfPool, U.ABREV) AS DistStr'
+      '  FROM dbo.PoolType AS P'
+      '  INNER JOIN dbo.UnitType AS U'
+      '      ON P.UnitTypeID = U.UnitTypeID'
+      '  CROSS JOIN dbo.Distance AS D'
+      '  WHERE P.PoolTypeID = @APoolTypeID;'
+      ''
+      '')
+    Left = 488
+    Top = 312
+    ParamData = <
+      item
+        Name = 'POOLTYPEID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = Null
+      end>
+  end
+  object qryQualifyDist: TFDQuery
+    IndexFieldNames = 'DistanceID'
+    Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.PoolType'
+    UpdateOptions.KeyFields = 'PoolTypeID'
+    SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
+      'DEClARE @APoolTypeID int;'
+      'SET @APoolTypeID = :POOLTYPEID;'
+      'IF @APoolTypeID IS NULL OR @APoolTypeID=0 SET @APoolTypeID=1;'
+      ''
+      'SELECT P.PoolTypeID'
+      '      ,D.DistanceID'
+      '      ,CONCAT(D.Laps * P.LengthOfPool, U.ABREV) AS DistStr'
+      '  FROM dbo.PoolType AS P'
+      '  INNER JOIN dbo.UnitType AS U'
+      '      ON P.UnitTypeID = U.UnitTypeID'
+      '  CROSS JOIN dbo.Distance AS D'
+      '  WHERE P.PoolTypeID = @APoolTypeID;'
+      '')
+    Left = 488
+    Top = 376
+    ParamData = <
+      item
+        Name = 'POOLTYPEID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = Null
+      end>
+  end
+  object tblTStroke: TFDTable
+    ActiveStoredUsage = [auDesignTime]
+    Active = True
+    IndexFieldNames = 'StrokeID'
+    Connection = SCM2.scmConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
+    TableName = 'Stroke'
+    Left = 364
+    Top = 376
   end
 end

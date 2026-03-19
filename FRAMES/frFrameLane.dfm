@@ -1122,6 +1122,7 @@ object FrameLane: TFrameLane
           FFC003FF}
         ShowBooleanFields = True
         ShowUnicode = False
+        ExplicitLeft = 1
         ColWidths = (
           20
           42

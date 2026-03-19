@@ -16,6 +16,12 @@ uses
   AdvGrid, DBAdvGrid, Vcl.DBCtrls, Vcl.Buttons;
 
 type
+  TTabPoolType = class
+    PoolTypeID: Integer;
+    Caption: string;
+  end;
+
+type
   TQualifyTimes = class(TForm)
     pgcntrlMain: TPageControl;
     TabSheet1: TTabSheet;
@@ -67,6 +73,7 @@ type
     qryQualifyluTStroke: TStringField;
     lblTrialStroke: TLabel;
     navGrid: TDBNavigator;
+    qryQualifyLaps: TFloatField;
     procedure BtnCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure qryQualifyTrialTimeGetText(Sender: TField; var Text: string;
@@ -78,9 +85,16 @@ type
     procedure btnDistStrokeReportClick(Sender: TObject);
     procedure btnNotQualifyReportClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure GridGetEditMask(Sender: TObject; ACol, ARow: LongInt; var Value:
+        string);
+    procedure GridGetEditorType(Sender: TObject; ACol, ARow: Integer; var AEditor:
+        TEditorType);
+    procedure GridGetEditText(Sender: TObject; ACol, ARow: LongInt; var Value:
+        string);
+    procedure qryQualifyBeforePost(DataSet: TDataSet);
     procedure tabCntrlChange(Sender: TObject);
   private
-    { Private declarations }
+    { ... }
   public
     { Public declarations }
   end;
@@ -226,12 +240,12 @@ end;
 
 procedure TQualifyTimes.FormCreate(Sender: TObject);
 var
-  obj: TFields;
-  fld: TField;
+  tabData: TTabPoolType;
+  APoolTypeID: integer;
 begin
   if not (Assigned(SCM2) and SCM2.scmConnection.Connected)  then
   raise Exception.Create('No database connection');   // or call Abort
-
+  // Init connection ...
   try
     qryQualify.Connection := SCM2.scmConnection;
     tblQStroke.Connection := SCM2.scmConnection;
@@ -240,113 +254,176 @@ begin
     qryQualifyDist.Connection := SCM2.scmConnection;
     luGender.Connection := SCM2.scmConnection;
     tblPooltypes.Connection := SCM2.scmConnection;
-
     tblQStroke.Active;
     tblTStroke.Active;
-
     luGender.Active;
-
   except
     on E: EFDDBEngineException do
     begin
       SCM2.FDGUIxErrorDialog.Execute(E);
     end;
   end;
-
-
-  // create the tabs
+  // Create control tabs ...
   tabCntrl.tabs.Clear;
   tblPooltypes.Open;
   tblPooltypes.First;
   while not tblPooltypes.Eof do
   begin
-    obj := tblPooltypes.Fields;
-    tabCntrl.tabs.AddObject(tblPooltypes.FieldByName('ABREV').AsString, obj);
+    tabData := TTabPoolType.Create;
+    tabData.PoolTypeID := tblPooltypes.FieldByName('PoolTypeID').AsInteger;
+    tabData.Caption := tblPooltypes.FieldByName('Caption').AsString;
+    tabCntrl.tabs.AddObject(tblPooltypes.FieldByName('ABREV').AsString, tabData);
     tblPooltypes.Next;
   end;
-  tblPooltypes.First;
-  tabCntrl.TabIndex := 0;
-
+  // initialise FD Queries ...
+  // tblPooltypes.First;
+  tabCntrl.TabIndex := 1;
   try
-    obj := TFields(tabCntrl.tabs.Objects[tabCntrl.TabIndex]);
-    fld := obj.FieldByName('PoolTypeID');
-
-    qryTrialDist.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
+    tabData := TTabPoolType(tabCntrl.Tabs.Objects[tabCntrl.TabIndex]);
+    APoolTypeID := tabData.PoolTypeID;
+    qryTrialDist.Close;
+    qryTrialDist.ParamByName('POOLTYPEID').AsInteger := APoolTypeID;
     qryTrialDist.Prepare;
     qryTrialDist.Open;
-
-    qryQualifyDist.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
+    qryQualifyDist.Close;
+    qryQualifyDist.ParamByName('POOLTYPEID').AsInteger := APoolTypeID;
     qryQualifyDist.Prepare;
     qryQualifyDist.Open;
-
-    qryQualify.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
+    qryQualify.Close;
+    qryQualify.ParamByName('POOLTYPEID').AsInteger := APoolTypeID;
     qryQualify.Prepare();
     qryQualify.Open();
-
+    lblCourseDescription.Caption := tabData.Caption;
   except
     on E: EFDDBEngineException do
     begin
       SCM2.FDGUIxErrorDialog.Execute(E);
     end;
   end;
-
-
-
 end;
 
 procedure TQualifyTimes.FormDestroy(Sender: TObject);
+var
+  i: Integer;
 begin
-  tabCntrl.tabs.Clear;
+  for i := 0 to tabCntrl.Tabs.Count - 1 do
+    tabCntrl.Tabs.Objects[i].Free;  // free the TTabPoolType instance
+  tabCntrl.Tabs.Clear;
+  // de-activate tables ...
   qryQualify.Close;
+  qryTrialDist.Close;
+  qryQualifyDist.Close;
+  tblQStroke.Close;
+  tblTStroke.Close;
+  luGender.Close;
   tblPooltypes.Close;
+end;
+
+procedure TQualifyTimes.GridGetEditMask(Sender: TObject; ACol, ARow: LongInt;
+    var Value: string);
+var
+  G: TDBAdvGrid;
+  fld: TField;
+begin
+  G := TDBAdvGrid(Sender);
+  fld := G.FieldAtColumn[ACol];
+  if Assigned(fld) then
+  begin
+    if (ARow >= G.FixedRows) and (fld.FieldName = 'TrialTime') then
+    begin
+      Value := '!00:00.000;1;0';
+    end;
+  end;
+end;
+
+procedure TQualifyTimes.GridGetEditorType(Sender: TObject; ACol, ARow: Integer;
+    var AEditor: TEditorType);
+var
+  G: TDBAdvGrid;
+  fld: TField;
+begin
+  G := TDBAdvGrid(Sender);
+  fld := G.FieldAtColumn[ACol];
+  if Assigned(fld) then
+  begin
+    if (ARow >= G.FixedRows) then
+    begin
+      if fld.FieldName = 'TrialTime' then AEditor := edNumeric;
+    end;
+  end;
+end;
+
+procedure TQualifyTimes.GridGetEditText(Sender: TObject; ACol, ARow: LongInt;
+    var Value: string);
+var
+  Hour, Min, Sec, MSec: word;
+  G: TDBAdvGrid;
+  dt: TDateTime;
+begin
+  G := TDBAdvGrid(Sender);
+  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'TrialTime')then
+  begin
+    // This method FIXES display format issues.
+    dt := G.DataSource.DataSet.FieldByName('TrialTime').AsDateTime;
+    DecodeTime(dt, Hour, Min, Sec, MSec);
+    Value := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
+  end;
+end;
+
+procedure TQualifyTimes.qryQualifyBeforePost(DataSet: TDataSet);
+var
+  tabData: TTabPoolType;
+  APoolTypeID: integer;
+begin
+  if DataSet.FieldByName('PoolTypeID').IsNull then
+  begin
+    tabData := TTabPoolType(tabCntrl.Tabs.Objects[tabCntrl.TabIndex]);
+    APoolTypeID := tabData.PoolTypeID;
+    DataSet.FieldByName('PoolTypeID').AsInteger := APoolTypeID;
+  end;
 end;
 
 procedure TQualifyTimes.qryQualifyTrialTimeGetText(Sender: TField;
   var Text: string; DisplayText: Boolean);
 var
-  Hour: word; // unsigned short: Word ;
-  Min: word; // unsigned short: Word ;
-  Sec: word;
-  MSec: word;
+  Hour, Min, Sec, MSec: word;
 begin
+  // CALLED BY TimeToBeat AND PersonalBest (Read Only fields)
+  // this FIXES display format issues.
   DecodeTime(Sender.AsDateTime, Hour, Min, Sec, MSec);
   // DisplayText is true if the field's value is to be used for display only;
   // false if the string is to be used for editing the field's value.
-  if (DisplayText) then
+  // "%" [index ":"] ["-"] [width] ["." prec] type
+  if DisplayText then
   begin
-    // "%" [index ":"] ["-"] [width] ["." prec] type
-    if (Min > 0) then
-      Text := Format('%0:2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec])
+    if (Min > 0) then Text := Format('%0:2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec])
     else if ((Min = 0) and (Sec > 0)) then
-      Text := Format('%1:2u.%2:3.3u', [Min, Sec, MSec])
-    else if ((Min = 0) and (Sec = 0)) then
-      Text := '';
+        Text := Format('%1:2u.%2:3.3u', [Min, Sec, MSec])
+
+    else if ((Min = 0) and (Sec = 0)) then Text := '';
   end
-  else
-    // "%" [index ":"] ["-"] [width] ["." prec] type
-    Text := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
+  else Text := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
 end;
 
 procedure TQualifyTimes.qryQualifyTrialTimeSetText(Sender: TField;
   const Text: string);
 var
-  s: String;
-  dt: TDateTime;
   Min, Sec, MSec: word;
+  s: string;
+  dt: TDateTime;
   i: integer;
   failed: Boolean;
 begin
-
+  s := Text;
   failed := false;
 
   // Take the user input that was entered into the time mask and replace
   // spaces with '0'. Resulting in a valid TTime string.
   // UnicodeString is '1-based'
-
-  s := Text;
-  for i := 1 to s.Length - 1 do
-    if (s[i] = ' ') then
-      s[i] := '0';
+  for i := 1 to Length(s) do
+  begin
+    if (s[i] = ' ') then s[i] := '0';
+  end;
 
   // SubString is '0-based'
   Min := StrToIntDef(s.SubString(0, 2), 0);
@@ -361,17 +438,15 @@ begin
     failed := true;
   end;
 
-  // set the racetime to nil.
-  if failed then
-    Sender.Clear; // Sets the value of the field to NULL
+  if failed then Sender.Clear; // Sets the value of the field to NULL
 
 end;
 
 procedure TQualifyTimes.tabCntrlChange(Sender: TObject);
 var
   TC: TTabControl;
-  obj: TFields;
-  fld: TField;
+  tabData: TTabPoolType;
+  APoolTypeID: integer;
 begin
   TC := TTabControl(Sender);
 
@@ -381,22 +456,22 @@ begin
     qryQualify.DisableControls;
 
     try
-      obj := TFields(TC.tabs.Objects[tabCntrl.TabIndex]);
-      fld := obj.FieldByName('PoolTypeID');
+      tabData := TTabPoolType(TC.Tabs.Objects[TC.TabIndex]);
+      APoolTypeID := tabData.PoolTypeID;
 
       qryTrialDist.Close;
-    qryTrialDist.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
-    qryTrialDist.Prepare;
-    qryTrialDist.Open;
+      qryTrialDist.ParamByName('POOLTYPEID').AsInteger := APoolTypeID;
+      qryTrialDist.Prepare;
+      qryTrialDist.Open;
 
-    qryQualifyDist.Close;
-    qryQualifyDist.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
-    qryQualifyDist.Prepare;
-    qryQualifyDist.Open;
+      qryQualifyDist.Close;
+      qryQualifyDist.ParamByName('POOLTYPEID').AsInteger := APoolTypeID;
+      qryQualifyDist.Prepare;
+      qryQualifyDist.Open;
 
 
       qryQualify.Close();
-      qryQualify.ParamByName('POOLTYPEID').AsInteger := fld.AsInteger;
+      qryQualify.ParamByName('POOLTYPEID').AsInteger := APoolTypeID;
       qryQualify.Prepare();
       qryQualify.Open();
     except

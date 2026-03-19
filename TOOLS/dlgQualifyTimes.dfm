@@ -23,7 +23,6 @@ object QualifyTimes: TQualifyTimes
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
-    ExplicitWidth = 724
     object TabSheet1: TTabSheet
       Caption = 'Setup'
       object tabCntrl: TTabControl
@@ -42,9 +41,8 @@ object QualifyTimes: TQualifyTimes
           'SCY'
           'LCY'
           'CC')
-        TabIndex = 0
+        TabIndex = 1
         OnChange = tabCntrlChange
-        ExplicitWidth = 710
         object lblCourseDescription: TLabel
           Left = 4
           Top = 35
@@ -62,7 +60,7 @@ object QualifyTimes: TQualifyTimes
         object DBTextPoolTypeStr: TDBText
           Left = 183
           Top = 28
-          Width = 227
+          Width = 220
           Height = 30
           AutoSize = True
           DataField = 'PoolTypeStr'
@@ -84,7 +82,6 @@ object QualifyTimes: TQualifyTimes
           BevelKind = bkFlat
           BevelOuter = bvNone
           TabOrder = 0
-          ExplicitWidth = 702
           object Label4: TLabel
             Left = 26
             Top = 18
@@ -153,20 +150,23 @@ object QualifyTimes: TQualifyTimes
         DefaultRowHeight = 32
         DrawingStyle = gdsClassic
         FixedColor = clWhite
-        RowCount = 20
+        RowCount = 21
         FixedRows = 1
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -16
         Font.Name = 'Segoe UI'
         Font.Style = []
-        Options = [goVertLine, goHorzLine, goRangeSelect, goFixedRowDefAlign]
+        Options = [goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 1
+        OnGetEditMask = GridGetEditMask
+        OnGetEditText = GridGetEditText
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
+        OnGetEditorType = GridGetEditorType
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
         ActiveCellFont.Height = -12
@@ -638,6 +638,7 @@ object QualifyTimes: TQualifyTimes
           32
           32
           32
+          32
           32)
       end
     end
@@ -782,7 +783,6 @@ object QualifyTimes: TQualifyTimes
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 729
     DesignSize = (
       725
       41)
@@ -808,6 +808,14 @@ object QualifyTimes: TQualifyTimes
   object qryQualify: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     Active = True
+    BeforePost = qryQualifyBeforePost
+    Indexes = <
+      item
+        Active = True
+        Name = 'indxSort'
+        Fields = 'QualifyTimeID;GenderID;Laps'
+      end>
+    IndexesActive = False
     IndexFieldNames = 'QualifyTimeID'
     Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
@@ -825,23 +833,27 @@ object QualifyTimes: TQualifyTimes
       '  Q.TrialStrokeID,'
       '  Q.QualifyTimeID,'
       '  Q.GenderID,'
+      '  Q.PoolTypeID,'
       '  SUBSTRING(P.Caption, 0, 30) AS PoolTypeStr,'
       '  P.ABREV AS ABREV,'
       '  P.LengthOfPool,'
-      '  U.ABREV AS UnitTypeStr'
+      '  U.ABREV AS UnitTypeStr,'
+      '  D.Laps'
       'FROM'
       '  dbo.QualifyTime Q'
       '  INNER JOIN PoolType P ON Q.PoolTypeID = P.PoolTypeID'
       '  LEFT JOIN UnitType U ON P.UnitTypeID = U.UnitTypeID'
-      'WHERE (Q.PoolTypeID = :POOLTYPEID)')
+      '  LEFT JOIN dbo.Distance D ON Q.QualifyDistID = D.DistanceID'
+      'WHERE (Q.PoolTypeID = :POOLTYPEID)'
+      'ORDER BY Q.GenderID, D.Laps ASC; ')
     Left = 104
-    Top = 496
+    Top = 440
     ParamData = <
       item
         Name = 'POOLTYPEID'
         DataType = ftInteger
         ParamType = ptInput
-        Value = 1
+        Value = 2
       end>
     object qryQualifyTrialDistID: TIntegerField
       FieldName = 'TrialDistID'
@@ -945,11 +957,15 @@ object QualifyTimes: TQualifyTimes
       KeyFields = 'TrialStrokeID'
       Lookup = True
     end
+    object qryQualifyLaps: TFloatField
+      FieldName = 'Laps'
+      Origin = 'Laps'
+    end
   end
   object DSQualify: TDataSource
     DataSet = qryQualify
     Left = 184
-    Top = 496
+    Top = 440
   end
   object tblQStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -1000,6 +1016,7 @@ object QualifyTimes: TQualifyTimes
     Top = 380
   end
   object qryTrialDist: TFDQuery
+    Active = True
     IndexFieldNames = 'DistanceID'
     Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
@@ -1025,8 +1042,8 @@ object QualifyTimes: TQualifyTimes
       '  WHERE P.PoolTypeID = @APoolTypeID;'
       ''
       '')
-    Left = 488
-    Top = 312
+    Left = 448
+    Top = 376
     ParamData = <
       item
         Name = 'POOLTYPEID'
@@ -1036,6 +1053,7 @@ object QualifyTimes: TQualifyTimes
       end>
   end
   object qryQualifyDist: TFDQuery
+    Active = True
     IndexFieldNames = 'DistanceID'
     Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
@@ -1058,10 +1076,11 @@ object QualifyTimes: TQualifyTimes
       '  INNER JOIN dbo.UnitType AS U'
       '      ON P.UnitTypeID = U.UnitTypeID'
       '  CROSS JOIN dbo.Distance AS D'
-      '  WHERE P.PoolTypeID = @APoolTypeID;'
+      '  WHERE P.PoolTypeID = @APoolTypeID'
+      '  ORDER BY D.Laps ASC;'
       '')
-    Left = 488
-    Top = 376
+    Left = 448
+    Top = 312
     ParamData = <
       item
         Name = 'POOLTYPEID'

@@ -908,7 +908,10 @@ begin
     ShowMessage('Cannot open Qualification Times: no database connection.');
     Exit;
   end;
+
   dlg := TQualifyTimes.Create(Self);
+  if CORE.IsActive then
+    dlg.PoolTypeID := CORE.qrySwimClub.FieldByName('PoolTypeID').AsInteger;
   dlg.ShowModal;
   {TODO -oBSA -cGeneral : If qualification times change -
     Nominee tabsheet may need a refresh...}

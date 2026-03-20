@@ -64,7 +64,6 @@ type
     lblCourseDescription: TLabel;
     Grid: TDBAdvGrid;
     qryQualifyPoolTypeStr: TWideStringField;
-    DBTextPoolTypeStr: TDBText;
     tblPoolTypes: TFDTable;
     qryTrialDist: TFDQuery;
     qryQualifyDist: TFDQuery;
@@ -74,6 +73,18 @@ type
     lblTrialStroke: TLabel;
     navGrid: TDBNavigator;
     qryQualifyLaps: TFloatField;
+    qryQualifyPoolTypeID: TIntegerField;
+    qryQualifyABREV: TWideStringField;
+    qryQualifyLengthOfPool: TFloatField;
+    qryQualifyUnitTypeStr: TWideStringField;
+    qryQualifyDistPoolTypeID: TFDAutoIncField;
+    qryQualifyDistDistanceID: TFDAutoIncField;
+    qryQualifyDistDistStr: TWideStringField;
+    qryTrialDistPoolTypeID: TFDAutoIncField;
+    qryTrialDistDistanceID: TFDAutoIncField;
+    qryTrialDistDistStr: TWideStringField;
+    qryQualifyDistLaps: TFloatField;
+    qryTrialDistLaps: TFloatField;
     procedure BtnCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure qryQualifyTrialTimeGetText(Sender: TField; var Text: string;
@@ -85,18 +96,19 @@ type
     procedure btnDistStrokeReportClick(Sender: TObject);
     procedure btnNotQualifyReportClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure GridGetEditMask(Sender: TObject; ACol, ARow: LongInt; var Value:
         string);
     procedure GridGetEditorType(Sender: TObject; ACol, ARow: Integer; var AEditor:
         TEditorType);
     procedure GridGetEditText(Sender: TObject; ACol, ARow: LongInt; var Value:
         string);
-    procedure qryQualifyBeforePost(DataSet: TDataSet);
+    procedure qryQualifyNewRecord(DataSet: TDataSet);
     procedure tabCntrlChange(Sender: TObject);
   private
-    { ... }
+    FPoolTypeID: integer;
   public
-    { Public declarations }
+    property PoolTypeID: integer read FPoolTypeID write FPoolTypeID;
   end;
 
 var
@@ -243,6 +255,9 @@ var
   tabData: TTabPoolType;
   APoolTypeID: integer;
 begin
+
+  FPoolTypeID := 0;
+
   if not (Assigned(SCM2) and SCM2.scmConnection.Connected)  then
   raise Exception.Create('No database connection');   // or call Abort
   // Init connection ...
@@ -263,6 +278,7 @@ begin
       SCM2.FDGUIxErrorDialog.Execute(E);
     end;
   end;
+
   // Create control tabs ...
   tabCntrl.tabs.Clear;
   tblPooltypes.Open;
@@ -275,25 +291,36 @@ begin
     tabCntrl.tabs.AddObject(tblPooltypes.FieldByName('ABREV').AsString, tabData);
     tblPooltypes.Next;
   end;
-  // initialise FD Queries ...
-  // tblPooltypes.First;
-  tabCntrl.TabIndex := 1;
+  tblPooltypes.Close;
+
+  // Prepare GRID - initialise Queries ...
+  tabCntrl.TabIndex := 0; // DEFAULT TAB = ShortCourse Olympic Standard.
   try
     tabData := TTabPoolType(tabCntrl.Tabs.Objects[tabCntrl.TabIndex]);
     APoolTypeID := tabData.PoolTypeID;
-    qryTrialDist.Close;
-    qryTrialDist.ParamByName('POOLTYPEID').AsInteger := APoolTypeID;
-    qryTrialDist.Prepare;
-    qryTrialDist.Open;
-    qryQualifyDist.Close;
-    qryQualifyDist.ParamByName('POOLTYPEID').AsInteger := APoolTypeID;
-    qryQualifyDist.Prepare;
-    qryQualifyDist.Open;
-    qryQualify.Close;
-    qryQualify.ParamByName('POOLTYPEID').AsInteger := APoolTypeID;
-    qryQualify.Prepare();
-    qryQualify.Open();
     lblCourseDescription.Caption := tabData.Caption;
+
+    qryQualify.DisableControls;
+    try
+      if not qryQualify.Active then qryQualify.Open;
+      qryQualify.Filter := 'PoolTypeID = ' + IntToStr(APoolTypeID);
+      if not qryQualify.Filtered then qryQualify.Filtered := true;
+    finally
+      qryQualify.EnableControls;
+    end;
+
+    if qryQualify.Active then
+    begin
+      qryTrialDist.Close;
+      qryTrialDist.ParamByName('POOLTYPEID').AsInteger := APoolTypeID;
+      qryTrialDist.Prepare;
+      qryTrialDist.Open;
+      qryQualifyDist.Close;
+      qryQualifyDist.ParamByName('POOLTYPEID').AsInteger := APoolTypeID;
+      qryQualifyDist.Prepare;
+      qryQualifyDist.Open;
+    end;
+
   except
     on E: EFDDBEngineException do
     begin
@@ -317,6 +344,18 @@ begin
   tblTStroke.Close;
   luGender.Close;
   tblPooltypes.Close;
+end;
+
+procedure TQualifyTimes.FormShow(Sender: TObject);
+begin
+  if FPoolTypeID <> 0 then
+  begin
+    if FPoolTypeID in [0..(tabCntrl.Tabs.Count-1)] then
+    begin
+      tabCntrl.TabIndex := FPoolTypeID;
+      tabCntrlChange(tabCntrl);
+    end;
+  end;
 end;
 
 procedure TQualifyTimes.GridGetEditMask(Sender: TObject; ACol, ARow: LongInt;
@@ -370,17 +409,14 @@ begin
   end;
 end;
 
-procedure TQualifyTimes.qryQualifyBeforePost(DataSet: TDataSet);
+procedure TQualifyTimes.qryQualifyNewRecord(DataSet: TDataSet);
 var
   tabData: TTabPoolType;
   APoolTypeID: integer;
 begin
-  if DataSet.FieldByName('PoolTypeID').IsNull then
-  begin
-    tabData := TTabPoolType(tabCntrl.Tabs.Objects[tabCntrl.TabIndex]);
-    APoolTypeID := tabData.PoolTypeID;
-    DataSet.FieldByName('PoolTypeID').AsInteger := APoolTypeID;
-  end;
+  tabData := TTabPoolType(tabCntrl.Tabs.Objects[tabCntrl.TabIndex]);
+  APoolTypeID := tabData.PoolTypeID;
+  DataSet.FieldByName('PoolTypeID').AsInteger := APoolTypeID;
 end;
 
 procedure TQualifyTimes.qryQualifyTrialTimeGetText(Sender: TField;
@@ -449,7 +485,6 @@ var
   APoolTypeID: integer;
 begin
   TC := TTabControl(Sender);
-
   try
     LockDrawing;
     Grid.BeginUpdate;
@@ -458,6 +493,10 @@ begin
     try
       tabData := TTabPoolType(TC.Tabs.Objects[TC.TabIndex]);
       APoolTypeID := tabData.PoolTypeID;
+      lblCourseDescription.Caption := tabData.Caption;
+
+      qryQualify.Filter := 'PoolTypeID = ' + IntToStr(APoolTypeID);
+      if not qryQualify.Filtered then qryQualify.Filtered := true;
 
       qryTrialDist.Close;
       qryTrialDist.ParamByName('POOLTYPEID').AsInteger := APoolTypeID;
@@ -469,20 +508,12 @@ begin
       qryQualifyDist.Prepare;
       qryQualifyDist.Open;
 
-
-      qryQualify.Close();
-      qryQualify.ParamByName('POOLTYPEID').AsInteger := APoolTypeID;
-      qryQualify.Prepare();
-      qryQualify.Open();
     except
       on E: EFDDBEngineException do
       begin
         SCM2.FDGUIxErrorDialog.Execute(E);
       end;
     end;
-
-    // fld := obj.FieldByName('Caption');
-
 
   finally
     qryQualify.EnableControls;

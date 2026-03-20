@@ -14,6 +14,7 @@ object QualifyTimes: TQualifyTimes
   Position = poOwnerFormCenter
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnShow = FormShow
   TextHeight = 21
   object pgcntrlMain: TPageControl
     Left = 0
@@ -56,21 +57,6 @@ object QualifyTimes: TQualifyTimes
           Font.Style = []
           ParentFont = False
           Layout = tlCenter
-        end
-        object DBTextPoolTypeStr: TDBText
-          Left = 183
-          Top = 28
-          Width = 220
-          Height = 30
-          AutoSize = True
-          DataField = 'PoolTypeStr'
-          DataSource = DSQualify
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -21
-          Font.Name = 'Segoe UI'
-          Font.Style = [fsBold]
-          ParentFont = False
         end
         object Panel3: TPanel
           Left = 4
@@ -150,7 +136,7 @@ object QualifyTimes: TQualifyTimes
         DefaultRowHeight = 32
         DrawingStyle = gdsClassic
         FixedColor = clWhite
-        RowCount = 21
+        RowCount = 2
         FixedRows = 1
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -610,6 +596,7 @@ object QualifyTimes: TQualifyTimes
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
+        ExplicitTop = 171
         ColWidths = (
           20
           90
@@ -620,25 +607,6 @@ object QualifyTimes: TQualifyTimes
           160)
         RowHeights = (
           0
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
-          32
           32)
       end
     end
@@ -801,22 +769,24 @@ object QualifyTimes: TQualifyTimes
       Top = 2
       Width = 600
       Height = 39
+      Hint = 'Navigator for Qualify Grid'
       DataSource = DSQualify
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 1
     end
   end
   object qryQualify: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
-    BeforePost = qryQualifyBeforePost
+    OnNewRecord = qryQualifyNewRecord
     Indexes = <
       item
         Active = True
+        Selected = True
         Name = 'indxSort'
-        Fields = 'QualifyTimeID;GenderID;Laps'
+        Fields = 'PoolTypeID;GenderID;Laps'
       end>
-    IndexesActive = False
-    IndexFieldNames = 'QualifyTimeID'
+    IndexName = 'indxSort'
     Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
@@ -844,17 +814,10 @@ object QualifyTimes: TQualifyTimes
       '  INNER JOIN PoolType P ON Q.PoolTypeID = P.PoolTypeID'
       '  LEFT JOIN UnitType U ON P.UnitTypeID = U.UnitTypeID'
       '  LEFT JOIN dbo.Distance D ON Q.QualifyDistID = D.DistanceID'
-      'WHERE (Q.PoolTypeID = :POOLTYPEID)'
-      'ORDER BY Q.GenderID, D.Laps ASC; ')
+      '-- WHERE (Q.PoolTypeID = :POOLTYPEID)'
+      'ORDER BY Q.PoolTypeID, Q.GenderID, D.Laps ASC; ')
     Left = 104
     Top = 440
-    ParamData = <
-      item
-        Name = 'POOLTYPEID'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = 2
-      end>
     object qryQualifyTrialDistID: TIntegerField
       FieldName = 'TrialDistID'
       Origin = 'TrialDistID'
@@ -961,6 +924,24 @@ object QualifyTimes: TQualifyTimes
       FieldName = 'Laps'
       Origin = 'Laps'
     end
+    object qryQualifyPoolTypeID: TIntegerField
+      FieldName = 'PoolTypeID'
+      Origin = 'PoolTypeID'
+    end
+    object qryQualifyABREV: TWideStringField
+      FieldName = 'ABREV'
+      Origin = 'ABREV'
+      Size = 5
+    end
+    object qryQualifyLengthOfPool: TFloatField
+      FieldName = 'LengthOfPool'
+      Origin = 'LengthOfPool'
+    end
+    object qryQualifyUnitTypeStr: TWideStringField
+      FieldName = 'UnitTypeStr'
+      Origin = 'UnitTypeStr'
+      Size = 16
+    end
   end
   object DSQualify: TDataSource
     DataSet = qryQualify
@@ -1017,7 +998,14 @@ object QualifyTimes: TQualifyTimes
   end
   object qryTrialDist: TFDQuery
     Active = True
-    IndexFieldNames = 'DistanceID'
+    Indexes = <
+      item
+        Active = True
+        Selected = True
+        Name = 'indxSort'
+        Fields = 'PoolTypeID;Laps'
+      end>
+    IndexName = 'indxSort'
     Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -1035,11 +1023,14 @@ object QualifyTimes: TQualifyTimes
       'SELECT P.PoolTypeID'
       '      ,D.DistanceID'
       '      ,CONCAT(D.Laps * P.LengthOfPool, U.ABREV) AS DistStr'
+      '      ,D.Laps'
       '  FROM dbo.PoolType AS P'
       '  INNER JOIN dbo.UnitType AS U'
       '      ON P.UnitTypeID = U.UnitTypeID'
       '  CROSS JOIN dbo.Distance AS D'
-      '  WHERE P.PoolTypeID = @APoolTypeID;'
+      '  WHERE P.PoolTypeID = @APoolTypeID'
+      '  ORDER BY D.Laps ASC;'
+      '  ;'
       ''
       '')
     Left = 448
@@ -1051,10 +1042,37 @@ object QualifyTimes: TQualifyTimes
         ParamType = ptInput
         Value = Null
       end>
+    object qryTrialDistPoolTypeID: TFDAutoIncField
+      FieldName = 'PoolTypeID'
+      Origin = 'PoolTypeID'
+      ProviderFlags = [pfInWhere, pfInKey]
+    end
+    object qryTrialDistDistanceID: TFDAutoIncField
+      FieldName = 'DistanceID'
+      Origin = 'DistanceID'
+    end
+    object qryTrialDistDistStr: TWideStringField
+      FieldName = 'DistStr'
+      Origin = 'DistStr'
+      ReadOnly = True
+      Required = True
+      Size = 39
+    end
+    object qryTrialDistLaps: TFloatField
+      FieldName = 'Laps'
+      Origin = 'Laps'
+    end
   end
   object qryQualifyDist: TFDQuery
     Active = True
-    IndexFieldNames = 'DistanceID'
+    Indexes = <
+      item
+        Active = True
+        Selected = True
+        Name = 'indxSort'
+        Fields = 'PoolTypeID;Laps'
+      end>
+    IndexName = 'indxSort'
     Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -1072,6 +1090,7 @@ object QualifyTimes: TQualifyTimes
       'SELECT P.PoolTypeID'
       '      ,D.DistanceID'
       '      ,CONCAT(D.Laps * P.LengthOfPool, U.ABREV) AS DistStr'
+      '      ,D.Laps'
       '  FROM dbo.PoolType AS P'
       '  INNER JOIN dbo.UnitType AS U'
       '      ON P.UnitTypeID = U.UnitTypeID'
@@ -1088,6 +1107,26 @@ object QualifyTimes: TQualifyTimes
         ParamType = ptInput
         Value = Null
       end>
+    object qryQualifyDistPoolTypeID: TFDAutoIncField
+      FieldName = 'PoolTypeID'
+      Origin = 'PoolTypeID'
+      ProviderFlags = [pfInWhere, pfInKey]
+    end
+    object qryQualifyDistDistanceID: TFDAutoIncField
+      FieldName = 'DistanceID'
+      Origin = 'DistanceID'
+    end
+    object qryQualifyDistDistStr: TWideStringField
+      FieldName = 'DistStr'
+      Origin = 'DistStr'
+      ReadOnly = True
+      Required = True
+      Size = 39
+    end
+    object qryQualifyDistLaps: TFloatField
+      FieldName = 'Laps'
+      Origin = 'Laps'
+    end
   end
   object tblTStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]

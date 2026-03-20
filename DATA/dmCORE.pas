@@ -183,6 +183,13 @@ type
     qrySwimClubIsClubGroup: TBooleanField;
     qrySwimClubimgIndxArchived: TIntegerField;
     qrySwimClubimgIndGroup: TIntegerField;
+    qryDistanceEx: TFDQuery;
+    qryDistanceExPoolTypeID: TFDAutoIncField;
+    qryDistanceExDistanceID: TFDAutoIncField;
+    qryDistanceExDistStr: TWideStringField;
+    qryDistanceExLaps: TFloatField;
+    dsDistanceEx: TDataSource;
+    qryEventluDistanceEx: TStringField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure dsSwimClubDataChange(Sender: TObject; Field: TField);
@@ -260,6 +267,7 @@ begin
     tblDisqualifyCode.Connection := SCM2.scmConnection;
     tblSwimClubType.Connection := SCM2.scmConnection;
     tblPooltype.Connection := SCM2.scmConnection;
+    qryDistanceEx.Connection := SCM2.scmConnection;
 
     qryPoolType.Connection := SCM2.scmConnection;
     qryPoolType.UpdateOptions.ReadOnly := true; // except when using Custom Course.
@@ -302,6 +310,7 @@ begin
         tblDisqualifyCode.Open;
         tblSwimClubType.Open;
         tblPoolType.Open;
+        qryDistanceEx.Open;
 
         // members
         qryMemberLink.Open;
@@ -413,6 +422,7 @@ begin
     tblDisqualifyCode.Close;
     tblSwimClubType.Close;
     tblPooltype.Close;
+    qryDistanceEx.Close;
 
     // members
     qryMember.Close;

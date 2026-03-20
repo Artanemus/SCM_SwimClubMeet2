@@ -393,6 +393,17 @@ object CORE: TCORE
       Origin = 'ABREV'
       Size = 5
     end
+    object qryEventluDistanceEx: TStringField
+      DisplayLabel = 'Distance'
+      DisplayWidth = 12
+      FieldKind = fkLookup
+      FieldName = 'luDistanceEx'
+      LookupDataSet = qryDistanceEx
+      LookupKeyFields = 'DistanceID'
+      LookupResultField = 'DistStr'
+      KeyFields = 'DistanceID'
+      Lookup = True
+    end
   end
   object qryHeat: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -1961,5 +1972,66 @@ object CORE: TCORE
     DataSet = tblPooltype
     Left = 352
     Top = 664
+  end
+  object qryDistanceEx: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
+    Indexes = <
+      item
+        Active = True
+        Selected = True
+        Name = 'indxSort'
+        Fields = 'PoolTypeID;Laps'
+      end>
+    IndexName = 'indxSort'
+    MasterSource = dsSwimClub
+    MasterFields = 'PoolTypeID'
+    DetailFields = 'PoolTypeID'
+    Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.PoolType'
+    UpdateOptions.KeyFields = 'PoolTypeID'
+    SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
+      'SELECT P.PoolTypeID'
+      '      ,D.DistanceID'
+      '      ,CONCAT(D.Laps * P.LengthOfPool, U.ABREV) AS DistStr'
+      '      ,D.Laps'
+      '  FROM dbo.PoolType AS P'
+      '  INNER JOIN dbo.UnitType AS U'
+      '      ON P.UnitTypeID = U.UnitTypeID'
+      '  CROSS JOIN dbo.Distance AS D'
+      '  ORDER BY P.PoolTypeID, D.Laps ASC;'
+      '')
+    Left = 552
+    Top = 64
+    object qryDistanceExPoolTypeID: TFDAutoIncField
+      FieldName = 'PoolTypeID'
+      Origin = 'PoolTypeID'
+      ProviderFlags = [pfInWhere, pfInKey]
+    end
+    object qryDistanceExDistanceID: TFDAutoIncField
+      FieldName = 'DistanceID'
+      Origin = 'DistanceID'
+    end
+    object qryDistanceExDistStr: TWideStringField
+      FieldName = 'DistStr'
+      Origin = 'DistStr'
+      ReadOnly = True
+      Required = True
+      Size = 39
+    end
+    object qryDistanceExLaps: TFloatField
+      FieldName = 'Laps'
+      Origin = 'Laps'
+    end
+  end
+  object dsDistanceEx: TDataSource
+    DataSet = qryDistanceEx
+    Left = 632
+    Top = 64
   end
 end

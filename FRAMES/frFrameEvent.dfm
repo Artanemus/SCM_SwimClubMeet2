@@ -273,7 +273,7 @@ object FrameEvent: TFrameEvent
             CheckTrue = 'Y'
             Color = clWindow
             EditLength = 20
-            FieldName = 'luDistance'
+            FieldName = 'luDistanceEx'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -19

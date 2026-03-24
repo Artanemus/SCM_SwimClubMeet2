@@ -34,7 +34,6 @@ type
 		dsSwimClub: TDataSource;
 		dsTeam: TDataSource;
 		dsWatchTime: TDataSource;
-		LookUpDistance: TStringField;
 		LookUpStroke: TStringField;
 		luDistance: TDataSource;
 		luStroke: TDataSource;
@@ -51,7 +50,6 @@ type
 		qryEventParalympicTypeID: TIntegerField;
 		qryEventRoundID: TIntegerField;
 		qryEventSessionID: TIntegerField;
-		qryEventShortCaption: TWideStringField;
 		qryEventStrokeID: TIntegerField;
 		qryHeat: TFDQuery;
 		qryHeatEventID: TIntegerField;
@@ -77,8 +75,6 @@ type
     qryMemberLink: TFDQuery;
     qryEventStartTime: TTimeField;
     qryEventEventCategoryID: TIntegerField;
-    qryEventDistanceStr: TWideStringField;
-    qryEventStrokeStr: TWideStringField;
     qryHeatCaption: TWideStringField;
     qryHeatStartTime: TTimeField;
     qrySessionSessionID: TFDAutoIncField;
@@ -129,8 +125,6 @@ type
     qryFilterMemberMiddleName: TWideStringField;
     qryNominateStrokeID: TIntegerField;
     qryNominateDistanceID: TIntegerField;
-    qryNominateMeters: TIntegerField;
-    qryEventMeters: TIntegerField;
     qryLaneLaneID: TFDAutoIncField;
     qryLaneLaneNum: TIntegerField;
     qryLaneRaceTime: TTimeField;
@@ -145,7 +139,6 @@ type
     tblDisqualifyCode: TFDTable;
     luDisqualifyCode: TDataSource;
     qryLaneluDQ: TStringField;
-    qryEventABREV: TWideStringField;
     qryLaneTTB: TTimeField;
     qryLanePB: TTimeField;
     qryMemberLinkMemberID: TIntegerField;

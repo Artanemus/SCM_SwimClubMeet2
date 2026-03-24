@@ -102,14 +102,15 @@ var
   s: string;
   w, w2, idx: integer;
 begin
+  // Get unit type string via SwimClub.PoolTypeID...
   // RELAY BUG...
   if (AQuery.FieldByName('EventTypeID').AsInteger = 2) then
     imgRelay.Visible := true else imgRelay.Visible := false;
   // ICON FS, BK, BS, BF, IM, etc...
   imgStroke.ImageIndex := AQuery.FieldByName('StrokeID').AsInteger;
-
+  // event number + distance to swim using SwimClub.PoolType UnitType...
   lblEv.Caption := IntToStr(AQuery.FieldByName('EventNum').AsInteger) +
-    '.' + IntToStr(AQuery.FieldByName('Meters').AsInteger) +'m';
+    '.' + AQuery.FieldByName('DistanceStr').AsString;
 
   // Adjust thin underline
   shape2.left := lblEv.Left - 2;

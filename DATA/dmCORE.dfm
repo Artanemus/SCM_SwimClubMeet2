@@ -194,24 +194,32 @@ object CORE: TCORE
       '      ,[Event].[ParalympicTypeID]'
       '      ,[Event].[EventTypeID] '
       
-        '      ,LEFT([Distance].[Caption],8) AS DistanceStr -- use LookUp' +
-        ' value?'
+        '      --,LEFT(dbo.DistanceToString(event.DistanceID, Session.Swi' +
+        'mClubID),8) AS DistanceStr'
       
-        '      ,LEFT([Stroke].[Caption],16) AS StrokeStr -- use LookUp va' +
-        'lue?'
+        '      --,LEFT([Distance].[Caption],8) AS DistanceStr -- use Look' +
+        'Up value?'
+      
+        '      --,LEFT([Stroke].[Caption],16) AS StrokeStr -- use LookUp ' +
+        'value?'
+      '      '
+      '      /*'
       '      ,LEFT('
       '       CONCAT('#39'#'#39', Event.EventNum, '#39' - '#39', '
       '         Distance.Caption, '#39' '#39', '
       '         Stroke.Caption, '#39'  '#39' ,'
       '         UPPER(EventType.ABREV) )'
       '         ,30) AS ShortCaption'
-      '      ,[Distance].Meters'
+      '       */  '
+      '         '
+      '      --,[Distance].Meters'
       '      ,[EventType].ABREV'
       'FROM [SwimClubMeet2].[dbo].[Event]'
-      '    LEFT OUTER JOIN Stroke'
-      '        ON Stroke.StrokeID = Event.StrokeID'
-      '    LEFT OUTER JOIN Distance'
-      '        ON Distance.DistanceID = Event.DistanceID'
+      '    Left join Session on event.SessionID = Session.SessionID'
+      '    --LEFT OUTER JOIN Stroke'
+      '        --ON Stroke.StrokeID = Event.StrokeID'
+      '    --LEFT OUTER JOIN Distance'
+      '        --ON Distance.DistanceID = Event.DistanceID'
       '    LEFT OUTER JOIN EventType'
       '        ON EventType.EventTypeID = Event.EventTypeID'
       'ORDER BY Event.EventNum;'
@@ -236,11 +244,6 @@ object CORE: TCORE
       FieldName = 'Caption'
       Origin = 'Caption'
       Size = 128
-    end
-    object qryEventShortCaption: TWideStringField
-      FieldName = 'ShortCaption'
-      Origin = 'ShortCaption'
-      Size = 273
     end
     object qryEventStartTime: TTimeField
       FieldName = 'StartTime'
@@ -291,18 +294,6 @@ object CORE: TCORE
       FieldName = 'EventCategoryID'
       Origin = 'EventCategoryID'
     end
-    object qryEventDistanceStr: TWideStringField
-      FieldName = 'DistanceStr'
-      Origin = 'DistanceStr'
-      ProviderFlags = []
-      Size = 128
-    end
-    object qryEventStrokeStr: TWideStringField
-      FieldName = 'StrokeStr'
-      Origin = 'StrokeStr'
-      ProviderFlags = []
-      Size = 128
-    end
     object LookUpStroke: TStringField
       DisplayLabel = 'Stroke'
       DisplayWidth = 14
@@ -312,18 +303,6 @@ object CORE: TCORE
       LookupKeyFields = 'StrokeID'
       LookupResultField = 'Caption'
       KeyFields = 'StrokeID'
-      LookupCache = True
-      Lookup = True
-    end
-    object LookUpDistance: TStringField
-      DisplayLabel = 'Distance'
-      DisplayWidth = 12
-      FieldKind = fkLookup
-      FieldName = 'luDistance'
-      LookupDataSet = tblDistance
-      LookupKeyFields = 'DistanceID'
-      LookupResultField = 'Caption'
-      KeyFields = 'DistanceID'
       LookupCache = True
       Lookup = True
     end
@@ -382,16 +361,6 @@ object CORE: TCORE
       LookupCache = True
       Size = 10
       Lookup = True
-    end
-    object qryEventMeters: TIntegerField
-      FieldName = 'Meters'
-      Origin = 'Meters'
-      ProviderFlags = []
-    end
-    object qryEventABREV: TWideStringField
-      FieldName = 'ABREV'
-      Origin = 'ABREV'
-      Size = 5
     end
     object qryEventluDistanceEx: TStringField
       DisplayLabel = 'Distance'
@@ -1615,9 +1584,13 @@ object CORE: TCORE
       'DECLARE @SessionID integer = :SESSIONID; --144;'
       'DECLARE @SeedDate DateTime = :SEEDDATE;'
       'DECLARE @SwimClubID integer = :SWIMCLUBID;'
+      'DECLARE @PoolTypeID integer;'
       ''
       'IF @SeedDate IS NULL SET @SeedDate = GETDATE();'
       'IF @SwimClubID IS NULL SET @SwimClubID = 1;'
+      
+        'SET @PoolTypeID = (SELECT S.PoolTypeID FROM SwimClubMeet2.dbo.Sw' +
+        'imClub AS S WHERE S.SwimClubID = @SwimClubID);'
       ''
       '--  check if temporary table exists and drop it'
       'IF OBJECT_ID('#39'tempdb..#ev'#39') IS NOT NULL'
@@ -1633,27 +1606,27 @@ object CORE: TCORE
       '    Nominated integer,'
       '    Qualified integer,'
       '    StrokeID integer,'
-      '    DistanceID integer,'
-      '    Meters integer'
+      '    DistanceID integer'
       ');  '
       ''
       'INSERT INTO #ev '
       
         '   (EventID, Caption, EventNum, EventTypeID, SubText, SessionID,' +
-        ' Nominated, Qualified, StrokeID, DistanceID, Meters)'
+        ' Nominated, Qualified, StrokeID, DistanceID)'
       'SELECT ee.EventID,  '
       '    ee.Caption,'
       '    ee.EventNum,'
       '    ee.EventTypeID,'
-      '    CONCAT(d.Caption, '#39' '#39', s.Caption) as SubText,'
+      
+        '    CONCAT(dbo.DistanceToString(d.DistanceID, @PoolTypeID), '#39' '#39',' +
+        ' s.Caption) as SubText,'
       '    ee.SessionID,'
       '    CASE WHEN n.MemberID = @MemberID then 1 else 0 end,'
       
         '  dbo.IsMemberQualified(@MemberID, @SeedDate, ee.DistanceID, ee.' +
         'StrokeID, @SwimClubID),'
       '   s.StrokeID,'
-      '   d.DistanceID,'
-      '   d.Meters'
+      '   d.DistanceID'
       ''
       'FROM [dbo].[EVENT] ee '
       'INNER JOIN [dbo].[Distance] d ON ee.DistanceID = d.DistanceID'
@@ -1740,10 +1713,6 @@ object CORE: TCORE
     object qryNominateDistanceID: TIntegerField
       FieldName = 'DistanceID'
       Origin = 'DistanceID'
-    end
-    object qryNominateMeters: TIntegerField
-      FieldName = 'Meters'
-      Origin = 'Meters'
     end
   end
   object dsNominate: TDataSource

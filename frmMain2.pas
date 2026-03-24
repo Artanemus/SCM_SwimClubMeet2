@@ -227,6 +227,11 @@ begin
       // Always done after running TLogin - ASSERT UI values.
       if SCM2.scmConnection.Connected then
       begin
+        { UPDATE THE 'CALCULATED' DESCRIPTION STRING in
+          SwimClubMeet2.dbo.Distance.CalcDescriptStr ...
+          Done each time a new connection is performed ...}
+        uSwimClub.UpdateDistanceToString(CORE.qrySwimClub.FieldByName('PoolTypeID').AsInteger);
+
         // Update the TitlePanel dbtext captions and enable custom buttons.
         pnlTitleBar.CustomButtons[0].Enabled := true;
         pnlTitleBar.CustomButtons[1].Enabled := true;
@@ -373,7 +378,7 @@ begin
   frNominate.Align := alClient;
   pnlNominate.Caption := '';
 
-
+   // END CONSTRUCTION OF FRAMES.
   { --------------------------------------------- }
 
   item := TActionListItem(actnManager.LinkedActionLists.Add()); // TCollectionItem.

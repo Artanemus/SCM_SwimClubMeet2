@@ -23,7 +23,7 @@ function HasLockedSession(): boolean;
 function HasRaceData(): Boolean;
 function Delete_SwimClub(DoExclude: boolean = true): boolean;
 function TestForSwimClubID(SwimCLubID: integer): boolean;
-
+procedure UpdateDistanceToString(PoolTypeID: integer);
 
 procedure SwitchClubs(FromClubID, ToClubID: integer);
 
@@ -47,11 +47,26 @@ begin
           uSwimClub.Locate(ID); // go find the SwimClub.
         DetailTBLs_ApplyMaster;
       finally
-        DetailTBLs_EnableCNTRLs
+      begin
+        DetailTBLs_EnableCNTRLs;
+        UpdateDistanceToString(CORE.qrySwimClub.FieldByName('PoolTypeID').AsInteger);
+      end;
       end;
     end;
   end;
 end;
+
+procedure UpdateDistanceToString(PoolTypeID: integer);
+var
+  SQL: string;
+Begin
+  SQL := '''
+    UPDATE SwimClubMeet2.dbo.Distance
+      SET CalcCaption = dbo.DistanceToString(DistanceID, :ID);
+    ''';
+  SCM2.scmConnection.ExecSQL(SQL, [PoolTypeID]);
+End;
+
 
 procedure DetailTBLs_DisableCNTRLs;
 begin

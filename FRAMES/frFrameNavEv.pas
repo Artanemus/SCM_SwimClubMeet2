@@ -143,7 +143,7 @@ begin
       Frame.ParentFont := false;
       Frame.StyleElements := Frame.StyleElements - [seFont];
       // Hook for user selecting a NavEvItem.
-      frame.FOnNavEvItemSelected := NavEvItemClicked;
+      Frame.FOnNavEvItemSelected := NavEvItemClicked;
 
       // 4. Horizontal Alignment
       Frame.Align := alLeft;
@@ -159,7 +159,6 @@ begin
       // 6. Handle Clicks (Optional)
       // Capture the PK so we know which record was clicked.
       Frame.Tag := Q.FieldByName('EventID').AsInteger;
-
       Q.Next;
     end;
   finally

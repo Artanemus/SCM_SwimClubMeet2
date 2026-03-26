@@ -332,7 +332,7 @@ object MemberHistory: TMemberHistory
     FormatOptions.FmtDisplayDate = 'DDDD MMMM YYYY'
     FormatOptions.FmtDisplayTime = 'nn:ss:zzz'
     SQL.Strings = (
-      'USE SwimClubMeet'
+      'USE SwimClubMeet2'
       ''
       'DECLARE @MemberID AS INT'
       'DECLARE @SwimClubID AS INT'
@@ -341,8 +341,8 @@ object MemberHistory: TMemberHistory
       'SET @SwimClubID = :SWIMCLUBID'
       ''
       'SELECT Stroke.Caption AS StrokeStr'
-      #9',Distance.Caption AS DistanceStr'
-      #9',Entrant.RaceTime'
+      #9',Distance.CalcCaption AS DistanceStr'
+      #9',Lane.RaceTime'
       #9',Member.FirstName + '#39' '#39' + UPPER(Member.LastName) AS FName'
       #9',Session.SessionStart'
       #9',Member.MemberID'
@@ -350,7 +350,8 @@ object MemberHistory: TMemberHistory
       #9',SwimClub.Caption AS ClubName'
       #9',SwimClub.NickName AS ClubNickName'
       'FROM Member'
-      'INNER JOIN Entrant ON Member.MemberID = Entrant.MemberID'
+      'INNER JOIN Lane ON Nominee.NomineeID = Lane.NomineeID'
+      'INNER JOIN Member ON Nominee.MemberID = Member.NomineeID'
       'INNER JOIN Heat ON Entrant.HeatID = Heat.HeatID'
       'INNER JOIN Event ON Heat.EventID = Event.EventID'
       'INNER JOIN Distance ON Event.DistanceID = Distance.DistanceID'
@@ -372,7 +373,9 @@ object MemberHistory: TMemberHistory
       end
       item
         Name = 'SWIMCLUBID'
+        DataType = ftInteger
         ParamType = ptInput
+        Value = Null
       end>
   end
   object frxXLSExport1: TfrxXLSExport

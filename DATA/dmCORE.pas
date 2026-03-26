@@ -179,10 +179,12 @@ type
     qryDistanceEx: TFDQuery;
     qryDistanceExPoolTypeID: TFDAutoIncField;
     qryDistanceExDistanceID: TFDAutoIncField;
-    qryDistanceExDistStr: TWideStringField;
+    qryDistanceExDistanceStr: TWideStringField;
     qryDistanceExLaps: TFloatField;
     dsDistanceEx: TDataSource;
     qryEventluDistanceEx: TStringField;
+    qryEventluDistance: TStringField;
+    qryEventABREV: TWideStringField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure dsSwimClubDataChange(Sender: TObject; Field: TField);

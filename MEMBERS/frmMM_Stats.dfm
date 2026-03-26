@@ -347,7 +347,7 @@ object ManageMember_Stats: TManageMember_Stats
         ' PB'
       #9',('
       #9#9'CONCAT ('
-      #9#9#9'distance.caption'
+      #9#9#9'distance.CalcCaption'
       #9#9#9','#39' '#39
       #9#9#9',stroke.caption'
       #9#9#9')'
@@ -404,7 +404,6 @@ object ManageMember_Stats: TManageMember_Stats
   end
   object qryChart: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'MemberID'
     MasterSource = dsMember
     MasterFields = 'MemberID'
@@ -449,7 +448,7 @@ object ManageMember_Stats: TManageMember_Stats
         'conds'
       ''
       #9',Session.SessionDT'
-      #9',Distance.Caption AS cDistance'
+      #9',Distance.CalcCaption AS cDistance'
       #9',Stroke.Caption AS cStroke'
       ''
       'INTO #charttemp'

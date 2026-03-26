@@ -64,7 +64,7 @@ object QTMemberReportA: TQTMemberReportA
       'SELECT CTE.MemberID '
       ',CTE.QualifyDistID AS DistanceID'
       ',CTE.StrokeID'
-      ',Distance.Caption AS DistanceStr'
+      ',Distance.CalcCaption AS DistanceStr'
       ', Stroke.Caption AS StrokeStr '
       
         ', CONCAT (Member.Firstname, '#39' '#39' , UPPER(Member.Lastname)) AS FNa' +

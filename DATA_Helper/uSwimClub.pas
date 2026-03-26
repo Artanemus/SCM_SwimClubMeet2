@@ -77,7 +77,7 @@ begin
     CORE.qryHeat.DisableControls;
     CORE.qryEvent.DisableControls;
     CORE.qrySession.DisableControls;
-    CORE.qryDistanceEx.DisableControls;
+    CORE.qryDistanceEx.DisableControls; // redundant - USE tblDistance
     CORE.qryPoolType.DisableControls;
 end;
 
@@ -87,7 +87,7 @@ begin
   if CORE.qrySwimClub.RecordCount <> 0 then
   begin
     CORE.qryPoolType.ApplyMaster;
-    CORE.qryDistanceEx.ApplyMaster;
+    CORE.qryDistanceEx.ApplyMaster;  // redundant - USE tblDistance
     CORE.qrySession.ApplyMaster;
     if CORE.qrySession.RecordCount <> 0 then
     begin
@@ -113,7 +113,7 @@ end;
 procedure DetailTBLs_EnableCNTRLs;
 begin
     CORE.qryPoolType.EnableControls;
-    CORE.qryDistanceEx.EnableControls;
+    CORE.qryDistanceEx.EnableControls;  // redundant - USE tblDistance
     CORE.qrySession.EnableControls;
     CORE.qryEvent.EnableControls;
     CORE.qryHeat.EnableControls;

@@ -456,7 +456,7 @@ object QTNotQualified: TQTNotQualified
       '     , dbo.SwimTimeToString(PB) AS PB'
       '     , dbo.SwimTimeToString(QTime) AS QTime'
       '     , [Distance].Caption AS strDistance'
-      '     , qDistance.Caption AS strQDistance'
+      '     , qDistance.CalcCaption AS strQDistance'
       '     , [Stroke].Caption AS strStroke'
       '     , CONCAT(Member.FirstName, '#39' '#39', member.LastName) AS FName'
       'FROM #QTemp'

@@ -725,56 +725,43 @@ object MemberDetail: TMemberDetail
     IndexFieldNames = 'MemberID'
     Connection = FDConnection1
     SQL.Strings = (
-      'USE SwimClubMeet;'
+      'USE SwimClubMeet2'
       ''
       'DECLARE @MemberID AS INT'
       'DECLARE @SwimClubID AS INT'
       ''
-      'SET @MemberID = :MEMBERID'
-      'SET @SwimClubID = :SWIMCLUBID'
+      'SET @MemberID = 27; --:MEMBERID'
+      'SET @SwimClubID = 1; --:SWIMCLUBID'
       ''
-      '    SELECT Member.MemberID'
-      '         , Member.MembershipNum'
-      '         , Member.FirstName'
-      '         , Member.LastName'
+      'SELECT Stroke.Caption AS StrokeStr'
+      #9',Distance.CalcCaption AS DistanceStr'
+      #9',Lane.RaceTime'
+      #9',Member.FirstName + '#39' '#39' + UPPER(Member.LastName) AS FName'
+      #9',Session.SessionDT'
+      #9',Member.MemberID'
+      #9',Member.MembershipNum'
+      #9',SwimClub.Caption AS ClubName'
+      #9',SwimClub.NickName AS ClubNickName'
+      'FROM SwimClub'
+      'INNER JOIN Session ON SwimClub.SwimClubID = Session.SwimClubID'
+      'INNER JOIN Event ON Session.SessionID = Event.SessionID'
+      'INNER JOIN Heat ON Event.EventID = Heat.EventID'
+      'INNER JOIN Lane ON Heat.HeatID = Lane.HeatID'
       
-        '         , CONCAT(Member.FirstName, '#39' '#39',  UPPER(Member.LastName)' +
-        ' ) AS FName'
-      '         , Member.DOB'
-      '         , Member.IsActive'
-      '         , Member.Email'
-      '         -- , Member.DoEmailSessionReport'
-      '         , Gender.Caption AS GenderStr'
-      '         , Member.GenderID'
-      '         , Member.SwimClubID'
-      '         , SwimClub.Caption AS ClubName'
-      '         , SwimClub.NickName AS ClubNickName'
-      '         , dbo.SwimmerAge(GETDATE(), Member.DOB) AS AGE'
-      ', Member.CreatedOn'
-      '    FROM Member'
-      '        LEFT OUTER JOIN SwimClub'
-      '            ON Member.SwimClubID = SwimClub.SwimClubID'
-      '        LEFT OUTER JOIN Gender'
-      '            ON Member.GenderID = Gender.GenderID'
-      '    WHERE '
-      ' -- (Member.SwimClubID = @SwimClubID) AND '
-      ' (Member.MemberID = @MemberID)'
-      '    ORDER BY Member.LastName;')
+        'INNER JOIN Nominee ON Lane.NomineeID = Nominee.NomineeID -- AND ' +
+        'Nominee.MemberID = @MemberID'
+      'LEFT JOIN Member ON Nominee.MemberID = Member.MemberID '
+      'INNER JOIN Distance ON Event.DistanceID = Distance.DistanceID'
+      'INNER JOIN Stroke ON Event.StrokeID = Stroke.StrokeID'
+      ''
+      '--INNER JOIN Member ON Nominee.MemberID = Member.MemberID '
+      ''
+      
+        'WHERE (SwimClub.SwimClubID = @SwimClubID) AND Nominee.MemberID =' +
+        ' @MemberID AND RaceTime IS NOT NULL'
+      'ORDER BY SessionDT DESC, Distance.Laps ASC, StrokeStr ASC')
     Left = 72
     Top = 264
-    ParamData = <
-      item
-        Name = 'MEMBERID'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = 1
-      end
-      item
-        Name = 'SWIMCLUBID'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = 1
-      end>
   end
   object frxMailExport1: TfrxMailExport
     UseFileCache = True
@@ -874,7 +861,7 @@ object MemberDetail: TMemberDetail
         ' PB'
       #9',('
       #9#9'CONCAT ('
-      #9#9#9'distance.caption'
+      #9#9#9'distance.CalcCaption'
       #9#9#9','#39' '#39
       #9#9#9',stroke.caption'
       #9#9#9')'

@@ -584,7 +584,7 @@ object QTSessionReportA: TQTSessionReportA
       #9',Event.EventNum'
       #9',HeatIndividual.HeatNum'
       #9',Stroke.Caption AS cStroke'
-      #9',Distance.Caption AS cDistance'
+      #9',Distance.CalcCaption AS cDistance'
       #9',Entrant.Lane'
       #9',Entrant.IsDisqualified'
       #9',Entrant.IsScratched'

@@ -110,7 +110,7 @@ begin
   imgStroke.ImageIndex := AQuery.FieldByName('StrokeID').AsInteger;
   // event number + distance to swim using SwimClub.PoolType UnitType...
   lblEv.Caption := IntToStr(AQuery.FieldByName('EventNum').AsInteger) +
-    '.' + AQuery.FieldByName('DistanceStr').AsString;
+    '.' + AQuery.FieldByName('luDistance').AsString;
 
   // Adjust thin underline
   shape2.left := lblEv.Left - 2;

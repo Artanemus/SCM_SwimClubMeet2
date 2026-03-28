@@ -518,7 +518,7 @@ object CORE: TCORE
       ''
       'SELECT [SwimClubID]'
       '      ,[NickName]'
-      '      ,[Caption]'
+      '      ,[SwimClub].[Caption]'
       '      ,[Email]'
       '      ,[ContactNum]'
       '      ,[WebSite]'
@@ -530,13 +530,23 @@ object CORE: TCORE
       '      ,[StartOfSwimSeason]'
       '      ,[CreatedOn]'
       '      ,[LogoImg]'
-      '      ,[PoolTypeID]'
+      '      ,[SwimClub].[PoolTypeID]'
       '      ,[SwimClubTypeID]'
-      '      ,[IsArchived]'
-      '      ,[IsClubGroup]'
-      '      ,Cast([IsArchived] as integer) AS imgIndxArchived'
-      '      ,Cast([IsClubGroup] as integer) AS imgIndGroup'
+      '      ,[SwimClub].[IsArchived]'
+      '      ,[SwimClub].[IsClubGroup]'
+      
+        '      ,Cast([SwimClub].[IsArchived] as integer) AS imgIndxArchiv' +
+        'ed -- grid icon index'
+      
+        '      ,Cast([SwimClub].[IsClubGroup] as integer) AS imgIndGroup ' +
+        '-- grid icon index'
+      
+        '      ,[PoolType].[CaptionShort] -- manage, switch club HTML tex' +
+        't'
       '  FROM [SwimClubMeet2].[dbo].[SwimClub]'
+      
+        '  LEFT JOIN PoolType ON SwimClub.PoolTypeID = PoolType.PoolTypeI' +
+        'D'
       '  ORDER BY [SwimClubID];'
       ''
       ''
@@ -633,6 +643,11 @@ object CORE: TCORE
       FieldName = 'imgIndGroup'
       Origin = 'imgIndGroup'
       ReadOnly = True
+    end
+    object qrySwimClubCaptionShort: TWideStringField
+      FieldName = 'CaptionShort'
+      Origin = 'CaptionShort'
+      Size = 16
     end
   end
   object qryLane: TFDQuery

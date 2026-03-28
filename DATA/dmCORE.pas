@@ -185,6 +185,7 @@ type
     qryEventluDistanceEx: TStringField;
     qryEventluDistance: TStringField;
     qryEventABREV: TWideStringField;
+    qrySwimClubCaptionShort: TWideStringField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure dsSwimClubDataChange(Sender: TObject; Field: TField);

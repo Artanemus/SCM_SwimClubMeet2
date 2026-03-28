@@ -116,6 +116,7 @@ type
     procedure splitvEditClosed(Sender: TObject);
     procedure splitvEditClosing(Sender: TObject);
     procedure splitvEditOpening(Sender: TObject);
+    procedure splitvEditOpened(Sender: TObject);
   private
     fGridIsUpdating: Boolean;
     // if row=0 then Grid's focused display row number is used.
@@ -160,7 +161,7 @@ begin
   // bring UI to the correct display state.
   splitvEdit.UseAnimation := false;
   splitvEdit.Opened := false;
-  splitvEdit.UseAnimation := true;
+//  splitvEdit.UseAnimation := true;
   if pcntrlEdit.ActivePageIndex <> 0 then pcntrlEdit.ActivePageIndex := 0;
 
   // Assign current connection...
@@ -554,7 +555,7 @@ end;
 procedure TSwimClubManage.gSwimClubGetHTMLTemplate(Sender: TObject; ACol, ARow:
   Integer; var HTMLTemplate: string; Fields: TFields);
 var
-  htmlStr: string;
+  htmlStr: String;
 begin
   htmlStr := '';
   if (ARow >= gSwimClub.FixedRows) then
@@ -571,7 +572,7 @@ begin
         </FONT>
         <FONT size="9">
         <IND x="8">
-        <#NickName></FONT>
+        <#NickName> (<#CaptionShort>)</FONT>
         ''';
     end
     else
@@ -581,14 +582,11 @@ begin
         <IND x="4"><#Caption></FONT><BR>
         <FONT size="9">
         <IND x="8">
-        <#NickName></FONT>
+        <#NickName> (<#CaptionShort>)</FONT>
         ''';
     end;
     if not htmlStr.IsEmpty then
-    begin
       HTMLTemplate := htmlStr;
-    end;
-
   end;
 end;
 
@@ -649,11 +647,6 @@ end;
 
 procedure TSwimClubManage.splitvEditClosed(Sender: TObject);
 begin
-  actnEdit.Checked := false; // de-select button on the actnToolBar.
-end;
-
-procedure TSwimClubManage.splitvEditClosing(Sender: TObject);
-begin
   CORE.qrySwimClub.CheckBrowseMode;
   CORE.qrySwimClub.Refresh; // Updates qrySwimClub.imgIndxArchived value.
 
@@ -663,17 +656,23 @@ begin
       CGFrame.UpdateData_SwimClubGroup(CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger);
   end;
 
-
   if fGridIsUpdating then
   begin
     gSwimClub.EndUpdate; // Enable changes in TMS grid.
     fGridIsUpdating := false;
   end;
+
+  actnEdit.Checked := false; // de-select button on the actnToolBar.
 end;
 
-procedure TSwimClubManage.splitvEditOpening(Sender: TObject);
+procedure TSwimClubManage.splitvEditClosing(Sender: TObject);
+begin
+  // Occurs when the split view closes and the UseAnimation property is True
+end;
+
+procedure TSwimClubManage.splitvEditOpened(Sender: TObject);
 var
-PK: integer;
+  PK: integer;
 begin
   // prepare the IsArchived icon image.
   imgIndxArchive.ImageIndex :=
@@ -729,7 +728,11 @@ begin
     tsLogo.TabVisible := true;
   end;
   pcntrlEdit.ActivePageIndex := 0; // default to tabsheet 'tsMAIN'
+end;
 
+procedure TSwimClubManage.splitvEditOpening(Sender: TObject);
+begin
+  // Occurs when the split view opens and the UseAnimation property is True
 end;
 
 procedure TSwimClubManage.SyncGridToDB(AMethod: integer);

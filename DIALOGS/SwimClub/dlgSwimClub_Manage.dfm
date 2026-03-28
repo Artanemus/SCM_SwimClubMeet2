@@ -2711,7 +2711,7 @@ object SwimClubManage: TSwimClubManage
       DefaultRowHeight = 60
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 2
+      RowCount = 4
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -2887,12 +2887,13 @@ object SwimClubManage: TSwimClubManage
           Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
-          Header = ' '
+          Header = 'Logo'
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = clWindowText
           HeaderFont.Height = -16
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
+          HeaderAlignment = taCenter
           PictureField = True
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
@@ -2915,6 +2916,7 @@ object SwimClubManage: TSwimClubManage
           Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
+          Header = 'Description'
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = clWindowText
           HeaderFont.Height = -16
@@ -2931,7 +2933,7 @@ object SwimClubManage: TSwimClubManage
           PrintFont.Height = -16
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 340
+          Width = 360
         end
         item
           Borders = []
@@ -2953,6 +2955,7 @@ object SwimClubManage: TSwimClubManage
           HeaderFont.Height = -16
           HeaderFont.Name = 'Segoe UI'
           HeaderFont.Style = []
+          HeaderAlignment = taCenter
           Images = IMG.imglstSwimClubArchived
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
@@ -3161,12 +3164,14 @@ object SwimClubManage: TSwimClubManage
       ColWidths = (
         0
         64
-        340
+        360
         78
         78
         0)
       RowHeights = (
         30
+        60
+        60
         60)
     end
   end
@@ -3207,20 +3212,22 @@ object SwimClubManage: TSwimClubManage
     Top = 41
     Width = 630
     Height = 575
-    AnimationDelay = 30
+    AnimationDelay = 1
     AnimationStep = 100
     OpenedWidth = 630
     Placement = svpLeft
     TabOrder = 3
+    UseAnimation = False
     OnClosed = splitvEditClosed
     OnClosing = splitvEditClosing
+    OnOpened = splitvEditOpened
     OnOpening = splitvEditOpening
     object pcntrlEdit: TPageControl
       Left = 0
       Top = 0
       Width = 630
       Height = 575
-      ActivePage = tsMain
+      ActivePage = ts_LinkedClubs
       Align = alClient
       ParentShowHint = False
       ShowHint = True
@@ -3392,9 +3399,9 @@ object SwimClubManage: TSwimClubManage
           Height = 29
           Hint = 'Uses the locale short time format.'
           ParentCustomHint = False
-          Date = 43754.000000000000000000
+          Date = 45581.000000000000000000
           Format = ''
-          Time = 43754.000000000000000000
+          Time = 45581.000000000000000000
           DoubleBuffered = True
           Kind = dkDate
           ParentDoubleBuffered = False
@@ -3403,7 +3410,7 @@ object SwimClubManage: TSwimClubManage
           TabOrder = 3
           BorderStyle = bsSingle
           Ctl3D = True
-          DateTime = 43754.000000000000000000
+          DateTime = 45581.000000000000000000
           Version = '1.3.6.0'
           LabelFont.Charset = DEFAULT_CHARSET
           LabelFont.Color = clWindowText

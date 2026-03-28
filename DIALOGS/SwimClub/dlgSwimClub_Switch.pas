@@ -5,6 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, AdvUtil, Vcl.Grids,
+  Data.DB,
   AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
   dmSCM2, dmIMG, dmCORE, Vcl.StdCtrls, Vcl.ExtCtrls;
 
@@ -13,6 +14,8 @@ type
     gSwitchSwimClub: TDBAdvGrid;
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure gSwitchSwimClubDblClick(Sender: TObject);
+    procedure gSwitchSwimClubGetHTMLTemplate(Sender: TObject; ACol,
+      ARow: Integer; var HTMLTemplate: string; Fields: TFields);
   private
   public
   end;
@@ -37,6 +40,21 @@ end;
 procedure TSwimClubSwitch.gSwitchSwimClubDblClick(Sender: TObject);
 begin
   ModalResult := mrOk;
+end;
+
+procedure TSwimClubSwitch.gSwitchSwimClubGetHTMLTemplate(Sender: TObject; ACol,
+  ARow: Integer; var HTMLTemplate: string; Fields: TFields);
+var
+  htmlStr: string;
+begin
+  htmlStr := '''
+      <FONT size="12">
+      <IND x="4"><#Caption></FONT><BR>
+      <FONT size="9">
+      <IND x="8">
+      <#NickName> (<#CaptionShort>)</FONT>
+    ''';
+   HTMLTemplate := htmlStr
 end;
 
 end.

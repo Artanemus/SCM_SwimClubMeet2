@@ -73,6 +73,7 @@ type
     procedure OnEventTypeChange(AEventTypeID: Integer);
     procedure OnPreferenceChange();
     procedure UpdateUI(DoFullUpdate: boolean = false);
+
   end;
 
 implementation

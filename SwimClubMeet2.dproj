@@ -390,6 +390,10 @@
             <Form>PoolTypes</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="TOOLS\frmDisqualificationCodes.pas">
+            <Form>DisqualificationCodes</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

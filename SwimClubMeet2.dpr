@@ -79,7 +79,8 @@ uses
   rptQTNotQualified in 'REPORTS\QualifyTime\rptQTNotQualified.pas' {QTNotQualified: TDataModule},
   rptQTSessionReportA in 'REPORTS\QualifyTime\rptQTSessionReportA.pas' {QTSessionReportA: TDataModule},
   rptQTTableReportA in 'REPORTS\QualifyTime\rptQTTableReportA.pas' {QTTableReportA: TDataModule},
-  dlgPoolTypes in 'TOOLS\dlgPoolTypes.pas' {PoolTypes};
+  dlgPoolTypes in 'TOOLS\dlgPoolTypes.pas' {PoolTypes},
+  frmDisqualificationCodes in 'TOOLS\frmDisqualificationCodes.pas' {DisqualificationCodes};
 
 {$R *.res}
 

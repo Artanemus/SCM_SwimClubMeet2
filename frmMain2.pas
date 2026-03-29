@@ -115,6 +115,7 @@ type
     procedure Tools_PoolTypeExecute(Sender: TObject);
     procedure Tools_PreferencesExecute(Sender: TObject);
     procedure Tools_QualifyTimesExecute(Sender: TObject);
+    procedure Tools_DisqualifyCodesExecute(Sender: TObject);
 
   private
 
@@ -170,7 +171,7 @@ implementation
 uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
   frmManageMember, dlgSwimClub_Reports, frmMM_Stats, uEvent, dlgQualifyTimes,
-  dlgPoolTypes;
+  dlgPoolTypes, frmDisqualificationCodes;
 
 {
   // Event handler:
@@ -887,6 +888,21 @@ begin
     frNavEv.UpdateUI(true);
 //    frNominate.UpdateUI(true);
 
+end;
+
+procedure TMain2.Tools_DisqualifyCodesExecute(Sender: TObject);
+var
+  dlg: TDisqualificationCodes;
+begin
+  if not (Assigned(SCM2) and SCM2.scmConnection.Connected) then
+  begin
+    ShowMessage('Cannot open FINA disqualification codes: no database connection.');
+    Exit;
+  end;
+  dlg := TDisqualificationCodes.Create(self);
+  dlg.Connection := SCM2.scmConnection;
+  dlg.ShowModal;
+  dlg.Free;
 end;
 
 procedure TMain2.Tools_PoolTypeExecute(Sender: TObject);

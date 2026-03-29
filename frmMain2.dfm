@@ -3263,6 +3263,7 @@ object Main2: TMain2
     object Tools_DisqualifyCodes: TAction
       Category = 'Tools'
       Caption = 'Disqualification Codes...'
+      OnExecute = Tools_DisqualifyCodesExecute
     end
     object SCM_StatusBar: TAction
       Category = 'SCM2'

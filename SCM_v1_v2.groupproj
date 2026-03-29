@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup>
-        <ProjectGuid>{D4AF26D1-40C2-4C07-8168-0036C4CE3306}</ProjectGuid>
+        <ProjectGuid>{3F75F87F-5B44-40D4-802E-7F0F8AA78EAB}</ProjectGuid>
     </PropertyGroup>
     <ItemGroup>
         <Projects Include="SwimClubMeet2.dproj">

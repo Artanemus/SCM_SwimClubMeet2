@@ -1,7 +1,6 @@
 object DisqualificationCodes: TDisqualificationCodes
   Left = 0
   Top = 0
-  BorderStyle = bsDialog
   Caption = 'FINA Disqualification Codes'
   ClientHeight = 801
   ClientWidth = 838
@@ -14,6 +13,7 @@ object DisqualificationCodes: TDisqualificationCodes
   KeyPreview = True
   Position = poMainFormCenter
   OnClose = FormClose
+  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   TextHeight = 18
@@ -33,7 +33,6 @@ object DisqualificationCodes: TDisqualificationCodes
     FindFmVisible = False
     UseReportHints = True
     HideScrolls = False
-    ExplicitHeight = 829
   end
   object Panel1: TPanel
     Left = 0
@@ -43,7 +42,6 @@ object DisqualificationCodes: TDisqualificationCodes
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 829
     DesignSize = (
       838
       62)
@@ -67,15 +65,6 @@ object DisqualificationCodes: TDisqualificationCodes
       Default = True
       TabOrder = 1
       OnClick = btnCloseClick
-    end
-    object btnCheckDCodes: TButton
-      Left = 0
-      Top = 16
-      Width = 150
-      Height = 38
-      Caption = 'Check DCodes'
-      TabOrder = 2
-      OnClick = btnCheckDCodesClick
     end
   end
   object frxReport1: TfrxReport
@@ -126,7 +115,7 @@ object DisqualificationCodes: TDisqualificationCodes
         FillType = ftBrush
         Frame.Typ = []
         Height = 38.677180000000000000
-        Top = 18.897649990000000000
+        Top = 18.897650000000000000
         Width = 718.110700000000000000
         object Gradient2: TfrxGradientView
           AllowVectorExport = True
@@ -258,14 +247,15 @@ object DisqualificationCodes: TDisqualificationCodes
   end
   object qryDisqualifyCode: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'DisqualifyCodeID'
-    Connection = SCM.scmConnection
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
     SQL.Strings = (
-      'USE SwimClubMeet;'
+      'USE SwimClubMeet2;'
       ''
       'SELECT DisqualifyCodeID'
       ', DisqualifyCode.DisqualifyTypeID'

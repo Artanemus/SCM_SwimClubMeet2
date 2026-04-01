@@ -133,7 +133,9 @@ end;
 
 function ClubName: string;
 begin
-  result := CORE.dsSwimClub.DataSet.FieldByName('Caption').AsString;
+  result := '';
+  if Assigned(CORE) then
+    result := CORE.dsSwimClub.DataSet.FieldByName('Caption').AsString;
 end;
 
 function Delete_SwimClub(DoExclude: boolean): boolean;
@@ -247,31 +249,44 @@ var
   i: integer;
 begin
   result := true;
-  i := CORE.dsSwimClub.DataSet.FieldByName('LenOfPool').AsInteger;
-  if (i >= 50) then result := false;
+  if Assigned(CORE) and CORE.qrySwimClub.Active then
+  begin
+    i := CORE.dsSwimClub.DataSet.FieldByName('LenOfPool').AsInteger;
+    if (i >= 50) then result := false;
+  end;
 end;
 
 function Locate(SwimClubID: integer): boolean;
 var
   SearchOptions: TLocateOptions;
 begin
-  SearchOptions := [];
-  result := CORE.qrySwimClub.Locate('SwimClubID', SwimClubID,  SearchOptions);
+  result := false;
+  if Assigned(CORE)  and CORE.qrySwimClub.Active then
+  begin
+    SearchOptions := [];
+    result := CORE.qrySwimClub.Locate('SwimClubID', SwimClubID,  SearchOptions);
+  end;
 end;
 
 function PK(): integer;
 begin // NO CHECKS. quick and dirty - primary key result.
-  result := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+  result := 0;
+  if Assigned(CORE)  and CORE.qrySwimClub.Active then
+    result := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
 end;
 
 function NickName: string;
 begin
-  result := CORE.dsSwimClub.DataSet.FieldByName('NickName').AsString;
+  result := '';
+  if Assigned(CORE)  and CORE.qrySwimClub.Active then
+    result := CORE.dsSwimClub.DataSet.FieldByName('NickName').AsString;
 end;
 
 function NumberOfLanes: integer;
 begin // how many lanes in the swim club's pool?
-  result := CORE.dsSwimClub.DataSet.FieldByName('NumOfLanes').AsInteger;
+  result := 8;
+  if Assigned(CORE)  and CORE.qrySwimClub.Active then
+    result := CORE.dsSwimClub.DataSet.FieldByName('NumOfLanes').AsInteger;
 end;
 
 function SessionCount(): integer;

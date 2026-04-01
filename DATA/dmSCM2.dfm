@@ -3,19 +3,8 @@ object SCM2: TSCM2
   OnDestroy = DataModuleDestroy
   Height = 383
   Width = 414
-  object scmConnection: TFDConnection
-    Params.Strings = (
-      'ConnectionDef=MSSQL_SCM2')
-    ConnectedStoredUsage = [auDesignTime]
-    LoginPrompt = False
-    AfterConnect = scmConnectionAfterConnect
-    AfterDisconnect = scmConnectionAfterDisconnect
-    Left = 80
-    Top = 32
-  end
   object qrySCMSystem: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Connection = scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
@@ -23,6 +12,11 @@ object SCM2: TSCM2
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.SCMSystem'
     UpdateOptions.KeyFields = 'SCMSystemID'
     SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
+      'SET ANSI_NULLS ON;'
+      'SET QUOTED_IDENTIFIER ON;'
+      ''
       'SELECT '
       '  [SCMSystemID]'
       '      ,[DBVersion]'
@@ -41,7 +35,6 @@ object SCM2: TSCM2
     Top = 112
   end
   object procRenumberHeats: TFDStoredProc
-    Connection = scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Heat'
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
@@ -63,7 +56,6 @@ object SCM2: TSCM2
       end>
   end
   object procRenumberEvents: TFDStoredProc
-    Connection = scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Event'
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
@@ -86,7 +78,6 @@ object SCM2: TSCM2
       end>
   end
   object procRenumberLanes: TFDStoredProc
-    Connection = scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Lane'
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
@@ -106,5 +97,14 @@ object SCM2: TSCM2
         DataType = ftInteger
         ParamType = ptInput
       end>
+  end
+  object scmConnection: TFDConnection
+    Params.Strings = (
+      'ConnectionDef=MSSQL_SCM2')
+    ConnectedStoredUsage = [auDesignTime]
+    Connected = True
+    LoginPrompt = False
+    Left = 80
+    Top = 24
   end
 end

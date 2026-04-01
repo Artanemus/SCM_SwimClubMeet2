@@ -5,6 +5,19 @@ object FrameNavEv: TFrameNavEv
   Height = 98
   TabOrder = 0
   StyleElements = [seClient, seBorder]
+  object lblStatusMsg: TLabel
+    Left = 0
+    Top = 0
+    Width = 794
+    Height = 98
+    Align = alClient
+    Alignment = taCenter
+    Caption = 'No events found.'
+    Layout = tlCenter
+    Visible = False
+    ExplicitWidth = 91
+    ExplicitHeight = 15
+  end
   object rpnlBody: TRelativePanel
     Left = 0
     Top = 0

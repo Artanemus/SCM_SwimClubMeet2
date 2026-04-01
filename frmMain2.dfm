@@ -2829,7 +2829,7 @@ object Main2: TMain2
     Width = 1131
     Height = 682
     Margins.Top = 10
-    ActivePage = tabHeats
+    ActivePage = tabSession
     Align = alClient
     TabOrder = 3
     OnChange = PageControlChange
@@ -3115,7 +3115,6 @@ object Main2: TMain2
               end
               item
                 Action = Tools_Swimmercategory
-                Caption = '&Swimmer Categories...'
               end
               item
                 Action = Tools_Score
@@ -3222,7 +3221,8 @@ object Main2: TMain2
     end
     object Tools_Swimmercategory: TAction
       Category = 'Tools'
-      Caption = 'Swimmer Categories...'
+      Caption = 'Swim Categories...'
+      OnExecute = Tools_SwimmercategoryExecute
     end
     object Tools_Score: TAction
       Category = 'Tools'

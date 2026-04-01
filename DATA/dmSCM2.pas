@@ -19,12 +19,12 @@ uses
 
 type
   TSCM2 = class(TDataModule)
-    scmConnection: TFDConnection;
     qrySCMSystem: TFDQuery;
     FDGUIxErrorDialog: TFDGUIxErrorDialog;
     procRenumberHeats: TFDStoredProc;
     procRenumberEvents: TFDStoredProc;
     procRenumberLanes: TFDStoredProc;
+    scmConnection: TFDConnection;
     procedure DataModuleDestroy(Sender: TObject);
     procedure DataModuleCreate(Sender: TObject);
     procedure scmConnectionAfterConnect(Sender: TObject);
@@ -64,13 +64,13 @@ uses
 procedure TSCM2.DataModuleDestroy(Sender: TObject);
 begin
   // ASSERT connection state.
-  if scmConnection.Connected then scmConnection.Close;
+  // if scmConnection.Connected then scmConnection.Close;
 end;
 
 procedure TSCM2.DataModuleCreate(Sender: TObject);
 begin
   // ASSERT connection state.
-  if scmConnection.Connected then scmConnection.Close;
+  scmConnection.Connected := false;
 end;
 
 function TSCM2.GetDBVerInfo: string;

@@ -30,6 +30,7 @@ type
     scrBox: TScrollBox;
     spbtnNavLeft: TSpeedButton;
     spbtnNavRight: TSpeedButton;
+    lblStatusMsg: TLabel;
     procedure scrBoxResize(Sender: TObject);
     procedure spbtnNavLeftClick(Sender: TObject);
     procedure spbtnNavRightClick(Sender: TObject);
@@ -363,9 +364,7 @@ begin
   end;
 
   LockDrawing;
-
   try
-
     if CORE.qrySession.IsEmpty then
     begin
       Self.Visible := false; // hide everthing - move on.
@@ -376,18 +375,15 @@ begin
 
     if CORE.qryEvent.IsEmpty() then
     begin
-      // CNTRL panel is displayed but not the grid.
-      rpnlBody.Visible := true;
+      rpnlBody.Visible := false;
       scrBox.Visible := false;
-      spbtnNavLeft.Enabled := false;
-      spbtnNavRight.Enabled := false;
+      lblStatusMsg.Visible := true;
     end
     else
     begin
+      lblStatusMsg.Visible := false;
       rpnlBody.Visible := true;
       scrBox.Visible := true;
-      spbtnNavLeft.Enabled := true;
-      spbtnNavRight.Enabled := true;
       FillNavEvItems;
     end;
 

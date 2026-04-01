@@ -116,6 +116,7 @@ type
     procedure Tools_PreferencesExecute(Sender: TObject);
     procedure Tools_QualifyTimesExecute(Sender: TObject);
     procedure Tools_DisqualifyCodesExecute(Sender: TObject);
+    procedure Tools_SwimmercategoryExecute(Sender: TObject);
 
   private
 
@@ -171,7 +172,7 @@ implementation
 uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
   frmManageMember, dlgSwimClub_Reports, frmMM_Stats, uEvent, dlgQualifyTimes,
-  dlgPoolTypes, frmDisqualificationCodes;
+  dlgPoolTypes, frmDisqualificationCodes, dlgSwimCategory;
 
 {
   // Event handler:
@@ -191,6 +192,7 @@ procedure TMain2.File_ConnectionExecute(Sender: TObject);
 var
   dlg: TLogin;
   connectionState: boolean;
+  StoreCurrentSwimClubID: integer;
 begin
   // NOTE: strange title bar colouration.
   // IsWorkingOnConnection stops 'frame AfterScroll messages...'
@@ -207,24 +209,47 @@ begin
     frEvent.grid.BeginUpdate;
     frSession.grid.BeginUpdate;
     try
+
+      if connectionState then
+        // Store the SwimClubID for this session.
+        StoreCurrentSwimClubID := uSwimClub.PK;
+
       // dlg to connect to the SCM2 DB.
       // Executes AppyMaster to sync master/detail relationship.
       dlg := TLogin.Create(Self);
       dlg.ShowModal;
       dlg.Free;
-      // Is the connection state different.
+
+      // TEST CONNECTION STATES...
+      // If not equal - Switching states...
       if (connectionState <> SCM2.scmConnection.Connected)  then
       begin
+        // DISCONNECTED -> NOW CONNECTED...
         if SCM2.scmConnection.Connected then
         begin
+          // on boot-up and disconnect, the core is assigned
+          // but tables are not active
+          if Assigned(CORE) and CORE.IsActive <> true then
+            CORE.ActivateCore;
+          // Switch to the swimming club that was last used.
           if Assigned(Settings) and (Settings.LastSwimClubPK <> 0) then
           begin
             // try to restore the last swim club that the user was using.
             // generates scroll events in all tables...
             uSwimClub.Locate(Settings.LastSwimClubPK);
+            // Switch to Session tab.
+            PageControl.TabIndex := 0;
           end;
+        end
+        // CONNECTED -> NOW DISCONNECTED.
+        else
+        begin
+          if Assigned(Settings) then
+            // Store the swimming club that was last used.
+            Settings.LastSwimClubPK := StoreCurrentSwimClubID;
         end;
       end;
+
       // Always done after running TLogin - ASSERT UI values.
       if SCM2.scmConnection.Connected then
       begin
@@ -240,6 +265,12 @@ begin
       end
       else
       begin
+        // Make all tables in active..
+        // NOTE: on a disconnect: FireDAC automatically takes all tables off line...
+        // This ensures CORE.IsActive is false.
+        if Assigned(CORE) and CORE.IsActive <> false then
+            CORE.DeActivateCore;
+
         pnlTitleBar.CustomButtons[0].Enabled := false;
         pnlTitleBar.CustomButtons[1].Enabled := false;
         StatusBar.Panels[0].Text := 'NOT CONNECTED'; // psOwnerDraw
@@ -823,6 +854,7 @@ var
 begin
   CORE.IsWorkingOnConnection := true;
   try
+    LockDrawing;
     frNominate.grid.BeginUpdate;
     frFilterMember.grid.BeginUpdate;
     frEvent.grid.BeginUpdate;
@@ -840,13 +872,14 @@ begin
       end;
 
     finally
-
+      PageControl.TabIndex := 0;
       SetPanelAndFrame_Visibility;
 
       frSession.grid.EndUpdate;
       frEvent.grid.EndUpdate;
       frFilterMember.grid.EndUpdate;
       frNominate.grid.EndUpdate;
+      UnlockDrawing;
     end;
 
   finally
@@ -939,5 +972,25 @@ begin
   dlg.Free;
 end;
 
+
+procedure TMain2.Tools_SwimmercategoryExecute(Sender: TObject);
+var
+  dlg: TSwimCategory;
+begin
+  if not (Assigned(SCM2) and SCM2.scmConnection.Connected) then
+  begin
+    ShowMessage('Cannot open Swimming Club Categories: no database connection.');
+    Exit;
+  end;
+
+  dlg := TSwimCategory.Create(Self);
+  if Assigned(SCM2) then
+    dlg.Connection := SCM2.scmConnection;
+  dlg.ShowModal;
+  {TODO -oBSA -cGeneral : If qualification times change -
+    Nominee tabsheet may need a refresh...}
+  dlg.Free;
+
+end;
 
 end.

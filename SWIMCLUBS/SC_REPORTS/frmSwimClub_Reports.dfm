@@ -31,8 +31,8 @@ object SwimClub_Reports: TSwimClub_Reports
   object Label9: TLabel
     Left = 257
     Top = 293
-    Width = 449
-    Height = 42
+    Width = 281
+    Height = 21
     Caption = 'Prepare a compact list of club members. '
     WordWrap = True
   end

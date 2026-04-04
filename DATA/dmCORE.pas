@@ -396,16 +396,20 @@ begin
     qryNominate.Close;
     qryFiltermember.Close;
 
-    // Detailed tables.
-    qrySession.Close;
-    qryEvent.Close;
-    qryNominee.Close;
-    qryHeat.Close;
-    qryLane.Close;
-    qryWatchTime.Close;
+    // Detailed tables. order is important for quick shutdown.
     qrySplitTime.Close;
+    qryWatchTime.Close;
     qryTeam.Close;
     qryTeamLink.Close;
+    qryNominee.Close;
+    qryLane.Close;
+    qryHeat.Close;
+    qryEvent.Close;
+    qrySession.Close;
+    qryPoolType.Close;
+    // members
+    qryMember.Close;
+    qrymemberLink.Close;
 
     // lookup tables.
     tblStroke.Close;
@@ -420,13 +424,9 @@ begin
     tblPooltype.Close;
     qryDistanceEx.Close;
 
-    // members
-    qryMember.Close;
-    qrymemberLink.Close;
-
-    qryPoolType.Close;
     // Master.
     qrySwimClub.Close;
+
   finally
     FIsActive := false;
   end;

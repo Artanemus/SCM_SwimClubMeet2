@@ -3115,6 +3115,7 @@ object Main2: TMain2
               end
               item
                 Action = Tools_Swimmercategory
+                Caption = '&Swim Categories...'
               end
               item
                 Action = Tools_Score
@@ -3378,5 +3379,10 @@ object Main2: TMain2
       Caption = 'Pool Type...'
       OnExecute = Tools_PoolTypeExecute
     end
+  end
+  object FDGUIxWaitCursor1: TFDGUIxWaitCursor
+    Provider = 'Forms'
+    Left = 615
+    Top = 153
   end
 end

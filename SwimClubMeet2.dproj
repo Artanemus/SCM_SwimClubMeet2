@@ -240,10 +240,6 @@
             <Form>SwimClubManage</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="SWIMCLUBS\SC_DIALOGS\dlgSwimClub_Reports.pas">
-            <Form>SwimClub_Reports</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="SWIMCLUBS\SC_DIALOGS\dlgSwimClub_Switch.pas">
             <Form>SwimClubSwitch</Form>
             <FormType>dfm</FormType>
@@ -381,8 +377,12 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="TOOLS\T_DIALOGS\dlgSwimCategory.pas">
-            <Form>SwimCategory</Form>
+        <DCCReference Include="SWIMCLUBS\frmSwimClubType.pas">
+            <Form>SwimClubType</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="SWIMCLUBS\SC_REPORTS\frmSwimClub_Reports.pas">
+            <Form>SwimClub_Reports</Form>
             <FormType>dfm</FormType>
         </DCCReference>
         <BuildConfiguration Include="Base">

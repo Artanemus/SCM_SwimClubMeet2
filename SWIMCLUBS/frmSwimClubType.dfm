@@ -1,4 +1,4 @@
-object SwimCategory: TSwimCategory
+object SwimClubType: TSwimClubType
   Left = 0
   Top = 0
   BorderStyle = bsDialog
@@ -11,7 +11,12 @@ object SwimCategory: TSwimCategory
   Font.Height = -16
   Font.Name = 'Segoe UI'
   Font.Style = []
+  KeyPreview = True
   Position = poOwnerFormCenter
+  ShowHint = True
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
   TextHeight = 21
   object pnlHeader: TPanel
     Left = 0
@@ -21,15 +26,22 @@ object SwimCategory: TSwimCategory
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitLeft = 296
-    ExplicitTop = 304
-    ExplicitWidth = 185
     object lblHeader: TLabel
       Left = 0
-      Top = 14
-      Width = 202
+      Top = 0
+      Width = 831
       Height = 21
+      Align = alTop
+      Alignment = taCenter
       Caption = 'Swimming Club Categories ...'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+      Layout = tlCenter
+      ExplicitWidth = 222
     end
   end
   object pnlFooter: TPanel
@@ -40,30 +52,25 @@ object SwimCategory: TSwimCategory
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 897
     object Nav: TDBNavigator
       Left = 0
       Top = 0
       Width = 756
       Height = 50
-      DataSource = dsSwimCategories
+      DataSource = dsSwimClubType
       Align = alClient
       TabOrder = 0
-      ExplicitTop = 32
-      ExplicitWidth = 822
-      ExplicitHeight = 39
     end
-    object btnExit: TButton
+    object btnClose: TButton
       Left = 756
       Top = 0
       Width = 75
       Height = 50
+      Hint = 'Save changes and exit.'
       Align = alRight
       Caption = 'Close'
       TabOrder = 1
-      ExplicitLeft = 408
-      ExplicitTop = 24
-      ExplicitHeight = 25
+      OnClick = btnCloseClick
     end
   end
   object pnlBody: TPanel
@@ -74,10 +81,6 @@ object SwimCategory: TSwimCategory
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitLeft = 296
-    ExplicitTop = 304
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object Grid: TDBAdvGrid
       Left = 0
       Top = 0
@@ -85,16 +88,24 @@ object SwimCategory: TSwimCategory
       Height = 396
       Cursor = crDefault
       Align = alClient
+      Color = clWhite
       ColCount = 7
       DefaultRowHeight = 32
       DrawingStyle = gdsClassic
       FixedColor = clWhite
       RowCount = 11
       FixedRows = 1
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      Options = [goVertLine, goHorzLine, goRangeSelect, goEditing, goFixedRowDefAlign]
+      ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
-      GridLineColor = 13948116
-      GridFixedLineColor = 11250603
+      GridLineColor = 15987699
+      GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
@@ -108,6 +119,7 @@ object SwimCategory: TSwimCategory
       ControlLook.FixedGradientTo = clWhite
       ControlLook.FixedGradientMirrorFrom = clWhite
       ControlLook.FixedGradientMirrorTo = clWhite
+      ControlLook.FixedGradientHoverFrom = clGray
       ControlLook.FixedGradientHoverTo = clWhite
       ControlLook.FixedGradientHoverMirrorFrom = clWhite
       ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -153,7 +165,7 @@ object SwimCategory: TSwimCategory
       FixedColWidth = 20
       FixedRowHeight = 32
       FixedFont.Charset = DEFAULT_CHARSET
-      FixedFont.Color = 3881787
+      FixedFont.Color = clBlack
       FixedFont.Height = -12
       FixedFont.Name = 'Tahoma'
       FixedFont.Style = [fsBold]
@@ -345,11 +357,13 @@ object SwimCategory: TSwimCategory
           Width = 136
         end
         item
+          Alignment = taCenter
           Borders = []
           BorderPen.Color = clSilver
           ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
+          CheckBoxField = True
+          CheckFalse = 'False'
+          CheckTrue = 'True'
           Color = clWindow
           FieldName = 'IsArchived'
           Font.Charset = DEFAULT_CHARSET
@@ -372,9 +386,11 @@ object SwimCategory: TSwimCategory
           Width = 75
         end
         item
+          Alignment = taCenter
           Borders = []
           BorderPen.Color = clSilver
           ButtonHeight = 18
+          CheckBoxField = True
           CheckFalse = 'N'
           CheckTrue = 'Y'
           Color = clWindow
@@ -398,7 +414,7 @@ object SwimCategory: TSwimCategory
           PrintFont.Style = []
           Width = 75
         end>
-      DataSource = dsSwimCategories
+      DataSource = dsSwimClubType
       InvalidPicture.Data = {
         055449636F6E0000010001002020200000000000A81000001600000028000000
         2000000040000000010020000000000000100000000000000000000000000000
@@ -536,8 +552,6 @@ object SwimCategory: TSwimCategory
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
-      ExplicitWidth = 757
-      ExplicitHeight = 527
       ColWidths = (
         20
         38
@@ -546,13 +560,27 @@ object SwimCategory: TSwimCategory
         136
         75
         75)
+      RowHeights = (
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32
+        32)
     end
   end
-  object qrySwimCategories: TFDQuery
+  object qrySwimClubType: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     Active = True
+    IndexFieldNames = 'SwimClubTypeID'
     Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.SwimClubType'
+    UpdateOptions.KeyFields = 'SwimClubTypeID'
     SQL.Strings = (
       'USE [SwimClubMeet2]'
       ';'
@@ -569,46 +597,44 @@ object SwimCategory: TSwimCategory
       ''
       '')
     Left = 296
-    Top = 48
-    object qrySwimCategoriesSwimClubTypeID: TFDAutoIncField
+    object qrySwimClubTypeSwimClubTypeID: TFDAutoIncField
       DisplayLabel = 'ID'
       FieldName = 'SwimClubTypeID'
       Origin = 'SwimClubTypeID'
       ProviderFlags = [pfInWhere, pfInKey]
     end
-    object qrySwimCategoriesCaption: TWideStringField
+    object qrySwimClubTypeCaption: TWideStringField
       DisplayLabel = 'Description'
       FieldName = 'Caption'
       Origin = 'Caption'
       Size = 128
     end
-    object qrySwimCategoriesShortCaption: TWideStringField
+    object qrySwimClubTypeShortCaption: TWideStringField
       DisplayLabel = 'Short Caption'
       FieldName = 'ShortCaption'
       Origin = 'ShortCaption'
       Size = 32
     end
-    object qrySwimCategoriesABREV: TWideStringField
+    object qrySwimClubTypeABREV: TWideStringField
       FieldName = 'ABREV'
       Origin = 'ABREV'
       Size = 12
     end
-    object qrySwimCategoriesIsArchived: TBooleanField
+    object qrySwimClubTypeIsArchived: TBooleanField
       DisplayLabel = 'Archived'
       FieldName = 'IsArchived'
       Origin = 'IsArchived'
       Required = True
     end
-    object qrySwimCategoriesIsActive: TBooleanField
+    object qrySwimClubTypeIsActive: TBooleanField
       DisplayLabel = 'Active'
       FieldName = 'IsActive'
       Origin = 'IsActive'
       Required = True
     end
   end
-  object dsSwimCategories: TDataSource
-    DataSet = qrySwimCategories
-    Left = 216
-    Top = 48
+  object dsSwimClubType: TDataSource
+    DataSet = qrySwimClubType
+    Left = 400
   end
 end

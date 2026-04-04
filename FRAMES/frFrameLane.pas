@@ -81,7 +81,7 @@ implementation
 {$R *.dfm}
 
 uses
-  uSession, uEvent, uHeat, uLane, uNominee,
+  uSwimClub, uSession, uEvent, uHeat, uLane, uNominee,
   uPickerStage, dlgLaneColumnPicker, ASGEdit;
 
 procedure TFrameLane.actnLn_GenericUpdate(Sender: TObject);
@@ -487,6 +487,8 @@ procedure TFrameLane.Loaded;
 var
   item: TCollectionItem;
   fld: TField;
+  SQL: string;
+  aSwimClubTypeID: integer;
 begin
   inherited;
 //  Grid.PageMode := true;
@@ -497,10 +499,44 @@ begin
   item := Grid.ColumnByFieldName['luDQ'];
   TDBGridColumnItem(item).AllowBlank := true;
 
-  // Store a snap-shot of design-time field/column state.
+  // Store a snap-shot of design-time field/column states.
   Grid.SetColumnOrder;
-  // store state into string
+  // store the designed column states into local variable
   fColumnStatesString := Grid.ColumnStatesToString;
+
+  {
+    '13#20,42,220,90,90,90,39,39,36,100,32,34,34#0,1,2,3,4,5,6,7,8,9,10,11,12#1,1,1,1,1,1,1,1,1,1,1,1,1'
+
+    SYNTAX READS:
+    13 total number of columns
+    # -> column width...
+    # -> column display order...
+    # -> column visibility...
+
+    Note: The serialized string format is intended for internal use by TMS
+    components via the Save/Load methods and should not typically be edited
+    manually
+
+  }
+
+
+  {
+  // doesn't work as no connection at this point....
+  // write the designed column states to SwimClubType table.
+  if Assigned(SCM2) and SCM2.scmConnection.Connected then
+  begin
+    aSwimClubTypeID := CORE.qrySwimClub.FieldByName('SwimClubTypeID').AsInteger;
+    if aSwimClubTypeID <> 0 then
+    begin
+    SQL := '''
+      UPDATE SwimClubMeet2.dbo.SwimClubType
+      SET ColStateStr_Lane = :ID1
+      WHERE SwimClubTypeID = :ID2;
+      ''';
+    SCM2.scmConnection.ExecSQLScalar(SQL, [fColumnStatesString, aSwimClubTypeID]);
+    end
+  end;
+  }
 
   // snapshot of design-time columnwidths used in TDBAdvGrid.
   SetLength(DefGridColWidths,CORE.qryLane.Fields.Count);

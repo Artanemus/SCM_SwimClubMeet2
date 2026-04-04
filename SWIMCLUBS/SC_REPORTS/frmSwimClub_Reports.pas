@@ -1,4 +1,4 @@
-unit dlgSwimClub_Reports;
+unit frmSwimClub_Reports;
 
 interface
 

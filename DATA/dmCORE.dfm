@@ -2033,7 +2033,7 @@ object CORE: TCORE
       '  WHERE D.IsArchived <> 1'
       '  ORDER BY P.PoolTypeID, D.Laps ASC;'
       '')
-    Left = 552
+    Left = 712
     Top = 64
     object qryDistanceExPoolTypeID: TFDAutoIncField
       FieldName = 'PoolTypeID'
@@ -2059,7 +2059,7 @@ object CORE: TCORE
   end
   object dsDistanceEx: TDataSource
     DataSet = qryDistanceEx
-    Left = 632
+    Left = 792
     Top = 64
   end
 end

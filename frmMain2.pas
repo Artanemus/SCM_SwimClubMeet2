@@ -34,7 +34,8 @@ uses
   frFrameNavEv,
   frFrameNavEvItem,
   frFrameHeat,
-  frFrameLane, Vcl.Menus;
+  frFrameLane, Vcl.Menus, Vcl.WinXCtrls, FireDAC.UI.Intf, FireDAC.VCLUI.Wait,
+  FireDAC.Stan.Intf, FireDAC.Comp.UI;
 
 type
   TMain2 = class(TForm)
@@ -90,6 +91,7 @@ type
     Member_MetaData: TAction;
     Member_Reports: TAction;
     Tools_PoolType: TAction;
+    FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -171,8 +173,8 @@ implementation
 
 uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
-  frmManageMember, dlgSwimClub_Reports, frmMM_Stats, uEvent, dlgQualifyTimes,
-  dlgPoolTypes, frmDisqualificationCodes, dlgSwimCategory;
+  frmManageMember, frmSwimClub_Reports, frmMM_Stats, uEvent, dlgQualifyTimes,
+  dlgPoolTypes, frmDisqualificationCodes, frmSwimClubType;
 
 {
   // Event handler:
@@ -212,7 +214,9 @@ begin
 
       if connectionState then
         // Store the SwimClubID for this session.
-        StoreCurrentSwimClubID := uSwimClub.PK;
+        StoreCurrentSwimClubID := uSwimClub.PK
+      else
+        StoreCurrentSwimClubID := 0;
 
       // dlg to connect to the SCM2 DB.
       // Executes AppyMaster to sync master/detail relationship.
@@ -307,7 +311,21 @@ procedure TMain2.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   // ASSERT: close connection on database
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
+  begin
+
+    StatusBar.Panels.BeginUpdate;
+    StatusBar.Panels[0].Text := 'SHUTTING DOWN';
+    StatusBar.Repaint;
+    StatusBar.Panels.EndUpdate;
+
+    if Assigned(CORE) and CORE.IsActive then
+    begin
+      if Assigned(Settings) then // Store the swimming club that was last used.
+        Settings.LastSwimClubPK := uSwimClub.PK;
+      CORE.DeActivateCore; // shutdown core.
+    end;
     SCM2.scmConnection.Close;
+  end;
 end;
 
 procedure TMain2.FormCreate(Sender: TObject);
@@ -761,7 +779,11 @@ begin
         StatusBar.Canvas.Font.Color := clWebTomato
       else
         StatusBar.Canvas.Font.Color := FontColor;
+      if Panel.Text.contains('SHUT') then
+        StatusBar.Canvas.Font.Color := clWebGreenYellow;
+
       StatusBar.Canvas.TextOut(Rect.Left + 4, Rect.Top + 6, Panel.Text );
+
     end;
     1: // NOMINEE COUNT.
     begin
@@ -975,7 +997,7 @@ end;
 
 procedure TMain2.Tools_SwimmercategoryExecute(Sender: TObject);
 var
-  dlg: TSwimCategory;
+  dlg: TSwimClubType;
 begin
   if not (Assigned(SCM2) and SCM2.scmConnection.Connected) then
   begin
@@ -983,7 +1005,7 @@ begin
     Exit;
   end;
 
-  dlg := TSwimCategory.Create(Self);
+  dlg := TSwimClubType.Create(Self);
   if Assigned(SCM2) then
     dlg.Connection := SCM2.scmConnection;
   dlg.ShowModal;

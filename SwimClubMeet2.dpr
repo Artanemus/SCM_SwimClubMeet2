@@ -42,7 +42,6 @@ uses
   dlgscmDatePicker in 'PICKERS\dlgscmDatePicker.pas' {scmDatePicker},
   frFrameClubGroup in 'SWIMCLUBS\SC_FRAMES\frFrameClubGroup.pas' {FrameClubGroup: TFrame},
   dlgSwimClub_Manage in 'SWIMCLUBS\SC_DIALOGS\dlgSwimClub_Manage.pas' {SwimClubManage},
-  dlgSwimClub_Reports in 'SWIMCLUBS\SC_DIALOGS\dlgSwimClub_Reports.pas' {SwimClub_Reports},
   dlgSwimClub_Switch in 'SWIMCLUBS\SC_DIALOGS\dlgSwimClub_Switch.pas' {SwimClubSwitch},
   dlgSwimClubGroup_View in 'SWIMCLUBS\SC_DIALOGS\dlgSwimClubGroup_View.pas' {SwimClubGroup_View},
   dlgSwimClubPicker in 'SWIMCLUBS\SC_PICKERS\dlgSwimClubPicker.pas' {SwimClubPicker},
@@ -81,7 +80,8 @@ uses
   rptMM_CheckData in 'MEMBERS\MM_REPORTS\rptMM_CheckData.pas' {MemberCheckData: TDataModule},
   rptMM_Detail in 'MEMBERS\MM_REPORTS\rptMM_Detail.pas' {MemberDetail: TDataModule},
   rptMM_History in 'MEMBERS\MM_REPORTS\rptMM_History.pas' {MemberHistory: TDataModule},
-  dlgSwimCategory in 'TOOLS\T_DIALOGS\dlgSwimCategory.pas' {SwimCategory};
+  frmSwimClubType in 'SWIMCLUBS\frmSwimClubType.pas' {SwimClubType},
+  frmSwimClub_Reports in 'SWIMCLUBS\SC_REPORTS\frmSwimClub_Reports.pas' {SwimClub_Reports};
 
 {$R *.res}
 

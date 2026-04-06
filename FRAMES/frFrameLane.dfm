@@ -2,7 +2,7 @@ object FrameLane: TFrameLane
   Left = 0
   Top = 0
   Width = 1101
-  Height = 480
+  Height = 526
   ParentShowHint = False
   ShowHint = True
   TabOrder = 0
@@ -10,7 +10,7 @@ object FrameLane: TFrameLane
     Left = 0
     Top = 0
     Width = 58
-    Height = 480
+    Height = 526
     ControlCollection = <
       item
         Control = spbtnMoveUp
@@ -18,8 +18,9 @@ object FrameLane: TFrameLane
         AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
         AlignRightWithPanel = False
-        AlignTopWithPanel = True
+        AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
+        Below = ShapeLnBar2
       end
       item
         Control = spbtnMoveDown
@@ -100,16 +101,45 @@ object FrameLane: TFrameLane
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
         Below = spbtnRefreshStats
+      end
+      item
+        Control = spbtnGridView
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = True
+        AlignVerticalCenterWithPanel = False
+      end
+      item
+        Control = spbtnHeatPicker
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnGridView
+      end
+      item
+        Control = ShapeLnBar2
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnHeatPicker
       end>
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
     DesignSize = (
       58
-      480)
+      526)
     object spbtnMoveUp: TSpeedButton
       Left = 5
-      Top = 0
+      Top = 112
       Width = 48
       Height = 48
       Anchors = []
@@ -123,7 +153,7 @@ object FrameLane: TFrameLane
     object spbtnMoveDown: TSpeedButton
       Tag = 1
       Left = 5
-      Top = 48
+      Top = 160
       Width = 48
       Height = 48
       Anchors = []
@@ -137,7 +167,7 @@ object FrameLane: TFrameLane
     object spbtnSwitch: TSpeedButton
       Tag = 9
       Left = 5
-      Top = 96
+      Top = 208
       Width = 48
       Height = 48
       Anchors = []
@@ -151,7 +181,7 @@ object FrameLane: TFrameLane
     object spbtnDelete: TSpeedButton
       Tag = 4
       Left = 5
-      Top = 144
+      Top = 256
       Width = 48
       Height = 48
       Anchors = []
@@ -165,7 +195,7 @@ object FrameLane: TFrameLane
     object spbtnDeleteForever: TSpeedButton
       Tag = 5
       Left = 5
-      Top = 192
+      Top = 304
       Width = 48
       Height = 48
       Anchors = []
@@ -179,7 +209,7 @@ object FrameLane: TFrameLane
     object ShapeLnBar1: TShape
       AlignWithMargins = True
       Left = 2
-      Top = 246
+      Top = 358
       Width = 54
       Height = 4
       Margins.Left = 0
@@ -193,7 +223,7 @@ object FrameLane: TFrameLane
     object spbtnReport: TSpeedButton
       Tag = 8
       Left = 5
-      Top = 256
+      Top = 368
       Width = 48
       Height = 48
       Anchors = []
@@ -207,7 +237,7 @@ object FrameLane: TFrameLane
     object spbtnRefreshStats: TSpeedButton
       Tag = 8
       Left = 5
-      Top = 304
+      Top = 416
       Width = 48
       Height = 48
       Action = actnLn_RefreshStat
@@ -221,22 +251,68 @@ object FrameLane: TFrameLane
     object spbtnSplitTime: TSpeedButton
       Tag = 8
       Left = 5
-      Top = 352
+      Top = 464
       Width = 48
       Height = 48
       Anchors = []
       Caption = 'Split-Times'
+      ImageIndex = 13
+      ImageName = 'time'
       Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
       Spacing = 5
+    end
+    object spbtnGridView: TSpeedButton
+      Tag = 1
+      Left = 2
+      Top = 0
+      Width = 54
+      Height = 48
+      Action = actnLn_GridView
+      ImageIndex = 12
+      ImageName = 'grid-off'
+      Images = IMG.imglstLaneCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 5
+    end
+    object spbtnHeatPicker: TSpeedButton
+      Tag = 8
+      Left = 5
+      Top = 48
+      Width = 48
+      Height = 48
+      Action = actnLn_HeatPicker
+      Anchors = []
+      ImageIndex = 14
+      ImageName = 'EvBlue'
+      Images = IMG.imglstLaneCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object ShapeLnBar2: TShape
+      AlignWithMargins = True
+      Left = 2
+      Top = 102
+      Width = 54
+      Height = 4
+      Margins.Left = 0
+      Margins.Top = 6
+      Margins.Right = 0
+      Margins.Bottom = 6
+      Brush.Color = 8421631
     end
   end
   object pnlBody: TPanel
     Left = 58
     Top = 0
     Width = 1043
-    Height = 480
+    Height = 526
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Use NEW to start building events.'
@@ -245,7 +321,7 @@ object FrameLane: TFrameLane
       Left = 0
       Top = 0
       Width = 1043
-      Height = 480
+      Height = 526
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
@@ -253,7 +329,7 @@ object FrameLane: TFrameLane
         Left = 0
         Top = 0
         Width = 1043
-        Height = 480
+        Height = 526
         Cursor = crDefault
         Align = alClient
         Color = clWhite
@@ -1212,6 +1288,15 @@ object FrameLane: TFrameLane
       Caption = 'Split-Times'
       ImageIndex = 13
       ImageName = 'stopwatch'
+    end
+    object actnLn_GridView: TAction
+      Category = 'Lanes'
+      Caption = 'Grid View'
+      OnExecute = actnLn_GridViewExecute
+    end
+    object actnLn_HeatPicker: TAction
+      Category = 'Lanes'
+      Caption = 'Heat Picker'
     end
   end
   object pumenuLane: TPopupMenu

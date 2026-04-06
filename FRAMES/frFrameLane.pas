@@ -17,6 +17,10 @@ uses
   dmIMG, dmSCM2, dmCORE, uDefines, uSettings, Vcl.StdCtrls;
 
 type
+
+  TFrameNotifyLane_GridViewChange = procedure(Sender: TObject; GridState:
+      Boolean) of object;
+
   TFrameLane = class(TFrame)
     actnlist: TActionList;
     actnLn_Delete: TAction;
@@ -42,6 +46,11 @@ type
     spbtnRefreshStats: TSpeedButton;
     actnLn_SplitTime: TAction;
     spbtnSplitTime: TSpeedButton;
+    spbtnGridView: TSpeedButton;
+    spbtnHeatPicker: TSpeedButton;
+    ShapeLnBar2: TShape;
+    actnLn_GridView: TAction;
+    actnLn_HeatPicker: TAction;
     procedure actnLn_GenericUpdate(Sender: TObject);
     procedure actnLn_RefreshStatExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
@@ -60,10 +69,15 @@ type
     procedure gridGetEditText(Sender: TObject; ACol, ARow: LongInt; var Value:
         string);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
+    procedure actnLn_GridViewExecute(Sender: TObject);
   private
     DefGridColWidths: Array of integer;
-    fColumnStatesString: String;
+    fColumnStatesStringCollapsed: String;
+    fColumnStatesStringExpanded: String;
+    FOnGridViewChange: TFrameNotifyLane_GridViewChange;
 
+    procedure SetGridView_ColVisibility;
+    procedure SetGridView_IconIndex;
     procedure SetDefGridSchemaState();
 
   protected
@@ -73,6 +87,10 @@ type
     procedure OnEventTypeChange(AEventTypeID: Integer);
     procedure OnPreferenceChange();
     procedure UpdateUI(DoFullUpdate: boolean = false);
+
+    // Notify main form of a grid view change (expand/collapse)...
+    property OnGridViewChanged: TFrameNotifyLane_GridViewChange
+      read FOnGridViewChange write FOnGridViewChange;
 
   end;
 
@@ -97,6 +115,51 @@ begin
       DoEnable := true;
   end;
   TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TFrameLane.actnLn_GridViewExecute(Sender: TObject);
+var
+  LaneAction: TAction;
+  item: TRelativePanelControlItem;
+  indx: integer;
+begin
+  LaneAction := TAction(Sender);
+  LaneAction.Checked := not LaneAction.Checked; // TOGGLE
+  grid.BeginUpdate;
+  CORE.qryLane.DisableControls;
+  try
+    SetGridView_IconIndex; // uses actnEv_GridView.Checked state.
+    SetGridView_ColVisibility; // uses actnEv_GridView.Checked state.
+    if LaneAction.Checked then
+    begin
+      actnLn_HeatPicker.Visible := true;
+      indx := rpnlCntrl.ControlCollection.IndexOf(ShapeLnBar2);
+      if indx <> -1 then
+      begin
+        item := rpnlCntrl.ControlCollection.Items[indx];
+        item.Below := spbtnHeatPicker;
+      end;
+    end
+    else
+    begin
+      actnLn_HeatPicker.Visible := false;
+      indx := rpnlCntrl.ControlCollection.IndexOf(ShapeLnBar2);
+      if indx <> -1 then
+      begin
+        item := rpnlCntrl.ControlCollection.Items[indx];
+        item.Below := spbtnGridView;
+      end;
+    end;
+
+  finally
+    begin
+      CORE.qryLane.EnableControls;
+      grid.EndUpdate;
+    end;
+  end;
+
+  if Assigned(FOnGridViewChange) then
+    FOnGridViewChange(self, LaneAction.Checked);
 end;
 
 procedure TFrameLane.actnLn_RefreshStatExecute(Sender: TObject);
@@ -177,8 +240,11 @@ begin
   begin
     // This method deals with sorted columns and correctly draws ...
     item := G.Columns[ACol];
-    if item.FieldName = 'LaneID' then  // Hamburger
+
+    // Hamburger
+    if (item.FieldName = 'LaneID') and actnLn_GridView.Checked then
       IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 6);
+
     if item.FieldName = 'GenderABREV' then  // male-female
       IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 3);
     if item.FieldName = 'EventTypeID' then  // Event Type IND-R
@@ -237,7 +303,8 @@ var
   item: TDBGridColumnItem;
   mr: TModalResult;
 begin
-  if (ARow = 0) and (ACol = 0) then
+  // Must be in EXPANDED column mode to alter grid columns, withs, index, etc.
+  if (ARow = 0) and (ACol = 0) and actnLn_GridView.Checked then
   begin
     LockDrawing;
     Grid.BeginUpdate;
@@ -252,7 +319,7 @@ begin
         begin
           Grid.ResetColumnOrder;
           // Restore layout. Displays ALL fields - as per design time...
-          Grid.StringToColumnStates(fColumnStatesString);
+          Grid.StringToColumnStates(fColumnStatesStringCollapsed);
           // Conform to SCM v1 schema ...
           SetDefGridSchemaState();
         end
@@ -286,6 +353,7 @@ begin
     finally
       Grid.EndUpdate;
       UnLockDrawing;
+      fColumnStatesStringExpanded := Grid.ColumnStatesToString;
     end;
   end;
 end;
@@ -475,7 +543,7 @@ begin
   // Set ... Simplified or FINA disqualification codes.
   OnPreferenceChange;
 
-  // ASSERT additional grid column visibility (via Column Width)
+  // Set grid visiblity for EXPANDED grid columns .
   Grid.ColumnByFieldName['ClubRecord'].Width := 0;
   Grid.ColumnByFieldName['GenderABREV'].Width := 0;
   Grid.ColumnByFieldName['AGE'].Width := 0;
@@ -483,29 +551,82 @@ begin
 
 end;
 
+procedure TFrameLane.SetGridView_ColVisibility;
+begin
+  // EXPANDED or COLLAPSED grid views...
+  if actnLn_GridView.Checked then
+  begin  // EXPANDED...
+    Grid.ResetColumnOrder;
+    Grid.StringToColumnStates(fColumnStatesStringExpanded);
+  end
+  else
+  begin  // COLLAPSED...  (DEFAULT VIEW)
+    Grid.ResetColumnOrder;
+    Grid.StringToColumnStates(fColumnStatesStringCollapsed);
+    { ALTERNATIVE - stable ...}
+    // SetDefGridSchemaState();
+  end;
+end;
+
+procedure TFrameLane.SetGridView_IconIndex;
+begin
+  // logic saves on unessesary repaints.
+  if (actnLn_GridView.Checked) then // Expanded view - icon has no slash.
+  begin
+    if (spbtnGridView.ImageIndex <> 11) then
+      spbtnGridView.ImageIndex := 11;
+  end
+  else // Collapsed view - icon contains a slash.
+  begin
+    if (spbtnGridView.ImageIndex <> 12) then
+       spbtnGridView.ImageIndex := 12;
+  end;
+end;
+
 procedure TFrameLane.Loaded;
 var
   item: TCollectionItem;
   fld: TField;
-  SQL: string;
-  aSwimClubTypeID: integer;
+  indx: integer;
 begin
   inherited;
-//  Grid.PageMode := true;
-//  Grid.Options := Grid.Options + [goEditing];
-//  Grid.BtnEdit.ButtonCaption := '...';
-//  Grid.BtnEdit.EditorEnabled := false;
+  // While all columns are visible at design time...
+  // take a snapshot of the columnwidths. These will be used when the user
+  // adds columns to the grid view. (wit: default widths).
+  SetLength(DefGridColWidths,CORE.qryLane.Fields.Count);
+  for fld in CORE.qryLane.Fields do
+  begin
+    item := Grid.ColumnByFieldName[fld.FieldName];
+    if Assigned(item) then
+      DefGridColWidths[fld.Index] := TDBGridColumnItem(item).Width
+    else DefGridColWidths[fld.Index] := -1;
+  end;
 
+  // Let the user have the option to assign 'none' (or empty)
+  // in the combobox drop-down for disqualification codes.
   item := Grid.ColumnByFieldName['luDQ'];
   TDBGridColumnItem(item).AllowBlank := true;
 
-  // Store a snap-shot of design-time field/column states.
+  actnLn_GridView.Checked := false; // Collapsed - indicates fixed defult gridview.
+  actnLn_HeatPicker.Visible := false; // hide. Button only visible when grid view is Expanded.
+  spbtnGridView.ImageIndex := 12; // a button icon that displays a grid with slash.
+  // ASSERT: position all control icons to stack after btnGridView.
+  indx := rpnlCntrl.ControlCollection.IndexOf(ShapeLnBar2);
+  if indx <> -1 then
+    rpnlCntrl.ControlCollection.Items[indx].Below := spbtnGridView;
+
+  // most of the UI work is done here. (Shared procedure).
+  SetDefGridSchemaState();
+  // Store a snap-shot of the default design-time field/column states.
   Grid.SetColumnOrder;
   // store the designed column states into local variable
-  fColumnStatesString := Grid.ColumnStatesToString;
-
-  {
-    '13#20,42,220,90,90,90,39,39,36,100,32,34,34#0,1,2,3,4,5,6,7,8,9,10,11,12#1,1,1,1,1,1,1,1,1,1,1,1,1'
+  fColumnStatesStringCollapsed := Grid.ColumnStatesToString;
+  // User's custom column layout that is displayed in expanded gridview.
+  if Assigned(Settings) then
+    fColumnStatesStringExpanded := Settings.Ln_ColumnStatesStringExpanded;
+{
+    // DEFAULT SCM column schema....
+    '13#20,42,220,90,90,90,39,39,0,0,0,0,0#0,1,2,3,4,5,6,7,8,9,10,11,12#1,1,1,1,1,1,1,1,1,1,1,1,1'
 
     SYNTAX READS:
     13 total number of columns
@@ -517,40 +638,7 @@ begin
     components via the Save/Load methods and should not typically be edited
     manually
 
-  }
-
-
-  {
-  // doesn't work as no connection at this point....
-  // write the designed column states to SwimClubType table.
-  if Assigned(SCM2) and SCM2.scmConnection.Connected then
-  begin
-    aSwimClubTypeID := CORE.qrySwimClub.FieldByName('SwimClubTypeID').AsInteger;
-    if aSwimClubTypeID <> 0 then
-    begin
-    SQL := '''
-      UPDATE SwimClubMeet2.dbo.SwimClubType
-      SET ColStateStr_Lane = :ID1
-      WHERE SwimClubTypeID = :ID2;
-      ''';
-    SCM2.scmConnection.ExecSQLScalar(SQL, [fColumnStatesString, aSwimClubTypeID]);
-    end
-  end;
-  }
-
-  // snapshot of design-time columnwidths used in TDBAdvGrid.
-  SetLength(DefGridColWidths,CORE.qryLane.Fields.Count);
-  for fld in CORE.qryLane.Fields do
-  begin
-    item := Grid.ColumnByFieldName[fld.FieldName];
-    if Assigned(item) then
-      DefGridColWidths[fld.Index] := TDBGridColumnItem(item).Width
-    else DefGridColWidths[fld.Index] := -1;
-  end;
-  // most of the UI work is done here. (Shared procedure).
-  SetDefGridSchemaState();
-
-
+}
 
   OnEventTypeChange(CORE.qryLane.FieldByName('EventTypeID').AsInteger);
 end;
@@ -634,6 +722,7 @@ begin
     if CORE.qryLane.IsEmpty then
     begin
       Self.Visible := false;
+      actnLn_GridView.Checked := false; // DEFAULT: Collapsed grid view.
       exit;
     end
     else

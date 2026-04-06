@@ -410,6 +410,7 @@ begin
   frLane.Align := alClient;
   // Adjust display of columns based on Settings.EnableDQcodes state.
   frLane.OnPreferenceChange;
+  frLane.OnGridViewChanged := HandleOnGridViewChange; // assign event handle.
   pnlLane.Caption := '';
   frLane.LinkActionsToMenu(TActionClientItem(actnManager.ActionBars[0].Items[5]));
 
@@ -513,11 +514,22 @@ end;
 
 procedure TMain2.HandleOnGridViewChange(Sender: TObject; GridState: Boolean);
 begin
-  // if Event grid is expanded...
-  if GridState = true then
-    pnlSession.Visible := false
-  else
-    pnlSession.Visible := true;
+  if Sender.ClassNameIs('TFrameLane') then
+  begin
+    // if Event grid is expanded...
+    if GridState = true then
+      pnlHeat.Visible := false
+    else
+      pnlHeat.Visible := true;
+  end;
+  if Sender.ClassNameIs('TFrameEvent') then
+  begin
+    // if Event grid is expanded...
+    if GridState = true then
+      pnlSession.Visible := false
+    else
+      pnlSession.Visible := true;
+  end;
 end;
 
 procedure TMain2.Members_ManageExecute(Sender: TObject);

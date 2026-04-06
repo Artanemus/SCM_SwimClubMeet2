@@ -61,6 +61,9 @@ type
 
     EnableDQcodes: boolean; // switch to FINA disqualification codes.
 
+    Ln_ColumnStatesStringExpanded: string; // Line expanded grid.column state.
+    Ev_ColumnStatesStringExpanded: string; // Event expanded grid.column state.
+
 
     constructor Create(); overload;
     constructor Create(AutoLoad: boolean); overload;
@@ -136,6 +139,9 @@ begin
   ab_GroupByIndx := 0; // 0=none, 1=Entrant's Age, 2-Swimming category, 3=Division.
   ab_SeedMethodIndx := 0; // 0=SCM2 Method 1=Circle Seeding
   ab_SeedDepth := 3; // Default.
+
+  Ln_ColumnStatesStringExpanded := '';
+  Ev_ColumnStatesStringExpanded := '';
 
   EnableDQcodes := false; // use simple DQ method. (not FINA Codes).
 

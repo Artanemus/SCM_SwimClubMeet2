@@ -3267,8 +3267,8 @@ object SwimClubManage: TSwimClubManage
           Caption = 'Number of lanes*'
         end
         object lblPoolLength: TLabel
-          Left = 154
-          Top = 428
+          Left = 186
+          Top = 425
           Width = 100
           Height = 21
           Alignment = taRightJustify
@@ -3318,7 +3318,7 @@ object SwimClubManage: TSwimClubManage
           OnClick = imgIndxArchiveClick
         end
         object lblClubType: TLabel
-          Left = 66
+          Left = 63
           Top = 320
           Width = 68
           Height = 21
@@ -3334,15 +3334,16 @@ object SwimClubManage: TSwimClubManage
           Caption = 'Pool Type*'
         end
         object lblUnitType: TLabel
-          Left = 383
-          Top = 425
-          Width = 157
+          Left = 139
+          Top = 452
+          Width = 147
           Height = 21
-          Caption = '(Unit of Measurement)'
+          Alignment = taRightJustify
+          Caption = 'Unit of Measurement'
           Enabled = False
         end
         object lblCourseType: TLabel
-          Left = 169
+          Left = 201
           Top = 398
           Width = 85
           Height = 21
@@ -3351,12 +3352,42 @@ object SwimClubManage: TSwimClubManage
           Enabled = False
         end
         object DBTextCourseType: TDBText
-          Left = 264
+          Left = 298
           Top = 398
           Width = 65
           Height = 17
           DataField = 'ABREV'
           DataSource = CORE.dsPoolType
+          Enabled = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object DBTextLengthOfPool: TDBText
+          Left = 298
+          Top = 425
+          Width = 65
+          Height = 21
+          DataField = 'LengthOfPool'
+          DataSource = CORE.dsPoolType
+          Enabled = False
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = [fsBold]
+          ParentFont = False
+        end
+        object DBTextUnitType: TDBText
+          Left = 298
+          Top = 452
+          Width = 65
+          Height = 17
+          DataField = 'ABREV'
+          DataSource = luUnitType
           Enabled = False
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -3422,25 +3453,27 @@ object SwimClubManage: TSwimClubManage
         end
         object DBLookupComboBox1: TDBLookupComboBox
           Left = 140
-          Top = 320
+          Top = 318
           Width = 338
           Height = 29
           DataField = 'SwimClubTypeID'
           DataSource = CORE.dsSwimClub
+          KeyField = 'SwimClubTypeID'
+          ListField = 'Caption'
           ListSource = CORE.luSwimClubType
           NullValueKey = 32776
-          TabOrder = 4
+          TabOrder = 5
         end
         object dbcboxArchive: TDBCheckBox
-          Left = 77
+          Left = 74
           Top = 228
-          Width = 80
+          Width = 83
           Height = 17
           Alignment = taLeftJustify
           Caption = 'Archive*'
           DataField = 'IsArchived'
           DataSource = CORE.dsSwimClub
-          TabOrder = 5
+          TabOrder = 4
         end
         object DBLookupComboBox2: TDBLookupComboBox
           Left = 140
@@ -3467,11 +3500,13 @@ object SwimClubManage: TSwimClubManage
           ImageName = 'clear'
           Images = IMG.imglstMiscButtons
           TabOrder = 7
+          TabStop = False
+          OnClick = btnClearClubTypeClick
         end
-        object btnClearQualifyType: TButton
+        object btnClearPoolType: TButton
           Tag = 1
           Left = 493
-          Top = 355
+          Top = 357
           Width = 92
           Height = 30
           Hint = 'Clear the house name. (Alt+BkSp)'
@@ -3480,27 +3515,39 @@ object SwimClubManage: TSwimClubManage
           ImageName = 'clear'
           Images = IMG.imglstMiscButtons
           TabOrder = 8
+          TabStop = False
+          Visible = False
+          OnClick = btnClearPoolTypeClick
         end
-        object dbeLengthOfPool: TDBEdit
-          Left = 260
-          Top = 425
-          Width = 45
-          Height = 29
-          DataField = 'LengthOfPool'
-          DataSource = CORE.luPoolType
+        object btnClearDOB: TButton
+          Tag = 1
+          Left = 312
+          Top = 181
+          Width = 92
+          Height = 32
+          Hint = 'Clear the house name.'
+          Caption = 'Clear'
+          ImageIndex = 0
+          ImageName = 'clear'
+          Images = IMG.imglstMiscButtons
           TabOrder = 9
+          TabStop = False
+          Visible = False
         end
-        object dblucmbUnitType: TDBLookupComboBox
-          Left = 321
-          Top = 425
-          Width = 56
-          Height = 29
-          DataField = 'UnitTypeID'
-          DataSource = CORE.dsPoolType
-          KeyField = 'UnitTypeID'
-          ListField = 'ABREV'
-          ListSource = luUnitType
+        object btnDOBPicker: TButton
+          Tag = 1
+          Left = 410
+          Top = 181
+          Width = 127
+          Height = 32
+          Hint = 'Clear the house name.'
+          Caption = 'Date Picker'
+          ImageIndex = 1
+          ImageName = 'pick-date'
+          Images = IMG.imglstMiscButtons
           TabOrder = 10
+          TabStop = False
+          Visible = False
         end
       end
       object tsOptions2: TTabSheet
@@ -3548,7 +3595,7 @@ object SwimClubManage: TSwimClubManage
           DataSource = CORE.dsSwimClub
           ParentShowHint = False
           ShowHint = True
-          TabOrder = 0
+          TabOrder = 1
           TextHint = 'MB 018 018 018'
         end
         object DBWebSite: TDBEdit
@@ -3558,7 +3605,7 @@ object SwimClubManage: TSwimClubManage
           Height = 29
           DataField = 'WebSite'
           DataSource = CORE.dsSwimClub
-          TabOrder = 1
+          TabOrder = 3
         end
         object DBEmail: TDBEdit
           Left = 123
@@ -3574,7 +3621,7 @@ object SwimClubManage: TSwimClubManage
           Top = 15
           Width = 486
           Height = 89
-          TabOrder = 3
+          TabOrder = 0
         end
       end
       object tsLogo: TTabSheet
@@ -3598,7 +3645,8 @@ object SwimClubManage: TSwimClubManage
           DataSource = CORE.dsSwimClub
           Proportional = True
           Stretch = True
-          TabOrder = 0
+          TabOrder = 3
+          TabStop = False
         end
         object btnLoadClubLogo: TButton
           Left = 344
@@ -3606,7 +3654,7 @@ object SwimClubManage: TSwimClubManage
           Width = 101
           Height = 33
           Caption = 'Load'
-          TabOrder = 1
+          TabOrder = 0
           OnClick = btnLoadClubLogoClick
         end
         object btnSaveClubLogo: TButton
@@ -3615,7 +3663,7 @@ object SwimClubManage: TSwimClubManage
           Width = 101
           Height = 33
           Caption = 'Save'
-          TabOrder = 2
+          TabOrder = 1
           OnClick = btnSaveClubLogoClick
         end
         object btnClearClubLogo: TButton
@@ -3624,7 +3672,7 @@ object SwimClubManage: TSwimClubManage
           Width = 101
           Height = 33
           Caption = 'Clear'
-          TabOrder = 3
+          TabOrder = 2
           OnClick = btnClearClubLogoClick
         end
       end
@@ -3764,8 +3812,8 @@ object SwimClubManage: TSwimClubManage
         ActionBar = actnToolBar
       end>
     Images = IMG.imglstSwimClubCntrl
-    Left = 48
-    Top = 280
+    Left = 440
+    Top = 336
     StyleName = 'Platform Default'
     object actnEdit: TAction
       AutoCheck = True
@@ -3821,6 +3869,7 @@ object SwimClubManage: TSwimClubManage
       ImageName = 'cancel-circle'
       ShortCut = 27
       OnExecute = actnCloseExecute
+      OnUpdate = actnGenericUpdate
     end
   end
   object SaveLogoDlg: TSavePictureDialog

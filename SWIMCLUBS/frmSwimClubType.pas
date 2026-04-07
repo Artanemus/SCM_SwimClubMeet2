@@ -22,11 +22,9 @@ type
     qrySwimClubTypeIsActive: TBooleanField;
     dsSwimClubType: TDataSource;
     Grid: TDBAdvGrid;
-    pnlHeader: TPanel;
     pnlFooter: TPanel;
     pnlBody: TPanel;
     Nav: TDBNavigator;
-    lblHeader: TLabel;
     btnClose: TButton;
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);

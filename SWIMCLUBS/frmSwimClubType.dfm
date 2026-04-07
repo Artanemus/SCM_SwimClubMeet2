@@ -2,7 +2,7 @@ object SwimClubType: TSwimClubType
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'SwimClub Types.'
+  Caption = 'Swimming Club Types.'
   ClientHeight = 487
   ClientWidth = 831
   Color = clBtnFace
@@ -18,32 +18,6 @@ object SwimClubType: TSwimClubType
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   TextHeight = 21
-  object pnlHeader: TPanel
-    Left = 0
-    Top = 0
-    Width = 831
-    Height = 41
-    Align = alTop
-    BevelOuter = bvNone
-    TabOrder = 0
-    object lblHeader: TLabel
-      Left = 0
-      Top = 0
-      Width = 831
-      Height = 21
-      Align = alTop
-      Alignment = taCenter
-      Caption = 'Swimming Club Categories ...'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentFont = False
-      Layout = tlCenter
-      ExplicitWidth = 222
-    end
-  end
   object pnlFooter: TPanel
     Left = 0
     Top = 437
@@ -51,21 +25,22 @@ object SwimClubType: TSwimClubType
     Height = 50
     Align = alBottom
     BevelOuter = bvNone
-    TabOrder = 1
+    TabOrder = 0
     object Nav: TDBNavigator
       Left = 0
       Top = 0
-      Width = 756
+      Width = 750
       Height = 50
       DataSource = dsSwimClubType
       Align = alClient
       TabOrder = 0
     end
     object btnClose: TButton
-      Left = 756
-      Top = 0
+      AlignWithMargins = True
+      Left = 753
+      Top = 3
       Width = 75
-      Height = 50
+      Height = 44
       Hint = 'Save changes and exit.'
       Align = alRight
       Caption = 'Close'
@@ -75,17 +50,18 @@ object SwimClubType: TSwimClubType
   end
   object pnlBody: TPanel
     Left = 0
-    Top = 41
+    Top = 0
     Width = 831
-    Height = 396
+    Height = 437
     Align = alClient
     BevelOuter = bvNone
-    TabOrder = 2
+    Padding.Top = 10
+    TabOrder = 1
     object Grid: TDBAdvGrid
       Left = 0
-      Top = 0
+      Top = 10
       Width = 831
-      Height = 396
+      Height = 427
       Cursor = crDefault
       Align = alClient
       Color = clWhite
@@ -596,7 +572,8 @@ object SwimClubType: TSwimClubType
       ';'
       ''
       '')
-    Left = 296
+    Left = 288
+    Top = 40
     object qrySwimClubTypeSwimClubTypeID: TFDAutoIncField
       DisplayLabel = 'ID'
       FieldName = 'SwimClubTypeID'
@@ -635,6 +612,7 @@ object SwimClubType: TSwimClubType
   end
   object dsSwimClubType: TDataSource
     DataSet = qrySwimClubType
-    Left = 400
+    Left = 424
+    Top = 64
   end
 end

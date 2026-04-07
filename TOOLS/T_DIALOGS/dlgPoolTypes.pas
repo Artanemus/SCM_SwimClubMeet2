@@ -14,19 +14,13 @@ uses
   DBAdvGrid, Vcl.ExtCtrls, Vcl.WinXPanels, Vcl.Buttons, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
-  Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+  Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.DBCtrls, Vcl.StdCtrls;
 
 type
   TPoolTypes = class(TForm)
-    spnlCtrl: TStackPanel;
     pnlBody: TPanel;
     Grid: TDBAdvGrid;
-    spbtnInsert: TSpeedButton;
-    spbtnDelete: TSpeedButton;
-    spbtnArchive: TSpeedButton;
     tblPoolType: TFDTable;
-    spbtnCancel: TSpeedButton;
-    spbtnPost: TSpeedButton;
     tblUnitType: TFDTable;
     tblPoolTypePoolTypeID: TFDAutoIncField;
     tblPoolTypeCaption: TWideStringField;
@@ -39,6 +33,9 @@ type
     dsPoolType: TDataSource;
     dsUnitType: TDataSource;
     tblPoolTypeluUnitTypeID: TStringField;
+    pnlFooter: TPanel;
+    BtnClose: TButton;
+    navGrid: TDBNavigator;
     procedure FormCreate(Sender: TObject);
     procedure GridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);

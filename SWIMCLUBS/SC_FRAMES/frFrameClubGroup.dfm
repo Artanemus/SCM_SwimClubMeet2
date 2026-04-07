@@ -52,7 +52,7 @@ object FrameClubGroup: TFrameClubGroup
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
-    TabOrder = 1
+    TabOrder = 2
     object lbl1: TLabel
       Left = 56
       Top = 6
@@ -107,7 +107,7 @@ object FrameClubGroup: TFrameClubGroup
     BevelOuter = bvNone
     Padding.Left = 10
     Padding.Right = 10
-    TabOrder = 2
+    TabOrder = 1
     DesignSize = (
       612
       457)
@@ -132,7 +132,7 @@ object FrameClubGroup: TFrameClubGroup
       ItemHeight = 21
       MultiSelect = True
       Sorted = True
-      TabOrder = 1
+      TabOrder = 2
     end
     object spnlBtns: TStackPanel
       Left = 280
@@ -155,7 +155,7 @@ object FrameClubGroup: TFrameClubGroup
           Control = spbtnMoveL2
         end>
       HorizontalPositioning = sphpCenter
-      TabOrder = 2
+      TabOrder = 1
       object spbtnMoveR: TSpeedButton
         Left = 2
         Top = 0

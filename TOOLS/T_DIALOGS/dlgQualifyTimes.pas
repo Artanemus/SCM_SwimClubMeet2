@@ -6,14 +6,21 @@ uses
   Winapi.Windows, Winapi.Messages,
   System.SysUtils, System.Variants, System.Classes,
 
-
   Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, FireDAC.Stan.Intf,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  Vcl.StdCtrls, Vcl.ExtCtrls,
+  Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, Vcl.DBCtrls, Vcl.Buttons,
+
+  Data.DB,
+
+  FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
-  FireDAC.Comp.Client, FireDAC.Comp.DataSet, Vcl.StdCtrls, Vcl.ExtCtrls,
-  Vcl.Grids, Vcl.DBGrids, Vcl.ComCtrls, dmSCM2, AdvUtil, AdvObj, BaseGrid,
-  AdvGrid, DBAdvGrid, Vcl.DBCtrls, Vcl.Buttons;
+  FireDAC.Comp.Client, FireDAC.Comp.DataSet,
+
+  AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
+
+  dmSCM2, dmCORE;
 
 type
   TTabPoolType = class
@@ -44,7 +51,7 @@ type
     btnDistStrokeReport: TButton;
     btnTableReport: TButton;
     btnNotQualifyReport: TButton;
-    Panel2: TPanel;
+    pnlFooter: TPanel;
     BtnClose: TButton;
     qryQualify: TFDQuery;
     qryQualifyTrialDistID: TIntegerField;
@@ -107,6 +114,7 @@ type
     procedure tabCntrlChange(Sender: TObject);
   private
     FPoolTypeID: integer;
+    function LocatePoolTypeTab(PoolTypeID: integer): integer;
   public
     property PoolTypeID: integer read FPoolTypeID write FPoolTypeID;
   end;
@@ -327,6 +335,23 @@ begin
       SCM2.FDGUIxErrorDialog.Execute(E);
     end;
   end;
+
+  // Auto assign FPoolTypeID based on the current selected Swimming Club.
+  if Assigned(CORE) and CORE.IsActive then
+  begin
+    var indx: integer;
+    if not CORE.qrySwimClub.IsEmpty then
+    begin
+      APoolTypeID := CORE.qrySwimClub.FieldByName('PoolTypeID').AsInteger;
+      if (APoolTypeID <> 0) then
+      begin
+        indx := LocatePoolTypeTab(APoolTypeID);
+        if (indx <> -1) then
+          FPoolTypeID := APoolTypeID; // ShowForm uses FPoolTypeID cue to TAB.
+      end;
+    end;
+  end;
+
 end;
 
 procedure TQualifyTimes.FormDestroy(Sender: TObject);
@@ -347,12 +372,15 @@ begin
 end;
 
 procedure TQualifyTimes.FormShow(Sender: TObject);
+var
+  indx: integer;
 begin
   if FPoolTypeID <> 0 then
   begin
-    if FPoolTypeID in [0..(tabCntrl.Tabs.Count-1)] then
+    indx := LocatePoolTypeTab(FPoolTypeID);
+    if (indx <> -1) then
     begin
-      tabCntrl.TabIndex := FPoolTypeID;
+      tabCntrl.TabIndex := indx;
       tabCntrlChange(tabCntrl);
     end;
   end;
@@ -406,6 +434,24 @@ begin
     dt := G.DataSource.DataSet.FieldByName('TrialTime').AsDateTime;
     DecodeTime(dt, Hour, Min, Sec, MSec);
     Value := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
+  end;
+end;
+
+function TQualifyTimes.LocatePoolTypeTab(PoolTypeID: integer): integer;
+var
+  I: Integer;
+  tabData: TTabPoolType;
+begin
+  result := -1;
+  // iterate over the tabs - examine object param PoolTypeID
+  for I := 0 to (tabCntrl.Tabs.Count - 1) do
+  begin
+    tabData := TTabPoolType(tabCntrl.Tabs.Objects[tabCntrl.TabIndex]);
+    if Assigned(tabData) then
+    begin
+      if (tabdata.PoolTypeID = PoolTypeID) then
+        result := I;
+    end;
   end;
 end;
 

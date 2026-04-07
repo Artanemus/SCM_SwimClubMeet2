@@ -1,109 +1,35 @@
 object PoolTypes: TPoolTypes
   Left = 0
   Top = 0
+  BorderStyle = bsDialog
   Caption = 'Configure Pool Types...'
   ClientHeight = 435
-  ClientWidth = 920
+  ClientWidth = 707
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -12
+  Font.Height = -16
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Position = poOwnerFormCenter
   OnCreate = FormCreate
-  TextHeight = 15
-  object spnlCtrl: TStackPanel
+  TextHeight = 21
+  object pnlBody: TPanel
     Left = 0
     Top = 0
-    Width = 58
-    Height = 435
-    Align = alLeft
-    BevelOuter = bvNone
-    ControlCollection = <
-      item
-        Control = spbtnInsert
-        HorizontalPositioning = sphpFill
-        VerticalPositioning = spvpTop
-      end
-      item
-        Control = spbtnDelete
-        HorizontalPositioning = sphpFill
-        VerticalPositioning = spvpTop
-      end
-      item
-        Control = spbtnArchive
-        HorizontalPositioning = sphpFill
-        VerticalPositioning = spvpTop
-      end
-      item
-        Control = spbtnPost
-      end
-      item
-        Control = spbtnCancel
-        HorizontalPositioning = sphpFill
-        VerticalPositioning = spvpTop
-      end>
-    Spacing = 6
-    TabOrder = 0
-    object spbtnInsert: TSpeedButton
-      Left = 0
-      Top = 0
-      Width = 58
-      Height = 57
-      ImageIndex = 7
-      ImageName = 'plus-box'
-      Images = IMG.imglstMiscButtons
-    end
-    object spbtnDelete: TSpeedButton
-      Left = 0
-      Top = 63
-      Width = 58
-      Height = 57
-      ImageIndex = 6
-      ImageName = 'minus-box'
-      Images = IMG.imglstMiscButtons
-    end
-    object spbtnArchive: TSpeedButton
-      Left = 0
-      Top = 126
-      Width = 58
-      Height = 57
-      ImageIndex = 18
-      ImageName = 'archive'
-      Images = IMG.imglstMiscButtons
-    end
-    object spbtnPost: TSpeedButton
-      Left = 0
-      Top = 189
-      Width = 58
-      Height = 57
-      ImageIndex = 2
-      ImageName = 'post-circle2'
-      Images = IMG.imglstMiscButtons
-    end
-    object spbtnCancel: TSpeedButton
-      Left = 0
-      Top = 252
-      Width = 58
-      Height = 57
-      ImageIndex = 3
-      ImageName = 'cancel-circle2'
-      Images = IMG.imglstMiscButtons
-    end
-  end
-  object pnlBody: TPanel
-    Left = 58
-    Top = 0
-    Width = 862
-    Height = 435
+    Width = 707
+    Height = 385
     Align = alClient
     BevelOuter = bvNone
-    TabOrder = 1
+    Padding.Top = 10
+    TabOrder = 0
+    ExplicitWidth = 920
+    ExplicitHeight = 435
     object Grid: TDBAdvGrid
       Left = 0
-      Top = 0
-      Width = 862
-      Height = 435
+      Top = 10
+      Width = 707
+      Height = 375
       Cursor = crDefault
       Align = alClient
       Color = clWhite
@@ -111,7 +37,7 @@ object PoolTypes: TPoolTypes
       DefaultRowHeight = 32
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 6
+      RowCount = 5
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -324,7 +250,7 @@ object PoolTypes: TPoolTypes
           PrintFont.Height = -12
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
-          Width = 231
+          Width = 249
         end
         item
           Borders = []
@@ -631,11 +557,13 @@ object PoolTypes: TPoolTypes
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
-      ExplicitLeft = 6
+      ExplicitTop = 0
+      ExplicitWidth = 920
+      ExplicitHeight = 435
       ColWidths = (
         20
         0
-        231
+        249
         108
         64
         37
@@ -647,8 +575,41 @@ object PoolTypes: TPoolTypes
         32
         32
         32
-        32
         32)
+    end
+  end
+  object pnlFooter: TPanel
+    Left = 0
+    Top = 385
+    Width = 707
+    Height = 50
+    Align = alBottom
+    BevelOuter = bvNone
+    TabOrder = 1
+    ExplicitWidth = 725
+    object BtnClose: TButton
+      AlignWithMargins = True
+      Left = 627
+      Top = 3
+      Width = 77
+      Height = 44
+      Align = alRight
+      Caption = 'Close'
+      TabOrder = 0
+      ExplicitLeft = 645
+    end
+    object navGrid: TDBNavigator
+      Left = 0
+      Top = 0
+      Width = 624
+      Height = 50
+      Hint = 'Navigator for Qualify Grid'
+      DataSource = dsPoolType
+      Align = alClient
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 1
+      ExplicitWidth = 642
     end
   end
   object tblPoolType: TFDTable

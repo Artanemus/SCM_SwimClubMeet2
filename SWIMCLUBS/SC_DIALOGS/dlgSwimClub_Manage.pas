@@ -80,17 +80,19 @@ type
     dbcboxArchive: TDBCheckBox;
     DBLookupComboBox2: TDBLookupComboBox;
     btnClearClubType: TButton;
-    btnClearQualifyType: TButton;
+    btnClearPoolType: TButton;
     tsOptions2: TTabSheet;
     DBMemoAddress: TDBMemo;
     lblAddress: TLabel;
-    dbeLengthOfPool: TDBEdit;
     lblUnitType: TLabel;
-    dblucmbUnitType: TDBLookupComboBox;
     lblCourseType: TLabel;
     tblUnitType: TFDTable;
     luUnitType: TDataSource;
     DBTextCourseType: TDBText;
+    DBTextLengthOfPool: TDBText;
+    DBTextUnitType: TDBText;
+    btnClearDOB: TButton;
+    btnDOBPicker: TButton;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure actnArchiveExecute(Sender: TObject);
@@ -117,6 +119,8 @@ type
     procedure splitvEditClosing(Sender: TObject);
     procedure splitvEditOpening(Sender: TObject);
     procedure splitvEditOpened(Sender: TObject);
+    procedure btnClearClubTypeClick(Sender: TObject);
+    procedure btnClearPoolTypeClick(Sender: TObject);
   private
     fGridIsUpdating: Boolean;
     // if row=0 then Grid's focused display row number is used.
@@ -358,7 +362,7 @@ var
   cc: TList<integer>; // List of ChildClubIDs.
 begin
   // TRAP: no grid rows have been selected...
-  if gSwimClub.RowSelectCount = 0 then exit;
+  //  if gSwimClub.RowSelectCount = 0 then exit;
   { NOTE: when we create the new CLUB GROUP, TMS will place
     'focus' and 'select' row.
     To avoid selection issues, collect the ChildClub's IDs first.
@@ -444,7 +448,7 @@ begin
   // Is the table begin modified? (used by buttons, new, delete, archive)
   if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
   begin
-    if (gSwimClub.RowSelectCount > 1) then
+//    if (gSwimClub.RowSelectCount > 1) then
       DoEnable := true;
   end;
   TAction(Sender).Enabled := DoEnable;
@@ -459,6 +463,27 @@ begin
     CORE.qrySwimClub.FieldByName('LogoImg').Clear;
     CORE.qrySwimClub.FieldByName('LogoType').Clear;
   end;
+end;
+
+procedure TSwimClubManage.btnClearClubTypeClick(Sender: TObject);
+begin
+  if not CORE.IsActive then exit;
+  if CORE.qrySwimClub.IsEmpty then exit;
+  CORE.qrySwimClub.CheckBrowseMode;
+  CORE.qrySwimClub.Edit;
+  CORE.qrySwimClub.FieldByName('SwimClubTypeID').Clear;
+  CORE.qrySwimClub.Post;
+end;
+
+procedure TSwimClubManage.btnClearPoolTypeClick(Sender: TObject);
+begin
+  if not CORE.IsActive then exit;
+  if CORE.qrySwimClub.IsEmpty then exit;
+  CORE.qrySwimClub.CheckBrowseMode;
+  CORE.qrySwimClub.Edit;
+  CORE.qrySwimClub.FieldByName('PoolTypeID').Clear;
+  CORE.qrySwimClub.Post;
+
 end;
 
 procedure TSwimClubManage.btnLoadClubLogoClick(Sender: TObject);
@@ -510,9 +535,20 @@ begin
   // and this event never gets called ... (TForm.KeyPreview = true.)
   if Key = VK_ESCAPE then
   begin
-    Key := 0;
-    CORE.qrySwimClub.CheckBrowseMode; // ASSERT STATE...
-    ModalResult := mrCancel;
+    if not splitvEdit.Opened then
+    begin
+      Key := 0;
+      CORE.qrySwimClub.CheckBrowseMode; // ASSERT STATE...
+      ModalResult := mrCancel;
+    end
+    else
+    begin
+      begin
+        CORE.qrySwimClub.CheckBrowseMode; // ASSERT STATE...
+        splitvEdit.Close;
+      end;
+      Key := 0;
+    end;
   end;
 end;
 
@@ -690,7 +726,7 @@ begin
   // UI init...
   if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
   begin
-    lblClubName.Caption := 'Group Name';
+    lblClubName.Caption := 'Group Name*';
     lblNickname.Caption := 'Description';
     lblEmail.Visible := false;
     lblWebSite.Visible := false;
@@ -713,8 +749,8 @@ begin
   end
   else
   begin
-    lblClubName.Caption := 'Club Name';
-    lblNickname.Caption := 'Club Nickname';
+    lblClubName.Caption := 'Club Name*';
+    lblNickname.Caption := 'Club Nickname*';
     lblEmail.Visible := true;
     lblWebSite.Visible := true;
     lblContactNum.Visible := true;

@@ -20,7 +20,7 @@ object QualifyTimes: TQualifyTimes
     Left = 0
     Top = 0
     Width = 725
-    Height = 727
+    Height = 718
     ActivePage = TabSheet1
     Align = alClient
     TabOrder = 0
@@ -128,7 +128,7 @@ object QualifyTimes: TQualifyTimes
         Left = 0
         Top = 172
         Width = 717
-        Height = 519
+        Height = 510
         Cursor = crDefault
         Align = alClient
         Color = clWhite
@@ -596,7 +596,6 @@ object QualifyTimes: TQualifyTimes
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitTop = 171
         ColWidths = (
           20
           90
@@ -743,37 +742,41 @@ object QualifyTimes: TQualifyTimes
       end
     end
   end
-  object Panel2: TPanel
+  object pnlFooter: TPanel
     Left = 0
-    Top = 727
+    Top = 718
     Width = 725
-    Height = 41
+    Height = 50
     Align = alBottom
     BevelOuter = bvNone
+    Padding.Top = 10
     TabOrder = 1
-    DesignSize = (
-      725
-      41)
     object BtnClose: TButton
-      Left = 641
-      Top = 6
+      AlignWithMargins = True
+      Left = 645
+      Top = 13
       Width = 77
-      Height = 32
-      Anchors = [akTop, akRight]
+      Height = 34
+      Align = alRight
       Caption = 'Close'
       TabOrder = 0
       OnClick = BtnCloseClick
+      ExplicitTop = 3
+      ExplicitHeight = 44
     end
     object navGrid: TDBNavigator
-      Left = 7
-      Top = 2
-      Width = 600
-      Height = 39
+      Left = 0
+      Top = 10
+      Width = 642
+      Height = 40
       Hint = 'Navigator for Qualify Grid'
       DataSource = DSQualify
+      Align = alClient
       ParentShowHint = False
       ShowHint = True
       TabOrder = 1
+      ExplicitTop = 0
+      ExplicitHeight = 50
     end
   end
   object qryQualify: TFDQuery

@@ -295,6 +295,108 @@ begin
   end;
 end;
 
+
+function RestoreColumnOrder(BaseStateString, SourceStateString: string): string;
+var
+  PartsBaseStr: TArray<string>;
+  PartsSrceStr: TArray<string>;
+begin
+  Result := '';
+  // Split by '#'
+  PartsBaseStr := BaseStateString.Split(['#']);
+  // Split StateString with preferred column oder (by using delimeter'#')
+  PartsSrceStr := SourceStateString.Split(['#']);
+  // Replace section 2 (index 2)
+  PartsBaseStr[2] := PartsSrceStr[2];
+  // Rebuild BasString
+  Result := string.Join('#', PartsBaseStr);
+end;
+
+function RestoreColumnWidth(BaseStateString, SourceStateString: string): string;
+var
+  PartsBaseStr: TArray<string>;
+  PartsSrceStr: TArray<string>;
+begin
+  result := '';
+end;
+
+function StringToIntList(const Values: string): TArray<Integer>;
+var
+  Parts: TArray<string>;
+  i: Integer;
+begin
+  Parts := Values.Split([',']);
+  SetLength(Result, Length(Parts));
+  for i := 0 to High(Parts) do
+    Result[i] := StrToIntDef(Trim(Parts[i]), 0);
+end;
+
+function ProcessColumnState(StateString: string; index: integer;
+  width, order: integer; visible: boolean): string;
+var
+  Parts: TArray<string>;
+  ColWidth: TArray<Integer>;
+  ColOrder: TArray<Integer>;
+  ColVisible: TArray<Integer>;
+  ModifiedStateString, s1, s2: string;
+  I: Integer;
+begin
+  {
+      // Example of StateString.
+      '13#20,42,220,90,90,90,39,39,0,0,0,0,0#0,1,2,3,4,5,6,7,8,9,10,11,12#1,1,1,1,1,1,1,1,1,1,1,1,1'
+
+      SYNTAX READS:
+      13 total number of columns
+      # -> column width...
+      # -> column display order...
+      # -> column visibility...
+  }
+
+  result := StateString;
+  try
+    Parts := StateString.Split(['#']);
+    if Length(Parts) < 4 then Exit;
+
+    ColWidth := StringToIntList(Parts[1]);
+    ColOrder := StringToIntList(Parts[2]);
+    ColVisible := StringToIntList(Parts[3]);
+
+    if (index >= 0) and (index < Length(ColWidth)) then
+    begin
+      if (ColWidth[index] = 0) and visible then
+      begin
+        ColWidth[index] := width;
+        ColVisible[index] := 1;
+      end
+      else if (ColWidth[index] > 0) and not visible then
+      begin
+        ColWidth[index] := 0;
+        ColVisible[index] := 0;
+      end;
+    end;
+
+    // Re-Assemble parts, comma delimeter string
+    s1 := '';
+    s2 := '';
+    for I := 0 to High(ColWidth) do
+    begin
+      s1 := s1 + IntToStr(ColWidth[I]) + ',';
+      s2 := s2 + IntToStr(ColVisible[I]) + ',';
+    end;
+    s1 := s1.TrimRight([',']);
+    s2 := s2.TrimRight([',']);
+
+    Parts[1] := s1;
+    Parts[3] := s2;
+
+    ModifiedStateString := string.Join('#', Parts);
+    result := ModifiedStateString;
+  except
+    result := '';
+  end;
+end;
+
+
 procedure TFrameLane.gridFixedCellClick(Sender: TObject; ACol, ARow: LongInt);
 var
   dlg: TLaneColumnPicker;
@@ -302,12 +404,19 @@ var
   fld: TField;
   item: TDBGridColumnItem;
   mr: TModalResult;
+  // Params to restore user's column order and width.
+  BaseStateString: string;
+
 begin
   // Must be in EXPANDED column mode to alter grid columns, withs, index, etc.
   if (ARow = 0) and (ACol = 0) and actnLn_GridView.Checked then
   begin
     LockDrawing;
     Grid.BeginUpdate;
+
+    // column width and order... store all user changes.
+    fColumnStatesStringExpanded := Grid.ColumnStatesToString;
+
     try
       // display dlg to select column visibility...
       dlg := TLaneColumnPicker.Create(Self);
@@ -321,7 +430,7 @@ begin
           // Restore layout. Displays ALL fields - as per design time...
           Grid.StringToColumnStates(fColumnStatesStringCollapsed);
           // Conform to SCM v1 schema ...
-          SetDefGridSchemaState();
+          // SetDefGridSchemaState();
         end
         else
         begin
@@ -346,6 +455,15 @@ begin
                 item.Width := 0;
             end;
           end;
+          // capture the current states of the columns now that
+          // changes have been made.
+          BaseStateString := Grid.ColumnStatesToString;
+          // Restore the column order to the users preferred state.
+          BaseStateString := RestoreColumnOrder(BaseStateString, fColumnStatesStringExpanded);
+          // Restore the column width
+          // Update the new column ..
+          Grid.StringToColumnStates(BaseStateString);
+
         end;
       end;
       dlg.Free;

@@ -931,13 +931,14 @@ object FrameLane: TFrameLane
             HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
+            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clBlack
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 36
+            Width = 47
           end
           item
             AllowBlank = True
@@ -1022,13 +1023,14 @@ object FrameLane: TFrameLane
             HeaderFont.Height = -16
             HeaderFont.Name = 'Segoe UI'
             HeaderFont.Style = []
+            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clBlack
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 34
+            Width = 39
           end
           item
             Borders = []
@@ -1207,10 +1209,10 @@ object FrameLane: TFrameLane
           90
           39
           39
-          36
+          47
           100
           32
-          34
+          39
           34)
       end
     end

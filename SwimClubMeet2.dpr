@@ -81,7 +81,8 @@ uses
   rptMM_Detail in 'MEMBERS\MM_REPORTS\rptMM_Detail.pas' {MemberDetail: TDataModule},
   rptMM_History in 'MEMBERS\MM_REPORTS\rptMM_History.pas' {MemberHistory: TDataModule},
   frmSwimClubType in 'SWIMCLUBS\frmSwimClubType.pas' {SwimClubType},
-  frmSwimClub_Reports in 'SWIMCLUBS\SC_REPORTS\frmSwimClub_Reports.pas' {SwimClub_Reports};
+  frmSwimClub_Reports in 'SWIMCLUBS\SC_REPORTS\frmSwimClub_Reports.pas' {SwimClub_Reports},
+  uStateString in 'DATA_Helper\uStateString.pas';
 
 {$R *.res}
 

@@ -8,13 +8,13 @@ uses
 
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.WinXCtrls, Vcl.Grids, Vcl.ImgList, Vcl.ActnList, Vcl.Menus, Vcl.Buttons,
-  Vcl.ActnMan,
+  Vcl.ActnMan, Vcl.StdCtrls,
 
   Data.DB,
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
-  dmIMG, dmSCM2, dmCORE, uDefines, uSettings, Vcl.StdCtrls;
+  dmIMG, dmSCM2, dmCORE, uDefines, uSettings, uStateString;
 
 type
 
@@ -71,10 +71,18 @@ type
     procedure gridKeyPress(Sender: TObject; var Key: Char);
     procedure actnLn_GridViewExecute(Sender: TObject);
   private
-    DefGridColWidths: Array of integer;
-    fColumnStatesStringCollapsed: String;
-    fColumnStatesStringExpanded: String;
     FOnGridViewChange: TFrameNotifyLane_GridViewChange;
+
+
+    { Design Time Grid UI state. Captured on load.
+      Captures column widths for all fields.}
+    fSysStateString: String;
+    { Grid-View Collapsed StringState. }
+    fStateStringCollapsed: String;
+    { Grid-View Expanded StringState.
+      User may include/excude columns when in expanded grid view. }
+    fStateStringExpanded: String;
+
 
     procedure SetGridView_ColVisibility;
     procedure SetGridView_IconIndex;
@@ -82,7 +90,10 @@ type
 
   protected
     procedure Loaded; override;
+
   public
+    destructor Destroy; override; // Must be "override"
+
     procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
     procedure OnEventTypeChange(AEventTypeID: Integer);
     procedure OnPreferenceChange();
@@ -176,6 +187,12 @@ begin
     grid.EndUpdate;
     UnlockDrawing;
   end;
+end;
+
+destructor TFrameLane.Destroy;
+begin
+  ;
+  inherited;
 end;
 
 procedure TFrameLane.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var
@@ -296,116 +313,18 @@ begin
 end;
 
 
-function RestoreColumnOrder(BaseStateString, SourceStateString: string): string;
-var
-  PartsBaseStr: TArray<string>;
-  PartsSrceStr: TArray<string>;
-begin
-  Result := '';
-  // Split by '#'
-  PartsBaseStr := BaseStateString.Split(['#']);
-  // Split StateString with preferred column oder (by using delimeter'#')
-  PartsSrceStr := SourceStateString.Split(['#']);
-  // Replace section 2 (index 2)
-  PartsBaseStr[2] := PartsSrceStr[2];
-  // Rebuild BasString
-  Result := string.Join('#', PartsBaseStr);
-end;
-
-function RestoreColumnWidth(BaseStateString, SourceStateString: string): string;
-var
-  PartsBaseStr: TArray<string>;
-  PartsSrceStr: TArray<string>;
-begin
-  result := '';
-end;
-
-function StringToIntList(const Values: string): TArray<Integer>;
-var
-  Parts: TArray<string>;
-  i: Integer;
-begin
-  Parts := Values.Split([',']);
-  SetLength(Result, Length(Parts));
-  for i := 0 to High(Parts) do
-    Result[i] := StrToIntDef(Trim(Parts[i]), 0);
-end;
-
-function ProcessColumnState(StateString: string; index: integer;
-  width, order: integer; visible: boolean): string;
-var
-  Parts: TArray<string>;
-  ColWidth: TArray<Integer>;
-  ColOrder: TArray<Integer>;
-  ColVisible: TArray<Integer>;
-  ModifiedStateString, s1, s2: string;
-  I: Integer;
-begin
-  {
-      // Example of StateString.
-      '13#20,42,220,90,90,90,39,39,0,0,0,0,0#0,1,2,3,4,5,6,7,8,9,10,11,12#1,1,1,1,1,1,1,1,1,1,1,1,1'
-
-      SYNTAX READS:
-      13 total number of columns
-      # -> column width...
-      # -> column display order...
-      # -> column visibility...
-  }
-
-  result := StateString;
-  try
-    Parts := StateString.Split(['#']);
-    if Length(Parts) < 4 then Exit;
-
-    ColWidth := StringToIntList(Parts[1]);
-    ColOrder := StringToIntList(Parts[2]);
-    ColVisible := StringToIntList(Parts[3]);
-
-    if (index >= 0) and (index < Length(ColWidth)) then
-    begin
-      if (ColWidth[index] = 0) and visible then
-      begin
-        ColWidth[index] := width;
-        ColVisible[index] := 1;
-      end
-      else if (ColWidth[index] > 0) and not visible then
-      begin
-        ColWidth[index] := 0;
-        ColVisible[index] := 0;
-      end;
-    end;
-
-    // Re-Assemble parts, comma delimeter string
-    s1 := '';
-    s2 := '';
-    for I := 0 to High(ColWidth) do
-    begin
-      s1 := s1 + IntToStr(ColWidth[I]) + ',';
-      s2 := s2 + IntToStr(ColVisible[I]) + ',';
-    end;
-    s1 := s1.TrimRight([',']);
-    s2 := s2.TrimRight([',']);
-
-    Parts[1] := s1;
-    Parts[3] := s2;
-
-    ModifiedStateString := string.Join('#', Parts);
-    result := ModifiedStateString;
-  except
-    result := '';
-  end;
-end;
-
-
 procedure TFrameLane.gridFixedCellClick(Sender: TObject; ACol, ARow: LongInt);
 var
   dlg: TLaneColumnPicker;
-  I, indx: Integer;
+  I, J: Integer;
   fld: TField;
-  item: TDBGridColumnItem;
+//  item: TDBGridColumnItem;
   mr: TModalResult;
   // Params to restore user's column order and width.
-  BaseStateString: string;
+//  BaseStateString: string;
+//  offset1, offset2, offset3: integer;
+//  widthindex: integer;
+  TLaneStateString: TStateString; // Columns count, width, order, visibility.
 
 begin
   // Must be in EXPANDED column mode to alter grid columns, withs, index, etc.
@@ -414,8 +333,10 @@ begin
     LockDrawing;
     Grid.BeginUpdate;
 
-    // column width and order... store all user changes.
-    fColumnStatesStringExpanded := Grid.ColumnStatesToString;
+    TLaneStateString := TStateString.Create;
+
+    if Assigned(TLaneStateString) then
+      TLaneStateString.StateString := Grid.ColumnStatesToString;
 
     try
       // display dlg to select column visibility...
@@ -426,11 +347,9 @@ begin
       begin
         if dlg.DoReset then
         begin
-          Grid.ResetColumnOrder;
+//          Grid.ResetColumnOrder;
           // Restore layout. Displays ALL fields - as per design time...
-          Grid.StringToColumnStates(fColumnStatesStringCollapsed);
-          // Conform to SCM v1 schema ...
-          // SetDefGridSchemaState();
+          Grid.StringToColumnStates(fStateStringCollapsed);
         end
         else
         begin
@@ -438,32 +357,21 @@ begin
           for I := 0 to dlg.clbLane.Items.Count - 1 do
           begin
             fld := TField(dlg.clbLane.Items.Objects[I]);
-            item := Grid.ColumnByFieldName[fld.FieldName];
-            if Assigned(item) and Assigned(fld) then
+            if Assigned(fld) then
             begin
-              if fld.Visible and (item.Width = 0) then
+              TLaneStateString.SetColVisible(fld.index, fld.Visible);
+              if fld.Visible and  (TLaneStateString.GetColWidth(fld.Index) = 0) then
               begin
-                // lookup default column widths...
-                indx := fld.index;
-                if indx in [Low(DefGridColWidths)..High(DefGridColWidths)] then
-                begin
-                  if DefGridColWidths[indx] <> -1 then
-                    item.Width := DefGridColWidths[indx];
-                end;
-              end
-              else if (not fld.Visible) and (item.Width <> 0) then
-                item.Width := 0;
+                // assign a default value prepared during design time ....
+                J := TLaneStateString.GetColWidth(fld.index, fSysStateString);
+                if J<>0 then
+                  TLaneStateString.SetColWidth(fld.index, j);
+              end;
+
             end;
           end;
-          // capture the current states of the columns now that
-          // changes have been made.
-          BaseStateString := Grid.ColumnStatesToString;
-          // Restore the column order to the users preferred state.
-          BaseStateString := RestoreColumnOrder(BaseStateString, fColumnStatesStringExpanded);
-          // Restore the column width
-          // Update the new column ..
-          Grid.StringToColumnStates(BaseStateString);
-
+          // fStateStringExpanded := TLaneStateString.StateString;
+          Grid.StringToColumnStates(fStateStringExpanded);
         end;
       end;
       dlg.Free;
@@ -471,7 +379,7 @@ begin
     finally
       Grid.EndUpdate;
       UnLockDrawing;
-      fColumnStatesStringExpanded := Grid.ColumnStatesToString;
+      TLaneStateString.Free;
     end;
   end;
 end;
@@ -666,7 +574,6 @@ begin
   Grid.ColumnByFieldName['GenderABREV'].Width := 0;
   Grid.ColumnByFieldName['AGE'].Width := 0;
   Grid.ColumnByFieldName['EventTypeID'].Width := 0;
-
 end;
 
 procedure TFrameLane.SetGridView_ColVisibility;
@@ -674,13 +581,13 @@ begin
   // EXPANDED or COLLAPSED grid views...
   if actnLn_GridView.Checked then
   begin  // EXPANDED...
-    Grid.ResetColumnOrder;
-    Grid.StringToColumnStates(fColumnStatesStringExpanded);
+//    Grid.ResetColumnOrder;
+    Grid.StringToColumnStates(fStateStringExpanded);
   end
   else
   begin  // COLLAPSED...  (DEFAULT VIEW)
-    Grid.ResetColumnOrder;
-    Grid.StringToColumnStates(fColumnStatesStringCollapsed);
+//    Grid.ResetColumnOrder;
+    Grid.StringToColumnStates(fStateStringCollapsed);
     { ALTERNATIVE - stable ...}
     // SetDefGridSchemaState();
   end;
@@ -709,16 +616,10 @@ var
 begin
   inherited;
   // While all columns are visible at design time...
-  // take a snapshot of the columnwidths. These will be used when the user
-  // adds columns to the grid view. (wit: default widths).
-  SetLength(DefGridColWidths,CORE.qryLane.Fields.Count);
-  for fld in CORE.qryLane.Fields do
-  begin
-    item := Grid.ColumnByFieldName[fld.FieldName];
-    if Assigned(item) then
-      DefGridColWidths[fld.Index] := TDBGridColumnItem(item).Width
-    else DefGridColWidths[fld.Index] := -1;
-  end;
+  // Take a snapshot of the columnwidths. These will be used when the user
+  // adds columns to the grid view and the width is unknown.
+  Grid.SetColumnOrder; // reference needed to restore state.
+  fSysStateString := Grid.ColumnStatesToString;
 
   // Let the user have the option to assign 'none' (or empty)
   // in the combobox drop-down for disqualification codes.
@@ -733,30 +634,18 @@ begin
   if indx <> -1 then
     rpnlCntrl.ControlCollection.Items[indx].Below := spbtnGridView;
 
-  // most of the UI work is done here. (Shared procedure).
+  // The default 'lane' grid column order, width, visibility used by SCM1
   SetDefGridSchemaState();
-  // Store a snap-shot of the default design-time field/column states.
+  // Performed again as this is the preferred state for a grid UI reset.
   Grid.SetColumnOrder;
-  // store the designed column states into local variable
-  fColumnStatesStringCollapsed := Grid.ColumnStatesToString;
+  // store the 'default grid design schema' column states.
+  fStateStringCollapsed := Grid.ColumnStatesToString;
+
   // User's custom column layout that is displayed in expanded gridview.
   if Assigned(Settings) then
-    fColumnStatesStringExpanded := Settings.Ln_ColumnStatesStringExpanded;
-{
-    // DEFAULT SCM column schema....
-    '13#20,42,220,90,90,90,39,39,0,0,0,0,0#0,1,2,3,4,5,6,7,8,9,10,11,12#1,1,1,1,1,1,1,1,1,1,1,1,1'
-
-    SYNTAX READS:
-    13 total number of columns
-    # -> column width...
-    # -> column display order...
-    # -> column visibility...
-
-    Note: The serialized string format is intended for internal use by TMS
-    components via the Save/Load methods and should not typically be edited
-    manually
-
-}
+    fStateStringExpanded := Settings.Ln_ColumnStatesStringExpanded
+  else
+    fStateStringExpanded := Grid.ColumnStatesToString;
 
   OnEventTypeChange(CORE.qryLane.FieldByName('EventTypeID').AsInteger);
 end;

@@ -391,6 +391,7 @@
             <Form>SwimClub_Reports</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="DATA_Helper\uStateString.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

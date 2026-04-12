@@ -69,6 +69,7 @@ begin
     ModalResult := mrCancel;
     Close;
   end;
+
   // Fill list check-box
   for I := 0 to CORE.qryLane.Fields.Count-1 do
   begin
@@ -83,7 +84,8 @@ begin
     // Include EventTypeID in list...
     // if fld.FieldName = 'EventTypeID' then continue;
 
-    { 2. filter out DQ/simplified disqualification}
+    { 2. filter out either DQ or simplified fields based on
+        the disqualification flag in settings...}
     if Assigned(Settings) and Settings.EnableDQcodes then
     begin
       if (fld.FieldName = 'IsDisqualified')

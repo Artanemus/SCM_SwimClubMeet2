@@ -14,6 +14,7 @@ object LaneColumnPicker: TLaneColumnPicker
   KeyPreview = True
   Position = poOwnerFormCenter
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   TextHeight = 21
   object pnlBody: TPanel

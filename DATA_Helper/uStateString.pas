@@ -36,10 +36,6 @@ type
     // Column-count[0], width[1], sort-order[2] and visibility [3]
     fParts: TArray<string>;
 
-    fColWidth: TArray<Integer>; // StateString widths. Uses sort-order
-    fColOrder: TArray<Integer>; // StateString column order. Base 0.
-    fColVisible: TArray<Integer>; // String value '0' or '1'. Ignored in TDBAdvGrid.
-
 
     fColCount: integer;
     fErrorCode: integer;
@@ -55,6 +51,12 @@ type
     procedure SetStateString(Value: string);
 
   public
+
+    fColWidth: TArray<Integer>; // StateString widths. Uses sort-order
+    fColOrder: TArray<Integer>; // StateString column order. Base 0.
+    fColVisible: TArray<Integer>; // String value '0' or '1'. Ignored in TDBAdvGrid.
+
+
     constructor Create;
     destructor Destroy; override;
     procedure ColumnMove(FromIndex, ToIndex: integer);
@@ -68,6 +70,7 @@ type
   published
     property StateString: string read fStateString write SetStateString;
     property ErrorCode: integer read fErrorCode;
+    property ColCount: Integer read FColCount;
 
   end;
 

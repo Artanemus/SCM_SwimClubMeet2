@@ -8,13 +8,13 @@ uses
 
   Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.CheckLst,
-  Vcl.ExtCtrls,
+  Vcl.ExtCtrls,  Vcl.Buttons, Vcl.WinXPanels,
 
   Data.DB,
 
-  dmSCM2, dmCORE, dmIMG, uDefines, uSettings, Vcl.Buttons, Vcl.WinXPanels,
+  AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
-  DBAdvGrid;
+  dmSCM2, dmCORE, dmIMG, uDefines, uSettings, uStateString;
 
 type
   TLaneColumnPicker = class(TForm)
@@ -25,6 +25,7 @@ type
     spbtnLoadGridMetrics: TSpeedButton;
     spbtnResetGrigLayout: TSpeedButton;
     spbtnClose: TSpeedButton;
+    procedure FormDestroy(Sender: TObject);
     procedure clbLaneClickCheck(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -33,11 +34,19 @@ type
   private
     { Private declarations }
     fDoReset: boolean;
+    fSysStateString: string;
+    fColumns: TDBGridColumnCollection;
+    TAStateString: TStateString; // Columns count, width, order, visibility.
+
+  protected
+
   public
     { Public declarations }
-    procedure SortItemsToMatchGrid(aGrid: TDBAdvgrid);
+    procedure Prepare(AStateString: string; const ASysStateString: string; AGrid:
+        TDBAdvGrid);
 
     property DoReset: boolean read FDoReset write FDoReset;
+
   end;
 
 var
@@ -47,18 +56,39 @@ implementation
 
 {$R *.dfm}
 
+procedure TLaneColumnPicker.FormDestroy(Sender: TObject);
+begin
+
+  TAStateString.Free;
+end;
+
 procedure TLaneColumnPicker.clbLaneClickCheck(Sender: TObject);
 var
   fld: TField;
+  ABSindx, indx: integer;
+  TempStateString: TStateString;
 begin
-  fld := TField(clbLane.Items.Objects[clbLane.ItemIndex]);
-  fld.Visible := clbLane.Checked[clbLane.ItemIndex];
+  if Assigned(TAStateString) then
+  begin
+    TAStateString.fColVisible[clbLane.ItemIndex] :=
+      clbLane.Checked[clbLane.ItemIndex].ToInteger;
+
+    // calculate a width for the column using fSysStateString.
+    TempStateString := TStateString.Create;
+    TempStateString.StateString := fSysStateString;
+
+    ABSindx := TAStateString.fColOrder[clbLane.ItemIndex];
+    // locate ABSIndex in
+    indx := TempStateString.LookUpREFindex(ABSindx);
+    if TempStateString.fColWidth[indx] <> 0 then
+      TAStateString.fColWidth[clbLane.ItemIndex] :=
+        TempStateString.fColWidth[indx];
+
+    TempStateString.Free;
+  end;
 end;
 
 procedure TLaneColumnPicker.FormCreate(Sender: TObject);
-var
-  fld: TField;
-  I: Integer;
 begin
   fDoReset := false;
   // empty any items placed at design-time for UI calibration.
@@ -70,46 +100,7 @@ begin
     Close;
   end;
 
-  // Fill list check-box
-  for I := 0 to CORE.qryLane.Fields.Count-1 do
-  begin
-
-    { 1. filter out PK and FK}
-    fld := CORE.qryLane.Fields[I];
-    if fld.FieldName = 'LaneID' then continue;
-    if fld.FieldName = 'HeatID' then continue;
-    if fld.FieldName = 'TeamID' then continue;
-    if fld.FieldName = 'NomineeID' then continue;
-    if fld.FieldName = 'DisqualifyCodeID' then continue;
-    // Include EventTypeID in list...
-    // if fld.FieldName = 'EventTypeID' then continue;
-
-    { 2. filter out either DQ or simplified fields based on
-        the disqualification flag in settings...}
-    if Assigned(Settings) and Settings.EnableDQcodes then
-    begin
-      if (fld.FieldName = 'IsDisqualified')
-        OR (fld.FieldName = 'IsScratched') then continue;
-    end
-    else
-    begin
-      if (fld.FieldName = 'luDQ') then continue;
-    end;
-
-    { 3. filter other MISC fields. }
-    // if fld.FieldName = 'Stat' then continue; (Field dropped from DB.)
-
-    clbLane.AddItem(fld.DisplayLabel, fld);
-  end;
-
-  // Set checkbox state...
-  for I := 0 to clbLane.Items.Count-1 do
-  begin
-    fld := TField(clbLane.Items.Objects[I]);
-    if Assigned(fld) then
-      clbLane.Checked[i] := fld.Visible;
-  end;
-
+  TAStateString := TStateString.Create;
 end;
 
 procedure TLaneColumnPicker.FormKeyDown(Sender: TObject; var Key: Word; Shift:
@@ -123,47 +114,57 @@ begin
   end;
 end;
 
-procedure TLaneColumnPicker.SortItemsToMatchGrid(aGrid: TDBAdvgrid);
-var
-  GridColIndex, Fieldindex, CheckBoxIndx, I: integer;
-  fld: TField;
+function BlackList(Name: string): boolean;
 begin
-  // Sort checked items - based on grid column order.
-  if Assigned(aGrid) then
+  result := true;
+  { 1. filter out PK and FK}
+  if Name = 'LaneID' then exit;
+  if Name = 'HeatID' then exit;
+  if Name = 'TeamID' then exit;
+  if Name = 'NomineeID' then exit;
+  if Name = 'DisqualifyCodeID' then exit;
+  // Include EventTypeID in list...
+  // if Name = 'EventTypeID' then exit;
+
+  { 2. filter out either DQ or simplified fields based on
+      the disqualification flag in settings...}
+  if Assigned(Settings) and Settings.EnableDQcodes then
   begin
-    // iterate over the TDBColumnItems..
-    for GridColIndex := 0 to aGrid.Columns.Count -1 do
+    if (Name = 'IsDisqualified')
+      OR (Name = 'IsScratched') then exit;
+  end
+  else
+  begin
+    if (Name = 'luDQ') then exit;
+  end;
+  result := false;
+end;
+
+procedure TLaneColumnPicker.Prepare(AStateString: string; const
+    ASysStateString: string; AGrid: TDBAdvGrid);
+var
+  fld: TField;
+  I, ABSindx: Integer;
+begin
+  if Assigned(TAStateString) then
+  begin
+    TAStateString.StateString := AStateString;
+
+    fSysStateString := ASysStateString;
+    for I := 0 to TAStateString.ColCount-1 do
     begin
-      // get the index of the DB field assigned to the TDBColumnItem.
-      Fieldindex := aGrid.FieldIndexAtColumn[GridColIndex];
-      CheckBoxIndx := -1;
-      // iterate over the items held in TCheckListBox
-      for I := 0 to clbLane.Items.Count-1 do
+      ABSindx := TAStateString.fColOrder[I];
+
+      // BlackListed if invisible....
+      if AGrid.Fields[ABSindx].Visible then
       begin
-        // with TObject attached to item ...
-        fld := TField(clbLane.Items.Objects[I]);
-        // does the db Field index in TCheckListBox = field held in TDBColumnItem.
-        if fld.Index = Fieldindex then
-        begin
-          CheckBoxIndx := I; // ASSIGN the
-          break;
-        end;
-      end;
-      // found matching field...
-      if CheckBoxIndx <> -1 then
-      begin
-        // check bounds range on GridColIndex before proceeding.
-        if (GridColIndex >= 0) and (GridColIndex < clbLane.Items.Count) then
-        begin
-          // pointless moving item if it's already positioned correctly.
-          if CheckBoxIndx <> GridColIndex then
-            clbLane.Items.Move(CheckBoxIndx, GridColIndex);
-        end;  
+        clbLane.AddItem(AGrid.Columns[ABSindx].Header, AGrid.Fields[ABSindx]);
+        if TAStateString.fColWidth[I] <> 0 then
+          clbLane.Checked[i] := true else clbLane.Checked[i] := false;
       end;
     end;
   end;
 end;
-
 
 procedure TLaneColumnPicker.spbtnCloseClick(Sender: TObject);
 begin

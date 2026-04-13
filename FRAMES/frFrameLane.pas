@@ -14,7 +14,7 @@ uses
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
-  dmIMG, dmSCM2, dmCORE, uDefines, uSettings, uStateString;
+  dmIMG, dmSCM2, dmCORE, uDefines, uSettings;
 
 type
 
@@ -84,7 +84,7 @@ type
     fStateStringExpanded: String;
 
 
-    procedure SetGridView_ColVisibility;
+    procedure SetGridColumnStates;
     procedure SetGridView_IconIndex;
     procedure SetDefGridSchemaState();
 
@@ -135,14 +135,21 @@ var
   indx: integer;
 begin
   LaneAction := TAction(Sender);
-  LaneAction.Checked := not LaneAction.Checked; // TOGGLE
+
   grid.BeginUpdate;
   CORE.qryLane.DisableControls;
+
+  // Store the state of 'expanded' grid view.
+  if LaneAction.Checked then
+    fStateStringExpanded :=  Grid.ColumnStatesToString;
+
+  LaneAction.Checked := not LaneAction.Checked; // TOGGLE
   try
     SetGridView_IconIndex; // uses actnEv_GridView.Checked state.
-    SetGridView_ColVisibility; // uses actnEv_GridView.Checked state.
+
     if LaneAction.Checked then
     begin
+      Grid.StringToColumnStates(fStateStringExpanded);
       actnLn_HeatPicker.Visible := true;
       indx := rpnlCntrl.ControlCollection.IndexOf(ShapeLnBar2);
       if indx <> -1 then
@@ -153,6 +160,7 @@ begin
     end
     else
     begin
+      Grid.StringToColumnStates(fStateStringCollapsed);
       actnLn_HeatPicker.Visible := false;
       indx := rpnlCntrl.ControlCollection.IndexOf(ShapeLnBar2);
       if indx <> -1 then
@@ -169,6 +177,7 @@ begin
     end;
   end;
 
+  // Call-back to main form.
   if Assigned(FOnGridViewChange) then
     FOnGridViewChange(self, LaneAction.Checked);
 end;
@@ -318,13 +327,7 @@ var
   dlg: TLaneColumnPicker;
   I, J: Integer;
   fld: TField;
-//  item: TDBGridColumnItem;
   mr: TModalResult;
-  // Params to restore user's column order and width.
-//  BaseStateString: string;
-//  offset1, offset2, offset3: integer;
-//  widthindex: integer;
-  TLaneStateString: TStateString; // Columns count, width, order, visibility.
 
 begin
   // Must be in EXPANDED column mode to alter grid columns, withs, index, etc.
@@ -333,43 +336,18 @@ begin
     LockDrawing;
     Grid.BeginUpdate;
 
-    TLaneStateString := TStateString.Create;
-
-    if Assigned(TLaneStateString) then
-      TLaneStateString.StateString := Grid.ColumnStatesToString;
-
     try
       // display dlg to select column visibility...
       dlg := TLaneColumnPicker.Create(Self);
-      dlg.SortItemsToMatchGrid(Grid);
+      dlg.Prepare(fStateStringExpanded, fSysStateString, Grid);
       mr := dlg.ShowModal();
       if (mr = mrOK) then
       begin
         if dlg.DoReset then
-        begin
-//          Grid.ResetColumnOrder;
-          // Restore layout. Displays ALL fields - as per design time...
-          Grid.StringToColumnStates(fStateStringCollapsed);
-        end
+          Grid.StringToColumnStates(fStateStringCollapsed)
         else
         begin
-          // iterate over results and adjust column visibility.
-          for I := 0 to dlg.clbLane.Items.Count - 1 do
-          begin
-            fld := TField(dlg.clbLane.Items.Objects[I]);
-            if Assigned(fld) then
-            begin
-              TLaneStateString.SetColVisible(fld.index, fld.Visible);
-              if fld.Visible and  (TLaneStateString.GetColWidth(fld.Index) = 0) then
-              begin
-                // assign a default value prepared during design time ....
-                J := TLaneStateString.GetColWidth(fld.index, fSysStateString);
-                if J<>0 then
-                  TLaneStateString.SetColWidth(fld.index, j);
-              end;
-
-            end;
-          end;
+          fStateStringExpanded := dlg.StateString;
           // fStateStringExpanded := TLaneStateString.StateString;
           Grid.StringToColumnStates(fStateStringExpanded);
         end;
@@ -379,7 +357,6 @@ begin
     finally
       Grid.EndUpdate;
       UnLockDrawing;
-      TLaneStateString.Free;
     end;
   end;
 end;
@@ -576,7 +553,7 @@ begin
   Grid.ColumnByFieldName['EventTypeID'].Width := 0;
 end;
 
-procedure TFrameLane.SetGridView_ColVisibility;
+procedure TFrameLane.SetGridColumnStates;
 begin
   // EXPANDED or COLLAPSED grid views...
   if actnLn_GridView.Checked then

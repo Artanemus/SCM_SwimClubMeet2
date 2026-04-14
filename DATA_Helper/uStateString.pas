@@ -46,9 +46,10 @@ type
 
   protected
     procedure Disassemble(AStateString: string);
-    function Assemble(AStringState: string): string;
+    function Assemble: string;
     procedure Prepare();
     procedure SetStateString(Value: string);
+    function GetStateString(): string;
 
   public
 
@@ -67,8 +68,8 @@ type
     function GetColWidth(ABSindex: integer; AStateString: string): integer; overload;
     function LookUpREFindex(ABSindex: integer): integer;
 
-  published
-    property StateString: string read fStateString write SetStateString;
+  public
+    property StateString: string read GetStateString write SetStateString;
     property ErrorCode: integer read fErrorCode;
     property ColCount: Integer read FColCount;
 
@@ -77,7 +78,8 @@ type
 
 implementation
 
-function TStateString.Assemble(AStringState: string): string;
+
+function TStateString.Assemble: string;
 var
   s1, s2, s3: string;
   I: integer;
@@ -170,6 +172,12 @@ begin
     result := fColWidth[REFindex]; // lookup tempory state string
     Disassemble(fStateString); // restore state.
   end;
+end;
+
+function TStateString.GetStateString: string;
+begin
+  fStateString := Assemble();
+  result := fStateString;
 end;
 
 function TStateString.GetColWidth(ABSindex: integer): integer;

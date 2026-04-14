@@ -30,14 +30,6 @@ uses
   frFrameNavEv in 'FRAMES\frFrameNavEv.pas' {FrameNavEv: TFrame},
   frFrameNavEvItem in 'FRAMES\frFrameNavEvItem.pas' {FrameNavEvItem: TFrame},
   frmMain2 in 'frmMain2.pas' {Main2},
-  dlgEditSession in 'DIALOGS\Session\dlgEditSession.pas' {EditSession},
-  dlgNewSession in 'DIALOGS\Session\dlgNewSession.pas' {NewSession},
-  dlgEntrantPicker in 'DIALOGS\Lane\dlgEntrantPicker.pas' {EntrantPicker},
-  dlgEntrantPickerCTRL in 'DIALOGS\Lane\dlgEntrantPickerCTRL.pas' {EntrantPickerCTRL},
-  dlgTeamPicker in 'DIALOGS\Lane\dlgTeamPicker.pas' {TeamPicker},
-  dlgTeamPickerCTRL in 'DIALOGS\Lane\dlgTeamPickerCTRL.pas' {TeamPickerCTRL},
-  uPickerStage in 'DIALOGS\Lane\uPickerStage.pas',
-  dlgLaneColumnPicker in 'DIALOGS\Lane\dlgLaneColumnPicker.pas' {LaneColumnPicker},
   dlgMemberPicker in 'PICKERS\dlgMemberPicker.pas' {MemberPicker},
   dlgscmDatePicker in 'PICKERS\dlgscmDatePicker.pas' {scmDatePicker},
   frFrameClubGroup in 'SWIMCLUBS\SC_FRAMES\frFrameClubGroup.pas' {FrameClubGroup: TFrame},
@@ -82,7 +74,15 @@ uses
   rptMM_History in 'MEMBERS\MM_REPORTS\rptMM_History.pas' {MemberHistory: TDataModule},
   frmSwimClubType in 'SWIMCLUBS\frmSwimClubType.pas' {SwimClubType},
   frmSwimClub_Reports in 'SWIMCLUBS\SC_REPORTS\frmSwimClub_Reports.pas' {SwimClub_Reports},
-  uStateString in 'DATA_Helper\uStateString.pas';
+  uStateString in 'DATA_Helper\uStateString.pas',
+  dlgEntrantPicker in 'LANES\dlgEntrantPicker.pas' {EntrantPicker},
+  dlgEntrantPickerCTRL in 'LANES\dlgEntrantPickerCTRL.pas' {EntrantPickerCTRL},
+  dlgLaneColumnPicker in 'LANES\dlgLaneColumnPicker.pas' {LaneColumnPicker},
+  dlgTeamPicker in 'LANES\dlgTeamPicker.pas' {TeamPicker},
+  dlgTeamPickerCTRL in 'LANES\dlgTeamPickerCTRL.pas' {TeamPickerCTRL},
+  uPickerStage in 'LANES\uPickerStage.pas',
+  dlgEditSession in 'SESSIONS\dlgEditSession.pas' {EditSession},
+  dlgNewSession in 'SESSIONS\dlgNewSession.pas' {NewSession};
 
 {$R *.res}
 

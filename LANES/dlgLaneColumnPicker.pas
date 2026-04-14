@@ -34,18 +34,19 @@ type
   private
     { Private declarations }
     fDoReset: boolean;
-    fSysStateString: string;
-    fColumns: TDBGridColumnCollection;
-    TAStateString: TStateString; // Columns count, width, order, visibility.
+    fStateStringSystem: string;
+    MyStateString: TStateString; // Columns count, width, order, visibility.
 
   protected
+    function GetStateString(): string;
 
   public
     { Public declarations }
-    procedure Prepare(AStateString: string; const ASysStateString: string; AGrid:
-        TDBAdvGrid);
+    procedure Prepare(AStateString: string; const AStateStringSystem: string;
+        AGrid: TDBAdvGrid);
 
     property DoReset: boolean read FDoReset write FDoReset;
+    property StateString: string read GetStateString;
 
   end;
 
@@ -59,32 +60,39 @@ implementation
 procedure TLaneColumnPicker.FormDestroy(Sender: TObject);
 begin
 
-  TAStateString.Free;
+  MyStateString.Free;
 end;
 
 procedure TLaneColumnPicker.clbLaneClickCheck(Sender: TObject);
 var
-  fld: TField;
-  ABSindx, indx: integer;
+  REFindx: integer;
   TempStateString: TStateString;
+  fld: TField;
+  width: integer;
 begin
-  if Assigned(TAStateString) then
+  if Assigned(MyStateString) then
   begin
-    TAStateString.fColVisible[clbLane.ItemIndex] :=
+    // toggle visibility
+    MyStateString.fColVisible[clbLane.ItemIndex] :=
       clbLane.Checked[clbLane.ItemIndex].ToInteger;
+    // Set column width using system state string.
 
-    // calculate a width for the column using fSysStateString.
-    TempStateString := TStateString.Create;
-    TempStateString.StateString := fSysStateString;
+    fld := TField(clbLane.Items.Objects[clbLane.ItemIndex]);
+    if fld<>nil then
+    begin
+      // calculate a width for the column using fStateStringSystem.
+      TempStateString := TStateString.Create;
+      TempStateString.StateString := fStateStringSystem;
+      REFindx := TempStateString.LookUpREFindex(fld.Index);
+      if REFindx <> -1 then
+      begin
+        width := TempStateString.fColWidth[REFindx];
+        width := TempStateString.GetColWidth(fld.index);
+        MyStateString.fColWidth[clbLane.ItemIndex] := width;
+      end;
+      TempStateString.Free;
+    end;
 
-    ABSindx := TAStateString.fColOrder[clbLane.ItemIndex];
-    // locate ABSIndex in
-    indx := TempStateString.LookUpREFindex(ABSindx);
-    if TempStateString.fColWidth[indx] <> 0 then
-      TAStateString.fColWidth[clbLane.ItemIndex] :=
-        TempStateString.fColWidth[indx];
-
-    TempStateString.Free;
   end;
 end;
 
@@ -100,7 +108,7 @@ begin
     Close;
   end;
 
-  TAStateString := TStateString.Create;
+  MyStateString := TStateString.Create;
 end;
 
 procedure TLaneColumnPicker.FormKeyDown(Sender: TObject; var Key: Word; Shift:
@@ -111,6 +119,15 @@ begin
     Key := 0;
     fDoReset := false;
     ModalResult := mrOk;
+  end;
+end;
+
+function TLaneColumnPicker.GetStateString: string;
+begin
+  result := '';
+  if Assigned(MyStateString) then
+  begin
+    result := MyStateString.StateString;
   end;
 end;
 
@@ -141,28 +158,43 @@ begin
 end;
 
 procedure TLaneColumnPicker.Prepare(AStateString: string; const
-    ASysStateString: string; AGrid: TDBAdvGrid);
+    AStateStringSystem: string; AGrid: TDBAdvGrid);
 var
+  I: Integer;
   fld: TField;
-  I, ABSindx: Integer;
 begin
-  if Assigned(TAStateString) then
+  if Assigned(MyStateString) then
   begin
-    TAStateString.StateString := AStateString;
+    MyStateString.StateString := AStateString;
 
-    fSysStateString := ASysStateString;
-    for I := 0 to TAStateString.ColCount-1 do
+    fStateStringSystem := AStateStringSystem;
+    for I := 0 to MyStateString.ColCount-1 do
     begin
-      ABSindx := TAStateString.fColOrder[I];
-
-      // BlackListed if invisible....
-      if AGrid.Fields[ABSindx].Visible then
+      // Black-Listif field not assigned....
+      fld := AGrid.FieldAtColumn[I];
+      if fld <> nil then
       begin
-        clbLane.AddItem(AGrid.Columns[ABSindx].Header, AGrid.Fields[ABSindx]);
-        if TAStateString.fColWidth[I] <> 0 then
-          clbLane.Checked[i] := true else clbLane.Checked[i] := false;
+        // Black-List if special system field - not available to user.
+        if not BlackList(fld.FieldName) then
+        begin
+          clbLane.AddItem(fld.DisplayLabel, fld);
+          { Set check box here - bounds error. }
+        end;
       end;
     end;
+
+    // required second pass - else out-of-bounds errors
+    for I := 0 to MyStateString.ColCount-1 do
+    begin
+      if (I >= 0) and (I < clbLane.Count) then
+      begin
+        if MyStateString.fColWidth[I] <> 0 then
+          clbLane.Checked[i] := true
+        else
+          clbLane.Checked[i] := false;
+        end;
+    end;
+
   end;
 end;
 

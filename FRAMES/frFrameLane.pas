@@ -76,7 +76,7 @@ type
 
     { Design Time Grid UI state. Captured on load.
       Captures column widths for all fields.}
-    fSysStateString: String;
+    fStateStringSystem: String;
     { Grid-View Collapsed StringState. }
     fStateStringCollapsed: String;
     { Grid-View Expanded StringState.
@@ -136,8 +136,8 @@ var
 begin
   LaneAction := TAction(Sender);
 
-  grid.BeginUpdate;
-  CORE.qryLane.DisableControls;
+//  grid.BeginUpdate;
+//  CORE.qryLane.DisableControls;
 
   // Store the state of 'expanded' grid view.
   if LaneAction.Checked then
@@ -172,8 +172,8 @@ begin
 
   finally
     begin
-      CORE.qryLane.EnableControls;
-      grid.EndUpdate;
+//      CORE.qryLane.EnableControls;
+//      grid.EndUpdate;
     end;
   end;
 
@@ -325,31 +325,34 @@ end;
 procedure TFrameLane.gridFixedCellClick(Sender: TObject; ACol, ARow: LongInt);
 var
   dlg: TLaneColumnPicker;
-  I, J: Integer;
-  fld: TField;
   mr: TModalResult;
 
 begin
   // Must be in EXPANDED column mode to alter grid columns, withs, index, etc.
   if (ARow = 0) and (ACol = 0) and actnLn_GridView.Checked then
   begin
+    // Snapshot of the current column, width, order, visibility.
+    // May not work correctly if performed during BeginUpdate...EndUpdate.
+    fStateStringExpanded := Grid.ColumnStatesToString;
+
     LockDrawing;
     Grid.BeginUpdate;
-
     try
       // display dlg to select column visibility...
       dlg := TLaneColumnPicker.Create(Self);
-      dlg.Prepare(fStateStringExpanded, fSysStateString, Grid);
+      // Current string state, system state for default widths and grid ref.
+      dlg.Prepare(fStateStringExpanded, fStateStringSystem, Grid);
+      // RULE. must call prepare before showing dialogue.
       mr := dlg.ShowModal();
       if (mr = mrOK) then
       begin
         if dlg.DoReset then
+          // Set the expanded string satte to SCM default grid view.
           Grid.StringToColumnStates(fStateStringCollapsed)
         else
         begin
+          // Move the new string state into expanded grid view.
           fStateStringExpanded := dlg.StateString;
-          // fStateStringExpanded := TLaneStateString.StateString;
-          Grid.StringToColumnStates(fStateStringExpanded);
         end;
       end;
       dlg.Free;
@@ -357,6 +360,9 @@ begin
     finally
       Grid.EndUpdate;
       UnLockDrawing;
+
+      // apply UI changes to the grid.
+      Grid.StringToColumnStates(fStateStringExpanded);
     end;
   end;
 end;
@@ -588,7 +594,6 @@ end;
 procedure TFrameLane.Loaded;
 var
   item: TCollectionItem;
-  fld: TField;
   indx: integer;
 begin
   inherited;
@@ -596,7 +601,7 @@ begin
   // Take a snapshot of the columnwidths. These will be used when the user
   // adds columns to the grid view and the width is unknown.
   Grid.SetColumnOrder; // reference needed to restore state.
-  fSysStateString := Grid.ColumnStatesToString;
+  fStateStringSystem := Grid.ColumnStatesToString;
 
   // Let the user have the option to assign 'none' (or empty)
   // in the combobox drop-down for disqualification codes.

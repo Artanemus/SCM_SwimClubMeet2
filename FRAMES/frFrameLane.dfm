@@ -777,6 +777,7 @@ object FrameLane: TFrameLane
             Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
+            Header = 'Race-Time'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = clBlack
             HeaderFont.Height = -16

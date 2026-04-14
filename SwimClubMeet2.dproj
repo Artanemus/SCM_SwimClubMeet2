@@ -204,32 +204,6 @@
         <DCCReference Include="frmMain2.pas">
             <Form>Main2</Form>
         </DCCReference>
-        <DCCReference Include="DIALOGS\Session\dlgEditSession.pas">
-            <Form>EditSession</Form>
-        </DCCReference>
-        <DCCReference Include="DIALOGS\Session\dlgNewSession.pas">
-            <Form>NewSession</Form>
-        </DCCReference>
-        <DCCReference Include="DIALOGS\Lane\dlgEntrantPicker.pas">
-            <Form>EntrantPicker</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="DIALOGS\Lane\dlgEntrantPickerCTRL.pas">
-            <Form>EntrantPickerCTRL</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="DIALOGS\Lane\dlgTeamPicker.pas">
-            <Form>TeamPicker</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="DIALOGS\Lane\dlgTeamPickerCTRL.pas">
-            <Form>TeamPickerCTRL</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
-        <DCCReference Include="DIALOGS\Lane\uPickerStage.pas"/>
-        <DCCReference Include="DIALOGS\Lane\dlgLaneColumnPicker.pas">
-            <Form>LaneColumnPicker</Form>
-        </DCCReference>
         <DCCReference Include="PICKERS\dlgMemberPicker.pas">
             <Form>MemberPicker</Form>
             <FormType>dfm</FormType>
@@ -392,6 +366,35 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="DATA_Helper\uStateString.pas"/>
+        <DCCReference Include="LANES\dlgEntrantPicker.pas">
+            <Form>EntrantPicker</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="LANES\dlgEntrantPickerCTRL.pas">
+            <Form>EntrantPickerCTRL</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="LANES\dlgLaneColumnPicker.pas">
+            <Form>LaneColumnPicker</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="LANES\dlgTeamPicker.pas">
+            <Form>TeamPicker</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="LANES\dlgTeamPickerCTRL.pas">
+            <Form>TeamPickerCTRL</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="LANES\uPickerStage.pas"/>
+        <DCCReference Include="SESSIONS\dlgEditSession.pas">
+            <Form>EditSession</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="SESSIONS\dlgNewSession.pas">
+            <Form>NewSession</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

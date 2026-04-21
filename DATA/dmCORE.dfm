@@ -1,7 +1,7 @@
 object CORE: TCORE
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Height = 877
+  Height = 953
   Width = 975
   object dsSwimClub: TDataSource
     DataSet = qrySwimClub
@@ -654,6 +654,7 @@ object CORE: TCORE
     ActiveStoredUsage = [auDesignTime]
     BeforePost = qryLaneBeforePost
     AfterScroll = qryLaneAfterScroll
+    OnCalcFields = qryLaneCalcFields
     Indexes = <
       item
         Active = True
@@ -746,7 +747,10 @@ object CORE: TCORE
       
         '     ,dbo.SwimmerGenderToString(Nominee.MemberID) AS GenderABREV' +
         '      '
-      '     '
+      '     ,EvPlace'
+      '     ,HtPlace'
+      '     ,EvScore'
+      '     ,HtScore'
       '       '
       '  FROM [SwimClubMeet2].[dbo].[Lane] AS L'
       '  LEFT JOIN Nominee ON l.NomineeID = Nominee.NomineeID'
@@ -831,7 +835,6 @@ object CORE: TCORE
       DisplayWidth = 9
       FieldName = 'ClubRecord'
       Origin = 'ClubRecord'
-      Visible = False
       OnGetText = qryLaneClubRecordGetText
       OnSetText = qryLaneClubRecordSetText
       DisplayFormat = 'nn:ss.zzz'
@@ -874,6 +877,36 @@ object CORE: TCORE
       DisplayLabel = 'FINA Disqualify Code'
       FieldName = 'DisqualifyCodeID'
       Origin = 'DisqualifyCodeID'
+    end
+    object qryLaneEvPlace: TIntegerField
+      DisplayLabel = 'Event Place'
+      DisplayWidth = 5
+      FieldName = 'EvPlace'
+      Origin = 'EvPlace'
+    end
+    object qryLaneHtPlace: TIntegerField
+      DisplayLabel = 'Heat Place'
+      DisplayWidth = 5
+      FieldName = 'HtPlace'
+      Origin = 'HtPlace'
+    end
+    object qryLaneEvScore: TFloatField
+      DisplayLabel = 'Event Score'
+      DisplayWidth = 5
+      FieldName = 'EvScore'
+      Origin = 'EvScore'
+    end
+    object qryLaneHtScore: TFloatField
+      DisplayLabel = 'Heat Score'
+      DisplayWidth = 5
+      FieldName = 'HtScore'
+      Origin = 'HtScore'
+    end
+    object qryLaneluHouse: TStringField
+      DisplayLabel = 'House'
+      FieldKind = fkCalculated
+      FieldName = 'luHouse'
+      Calculated = True
     end
   end
   object dsLane: TDataSource

@@ -111,7 +111,7 @@ implementation
 
 uses
   uSwimClub, uSession, uEvent, uHeat, uLane, uNominee,
-  uPickerStage, dlgLaneColumnPicker, ASGEdit;
+  uPickerStage, dlgLaneColumnPicker, ASGEdit, uStateString;
 
 procedure TFrameLane.actnLn_GenericUpdate(Sender: TObject);
 var
@@ -223,8 +223,7 @@ begin
         else if fld.FieldName = 'RaceTime' then CanEdit := true
         else if fld.FieldName = 'IsScratched' then CanEdit := true
         else if fld.FieldName = 'IsDisQualified' then CanEdit := true
-        else if fld.FieldName = 'luDQ' then CanEdit := true
-        else if fld.FieldName = 'ClubRecord' then CanEdit := true;
+        else if fld.FieldName = 'luDQ' then CanEdit := true;
       end;
       2: // RACED. racetime, s, q, dQ.
       begin
@@ -232,18 +231,12 @@ begin
         if fld.FieldName = 'RaceTime' then CanEdit := true
         else if fld.FieldName = 'IsScratched' then CanEdit := true
         else if fld.FieldName = 'IsDisQualified' then CanEdit := true
-        else if fld.FieldName = 'luDQ' then CanEdit := true
-        else if fld.FieldName = 'ClubRecord' then
-          CanEdit := true;
+        else if fld.FieldName = 'luDQ' then CanEdit := true;
       end;
       3: // CLOSED.
           CanEdit := false;
     end;
   end;
-
-
-
-
 end;
 
 procedure TFrameLane.gridClickCell(Sender: TObject; ARow, ACol: Integer);
@@ -341,7 +334,7 @@ begin
       // display dlg to select column visibility...
       dlg := TLaneColumnPicker.Create(Self);
       // Current string state, system state for default widths and grid ref.
-      dlg.Prepare(fStateStringExpanded, fStateStringSystem, Grid);
+      dlg.Prepare(fStateStringExpanded, Grid);
       // RULE. must call prepare before showing dialogue.
       mr := dlg.ShowModal();
       if (mr = mrOK) then
@@ -559,6 +552,7 @@ begin
   Grid.ColumnByFieldName['EventTypeID'].Width := 0;
 end;
 
+
 procedure TFrameLane.SetGridColumnStates;
 begin
   // EXPANDED or COLLAPSED grid views...
@@ -595,6 +589,8 @@ procedure TFrameLane.Loaded;
 var
   item: TCollectionItem;
   indx: integer;
+  ss: TStateString;
+
 begin
   inherited;
   // While all columns are visible at design time...
@@ -603,15 +599,16 @@ begin
   Grid.SetColumnOrder; // reference needed to restore state.
   fStateStringSystem := Grid.ColumnStatesToString;
 
-  // Let the user have the option to assign 'none' (or empty)
+  // ASSERT STATE: The user have the option to assign 'none' (or empty)
   // in the combobox drop-down for disqualification codes.
   item := Grid.ColumnByFieldName['luDQ'];
   TDBGridColumnItem(item).AllowBlank := true;
 
+  // ASSERT STATE: Collapsed Grid-View UI State...
   actnLn_GridView.Checked := false; // Collapsed - indicates fixed defult gridview.
   actnLn_HeatPicker.Visible := false; // hide. Button only visible when grid view is Expanded.
   spbtnGridView.ImageIndex := 12; // a button icon that displays a grid with slash.
-  // ASSERT: position all control icons to stack after btnGridView.
+  // position all control icons to stack after btnGridView.
   indx := rpnlCntrl.ControlCollection.IndexOf(ShapeLnBar2);
   if indx <> -1 then
     rpnlCntrl.ControlCollection.Items[indx].Below := spbtnGridView;
@@ -622,6 +619,11 @@ begin
   Grid.SetColumnOrder;
   // store the 'default grid design schema' column states.
   fStateStringCollapsed := Grid.ColumnStatesToString;
+  // DEBUG test ... correctly assigns width and visibility based on DB fld's state.
+  ss := TStateString.Create(fStateStringCollapsed);
+  ss.DBSyncStateString(Grid);
+  fStateStringCollapsed := ss.Value;
+  ss.free;
 
   // User's custom column layout that is displayed in expanded gridview.
   if Assigned(Settings) then

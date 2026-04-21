@@ -186,6 +186,11 @@ type
     qryEventluDistance: TStringField;
     qryEventABREV: TWideStringField;
     qrySwimClubCaptionShort: TWideStringField;
+    qryLaneEvPlace: TIntegerField;
+    qryLaneHtPlace: TIntegerField;
+    qryLaneEvScore: TFloatField;
+    qryLaneHtScore: TFloatField;
+    qryLaneluHouse: TStringField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure dsSwimClubDataChange(Sender: TObject; Field: TField);
@@ -197,6 +202,7 @@ type
     procedure qryHeatAfterScroll(DataSet: TDataSet);
     procedure qryLaneAfterScroll(DataSet: TDataSet);
     procedure qryLaneBeforePost(DataSet: TDataSet);
+    procedure qryLaneCalcFields(DataSet: TDataSet);
     procedure qryLaneClubRecordGetText(Sender: TField; var Text: string;
         DisplayText: Boolean);
     procedure qryLaneClubRecordSetText(Sender: TField; const Text: string);
@@ -547,6 +553,21 @@ end;
 procedure TCORE.qryLaneBeforePost(DataSet: TDataSet);
 begin
   ;
+
+end;
+
+procedure TCORE.qryLaneCalcFields(DataSet: TDataSet);
+begin
+  { DEFAULT...}
+  // DataSet.FieldByName('luHouse').Clear;
+
+  if DataSet.FieldByName('EventTypeID').AsInteger = 1 then // INDV
+  begin
+    {TODO -oBSA -cGeneral : Calculate the house for the memberID.
+      Create a query to ...
+      Join on nominee, swimclub(s) and member.
+      For grouped clubs select top 1 from query.}
+  end;
 
 end;
 

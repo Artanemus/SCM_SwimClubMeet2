@@ -1,7 +1,7 @@
 object FrameLane: TFrameLane
   Left = 0
   Top = 0
-  Width = 1101
+  Width = 1308
   Height = 526
   ParentShowHint = False
   ShowHint = True
@@ -311,29 +311,31 @@ object FrameLane: TFrameLane
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 1043
+    Width = 1250
     Height = 526
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Use NEW to start building events.'
     TabOrder = 1
+    ExplicitWidth = 1043
     object pnlG: TPanel
       Left = 0
       Top = 0
-      Width = 1043
+      Width = 1250
       Height = 526
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
+      ExplicitWidth = 1043
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 1043
+        Width = 1250
         Height = 526
         Cursor = crDefault
         Align = alClient
         Color = clWhite
-        ColCount = 13
+        ColCount = 18
         DefaultRowHeight = 32
         DrawingStyle = gdsClassic
         FixedColor = clWhite
@@ -1061,6 +1063,145 @@ object FrameLane: TFrameLane
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
             Width = 34
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'luHouse'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = 'House'
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 64
+          end
+          item
+            Alignment = taCenter
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'EvPlace'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            HeaderAlignment = taCenter
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 64
+          end
+          item
+            Alignment = taCenter
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'EvScore'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            HeaderAlignment = taCenter
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 64
+          end
+          item
+            Alignment = taCenter
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'HtPlace'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            HeaderAlignment = taCenter
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 64
+          end
+          item
+            Alignment = taCenter
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'HtScore'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            HeaderAlignment = taCenter
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 64
           end>
         DataSource = CORE.dsLane
         InvalidPicture.Data = {
@@ -1201,6 +1342,7 @@ object FrameLane: TFrameLane
           FFC003FF}
         ShowBooleanFields = True
         ShowUnicode = False
+        ExplicitWidth = 1043
         ColWidths = (
           20
           42
@@ -1214,7 +1356,12 @@ object FrameLane: TFrameLane
           100
           32
           39
-          34)
+          34
+          64
+          64
+          64
+          64
+          64)
       end
     end
   end

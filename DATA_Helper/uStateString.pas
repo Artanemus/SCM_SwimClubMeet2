@@ -29,55 +29,110 @@ uses
 type
 
 
-  TStateString = class(TObject)
+  TStateString = record
 
   private
     // Extraction of TMS GRID 'ColumnStateString' - contains 4 parts
     // Column-count[0], width[1], sort-order[2] and visibility [3]
     fParts: TArray<string>;
-
+    fColWidth: TArray<Integer>;
+    fColOrder: TArray<Integer>;
+    fColVisible: TArray<Integer>; // 0 or 1.
 
     fColCount: integer;
     fErrorCode: integer;
-    fStateString: string;
+    fValue: string;
+    fDefaultColWidth: integer;
 
-    function StringToIntList(const Values: string): TArray<Integer>;
-    procedure SetOrder(FromIndex, ToIndex: integer);
-
-  protected
-    procedure Disassemble(AStateString: string);
-    function Assemble: string;
-    procedure Prepare();
-    procedure SetStateString(Value: string);
-    function GetStateString(): string;
-
-  public
-
-    fColWidth: TArray<Integer>; // StateString widths. Uses sort-order
-    fColOrder: TArray<Integer>; // StateString column order. Base 0.
-    fColVisible: TArray<Integer>; // String value '0' or '1'. Ignored in TDBAdvGrid.
-
-
-    constructor Create;
-    destructor Destroy; override;
-    procedure ColumnMove(FromIndex, ToIndex: integer);
-    procedure SetColVisible(ABSindex: integer; visible: boolean);
-    procedure SetColWidth(ABSindex: integer; width: integer);
-
-    function GetColWidth(ABSindex: integer): integer; overload;
-    function GetColWidth(ABSindex: integer; AStateString: string): integer; overload;
     function LookUpREFindex(ABSindex: integer): integer;
+    function StringToIntList(const Values: string): TArray<Integer>;
+    procedure MoveOrder(FromIndex, ToIndex: integer);
+    procedure Disassemble;
+    function Assemble: string;
+    procedure SetValue(Value: string);
+    function GetValue(): string;
+    function GetErrorMessage(): string;
 
   public
-    property StateString: string read GetStateString write SetStateString;
+
+    procedure MoveColOrder(FromIndex, ToIndex: integer);
+
+    // Setters.
+    procedure SetColVisible(index: integer; visible: boolean);
+    procedure SetColWidth(index, width: integer);
+
+    // Getters.
+    { returns -1 (error) else width.}
+    function GetColWidth(index: integer): integer;
+    { returns tri-state -1 unknown (error), 0 false, 1 true}
+    function GetColVisible(index: integer): integer;
+    { returns -1 else the number at index.}
+    function GetColOrder(index: integer): integer;
+
+    { SPECIAL CASE ABS <--> REF
+      looks for the value given in ColOrder... if found, returns
+      the ColOrder's array index.  Else -1 (error) }
+    function GetColOrderIndex(value: integer): integer;
+
+    class operator Implicit(const AValue: string): TStateString;
+    class operator Explicit(const AValue: TStateString): string;
+    class operator Initialize(out Dest: TStateString);
+
+  public
+    property Value: string read GetValue write SetValue;
     property ErrorCode: integer read fErrorCode;
+    property ErrorCodeMsg: string read GetErrorMessage;
     property ColCount: Integer read FColCount;
+    property DefaultColWidth: integer read fDefaultColWidth write fDefaultColWidth;
 
   end;
+
+  const
+  ERR_CODE_SUCCESS = 0;
+  ERR_CODE_RANGE_CHECK_FAILED = 1;
+  ERR_CODE_BAD_PARTS_COUNT = 2;
+  ERR_CODE_BAD_STATE_STRING = 3;
+  
+  ERR_MSG_SUCCESS = 'No error';
+  ERR_MSG_RANGE_CHECK_FAILED = 'Column index range check failed.';
+  ERR_MSG_BAD_PARTS_COUNT = 'State string''s parts count failed.';
+  ERR_MSG_BAD_STATE_STRING = 'Badly formatted state string.';
+
 
 
 implementation
 
+class operator TStateString.Implicit(const AValue: string): TStateString;
+begin
+  Result.fValue := AValue;
+  Result.Disassemble;
+end;
+
+class operator TStateString.Initialize(out Dest: TStateString);
+begin
+  Dest.fErrorCode := ERR_CODE_SUCCESS;
+  Dest.fValue := '';
+  Dest.fDefaultColWidth := 30;
+end;
+
+class operator TStateString.Explicit(const AValue: TStateString): string;
+begin
+  { best coding practice is not to use this explicit assignment but
+    rather use TStateString.Value as it shows intent.}
+  Result := AValue.Assemble();
+end;
+
+function TStateString.GetErrorMessage: string;
+begin
+  case fErrorCode of
+    ERR_CODE_SUCCESS: Result := ERR_MSG_SUCCESS;
+    ERR_CODE_RANGE_CHECK_FAILED: Result := ERR_MSG_RANGE_CHECK_FAILED;
+    ERR_CODE_BAD_PARTS_COUNT: Result := ERR_MSG_BAD_PARTS_COUNT;
+    ERR_CODE_BAD_STATE_STRING: Result := ERR_MSG_BAD_STATE_STRING;
+  else
+    Result := 'Unknown error code: ' + IntToStr(ErrorCode);
+  end;
+end;
 
 function TStateString.Assemble: string;
 var
@@ -88,54 +143,67 @@ begin
   // Re-Assemble parts, comma delimeter string
   s1 := '';
   s2 := '';
-  for I := 0 to fColCount - 1 do
+
+  // check array length
+  if (Length(fColWidth) <> fColCount)
+    or (Length(fColOrder) <> fColCount)
+        or (Length(fColVisible) <> fColCount) then
+    fErrorCode := ERR_CODE_RANGE_CHECK_FAILED
+  else
   begin
-    s1 := s1 + IntToStr(fColWidth[I]) + ',';
-    s2 := s2 + IntToStr(fColOrder[I]) + ',';
-    s3 := s3 + IntToStr(fColVisible[I]) + ',';
+    for I := 0 to fColCount - 1 do
+    begin
+      s1 := s1 + IntToStr(fColWidth[I]) + ',';
+      s2 := s2 + IntToStr(fColOrder[I]) + ',';
+      s3 := s3 + IntToStr(fColVisible[I]) + ',';
+    end;
+    s1 := s1.TrimRight([',']);
+    s2 := s2.TrimRight([',']);
+    s3 := s3.TrimRight([',']);
+
+    fParts[1] := s1;
+    fParts[2] := s2;
+    fParts[3] := s3;
+
+    Result := string.Join('#', fParts);
+
+    fErrorCode := ERR_CODE_SUCCESS;
   end;
-  s1 := s1.TrimRight([',']);
-  s2 := s2.TrimRight([',']);
-  s3 := s3.TrimRight([',']);
-
-  fParts[1] := s1;
-  fParts[2] := s2;
-  fParts[3] := s3;
-
-  Result := string.Join('#', fParts);
 
 end;
 
 
-procedure TStateString.ColumnMove(FromIndex, ToIndex: integer);
+procedure TStateString.MoveColOrder(FromIndex, ToIndex: integer);
+var
+  RefFromIndex, RefToIndex: integer;
+
 begin
   if FromIndex=ToIndex then exit;
-  if fStateString.IsEmpty then  exit;
-  { dereference if required by using
-    ReferenceIndex := LookUpREFindex(FromIndex);}
-  SetOrder(FromIndex, ToIndex);
+  if fValue.IsEmpty then  exit;
+  RefFromIndex := LookUpREFindex(FromIndex);
+  RefToIndex := LookUpREFindex(ToIndex);
+  if (REFFromIndex = -1)  or (REFFromIndex = -1) then
+  begin
+    fErrorCode := ERR_CODE_RANGE_CHECK_FAILED;
+    exit;
+  end
+  else
+  begin
+    MoveOrder(FromIndex, ToIndex);
+    fErrorCode := ERR_CODE_SUCCESS;
+  end;
 end;
 
-constructor TStateString.Create;
-begin
-  inherited;
-  // TODO -cMM: TStateString.Create default body inserted
-  fErrorCode := -1;
-  fStateString:='';
-end;
 
-destructor TStateString.Destroy;
-begin
-  // TODO -cMM: TStateString.Destroy default body inserted
-  inherited;
-end;
 
-procedure TStateString.Disassemble(AStateString: string);
+procedure TStateString.Disassemble;
 begin
-  fParts := AStateString.Split(['#']);
+  if fValue.IsEmpty then exit;
+
+  fParts := fValue.Split(['#']);
   if Length(fParts) < 4 then
   begin
-    fErrorCode := 1;
+    fErrorCode := ERR_CODE_BAD_PARTS_COUNT;
     SetLength(fColWidth, 0);
     SetLength(fColOrder, 0);
     SetLength(fColVisible, 0);
@@ -145,7 +213,7 @@ begin
   fColCount := StrToIntDef(Trim(fParts[0]), 0);
   if (fColCount = 0) then
   begin
-    fErrorCode := 2;
+    fErrorCode := ERR_CODE_RANGE_CHECK_FAILED;
     SetLength(fColWidth, 0);
     SetLength(fColOrder, 0);
     SetLength(fColVisible, 0);
@@ -156,36 +224,44 @@ begin
   fColOrder := StringToIntList(fParts[2]);
   fColVisible := StringToIntList(fParts[3]);
 
-  fErrorCode := -1;
+  fErrorCode := ERR_CODE_SUCCESS;
 
 end;
 
-function TStateString.GetColWidth(ABSindex: integer; AStateString: string): integer;
+function TStateString.GetValue: string;
+begin
+  fValue := Assemble();
+  result := fValue;
+end;
+
+function TStateString.GetColOrder(index: integer): integer;
+begin
+  result := -1;
+  if (index>=LOW(fColOrder)) and (index <= HIGH(fColOrder)) then
+    result := fColOrder[index];
+end;
+
+function TStateString.GetColOrderIndex(value: integer): integer;
+begin
+  result := LookUpREFindex(value);
+end;
+
+function TStateString.GetColVisible(index: integer): integer;
 var
   REFindex: integer;
 begin
-  result := 0;
-  REFindex := LookUpREFindex(ABSindex);
+  result := -1;
+  REFindex := LookUpREFindex(index);
   if REFindex <> -1 then
-  begin
-    Disassemble(AStateString); // tempory state string.
-    result := fColWidth[REFindex]; // lookup tempory state string
-    Disassemble(fStateString); // restore state.
-  end;
+    result := fColVisible[REFindex];
 end;
 
-function TStateString.GetStateString: string;
-begin
-  fStateString := Assemble();
-  result := fStateString;
-end;
-
-function TStateString.GetColWidth(ABSindex: integer): integer;
+function TStateString.GetColWidth(index: integer): integer;
 var
   REFindex: integer;
 begin
-  result := 0;
-  REFindex := LookUpREFindex(ABSindex);
+  result := -1;
+  REFindex := LookUpREFindex(index);
   if REFindex <> -1 then
     result := fColWidth[REFindex];
 end;
@@ -205,15 +281,7 @@ begin
   end;
 end;
 
-procedure TStateString.Prepare();
-begin
-  if not fStateString.IsEmpty then
-    Disassemble(fStateString)
-  else
-    fErrorCode := 0;
-end;
-
-procedure TStateString.SetOrder(FromIndex, ToIndex: integer);
+procedure TStateString.MoveOrder(FromIndex, ToIndex: integer);
 var
   Value: integer;
 begin
@@ -236,33 +304,63 @@ begin
   end;
 end;
 
-procedure TStateString.SetColVisible(ABSindex: integer; visible: boolean);
+procedure TStateString.SetColVisible(index: integer; visible: boolean);
 var
   REFIndex: integer;
 begin
-  if (ABSindex >= 0) and (ABSindex <= fColCount) then
+  { NOTE: setting the visibility in a TMS ColumnStatesString has no effect
+    when using a TDBAdvGrid.
+    At design-time database fields that are not to be represented in the state
+    string are set to be Visible=false; }
+  if (index >= 0) and (index <= fColCount) then
   begin
-    { ASSUME: ABSindex is absolute refernce to dbo.qryLane.Fields[ABSindex]  }
-    REFIndex := LookUpREFindex(ABSindex);
-    { setting the visibility in a TMS ColumnStatesString has no effect
-      when using a TDBAdvGrid. }
-    fColVisible[REFIndex] := visible.ToInteger;
-    fColWidth[REFIndex] := 0;
+    { find the index located in fColOrder. }
+    REFIndex := LookUpREFindex(index);
+    if REFindex = -1 then
+      fErrorCode := ERR_CODE_RANGE_CHECK_FAILED
+    else
+    begin
+      fColVisible[REFIndex] := visible.ToInteger; // 0 or 1
+
+      // CHECK width and visibility states
+      if not visible then
+        // this is how we make the column invisible with TDBAdvGrid.
+        fColWidth[REFIndex] := 0
+      else
+      begin
+        // Required: we must have a column width!
+        if fColWidth[REFIndex] = 0 then
+        begin
+          // assign a default width..
+          {TODO -oBSA -cGeneral : Use design time width  }
+          fColWidth[REFIndex] := fDefaultColWidth;
+        end;
+      end;
+      fErrorCode := ERR_CODE_SUCCESS;
+    end;
   end;
 end;
 
-procedure TStateString.SetColWidth(ABSindex, width: integer);
+procedure TStateString.SetColWidth(index, width: integer);
 var
   REFIndex: integer;
 begin
-  if (ABSindex >= 0) and (ABSindex <= fColCount) and (width >= 0)then
+  if (index >= 0) and (index <= fColCount) and (width >= 0) then
   begin
-    REFIndex := LookUpREFindex(ABSindex);
-    { setting the visibility in a TMS ColumnStatesString has no effect
-      when using a TDBAdvGrid. }
-    fColWidth[REFIndex] := width;
-    if width = 0 then
-      fColVisible[REFIndex] := 0 else fColVisible[REFIndex] := 1;
+    REFIndex := LookUpREFindex(index);
+    if REFindex = -1 then
+      fErrorCode := ERR_CODE_RANGE_CHECK_FAILED
+    else
+    begin
+      { a width of 0 indicates that the column is hidden. }
+      fColWidth[REFIndex] := width;
+
+      // CHECK width and visibility states
+      if width = 0 then
+        fColVisible[REFIndex] := 0
+      else
+        fColVisible[REFIndex] := 1;
+    end;
   end;
 end;
 
@@ -277,10 +375,10 @@ begin
     Result[i] := StrToIntDef(Trim(Parts[i]), 0);
 end;
 
-procedure TStateString.SetStateString(Value: string);
+procedure TStateString.SetValue(Value: string);
 begin
-  fStateString := Value;
-  Prepare();
+  fValue := Value;
+  Disassemble;
 end;
 
 end.

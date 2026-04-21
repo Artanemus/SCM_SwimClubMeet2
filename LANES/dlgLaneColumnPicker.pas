@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages,
-  System.SysUtils, System.Variants, System.Classes,
+  System.SysUtils, System.Variants, System.Classes, System.Contnrs,
 
   Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.CheckLst,
@@ -17,6 +17,27 @@ uses
   dmSCM2, dmCORE, dmIMG, uDefines, uSettings, uStateString;
 
 type
+
+
+  TLaneItem = class(TObject)
+  private
+  protected
+    // CORE.qryLane metrics...
+    fFieldName: string;   // DB field name
+    fFieldIndex: integer;  // DB ABS index
+    fFieldVisible: boolean; // Visibility
+    fFieldDisplayLabel: string; // User friendly, descriptive.
+    // Design time metrics...
+    fSysColWidth: integer; // ref fStateStringSystem
+    // Run-time TMS TDBAdvgrid.ColumnStateString
+    fColIndex: integer; // sync fFieldIndex with fColIndex.
+    fColWidth: integer;
+  public
+    constructor Create;
+    destructor Destroy; override;
+
+  end;
+
   TLaneColumnPicker = class(TForm)
     pnlBody: TPanel;
     clbLane: TCheckListBox;
@@ -34,19 +55,16 @@ type
   private
     { Private declarations }
     fDoReset: boolean;
-    fStateStringSystem: string;
-    MyStateString: TStateString; // Columns count, width, order, visibility.
-
+    fStateString: string;
+    LaneItems: TObjectList;
   protected
-    function GetStateString(): string;
 
   public
     { Public declarations }
-    procedure Prepare(AStateString: string; const AStateStringSystem: string;
-        AGrid: TDBAdvGrid);
+    procedure Prepare(AStateString: string; AGrid: TDBAdvGrid);
 
     property DoReset: boolean read FDoReset write FDoReset;
-    property StateString: string read GetStateString;
+    property StateString: string read fStateString;
 
   end;
 
@@ -57,58 +75,43 @@ implementation
 
 {$R *.dfm}
 
+
 procedure TLaneColumnPicker.FormDestroy(Sender: TObject);
 begin
-
-  MyStateString.Free;
+  LaneItems.Clear;
+  LaneItems.Free;
 end;
 
 procedure TLaneColumnPicker.clbLaneClickCheck(Sender: TObject);
 var
-  REFindx: integer;
-  TempStateString: TStateString;
-  fld: TField;
-  width: integer;
+  ss: TStateString; // record to deal with TMS's StateStrings.
+  LI: TLaneItem;
 begin
-  if Assigned(MyStateString) then
-  begin
-    // toggle visibility
-    MyStateString.fColVisible[clbLane.ItemIndex] :=
-      clbLane.Checked[clbLane.ItemIndex].ToInteger;
-    // Set column width using system state string.
-
-    fld := TField(clbLane.Items.Objects[clbLane.ItemIndex]);
-    if fld<>nil then
-    begin
-      // calculate a width for the column using fStateStringSystem.
-      TempStateString := TStateString.Create;
-      TempStateString.StateString := fStateStringSystem;
-      REFindx := TempStateString.LookUpREFindex(fld.Index);
-      if REFindx <> -1 then
-      begin
-        width := TempStateString.fColWidth[REFindx];
-        width := TempStateString.GetColWidth(fld.index);
-        MyStateString.fColWidth[clbLane.ItemIndex] := width;
-      end;
-      TempStateString.Free;
-    end;
-
+  ss := fStateString; // note: value here was assigned in Prepare()
+  try
+    // get the lane item data
+    LI := TLaneItem(LaneItems.items[clbLane.ItemIndex]);
+    // use the ABS index - the Grid's true column index.
+    // toggle visibility   (ABS index, checked/un-checked)
+    ss.SetColVisible(LI.fColIndex, clbLane.Checked[clbLane.ItemIndex]);
+    if ss.ErrorCode = 0 then
+      // update the string.
+      fStateString := ss.Value;
+  finally
   end;
 end;
 
 procedure TLaneColumnPicker.FormCreate(Sender: TObject);
 begin
   fDoReset := false;
-  // empty any items placed at design-time for UI calibration.
-  clbLane.Items.Clear;
+  clbLane.Items.Clear; // empty any items placed at design-time.
   // system checks
   if not (Assigned(CORE) and CORE.IsActive) or CORE.qryLane.IsEmpty then
   begin
     ModalResult := mrCancel;
     Close;
   end;
-
-  MyStateString := TStateString.Create;
+  LaneItems := TObjectList.Create(true); // Owns objects.
 end;
 
 procedure TLaneColumnPicker.FormKeyDown(Sender: TObject; var Key: Word; Shift:
@@ -122,80 +125,88 @@ begin
   end;
 end;
 
-function TLaneColumnPicker.GetStateString: string;
-begin
-  result := '';
-  if Assigned(MyStateString) then
-  begin
-    result := MyStateString.StateString;
-  end;
-end;
-
-function BlackList(Name: string): boolean;
-begin
-  result := true;
-  { 1. filter out PK and FK}
-  if Name = 'LaneID' then exit;
-  if Name = 'HeatID' then exit;
-  if Name = 'TeamID' then exit;
-  if Name = 'NomineeID' then exit;
-  if Name = 'DisqualifyCodeID' then exit;
-  // Include EventTypeID in list...
-  // if Name = 'EventTypeID' then exit;
-
-  { 2. filter out either DQ or simplified fields based on
-      the disqualification flag in settings...}
-  if Assigned(Settings) and Settings.EnableDQcodes then
-  begin
-    if (Name = 'IsDisqualified')
-      OR (Name = 'IsScratched') then exit;
-  end
-  else
-  begin
-    if (Name = 'luDQ') then exit;
-  end;
-  result := false;
-end;
-
-procedure TLaneColumnPicker.Prepare(AStateString: string; const
-    AStateStringSystem: string; AGrid: TDBAdvGrid);
+procedure TLaneColumnPicker.Prepare(AStateString: string; AGrid: TDBAdvGrid);
 var
-  I: Integer;
+  I, J, indx: Integer;
   fld: TField;
+  LI: TLaneItem;
+  GI: TDBGridColumnItem;
+  ss: TStateString;
+  DS: TDataSet;
 begin
-  if Assigned(MyStateString) then
-  begin
-    MyStateString.StateString := AStateString;
+    fStateString := AStateString; // snap-shot of the grids UI
 
-    fStateStringSystem := AStateStringSystem;
-    for I := 0 to MyStateString.ColCount-1 do
+    // Add fields that are visible to the LaneItems array.
+    DS := AGrid.DataSource.DataSet;
+    for I := 0 to DS.Fields.Count-1 do
     begin
-      // Black-Listif field not assigned....
-      fld := AGrid.FieldAtColumn[I];
+      fld := DS.Fields[I];
       if fld <> nil then
       begin
-        // Black-List if special system field - not available to user.
-        if not BlackList(fld.FieldName) then
+        if fld.Visible then
         begin
-          clbLane.AddItem(fld.DisplayLabel, fld);
-          { Set check box here - bounds error. }
+          LI := TLaneItem.Create;
+          LI.fFieldName := fld.FieldName;
+          LI.fFieldIndex := fld.Index;  // sync reference.
+          LI.fFieldVisible := fld.Visible; // Visibility = on the White-List.
+          LI.fFieldDisplayLabel := fld.DisplayLabel;
+          indx := LaneItems.Add(LI);
+        end;
+      end;
+    end;
+    // add the sync data: Grid's ColIndex <--> DataBase FieldIndex.
+    for J :=0 to AGrid.Columns.Count-1 do
+    begin
+      GI := AGrid.Columns[J];
+      for I := 0 to LaneItems.Count-1 do
+      begin
+        LI := TLaneItem(LaneItems.Items[I]);
+        if GI.FieldName = LI.fFieldName then
+        begin
+          LI.fColIndex := j; // sync reference.
+          LI.FColWidth := GI.Width; // may be helpful to set a default width.
+          continue;
         end;
       end;
     end;
 
-    // required second pass - else out-of-bounds errors
-    for I := 0 to MyStateString.ColCount-1 do
+    ss := AStateString; // special record to work with TMS's StateStrings.
+
+    // ... ADD visible items to the check list box.
+    for J := 0 to ss.ColCount-1 do
     begin
-      if (I >= 0) and (I < clbLane.Count) then
+      //
+      indx := ss.GetColOrder(J);
+      for I := 0 to LaneItems.Count-1 do
       begin
-        if MyStateString.fColWidth[I] <> 0 then
-          clbLane.Checked[i] := true
-        else
-          clbLane.Checked[i] := false;
+        LI := TLaneItem(LaneItems.Items[I]);
+        if LI.fColIndex = indx then
+        begin
+          // visible items are stacked at the top of the list
+          if LI.fColwidth > 0 then
+            // matching sort order as displayed in grid. grid.
+            clbLane.AddItem(LI.fFieldDisplayLabel, LI);
         end;
+      end;
     end;
 
-  end;
+    // ... ADD hidden items to the check list box.
+    for J := 0 to ss.ColCount-1 do
+    begin
+      //
+      indx := ss.GetColOrder(J);
+      for I := 0 to LaneItems.Count-1 do
+      begin
+        LI := TLaneItem(LaneItems.Items[I]);
+        if LI.fColIndex = indx then
+        begin
+          // hidden items are stacked at the bottom of the list
+          if LI.fColwidth = 0 then
+            clbLane.AddItem(LI.fFieldDisplayLabel, LI);
+        end;
+      end;
+    end;
+
 end;
 
 procedure TLaneColumnPicker.spbtnCloseClick(Sender: TObject);
@@ -208,6 +219,22 @@ procedure TLaneColumnPicker.spbtnResetGrigLayoutClick(Sender: TObject);
 begin
   fDoReset := true;
   ModalResult := mrOK;
+end;
+
+constructor TLaneItem.Create;
+begin
+  inherited;
+  fFieldName := '';
+  fFieldIndex := -1;
+  fFieldVisible := true;
+  fSysColWidth := 30;
+  fColINDEX := -1;
+end;
+
+destructor TLaneItem.Destroy;
+begin
+  inherited;
+  // TODO -cMM: TLaneItem.Destroy default body inserted
 end;
 
 end.

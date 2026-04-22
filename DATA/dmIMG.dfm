@@ -2780,6 +2780,37 @@ object IMG: TIMG
           'oke-linecap="round" stroke-linejoin="round" stroke-width="2" d="' +
           'M5 8h22M5 16h22M5 24h22"/></svg>'
         FixedColor = clDarkgoldenrod
+      end
+      item
+        IconName = 'reset-wrench'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="m16.325 18.8l-' +
+          '2.2 2.2L12 18.875l2.2-2.2q-.1-.275-.15-.575t-.05-.6q0-1.45 1.025' +
+          '-2.475T17.5 12q.45 0 .875.113t.8.312L16.8 14.8l1.4 1.4l2.375-2.3' +
+          '5q.2.375.313.788T21 15.5q0 1.45-1.025 2.475T17.5 19q-.325 0-.612' +
+          '-.05t-.563-.15m4.45-8.8H18.7q-.65-2.2-2.475-3.6T12 5Q9.075 5 7.0' +
+          '37 7.038T5 12q0 1.8.813 3.3T8 17.75V15h2v6H4v-2h2.35Q4.8 17.75 3' +
+          '.9 15.938T3 12q0-1.875.713-3.512t1.924-2.85t2.85-1.925T12 3q3.22' +
+          '5 0 5.663 1.988T20.775 10"/></svg>'
+      end
+      item
+        IconName = 'upload-file'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M11 19h2v-4.17' +
+          '5l1.6 1.6L16 15l-4-4l-4 4l1.425 1.4L11 14.825zm-5 3q-.825 0-1.41' +
+          '2-.587T4 20V4q0-.825.588-1.412T6 2h8l6 6v12q0 .825-.587 1.413T18' +
+          ' 22zm7-13V4H6v16h12V9zM6 4v5zv16z"/></svg>'
+      end
+      item
+        IconName = 'download-file'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="m12 17l4-4l-1.' +
+          '4-1.4l-1.6 1.55V9h-2v4.15L9.4 11.6L8 13zm-6 5q-.825 0-1.412-.587' +
+          'T4 20V8l6-6h8q.825 0 1.413.588T20 4v16q0 .825-.587 1.413T18 22zm' +
+          '0-2h12V4h-7.15L6 8.85zm0 0h12z"/></svg>'
       end>
     Left = 496
     Top = 16

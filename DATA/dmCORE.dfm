@@ -761,6 +761,7 @@ object CORE: TCORE
     Left = 240
     Top = 232
     object qryLaneLaneID: TFDAutoIncField
+      DisplayWidth = 20
       FieldName = 'LaneID'
       Origin = 'LaneID'
       ProviderFlags = [pfInWhere, pfInKey]
@@ -769,11 +770,13 @@ object CORE: TCORE
     object qryLaneLaneNum: TIntegerField
       Alignment = taCenter
       DisplayLabel = 'Lane Number'
+      DisplayWidth = 42
       FieldName = 'LaneNum'
       Origin = 'LaneNum'
     end
     object qryLaneFullName: TWideStringField
       DisplayLabel = 'Entrants Full Name'
+      DisplayWidth = 220
       FieldName = 'FullName'
       Origin = 'FullName'
       Size = 257
@@ -781,7 +784,7 @@ object CORE: TCORE
     object qryLaneRaceTime: TTimeField
       Alignment = taRightJustify
       DisplayLabel = 'Race-Time'
-      DisplayWidth = 9
+      DisplayWidth = 90
       FieldName = 'RaceTime'
       Origin = 'RaceTime'
       OnGetText = qryLaneRaceTimeGetText
@@ -792,7 +795,7 @@ object CORE: TCORE
     object qryLaneTTB: TTimeField
       Alignment = taRightJustify
       DisplayLabel = 'TTB (Time To Beat.)'
-      DisplayWidth = 9
+      DisplayWidth = 90
       FieldName = 'TTB'
       Origin = 'TTB'
       OnGetText = qryLaneTTBGetText
@@ -802,7 +805,7 @@ object CORE: TCORE
     object qryLanePB: TTimeField
       Alignment = taRightJustify
       DisplayLabel = 'PB (Personal Best)'
-      DisplayWidth = 9
+      DisplayWidth = 90
       FieldName = 'PB'
       Origin = 'PB'
       OnGetText = qryLanePBGetText
@@ -811,16 +814,19 @@ object CORE: TCORE
     end
     object qryLaneIsDisqualified: TBooleanField
       DisplayLabel = 'Is Disqualified'
+      DisplayWidth = 39
       FieldName = 'IsDisqualified'
       Origin = 'IsDisqualified'
     end
     object qryLaneIsScratched: TBooleanField
       DisplayLabel = 'Is Scratched'
+      DisplayWidth = 39
       FieldName = 'IsScratched'
       Origin = 'IsScratched'
     end
     object qryLaneluDQ: TStringField
       DisplayLabel = 'DQ CODE'
+      DisplayWidth = 47
       FieldKind = fkLookup
       FieldName = 'luDQ'
       LookupDataSet = tblDisqualifyCode
@@ -832,7 +838,7 @@ object CORE: TCORE
     object qryLaneClubRecord: TTimeField
       Alignment = taRightJustify
       DisplayLabel = 'Club Record'
-      DisplayWidth = 9
+      DisplayWidth = 100
       FieldName = 'ClubRecord'
       Origin = 'ClubRecord'
       OnGetText = qryLaneClubRecordGetText
@@ -843,18 +849,19 @@ object CORE: TCORE
     object qryLaneGenderABREV: TWideStringField
       Alignment = taCenter
       DisplayLabel = 'Gender (M,F,X)'
+      DisplayWidth = 32
       FieldName = 'GenderABREV'
       Origin = 'GenderABREV'
       Size = 2
     end
     object qryLaneAGE: TIntegerField
-      DisplayWidth = 2
+      DisplayWidth = 39
       FieldName = 'AGE'
       Origin = 'AGE'
     end
     object qryLaneEventTypeID: TIntegerField
       DisplayLabel = 'Event Type (INDV.RELAY)'
-      DisplayWidth = 2
+      DisplayWidth = 34
       FieldName = 'EventTypeID'
       Origin = 'EventTypeID'
     end
@@ -880,30 +887,31 @@ object CORE: TCORE
     end
     object qryLaneEvPlace: TIntegerField
       DisplayLabel = 'Event Place'
-      DisplayWidth = 5
+      DisplayWidth = 64
       FieldName = 'EvPlace'
       Origin = 'EvPlace'
     end
     object qryLaneHtPlace: TIntegerField
       DisplayLabel = 'Heat Place'
-      DisplayWidth = 5
+      DisplayWidth = 64
       FieldName = 'HtPlace'
       Origin = 'HtPlace'
     end
     object qryLaneEvScore: TFloatField
       DisplayLabel = 'Event Score'
-      DisplayWidth = 5
+      DisplayWidth = 64
       FieldName = 'EvScore'
       Origin = 'EvScore'
     end
     object qryLaneHtScore: TFloatField
       DisplayLabel = 'Heat Score'
-      DisplayWidth = 5
+      DisplayWidth = 64
       FieldName = 'HtScore'
       Origin = 'HtScore'
     end
     object qryLaneluHouse: TStringField
       DisplayLabel = 'House'
+      DisplayWidth = 64
       FieldKind = fkCalculated
       FieldName = 'luHouse'
       Calculated = True

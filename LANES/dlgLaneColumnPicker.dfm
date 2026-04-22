@@ -4,7 +4,7 @@ object LaneColumnPicker: TLaneColumnPicker
   BorderStyle = bsDialog
   Caption = 'Lane - Column Picker...'
   ClientHeight = 486
-  ClientWidth = 268
+  ClientWidth = 384
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,18 +18,21 @@ object LaneColumnPicker: TLaneColumnPicker
   OnKeyDown = FormKeyDown
   TextHeight = 21
   object pnlBody: TPanel
-    Left = 0
+    Left = 58
     Top = 0
-    Width = 268
-    Height = 334
+    Width = 326
+    Height = 486
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitLeft = 0
+    ExplicitWidth = 268
+    ExplicitHeight = 334
     object clbLane: TCheckListBox
       Left = 0
       Top = 0
-      Width = 268
-      Height = 334
+      Width = 326
+      Height = 486
       Align = alClient
       CheckBoxPadding = 4
       ItemHeight = 25
@@ -39,67 +42,203 @@ object LaneColumnPicker: TLaneColumnPicker
         'line 3')
       TabOrder = 0
       OnClickCheck = clbLaneClickCheck
+      ExplicitWidth = 268
+      ExplicitHeight = 334
     end
   end
-  object spnlFooter: TStackPanel
+  object rpnlCntrl: TRelativePanel
     Left = 0
-    Top = 334
-    Width = 268
-    Height = 152
-    Align = alBottom
+    Top = 0
+    Width = 58
+    Height = 486
     ControlCollection = <
       item
         Control = spbtnClose
-        HorizontalPositioning = sphpFill
-        VerticalPositioning = spvpTop
-      end
-      item
-        Control = spbtnSaveGridMetrics
-        HorizontalPositioning = sphpFill
-        VerticalPositioning = spvpTop
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = True
+        AlignVerticalCenterWithPanel = False
       end
       item
         Control = spbtnLoadGridMetrics
-        HorizontalPositioning = sphpFill
-        VerticalPositioning = spvpTop
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnSaveGridMetrics
       end
       item
         Control = spbtnResetGrigLayout
-        HorizontalPositioning = sphpFill
-        VerticalPositioning = spvpTop
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnLoadGridMetrics
+      end
+      item
+        Control = spbtnSaveGridMetrics
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnClose
+      end
+      item
+        Control = spbtnUpdate
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnResetGrigLayout
       end>
-    Spacing = 4
+    Align = alLeft
+    BevelOuter = bvNone
+    Padding.Top = 10
     TabOrder = 1
+    DesignSize = (
+      58
+      486)
     object spbtnClose: TSpeedButton
-      Left = 1
-      Top = 1
-      Width = 266
-      Height = 32
-      Caption = 'CLOSE'
+      Left = 5
+      Top = 10
+      Width = 48
+      Height = 48
+      Hint = 'Update UI and close.'
+      Anchors = []
+      ImageIndex = 0
+      ImageName = 'close'
+      Images = SVGList
+      Layout = blGlyphTop
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 0
       OnClick = spbtnCloseClick
     end
-    object spbtnSaveGridMetrics: TSpeedButton
-      Left = 1
-      Top = 37
-      Width = 266
-      Height = 32
-      Caption = 'Save Layout'
-      Flat = True
-    end
     object spbtnLoadGridMetrics: TSpeedButton
-      Left = 1
-      Top = 73
-      Width = 266
-      Height = 32
-      Caption = 'Load Layout'
+      Left = 5
+      Top = 106
+      Width = 48
+      Height = 48
+      Hint = 'Load layout from file.'
+      Anchors = []
+      ImageIndex = 3
+      ImageName = 'upload-file'
+      Images = SVGList
+      Layout = blGlyphTop
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 0
     end
     object spbtnResetGrigLayout: TSpeedButton
-      Left = 1
-      Top = 109
-      Width = 266
-      Height = 32
-      Caption = 'RESET'
+      Left = 5
+      Top = 154
+      Width = 48
+      Height = 48
+      Hint = 'Reset to system default layout.'
+      Anchors = []
+      ImageIndex = 2
+      ImageName = 'reset-wrench'
+      Images = SVGList
+      Layout = blGlyphTop
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 0
       OnClick = spbtnResetGrigLayoutClick
     end
+    object spbtnSaveGridMetrics: TSpeedButton
+      Left = 5
+      Top = 58
+      Width = 48
+      Height = 48
+      Hint = 'Save layout to file.'
+      Anchors = []
+      ImageIndex = 4
+      ImageName = 'download-file'
+      Images = SVGList
+      Flat = True
+      Layout = blGlyphTop
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 0
+    end
+    object spbtnUpdate: TSpeedButton
+      Left = 5
+      Top = 202
+      Width = 48
+      Height = 48
+      Hint = 'Update UI. '
+      Anchors = []
+      ImageIndex = 5
+      ImageName = 'update'
+      Images = SVGList
+      Layout = blGlyphTop
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 0
+      OnClick = spbtnResetGrigLayoutClick
+    end
+  end
+  object SVGList: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 78
+        CollectionName = 'close'
+        Name = 'close'
+      end
+      item
+        CollectionIndex = 56
+        CollectionName = 'cancel'
+        Name = 'cancel'
+      end
+      item
+        CollectionIndex = 119
+        CollectionName = 'reset-wrench'
+        Name = 'reset-wrench'
+      end
+      item
+        CollectionIndex = 120
+        CollectionName = 'upload-file'
+        Name = 'upload-file'
+      end
+      item
+        CollectionIndex = 121
+        CollectionName = 'download-file'
+        Name = 'download-file'
+      end
+      item
+        CollectionIndex = 93
+        CollectionName = 'update'
+        Name = 'update'
+      end>
+    ImageCollection = IMG.CollectionCore
+    Width = 48
+    Height = 48
+    Size = 48
+    Left = 184
+    Top = 248
+  end
+  object FileOpenDlg: TFileOpenDialog
+    FavoriteLinks = <>
+    FileTypes = <>
+    Options = []
+    Left = 266
+    Top = 128
+  end
+  object FileSaveDlg: TFileSaveDialog
+    FavoriteLinks = <>
+    FileTypes = <>
+    Options = []
+    Left = 266
+    Top = 192
   end
 end

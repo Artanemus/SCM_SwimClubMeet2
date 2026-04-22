@@ -317,21 +317,20 @@ object FrameLane: TFrameLane
     BevelOuter = bvNone
     Caption = 'Use NEW to start building events.'
     TabOrder = 1
-    ExplicitWidth = 1043
     object pnlG: TPanel
       Left = 0
       Top = 0
       Width = 1250
-      Height = 526
+      Height = 491
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitWidth = 1043
+      ExplicitHeight = 526
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
         Width = 1250
-        Height = 526
+        Height = 491
         Cursor = crDefault
         Align = alClient
         Color = clWhite
@@ -1342,7 +1341,7 @@ object FrameLane: TFrameLane
           FFC003FF}
         ShowBooleanFields = True
         ShowUnicode = False
-        ExplicitWidth = 1043
+        ExplicitLeft = 1
         ColWidths = (
           20
           42
@@ -1362,6 +1361,22 @@ object FrameLane: TFrameLane
           64
           64
           64)
+      end
+    end
+    object pnlDebug: TPanel
+      Left = 0
+      Top = 491
+      Width = 1250
+      Height = 35
+      Align = alBottom
+      BevelOuter = bvNone
+      TabOrder = 1
+      object lblStateString: TLabel
+        Left = 16
+        Top = 6
+        Width = 57
+        Height = 15
+        Caption = 'StateString'
       end
     end
   end

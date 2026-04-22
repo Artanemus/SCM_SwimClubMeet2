@@ -42,7 +42,6 @@ type
     fColCount: integer;
     fErrorCode: integer;
     fValue: string;
-    fDefaultColWidth: integer;
 
     function LookUpREFindex(ABSindex: integer): integer;
     function StringToIntList(const Values: string): TArray<Integer>;
@@ -55,10 +54,12 @@ type
 
   public
 
+    procedure AssertVisible(); // needed as a TMS TDBAdvGrid ignores param.
     procedure MoveColOrder(FromIndex, ToIndex: integer);
 
     // Setters.
-    procedure SetColVisible(index: integer; visible: boolean);
+    procedure SetColVisible(index: integer; visible: boolean; defWidth: Integer =
+        20);
     procedure SetColWidth(index, width: integer);
 
     // Getters.
@@ -83,7 +84,6 @@ type
     property ErrorCode: integer read fErrorCode;
     property ErrorCodeMsg: string read GetErrorMessage;
     property ColCount: Integer read FColCount;
-    property DefaultColWidth: integer read fDefaultColWidth write fDefaultColWidth;
 
   end;
 
@@ -112,7 +112,6 @@ class operator TStateString.Initialize(out Dest: TStateString);
 begin
   Dest.fErrorCode := ERR_CODE_SUCCESS;
   Dest.fValue := '';
-  Dest.fDefaultColWidth := 30;
 end;
 
 class operator TStateString.Explicit(const AValue: TStateString): string;
@@ -172,7 +171,6 @@ begin
 
 end;
 
-
 procedure TStateString.MoveColOrder(FromIndex, ToIndex: integer);
 var
   RefFromIndex, RefToIndex: integer;
@@ -182,7 +180,7 @@ begin
   if fValue.IsEmpty then  exit;
   RefFromIndex := LookUpREFindex(FromIndex);
   RefToIndex := LookUpREFindex(ToIndex);
-  if (REFFromIndex = -1)  or (REFFromIndex = -1) then
+  if (REFFromIndex = -1)  or (RefToIndex = -1) then
   begin
     fErrorCode := ERR_CODE_RANGE_CHECK_FAILED;
     exit;
@@ -194,7 +192,13 @@ begin
   end;
 end;
 
-
+procedure TStateString.AssertVisible;
+var
+  I: Integer;
+begin
+  for I := 0 to fColCount-1 do
+    fColVisible[I] := 1;
+end;
 
 procedure TStateString.Disassemble;
 begin
@@ -253,7 +257,10 @@ begin
   result := -1;
   REFindex := LookUpREFindex(index);
   if REFindex <> -1 then
-    result := fColVisible[REFindex];
+  begin
+    if fColWidth[REFindex] > 0 then result := 1;
+    if fColWidth[REFindex] <= 0 then result := 0;
+  end;
 end;
 
 function TStateString.GetColWidth(index: integer): integer;
@@ -293,9 +300,9 @@ begin
     Delete(fColOrder, FromIndex, 1); // delete 1 item at FromIndex.
     Insert([Value],fColOrder, ToIndex); // src, dest, FromIndex
 
-    Value := fColVisible[FromIndex];
-    Delete(fColVisible, FromIndex, 1); // delete 1 item at FromIndex.
-    Insert([Value],fColVisible, ToIndex); // src, dest, FromIndex
+//    Value := fColVisible[FromIndex];
+//    Delete(fColVisible, FromIndex, 1); // delete 1 item at FromIndex.
+//    Insert([Value],fColVisible, ToIndex); // src, dest, FromIndex
 
     Value := fColWidth[FromIndex];
     Delete(fColWidth, FromIndex, 1); // delete 1 item at FromIndex.
@@ -304,7 +311,8 @@ begin
   end;
 end;
 
-procedure TStateString.SetColVisible(index: integer; visible: boolean);
+procedure TStateString.SetColVisible(index: integer; visible: boolean;
+    defWidth: Integer = 20);
 var
   REFIndex: integer;
 begin
@@ -320,22 +328,12 @@ begin
       fErrorCode := ERR_CODE_RANGE_CHECK_FAILED
     else
     begin
-      fColVisible[REFIndex] := visible.ToInteger; // 0 or 1
-
-      // CHECK width and visibility states
-      if not visible then
-        // this is how we make the column invisible with TDBAdvGrid.
-        fColWidth[REFIndex] := 0
-      else
+      if visible and  (fColWidth[REFIndex] = 0) then
       begin
-        // Required: we must have a column width!
-        if fColWidth[REFIndex] = 0 then
-        begin
-          // assign a default width..
-          {TODO -oBSA -cGeneral : Use design time width  }
-          fColWidth[REFIndex] := fDefaultColWidth;
-        end;
+        fColWidth[REFIndex] := defWidth;
+        if fColWidth[REFIndex] < 20 then fColWidth[REFIndex] := 20;
       end;
+      if not visible then fColWidth[REFIndex] := 0;
       fErrorCode := ERR_CODE_SUCCESS;
     end;
   end;
@@ -351,16 +349,8 @@ begin
     if REFindex = -1 then
       fErrorCode := ERR_CODE_RANGE_CHECK_FAILED
     else
-    begin
       { a width of 0 indicates that the column is hidden. }
       fColWidth[REFIndex] := width;
-
-      // CHECK width and visibility states
-      if width = 0 then
-        fColVisible[REFIndex] := 0
-      else
-        fColVisible[REFIndex] := 1;
-    end;
   end;
 end;
 

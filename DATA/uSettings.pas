@@ -63,6 +63,8 @@ type
 
     Ln_ColumnStatesStringExpanded: string; // Line expanded grid.column state.
     Ev_ColumnStatesStringExpanded: string; // Event expanded grid.column state.
+    Ln_ColumnStatesStringSystem: string; // DEFAULT Line state string.
+    Ev_ColumnStatesStringSystem: string; // DEFAULT Event state state.
 
 
     constructor Create(); overload;
@@ -142,6 +144,8 @@ begin
 
   Ln_ColumnStatesStringExpanded := '';
   Ev_ColumnStatesStringExpanded := '';
+  Ln_ColumnStatesStringSystem := '';
+  Ev_ColumnStatesStringSystem := '';
 
   EnableDQcodes := false; // use simple DQ method. (not FINA Codes).
 

@@ -127,7 +127,7 @@ Begin
   // initialise out params.
   aMetrics.TTB := 0;
   aMetrics.PB := 0;
-  aMetrics.ClubRecord := 0;
+  aMetrics.RecordTime := 0;
   aMetrics.PBSeedTime := 0;
   aMetrics.AGE := 0;
   aMetrics.GenderABREV := '';
@@ -152,7 +152,7 @@ Begin
       // personal best time for [stroke, distance].
       aMetrics.PB := CORE.qryMemberMetrics.FieldByName('PB').AsDateTime;
       // club record race-time for [age, gender, stroke, distance].
-      aMetrics.ClubRecord := CORE.qryMemberMetrics.FieldByName('ClubRecord').AsDateTime;
+      aMetrics.RecordTime := CORE.qryMemberMetrics.FieldByName('ClubRecord').AsDateTime;
       // an estimated race-time assigned during nomination..
       // i.e. new member with no historical data or member hasn't ever
       // swum this [stroke, distance].
@@ -233,7 +233,7 @@ begin
           CORE.qryNominee.Edit;
           CORE.qryNominee.FieldByName('TTB').AsDateTime := Metrics.TTB;
           CORE.qryNominee.FieldByName('PB').AsDateTime := Metrics.PB;
-          CORE.qryNominee.FieldByName('ClubRecord').AsDateTime := Metrics.ClubRecord;
+          CORE.qryNominee.FieldByName('RecordTime').AsDateTime := Metrics.RecordTime;
           CORE.qryNominee.FieldByName('AGE').AsINteger := Metrics.AGE;
           CORE.qryNominee.FieldByName('PBSeedTime').AsDateTime := Metrics.PBSeedTime;
           CORE.qryNominee.Post;
@@ -268,7 +268,7 @@ begin
       CORE.qryNominee.Edit;
       CORE.qryNominee.FieldByName('TTB').AsDateTime := Metrics.TTB;
       CORE.qryNominee.FieldByName('PB').AsDateTime := Metrics.PB;
-      CORE.qryNominee.FieldByName('ClubRecord').AsDateTime := Metrics.ClubRecord;
+      CORE.qryNominee.FieldByName('RecordTime').AsDateTime := Metrics.RecordTime;
       CORE.qryNominee.FieldByName('AGE').AsINteger := Metrics.AGE;
       CORE.qryNominee.FieldByName('PBSeedTime').AsDateTime := Metrics.PBSeedTime;
       CORE.qryNominee.Post;
@@ -305,7 +305,7 @@ begin
         CORE.qryNominee.FieldByName('TTB').AsDateTime := Metrics.TTB;
         CORE.qryNominee.FieldByName('PB').AsDateTime := Metrics.PB;
         CORE.qryNominee.FieldByName('PBSeedTime').AsDateTime := Metrics.PBSeedTime;
-        CORE.qryNominee.FieldByName('ClubRecord').AsDateTime := Metrics.ClubRecord;
+        CORE.qryNominee.FieldByName('RecordTime').AsDateTime := Metrics.RecordTime;
         CORE.qryNominee.FieldByName('MemberID').AsInteger := aMemberID;
         CORE.qryNominee.FieldByName('EventID').AsInteger := aEventID;
         CORE.qryNominee.Post;

@@ -2733,7 +2733,7 @@ object Main2: TMain2
     object DBTextClubName: TDBText
       Left = 6
       Top = 0
-      Width = 159
+      Width = 116
       Height = 20
       AutoSize = True
       DataField = 'Caption'
@@ -2749,7 +2749,7 @@ object Main2: TMain2
     object DBTextNickName: TDBText
       Left = 6
       Top = 18
-      Width = 102
+      Width = 91
       Height = 15
       AutoSize = True
       DataField = 'NickName'

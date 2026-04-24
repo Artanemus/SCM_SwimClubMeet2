@@ -25,9 +25,6 @@ object LaneColumnPicker: TLaneColumnPicker
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitLeft = 0
-    ExplicitWidth = 268
-    ExplicitHeight = 334
     object clbLane: TCheckListBox
       Left = 0
       Top = 0
@@ -42,8 +39,6 @@ object LaneColumnPicker: TLaneColumnPicker
         'line 3')
       TabOrder = 0
       OnClickCheck = clbLaneClickCheck
-      ExplicitWidth = 268
-      ExplicitHeight = 334
     end
   end
   object rpnlCntrl: TRelativePanel
@@ -89,7 +84,7 @@ object LaneColumnPicker: TLaneColumnPicker
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
-        Below = spbtnClose
+        Below = spbtnDown
       end
       item
         Control = spbtnUpdate
@@ -100,6 +95,26 @@ object LaneColumnPicker: TLaneColumnPicker
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
         Below = spbtnResetGrigLayout
+      end
+      item
+        Control = spbtnUp
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnClose
+      end
+      item
+        Control = spbtnDown
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnUp
       end>
     Align = alLeft
     BevelOuter = bvNone
@@ -126,7 +141,7 @@ object LaneColumnPicker: TLaneColumnPicker
     end
     object spbtnLoadGridMetrics: TSpeedButton
       Left = 5
-      Top = 106
+      Top = 202
       Width = 48
       Height = 48
       Hint = 'Load layout from file.'
@@ -141,7 +156,7 @@ object LaneColumnPicker: TLaneColumnPicker
     end
     object spbtnResetGrigLayout: TSpeedButton
       Left = 5
-      Top = 154
+      Top = 250
       Width = 48
       Height = 48
       Hint = 'Reset to system default layout.'
@@ -157,7 +172,7 @@ object LaneColumnPicker: TLaneColumnPicker
     end
     object spbtnSaveGridMetrics: TSpeedButton
       Left = 5
-      Top = 58
+      Top = 154
       Width = 48
       Height = 48
       Hint = 'Save layout to file.'
@@ -173,13 +188,45 @@ object LaneColumnPicker: TLaneColumnPicker
     end
     object spbtnUpdate: TSpeedButton
       Left = 5
-      Top = 202
+      Top = 298
       Width = 48
       Height = 48
       Hint = 'Update UI. '
       Anchors = []
       ImageIndex = 5
       ImageName = 'update'
+      Images = SVGList
+      Layout = blGlyphTop
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 0
+      OnClick = spbtnResetGrigLayoutClick
+    end
+    object spbtnUp: TSpeedButton
+      Left = 5
+      Top = 58
+      Width = 48
+      Height = 48
+      Hint = 'Update UI. '
+      Anchors = []
+      ImageIndex = 6
+      ImageName = 'up'
+      Images = SVGList
+      Layout = blGlyphTop
+      ParentShowHint = False
+      ShowHint = True
+      Spacing = 0
+      OnClick = spbtnResetGrigLayoutClick
+    end
+    object spbtnDown: TSpeedButton
+      Left = 5
+      Top = 106
+      Width = 48
+      Height = 48
+      Hint = 'Update UI. '
+      Anchors = []
+      ImageIndex = 7
+      ImageName = 'down'
       Images = SVGList
       Layout = blGlyphTop
       ParentShowHint = False
@@ -219,6 +266,16 @@ object LaneColumnPicker: TLaneColumnPicker
         CollectionIndex = 93
         CollectionName = 'update'
         Name = 'update'
+      end
+      item
+        CollectionIndex = 26
+        CollectionName = 'up'
+        Name = 'up'
+      end
+      item
+        CollectionIndex = 27
+        CollectionName = 'down'
+        Name = 'down'
       end>
     ImageCollection = IMG.CollectionCore
     Width = 48

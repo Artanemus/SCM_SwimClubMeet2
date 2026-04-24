@@ -55,7 +55,7 @@ const
     EventID: integer;
     TTB: TDateTime;
     PB: TDateTime;
-    ClubRecord: TDateTime;
+    RecordTime: TDateTime;
     PBSeedTime: TDateTime;
     AGE: integer;
     GenderABREV: string;

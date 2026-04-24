@@ -53,6 +53,7 @@ type
     actnLn_HeatPicker: TAction;
     pnlDebug: TPanel;
     lblStateString: TLabel;
+    btnUpdateLableStateString: TButton;
     procedure actnLn_GenericUpdate(Sender: TObject);
     procedure actnLn_RefreshStatExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
@@ -72,9 +73,9 @@ type
         string);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
     procedure actnLn_GridViewExecute(Sender: TObject);
+    procedure btnUpdateLableStateStringClick(Sender: TObject);
   private
     FOnGridViewChange: TFrameNotifyLane_GridViewChange;
-
 
     { Design Time Grid UI state. Captured on load.
       Captures column widths for all fields.}
@@ -85,8 +86,6 @@ type
       User may include/excude columns when in expanded grid view. }
     fStateStringExpanded: String;
 
-
-    procedure SetGridColumnStates;
     procedure SetGridView_IconIndex;
     procedure SetDefGridSchemaState();
 
@@ -138,22 +137,21 @@ var
 begin
   LaneAction := TAction(Sender);
 
-//  grid.BeginUpdate;
-//  CORE.qryLane.DisableControls;
-
-  // Store the state of 'expanded' grid view.
-  // if LaneAction.Checked then
-    // fStateStringExpanded :=  Grid.ColumnStatesToString;
-
-  lblStateString.Caption := fStateStringExpanded;
+  grid.BeginUpdate;
+  CORE.qryLane.DisableControls;
 
   LaneAction.Checked := not LaneAction.Checked; // TOGGLE
+
   try
     SetGridView_IconIndex; // uses actnEv_GridView.Checked state.
 
     if LaneAction.Checked then
     begin
+      // capture the collapsed state prior to expanding.
+      fStateStringCollapsed := Grid.ColumnStatesToString;
+      Grid.ReSetColumnOrder;
       Grid.StringToColumnStates(fStateStringExpanded);
+
       actnLn_HeatPicker.Visible := true;
       indx := rpnlCntrl.ControlCollection.IndexOf(ShapeLnBar2);
       if indx <> -1 then
@@ -164,6 +162,9 @@ begin
     end
     else
     begin
+      // capture the expanded state prior to collapsing.
+      fStateStringExpanded := Grid.ColumnStatesToString;
+      Grid.ReSetColumnOrder;
       Grid.StringToColumnStates(fStateStringCollapsed);
       actnLn_HeatPicker.Visible := false;
       indx := rpnlCntrl.ControlCollection.IndexOf(ShapeLnBar2);
@@ -176,8 +177,8 @@ begin
 
   finally
     begin
-//      CORE.qryLane.EnableControls;
-//      grid.EndUpdate;
+      CORE.qryLane.EnableControls;
+      grid.EndUpdate;
     end;
   end;
 
@@ -206,6 +207,11 @@ destructor TFrameLane.Destroy;
 begin
   ;
   inherited;
+end;
+
+procedure TFrameLane.btnUpdateLableStateStringClick(Sender: TObject);
+begin
+  lblStateString.Caption := Grid.ColumnStatesToString;
 end;
 
 procedure TFrameLane.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var
@@ -302,7 +308,7 @@ begin
           success := stage.Stage(uEvent.GetEventType,  uLane.PK, false);
         stage.free;
       end;
-      if fld.FieldName = 'ClubRecord' then
+      if fld.FieldName = 'RecordTime' then
       begin
         // display a balloon hint with details on record
         // who swum the time, the date, age, gender, etc
@@ -327,39 +333,27 @@ begin
   // Must be in EXPANDED column mode to alter grid columns, withs, index, etc.
   if (ARow = 0) and (ACol = 0) and actnLn_GridView.Checked then
   begin
-    // Snapshot of the current column, width, order, visibility.
-    // May not work correctly if performed during BeginUpdate...EndUpdate.
-    fStateStringExpanded := Grid.ColumnStatesToString;
-    lblStateString.Caption := fStateStringExpanded;
-
     LockDrawing;
     Grid.BeginUpdate;
     try
       // display dlg to select column visibility...
       dlg := TLaneColumnPicker.Create(Self);
       // Current string state, system state for default widths and grid ref.
-      dlg.Prepare(fStateStringExpanded, Grid);
+      dlg.Prepare(Grid);
       // RULE. must call prepare before showing dialogue.
       mr := dlg.ShowModal();
       if (mr = mrOK) then
       begin
-//        if dlg.DoReset then
-//           Set the expanded string satte to SCM default grid view.
-//          Grid.StringToColumnStates(fStateStringCollapsed)
-//        else
-//        begin
+          Grid.ReSetColumnOrder;
           // Move the new string state into expanded grid view.
           fStateStringExpanded := dlg.StateString;
-//        end;
+          // apply UI changes to the grid.
+          Grid.StringToColumnStates(fStateStringExpanded);
       end;
       dlg.Free;
-
     finally
       Grid.EndUpdate;
       UnLockDrawing;
-
-      // apply UI changes to the grid.
-      Grid.StringToColumnStates(fStateStringExpanded);
     end;
   end;
 end;
@@ -428,7 +422,7 @@ begin
 //        Grid.BtnEdit.ButtonWidth := 32;
 //        Grid.BtnEdit.Button.ButtonCaption := '...'
       end
-      else if fld.FieldName = 'ClubRecord' then
+      else if fld.FieldName = 'RecordTime' then
       begin
         AEditor := edEditBtn;
         Grid.BtnEdit.EditorEnabled := False; // disables typing
@@ -538,7 +532,7 @@ begin
 
   // ASSERT field visibility per SCM (version 1) schema.
   CORE.qryLane.FieldByName('LaneID').Visible := false;
-  CORE.qryLane.FieldByName('ClubRecord').Visible := false;
+  CORE.qryLane.FieldByName('RecordTime').Visible := false;
   CORE.qryLane.FieldByName('HeatID').Visible := false;
   CORE.qryLane.FieldByName('TeamID').Visible := false;
   CORE.qryLane.FieldByName('NomineeID').Visible := false;
@@ -546,7 +540,7 @@ begin
   CORE.qryLane.FieldByName('AGE').Visible := false;
   CORE.qryLane.FieldByName('EventTypeID').Visible := false;
   // extended stuff
-  CORE.qryLane.FieldByName('ClubRecord').Visible := false;
+  CORE.qryLane.FieldByName('RecordTime').Visible := false;
   CORE.qryLane.FieldByName('luHouse').Visible := false;
   CORE.qryLane.FieldByName('EvScore').Visible := false;
   CORE.qryLane.FieldByName('EvPlace').Visible := false;
@@ -557,7 +551,7 @@ begin
   OnPreferenceChange;
 
   // Set grid visiblity for EXPANDED grid columns .
-  Grid.ColumnByFieldName['ClubRecord'].Width := 0;
+  Grid.ColumnByFieldName['RecordTime'].Width := 0;
   Grid.ColumnByFieldName['EventTypeID'].Width := 0;
   Grid.ColumnByFieldName['GenderABREV'].Width := 0;
   Grid.ColumnByFieldName['AGE'].Width := 0;
@@ -566,24 +560,6 @@ begin
   Grid.ColumnByFieldName['EvPlace'].Width := 0;
   Grid.ColumnByFieldName['HtScore'].Width := 0;
   Grid.ColumnByFieldName['HtPlace'].Width := 0;
-end;
-
-
-procedure TFrameLane.SetGridColumnStates;
-begin
-  // EXPANDED or COLLAPSED grid views...
-  if actnLn_GridView.Checked then
-  begin  // EXPANDED...
-//    Grid.ResetColumnOrder;
-    Grid.StringToColumnStates(fStateStringExpanded);
-  end
-  else
-  begin  // COLLAPSED...  (DEFAULT VIEW)
-//    Grid.ResetColumnOrder;
-    Grid.StringToColumnStates(fStateStringCollapsed);
-    { ALTERNATIVE - stable ...}
-    // SetDefGridSchemaState();
-  end;
 end;
 
 procedure TFrameLane.SetGridView_IconIndex;
@@ -629,8 +605,9 @@ begin
 
   // The default 'lane' grid column order, width, visibility used by SCM1
   SetDefGridSchemaState();
+
   // Performed again as this is the preferred state for a grid UI reset.
-  Grid.SetColumnOrder;
+  // Grid.SetColumnOrder;
   // store the 'default grid design schema' column states.
   fStateStringCollapsed := Grid.ColumnStatesToString;
 
@@ -648,7 +625,6 @@ begin
   else
     fStateStringExpanded := Grid.ColumnStatesToString;
 
-  lblStateString.Caption := fStateStringExpanded;
 
   OnEventTypeChange(CORE.qryLane.FieldByName('EventTypeID').AsInteger);
 end;
@@ -713,7 +689,10 @@ begin
       pnlBody.Visible := true;
       pnlG.Visible := true;
       grid.Enabled := true;
-//      grid.Refresh;
+      grid.BeginUpdate;
+      grid.ResetColumnOrder;
+      grid.StringToColumnStates(fStateStringCollapsed);
+      grid.EndUpdate;
       UnlockDrawing;
   end;
 

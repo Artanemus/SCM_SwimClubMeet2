@@ -82,8 +82,7 @@ uses
   dlgTeamPickerCTRL in 'LANES\dlgTeamPickerCTRL.pas' {TeamPickerCTRL},
   uPickerStage in 'LANES\uPickerStage.pas',
   dlgEditSession in 'SESSIONS\dlgEditSession.pas' {EditSession},
-  dlgNewSession in 'SESSIONS\dlgNewSession.pas' {NewSession},
-  frmReportManTest in 'frmReportManTest.pas' {ReportManTest};
+  dlgNewSession in 'SESSIONS\dlgNewSession.pas' {NewSession};
 
 {$R *.res}
 

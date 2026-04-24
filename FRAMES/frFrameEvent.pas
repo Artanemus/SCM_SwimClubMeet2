@@ -166,6 +166,7 @@ procedure TFrameEvent.actnEv_GridViewExecute(Sender: TObject);
 begin
     TAction(Sender).Checked := not TAction(Sender).Checked; // T O G G L E .
     grid.BeginUpdate;
+    CORE.qryEvent.CheckBrowseMode;
     CORE.qryEvent.DisableControls;
     try
       SetGridView_IconIndex;  // uses actnEv_GridView.Checked state.

@@ -43,7 +43,6 @@ type
     fErrorCode: integer;
     fValue: string;
 
-    function LookUpREFindex(ABSindex: integer): integer;
     function StringToIntList(const Values: string): TArray<Integer>;
     procedure MoveOrder(FromIndex, ToIndex: integer);
     procedure Disassemble;
@@ -53,13 +52,8 @@ type
     function GetErrorMessage(): string;
 
   public
-
-    procedure AssertVisible(); // needed as a TMS TDBAdvGrid ignores param.
     procedure MoveColOrder(FromIndex, ToIndex: integer);
-
     // Setters.
-    procedure SetColVisible(index: integer; visible: boolean; defWidth: Integer =
-        20);
     procedure SetColWidth(index, width: integer);
 
     // Getters.
@@ -69,11 +63,6 @@ type
     function GetColVisible(index: integer): integer;
     { returns -1 else the number at index.}
     function GetColOrder(index: integer): integer;
-
-    { SPECIAL CASE ABS <--> REF
-      looks for the value given in ColOrder... if found, returns
-      the ColOrder's array index.  Else -1 (error) }
-    function GetColOrderIndex(value: integer): integer;
 
     class operator Implicit(const AValue: string): TStateString;
     class operator Explicit(const AValue: TStateString): string;
@@ -172,15 +161,11 @@ begin
 end;
 
 procedure TStateString.MoveColOrder(FromIndex, ToIndex: integer);
-var
-  RefFromIndex, RefToIndex: integer;
 
 begin
   if FromIndex=ToIndex then exit;
-  if fValue.IsEmpty then  exit;
-  RefFromIndex := LookUpREFindex(FromIndex);
-  RefToIndex := LookUpREFindex(ToIndex);
-  if (REFFromIndex = -1)  or (RefToIndex = -1) then
+  if fValue.IsEmpty then exit;
+  if (FromIndex = -1)  or (ToIndex = -1) then
   begin
     fErrorCode := ERR_CODE_RANGE_CHECK_FAILED;
     exit;
@@ -190,14 +175,6 @@ begin
     MoveOrder(FromIndex, ToIndex);
     fErrorCode := ERR_CODE_SUCCESS;
   end;
-end;
-
-procedure TStateString.AssertVisible;
-var
-  I: Integer;
-begin
-  for I := 0 to fColCount-1 do
-    fColVisible[I] := 1;
 end;
 
 procedure TStateString.Disassemble;
@@ -245,47 +222,18 @@ begin
     result := fColOrder[index];
 end;
 
-function TStateString.GetColOrderIndex(value: integer): integer;
-begin
-  result := LookUpREFindex(value);
-end;
-
 function TStateString.GetColVisible(index: integer): integer;
-var
-  REFindex: integer;
 begin
   result := -1;
-  REFindex := LookUpREFindex(index);
-  if REFindex <> -1 then
-  begin
-    if fColWidth[REFindex] > 0 then result := 1;
-    if fColWidth[REFindex] <= 0 then result := 0;
-  end;
+  if (index>=LOW(fColVisible)) and (index <= HIGH(fColVisible)) then
+    result := fColVisible[index];
 end;
 
 function TStateString.GetColWidth(index: integer): integer;
-var
-  REFindex: integer;
 begin
   result := -1;
-  REFindex := LookUpREFindex(index);
-  if REFindex <> -1 then
-    result := fColWidth[REFindex];
-end;
-
-function TStateString.LookUpREFindex(ABSindex: integer): integer;
-var
-  I: Integer;
-begin
-  result := -1;
-  for I := 0 to High(fColOrder) do
-  begin
-    if fColOrder[I] = ABSindex then
-    begin
-      result := I;
-      break;
-    end;
-  end;
+  if (index >= LOW(fColWidth)) and (index <= HIGH(fColWidth)) then
+    result := fColWidth[index];
 end;
 
 procedure TStateString.MoveOrder(FromIndex, ToIndex: integer);
@@ -311,46 +259,12 @@ begin
   end;
 end;
 
-procedure TStateString.SetColVisible(index: integer; visible: boolean;
-    defWidth: Integer = 20);
-var
-  REFIndex: integer;
-begin
-  { NOTE: setting the visibility in a TMS ColumnStatesString has no effect
-    when using a TDBAdvGrid.
-    At design-time database fields that are not to be represented in the state
-    string are set to be Visible=false; }
-  if (index >= 0) and (index <= fColCount) then
-  begin
-    { find the index located in fColOrder. }
-    REFIndex := LookUpREFindex(index);
-    if REFindex = -1 then
-      fErrorCode := ERR_CODE_RANGE_CHECK_FAILED
-    else
-    begin
-      if visible and  (fColWidth[REFIndex] = 0) then
-      begin
-        fColWidth[REFIndex] := defWidth;
-        if fColWidth[REFIndex] < 20 then fColWidth[REFIndex] := 20;
-      end;
-      if not visible then fColWidth[REFIndex] := 0;
-      fErrorCode := ERR_CODE_SUCCESS;
-    end;
-  end;
-end;
-
 procedure TStateString.SetColWidth(index, width: integer);
-var
-  REFIndex: integer;
 begin
-  if (index >= 0) and (index <= fColCount) and (width >= 0) then
+  if (index>=LOW(fColOrder)) and (index <= HIGH(fColOrder)) then
   begin
-    REFIndex := LookUpREFindex(index);
-    if REFindex = -1 then
-      fErrorCode := ERR_CODE_RANGE_CHECK_FAILED
-    else
       { a width of 0 indicates that the column is hidden. }
-      fColWidth[REFIndex] := width;
+      fColWidth[Index] := width;
   end;
 end;
 

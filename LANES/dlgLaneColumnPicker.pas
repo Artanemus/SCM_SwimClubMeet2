@@ -24,20 +24,14 @@ type
   protected
     // CORE.qryLane metrics...
     fFieldName: string; // DB field name
-    fFieldIndex: integer; // DB ABS index
-    fFieldVisible: boolean; // Visibility
     fFieldDisplayLabel: string; // User friendly, descriptive.
-    fFieldDisplayWidth: integer;
-    // Design time metrics...
-    fSysColWidth: integer; // ref fStateStringSystem
-    // Run-time TMS TDBAdvgrid.ColumnStateString
-    fColIndex: integer; // sync fFieldIndex with fColIndex.
-    fColWidth: integer;
-    fCBLIndex: integer;
+    fFieldDisplayWidth: integer; // Design-Time metric..
+    fSysColWidth: integer; // Default system width (fall-back).
+    fColOrderIndex: integer; // StateString value
+    fLastKnowGridWidth: integer; // Last user metrics.
   public
     constructor Create;
     destructor Destroy; override;
-
   end;
 
   TLaneColumnPicker = class(TForm)
@@ -52,6 +46,8 @@ type
     spbtnUpdate: TSpeedButton;
     FileOpenDlg: TFileOpenDialog;
     FileSaveDlg: TFileSaveDialog;
+    spbtnUp: TSpeedButton;
+    spbtnDown: TSpeedButton;
     procedure FormDestroy(Sender: TObject);
     procedure clbLaneClickCheck(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -60,21 +56,15 @@ type
     procedure spbtnResetGrigLayoutClick(Sender: TObject);
   private
     { Private declarations }
-    fStateString: string;
+    ss: TStateString;
     LaneItems: TObjectList;
     function GetStateString(): string;
   protected
-    procedure FillCheckBoxList(AStateString: string);
-
-    {indxType
-      0-fcolindx
-      1-ffieldindx
-      2-cblindex}
-    function LookUpLaneItem(indx: integer; LaneItems: TObjectList; indxType:
-      Integer = 0): TLaneItem;
+    procedure FillCheckBoxList;
+    function LookUpSysDefWidth(ABSIndex: integer; DataSetName: string): integer;
   public
     { Public declarations }
-    procedure Prepare(AStateString: string; AGrid: TDBAdvGrid);
+    procedure Prepare(AGrid: TDBAdvGrid);
 
     property StateString: string read GetStateString;
 
@@ -95,104 +85,77 @@ end;
 
 procedure TLaneColumnPicker.clbLaneClickCheck(Sender: TObject);
 var
-  ss: TStateString; // record to deal with TMS's StateStrings.
   LI: TLaneItem;
   width: integer;
 begin
-  ss := fStateString; // note: value here was assigned in Prepare()
   // get the lane item data using the stored fCBLIndex...
-  LI := LookUpLaneItem(clbLane.ItemIndex, LaneItems, 2);
+  LI := TLaneItem(clbLane.Items.Objects[clbLane.ItemIndex]);
   if LI <> nil then
   begin
-    width := LI.fColWidth;
-    if width = 0 then
-      width := LI.fFieldDisplayWidth;
-    if width = 0 then
-      width := LI.fSysColWidth;
-    if (width < 20) then
-      width := 20;
-    // use the Grid's column index.
-    // toggle visibility   (ABS index, checked/un-checked)
-    ss.SetColVisible(LI.fColIndex, clbLane.Checked[clbLane.ItemIndex], width);
-    if ss.ErrorCode = 0 then
-      // update the string.
-      fStateString := ss.Value;
+    if clbLane.Checked[clbLane.ItemIndex] then
+    begin
+      width := ss.GetColWidth(LI.fColOrderIndex);
+      if width = 0 then
+        width := LI.fLastKnowGridWidth;
+      if width = 0 then
+        width := LI.fFieldDisplayWidth;
+      if width = 0 then
+        width := LI.fSysColWidth; // Fall-Back.
+      if (width < 20) then
+        width := 20;
+    end
+    else
+      width := 0;
+    // update the state string
+    ss.SetColWidth(LI.fColOrderIndex, width);
   end;
 end;
 
-function TLaneColumnPicker.LookUpLaneItem(indx: integer; LaneItems:
-  TObjectList; indxType: Integer = 0): TLaneItem;
-var
-  LI: TLaneItem;
-  I: integer;
-begin
-  result := nil;
-  for I := 0 to LaneItems.Count - 1 do
-  begin
-    LI := TLaneItem(LaneItems.Items[I]);
-    case indxType of
-      0:
-        if LI.fColIndex = indx then
-        begin
-          result := LI;
-          break;
-        end;
-      1:
-        if LI.fFieldIndex = indx then
-        begin
-          result := LI;
-          break;
-        end;
-      2:
-        if LI.fCBLIndex = indx then
-        begin
-          result := LI;
-          break;
-        end;
-    end;
-  end;
-end;
 
-procedure TLaneColumnPicker.FillCheckBoxList(AStateString: string);
+
+procedure TLaneColumnPicker.FillCheckBoxList;
 var
-  indx: integer;
+  indx, I: integer;
   J: Integer;
   LI: TLaneItem;
-  ss: TStateString;
-
 begin
-  ss := AStateString; // special record to work with TMS's StateStrings.
-
-
-  { Use sort order as given in statestring. }
-
-  // ... ADD visible items to the check list box.
+  { Use sort order as given in statestring.
+  ... ADD visible items to the check list box.  }
   for J := 0 to ss.ColCount - 1 do
   begin
-    indx := ss.GetColOrder(J);
-    if indx = -1 then continue;
-    LI := LookUpLaneItem(indx, LaneItems, 0);
-    if LI = nil then continue;
-
-    if LI.fColwidth > 0 then // visible items are stacked first.
+    if ss.GetColwidth(j) > 0 then // visible items are stacked first.
     begin
-      indx := clbLane.Items.AddObject(LI.fFieldDisplayLabel, LI);
-      clbLane.Checked[indx] := true;
-      LI.fCBLIndex := indx;
+      LI := nil;
+      for I := 0 to LaneItems.Count - 1 do
+      begin
+        LI := TLaneItem(LaneItems[I]);
+        if LI.fColOrderIndex = j then
+          break;
+      end;
+      if LI<>nil then
+      begin
+        indx := clbLane.Items.AddObject(LI.fFieldDisplayLabel, LI);
+        clbLane.Checked[indx] := true;
+      end;
     end;
   end;
   // ... ADD hidden items to the check list box.
   for J := 0 to ss.ColCount - 1 do
   begin
-    indx := ss.GetColOrder(J);
-    if indx = -1 then continue;
-    LI := LookUpLaneItem(indx, LaneItems, 0);
-    if LI = nil then continue;
-    if LI.fColwidth = 0 then // invisible items are stacked last.
+    if ss.GetColWidth(J) = 0 then // in-visible items are stacked last.
     begin
-      indx := clbLane.Items.AddObject(LI.fFieldDisplayLabel, LI);
-      clbLane.Checked[indx] := false;
-      LI.fCBLIndex := indx;
+      LI := nil;
+      for I := 0 to LaneItems.Count - 1 do
+      begin
+        LI := TLaneItem(LaneItems[I]);
+        if LI.fColOrderIndex = J then
+            break;
+      end;
+      if LI <> nil then
+      begin
+        indx := clbLane.Items.AddObject(LI.fFieldDisplayLabel, LI);
+        clbLane.Checked[indx] := false;
+      end;
     end;
   end;
 end;
@@ -221,43 +184,69 @@ end;
 
 function TLaneColumnPicker.GetStateString: string;
 begin
-  { This ensures that columns with width = 0 are invisible.}
-  result := fStateString;
+  result := ss.value;
 end;
 
-procedure TLaneColumnPicker.Prepare(AStateString: string; AGrid: TDBAdvGrid);
+function TLaneColumnPicker.LookUpSysDefWidth(ABSIndex: integer;
+  DataSetName: string): integer;
 var
-  J: Integer;
+  s: string;
+  SysStateString: TStateString;
+  width: integer;
+begin
+  result := 64;
+  if Assigned(Settings) then
+  begin
+    if DataSetName = 'qryLane' then
+      s := Settings.Ln_ColumnStatesStringSystem
+    else if DataSetName = 'qryEvent' then
+      s := Settings.Ev_ColumnStatesStringSystem
+    else
+      exit;
+
+    if not s.IsEmpty then
+    begin
+      SysStateString := s;
+      width := SysStateString.GetColWidth(ABSIndex);
+      if width > 0 then Result := width;
+    end;
+  end;
+end;
+
+procedure TLaneColumnPicker.Prepare(AGrid: TDBAdvGrid);
+var
+  J, RealColIndex: Integer;
   fld: TField;
   LI: TLaneItem;
   GI: TDBGridColumnItem;
   DS: TDataSet;
 begin
-  fStateString := AStateString; // store.
+
+  ss := AGrid.ColumnStatesToString; // StateString TESTED - OK!
 
   clbLane.Items.Clear;
   DS := AGrid.DataSource.DataSet;
-  // Populate the LaneItems array.
-  for J := 0 to AGrid.Columns.Count - 1 do
+
+  { Populate the LaneItems array.}
+  for J := 0 to ss.ColCount - 1 do
   begin
-    GI := AGrid.Columns[J];
-    fld := DS.FieldByName(AGrid.Columns[J].FieldName);
+    RealColIndex := ss.GetColOrder(j); // value held here is the TMS RealColIndex.
+    GI := AGrid.Columns[j]; // TMS auto - sortorder to realcol done here.
+    fld := DS.FieldByName(GI.FieldName);
     if fld <> nil then
     begin
       LI := TLaneItem.Create;
       LI.fFieldName := fld.FieldName;
-      LI.fFieldIndex := fld.Index; // sync reference. ABS
-      LI.fFieldVisible := fld.Visible; // Visibility = on the White-List.
       LI.fFieldDisplayLabel := fld.DisplayLabel;
       LI.fFieldDisplayWidth := fld.DisplayWidth;
-      LI.fColIndex := AGrid.RealColIndex(J); // sync reference. ABS?
-      LI.FColWidth := GI.Width; // last know width. 0=hidden.
-      LI.fSysColWidth := 0;  // obtain from Settings.Ln_ColumnStateStringSys
+      LI.fColOrderIndex := J; // sync point used by CheckBoxList to ref. StateString.
+      LI.fLastKnowGridWidth := GI.Width; // last know TMS grid width. 0 = hidden.
+      LI.fSysColWidth := LookUpSysDefWidth(RealColIndex, DS.Name); // default 64;
       LaneItems.Add(LI);
     end;
   end;
 
-  FillCheckBoxList(AStateString);
+  FillCheckBoxList;
 
 end;
 
@@ -267,25 +256,16 @@ begin
 end;
 
 procedure TLaneColumnPicker.spbtnResetGrigLayoutClick(Sender: TObject);
-var
-  s: string;
 begin
-  if Assigned(Settings) then
-  begin
-    s := Settings.Ln_ColumnStatesStringSystem;
-    FillCheckBoxList(s);
-  end;
+  // use system default layout.
 end;
 
 constructor TLaneItem.Create;
 begin
   inherited;
   fFieldName := '';
-  fFieldIndex := -1;
-  fFieldVisible := true;
   fSysColWidth := 30;
-  fColINDEX := -1;
-  fCBLIndex := -1;
+  fColOrderIndex := -1;
 end;
 
 destructor TLaneItem.Destroy;
@@ -295,4 +275,3 @@ begin
 end;
 
 end.
-

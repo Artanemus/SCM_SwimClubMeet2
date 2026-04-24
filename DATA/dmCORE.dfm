@@ -153,6 +153,7 @@ object CORE: TCORE
   end
   object qryEvent: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     AfterEdit = qryEventAfterEdit
     AfterScroll = qryEventAfterScroll
     OnNewRecord = qryEventNewRecord
@@ -652,6 +653,7 @@ object CORE: TCORE
   end
   object qryLane: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     BeforePost = qryLaneBeforePost
     AfterScroll = qryLaneAfterScroll
     OnCalcFields = qryLaneCalcFields
@@ -678,7 +680,7 @@ object CORE: TCORE
       'SELECT L.[LaneID]'
       '      ,L.[LaneNum]'
       '      ,L.[RaceTime]'
-      '      ,Nominee.[ClubRecord]'
+      '      ,Nominee.[RecordTime]'
       '      ,L.[IsDisqualified]'
       '      ,L.[IsScratched]'
       '      ,L.[HeatID]'
@@ -837,10 +839,10 @@ object CORE: TCORE
     end
     object qryLaneClubRecord: TTimeField
       Alignment = taRightJustify
-      DisplayLabel = 'Club Record'
+      DisplayLabel = 'Record-Time'
       DisplayWidth = 100
-      FieldName = 'ClubRecord'
-      Origin = 'ClubRecord'
+      FieldName = 'RecordTime'
+      Origin = 'RecordTime'
       OnGetText = qryLaneClubRecordGetText
       OnSetText = qryLaneClubRecordSetText
       DisplayFormat = 'nn:ss.zzz'
@@ -887,31 +889,31 @@ object CORE: TCORE
     end
     object qryLaneEvPlace: TIntegerField
       DisplayLabel = 'Event Place'
-      DisplayWidth = 64
+      DisplayWidth = 72
       FieldName = 'EvPlace'
       Origin = 'EvPlace'
     end
     object qryLaneHtPlace: TIntegerField
       DisplayLabel = 'Heat Place'
-      DisplayWidth = 64
+      DisplayWidth = 72
       FieldName = 'HtPlace'
       Origin = 'HtPlace'
     end
     object qryLaneEvScore: TFloatField
       DisplayLabel = 'Event Score'
-      DisplayWidth = 64
+      DisplayWidth = 82
       FieldName = 'EvScore'
       Origin = 'EvScore'
     end
     object qryLaneHtScore: TFloatField
       DisplayLabel = 'Heat Score'
-      DisplayWidth = 64
+      DisplayWidth = 82
       FieldName = 'HtScore'
       Origin = 'HtScore'
     end
     object qryLaneluHouse: TStringField
       DisplayLabel = 'House'
-      DisplayWidth = 64
+      DisplayWidth = 118
       FieldKind = fkCalculated
       FieldName = 'luHouse'
       Calculated = True
@@ -955,7 +957,7 @@ object CORE: TCORE
       #9','#39', '#39
       #9',UPPER([LastName])'
       #9'), 0, 48) AS FullName '
-      ' ,ClubRecord'
+      ' ,RecordTime'
       '  FROM [SwimClubMeet2].[dbo].[Nominee]'
       
         '  LEFT JOIN [Member] ON [Nominee].[MemberID] = [Member].[MemberI' +
@@ -1666,6 +1668,7 @@ object CORE: TCORE
   end
   object qryNominate: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     Connection = SCM2.scmConnection
     SQL.Strings = (
       'USE SwimClubMeet2;'
@@ -1862,7 +1865,7 @@ object CORE: TCORE
       '  @AGE AS Age, '
       '  PBT.[RaceTime] AS PBSeedTime,'
       
-        '  dbo.ClubRecord(@EventID, @AGE, m.GenderID, @SeedDate) AS ClubR' +
+        '  dbo.RecordTime(@EventID, @AGE, m.GenderID, @SeedDate) AS ClubR' +
         'ecord'
       'FROM [SwimClubMeet2].[dbo].[Member] m'
       
@@ -1910,6 +1913,7 @@ object CORE: TCORE
       end>
   end
   object tblDisqualifyCode: TFDTable
+    ActiveStoredUsage = [auDesignTime]
     Active = True
     IndexFieldNames = 'DisqualifyCodeID'
     DetailFields = 'DisqualifyCodeID'
@@ -1940,7 +1944,7 @@ object CORE: TCORE
       'DECLARE @EventID as INTEGER;'
       'SET @EventID = :EVENTID;'
       ''
-      'SELECT MemberID, EventID, PB, TTB, ClubRecord'
+      'SELECT MemberID, EventID, PB, TTB, RecordTime'
       '    FROM [SwimClubMeet2].[dbo].[Nominee]'
       '    WHERE EventID = @EventID;')
     Left = 552
@@ -2039,6 +2043,7 @@ object CORE: TCORE
   end
   object qryDistanceEx: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     Indexes = <
       item
         Active = True

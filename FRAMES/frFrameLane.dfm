@@ -1,7 +1,7 @@
 object FrameLane: TFrameLane
   Left = 0
   Top = 0
-  Width = 1308
+  Width = 1410
   Height = 526
   ParentShowHint = False
   ShowHint = True
@@ -311,7 +311,7 @@ object FrameLane: TFrameLane
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 1250
+    Width = 1352
     Height = 526
     Align = alClient
     BevelOuter = bvNone
@@ -320,16 +320,15 @@ object FrameLane: TFrameLane
     object pnlG: TPanel
       Left = 0
       Top = 0
-      Width = 1250
+      Width = 1352
       Height = 491
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitHeight = 526
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 1250
+        Width = 1352
         Height = 491
         Cursor = crDefault
         Align = alClient
@@ -955,13 +954,13 @@ object FrameLane: TFrameLane
             Color = clWhite
             EditMask = '!00:00.000;1;0'
             Editor = edEditBtn
-            FieldName = 'ClubRecord'
+            FieldName = 'RecordTime'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clBlack
             Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
-            Header = 'Club Record'
+            Header = 'Record-Time'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = clBlack
             HeaderFont.Height = -16
@@ -1006,7 +1005,7 @@ object FrameLane: TFrameLane
             Width = 32
           end
           item
-            Alignment = taRightJustify
+            Alignment = taCenter
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -1088,7 +1087,7 @@ object FrameLane: TFrameLane
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
+            Width = 118
           end
           item
             Alignment = taCenter
@@ -1104,6 +1103,7 @@ object FrameLane: TFrameLane
             Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
+            Header = 'Ev Place'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = clBlack
             HeaderFont.Height = -16
@@ -1116,7 +1116,7 @@ object FrameLane: TFrameLane
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
+            Width = 72
           end
           item
             Alignment = taCenter
@@ -1132,6 +1132,7 @@ object FrameLane: TFrameLane
             Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
+            Header = 'Ev Score'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = clBlack
             HeaderFont.Height = -16
@@ -1144,7 +1145,7 @@ object FrameLane: TFrameLane
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
+            Width = 82
           end
           item
             Alignment = taCenter
@@ -1160,6 +1161,7 @@ object FrameLane: TFrameLane
             Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
+            Header = 'Ht Place'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = clBlack
             HeaderFont.Height = -16
@@ -1172,7 +1174,7 @@ object FrameLane: TFrameLane
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
+            Width = 72
           end
           item
             Alignment = taCenter
@@ -1200,7 +1202,7 @@ object FrameLane: TFrameLane
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
+            Width = 82
           end>
         DataSource = CORE.dsLane
         InvalidPicture.Data = {
@@ -1341,7 +1343,6 @@ object FrameLane: TFrameLane
           FFC003FF}
         ShowBooleanFields = True
         ShowUnicode = False
-        ExplicitLeft = 1
         ColWidths = (
           20
           42
@@ -1356,27 +1357,48 @@ object FrameLane: TFrameLane
           32
           39
           34
-          64
-          64
-          64
-          64
-          64)
+          118
+          72
+          82
+          72
+          82)
       end
     end
     object pnlDebug: TPanel
       Left = 0
       Top = 491
-      Width = 1250
+      Width = 1352
       Height = 35
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
       object lblStateString: TLabel
-        Left = 16
-        Top = 6
+        Left = 97
+        Top = 10
         Width = 57
         Height = 15
         Caption = 'StateString'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+      end
+      object btnUpdateLableStateString: TButton
+        Left = 16
+        Top = 6
+        Width = 75
+        Height = 25
+        Caption = 'Update'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -12
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
+        TabOrder = 0
+        OnClick = btnUpdateLableStateStringClick
       end
     end
   end

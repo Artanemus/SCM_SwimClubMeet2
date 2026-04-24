@@ -31,7 +31,6 @@ type
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
-  function UpdateDCodes(): boolean;
     function GetConnection: TFDConnection;
     procedure SetConnection(const Value: TFDConnection);
 
@@ -151,85 +150,6 @@ begin
     'WHERE [Caption] = N''SCM'' ';
   v := SCM2.scmConnection.ExecSQLScalar(s);
   if not VarIsNull(v) and not VarIsEmpty(v) then result := v;
-end;
-
-function TDisqualificationCodes.UpdateDCodes: boolean;
-var
-s: string;
-v: variant;
-i: integer;
-begin
-  result := false;
-  if not (Assigned(SCM2) and SCM2.scmConnection.Connected) then exit;
-
-  {TEST for DCODE TYPE 8}
-  i := GetDCodeTypeSCM(); // Missing SCM2 SPECIAL DCODE. Record Number 8.
-  if (i = 0) then
-  begin
-    s :=
-      'SET IDENTITY_INSERT  [dbo].[DisqualifyType] ON;' +
-      'INSERT INTO DisqualifyType ' +
-      '( [DisqualifyTypeID], [Caption], [StrokeID]  ) ' +
-      'VALUES ' +
-      '(8, N''SCM'',NULL); ' +
-      'SET IDENTITY_INSERT  [dbo].[DisqualifyType] OFF; ';
-    v := SCM2.scmConnection.ExecSQL(s);
-
-    result := true;
-  end;
-  if (i = 0) then   // ASSERT STROKE ID's. DEFAULT SYSTEM RECORDS.
-  begin
-    s := // Freestyle
-      'UPDATE [dbo].[DisqualifyType] SET ' +
-      '[StrokeID] = 1 ' +
-      'WHERE [DisqualifyTypeID] = 2 ';
-    v := SCM2.scmConnection.ExecSQL(s);
-    s := // BackStroke
-      'UPDATE [dbo].[DisqualifyType] SET ' +
-      '[StrokeID] = 2 ' +
-      'WHERE [DisqualifyTypeID] = 3 ';
-    v := SCM2.scmConnection.ExecSQL(s);
-    s := // BreastStroke
-      'UPDATE [dbo].[DisqualifyType] SET ' +
-      '[StrokeID] = 3 ' +
-      'WHERE [DisqualifyTypeID] = 4 ';
-    v := SCM2.scmConnection.ExecSQL(s);
-    s := // INDV Butterfly
-      'UPDATE [dbo].[DisqualifyType] SET ' +
-      '[StrokeID] = 4 ' +
-      'WHERE [DisqualifyTypeID] = 5 ';
-    v := SCM2.scmConnection.ExecSQL(s);
-    s := // INDV medley
-      'UPDATE [dbo].[DisqualifyType] SET ' +
-      '[StrokeID] = 5 ' +
-      'WHERE [DisqualifyTypeID] = 6 ';
-    v := SCM2.scmConnection.ExecSQL(s);
-  end;
-
-  { TEST for DCODES ... ScmA}
-  i := GetIsScratchedDCode();
-  if (i = 0) then // didn't find DCODE.
-  begin
-    s :=
-      'INSERT INTO DisqualifyCode ' +
-      '( [Caption], [ABREV], [DisqualifyTypeID] ) ' +
-      'VALUES ' +
-      '(N''Swimmer did not show for event. Scratched'', N''ScmA'', 8);';
-    v := SCM2.scmConnection.ExecSQL(s);
-    result := true;
-  end;
-  i := GetIsDisqualifiedDCode();
-  if (i = 0) then // didn't find DCODE.
-  begin
-    s :=
-      'INSERT INTO DisqualifyCode ' +
-      '( [Caption], [ABREV], [DisqualifyTypeID] ) ' +
-      'VALUES ' +
-      '(N''Unspecified disqualification.. (Simplified method.)'', N''ScmB'', 8);';
-    v := SCM2.scmConnection.ExecSQL(s);
-    result := true;
-  end;
-
 end;
 
 

@@ -191,6 +191,7 @@ type
     qryLaneEvScore: TFloatField;
     qryLaneHtScore: TFloatField;
     qryLaneluHouse: TStringField;
+    qryLaneSplitCount: TIntegerField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure dsSwimClubDataChange(Sender: TObject; Field: TField);

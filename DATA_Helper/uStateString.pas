@@ -32,8 +32,12 @@ type
   TStateString = record
 
   private
-    // Extraction of TMS GRID 'ColumnStateString' - contains 4 parts
-    // Column-count[0], width[1], sort-order[2] and visibility [3]
+    { A TMS GRID 'ColumnStatesString' - contains 4 parts...
+     Column-count[0], width[1], sort-order[2] and visibility [3]
+     TMS TDBAdvGrid has no Column[..].Visible param. In this StatesString
+     utility, the visibility part is ignored. Only width and sort -rder
+     are modified.
+     }
     fParts: TArray<string>;
     fColWidth: TArray<Integer>;
     fColOrder: TArray<Integer>;
@@ -55,7 +59,6 @@ type
     procedure MoveColOrder(FromIndex, ToIndex: integer);
     // Setters.
     procedure SetColWidth(index, width: integer);
-
     // Getters.
     { returns -1 (error) else width.}
     function GetColWidth(index: integer): integer;
@@ -69,6 +72,8 @@ type
     class operator Initialize(out Dest: TStateString);
 
   public
+    { get/set the TMS ColumnStatesString using Value.
+      Value calls Assemble/Disassemble procedures. }
     property Value: string read GetValue write SetValue;
     property ErrorCode: integer read fErrorCode;
     property ErrorCodeMsg: string read GetErrorMessage;
@@ -248,23 +253,22 @@ begin
     Delete(fColOrder, FromIndex, 1); // delete 1 item at FromIndex.
     Insert([Value],fColOrder, ToIndex); // src, dest, FromIndex
 
-//    Value := fColVisible[FromIndex];
-//    Delete(fColVisible, FromIndex, 1); // delete 1 item at FromIndex.
-//    Insert([Value],fColVisible, ToIndex); // src, dest, FromIndex
+    Value := fColVisible[FromIndex];
+    Delete(fColVisible, FromIndex, 1); // delete 1 item at FromIndex.
+    Insert([Value],fColVisible, ToIndex); // src, dest, FromIndex
 
     Value := fColWidth[FromIndex];
     Delete(fColWidth, FromIndex, 1); // delete 1 item at FromIndex.
     Insert([Value],fColWidth, ToIndex); // src, dest, FromIndex
-
   end;
 end;
 
 procedure TStateString.SetColWidth(index, width: integer);
 begin
-  if (index>=LOW(fColOrder)) and (index <= HIGH(fColOrder)) then
+  if (index >= LOW(fColOrder)) and (index <= HIGH(fColOrder)) then
   begin
-      { a width of 0 indicates that the column is hidden. }
-      fColWidth[Index] := width;
+    { NOTE: For TMS TDBAdvGrid a width of 0 equals hidden. }
+    fColWidth[Index] := width;
   end;
 end;
 

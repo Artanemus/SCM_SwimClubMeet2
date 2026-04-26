@@ -138,10 +138,6 @@
         <DCCReference Include="JSON\XSuperJSON.pas"/>
         <DCCReference Include="JSON\XSuperObject.pas"/>
         <DCCReference Include="TOOLS\uUtility.pas"/>
-        <DCCReference Include="DATA\dmSCM2.pas">
-            <Form>SCM2</Form>
-            <DesignClass>TDataModule</DesignClass>
-        </DCCReference>
         <DCCReference Include="DATA\dmCORE.pas">
             <Form>CORE</Form>
             <FormType>dfm</FormType>
@@ -394,6 +390,11 @@
         <DCCReference Include="SESSIONS\dlgNewSession.pas">
             <Form>NewSession</Form>
             <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="DATA\dmSCM2.pas">
+            <Form>SCM2</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
         </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>

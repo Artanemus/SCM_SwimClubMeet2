@@ -70,7 +70,7 @@ end;
 procedure TSCM2.DataModuleCreate(Sender: TObject);
 begin
   // ASSERT connection state.
-  scmConnection.Connected := false;
+  // scmConnection.Connected := false;
 end;
 
 function TSCM2.GetDBVerInfo: string;

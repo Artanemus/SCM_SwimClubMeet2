@@ -3,6 +3,15 @@ object SCM2: TSCM2
   OnDestroy = DataModuleDestroy
   Height = 383
   Width = 414
+  object scmConnection: TFDConnection
+    Params.Strings = (
+      'ConnectionDef=MSSQL_SCM2')
+    ConnectedStoredUsage = [auDesignTime]
+    Connected = True
+    LoginPrompt = False
+    Left = 80
+    Top = 24
+  end
   object qrySCMSystem: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
@@ -97,14 +106,5 @@ object SCM2: TSCM2
         DataType = ftInteger
         ParamType = ptInput
       end>
-  end
-  object scmConnection: TFDConnection
-    Params.Strings = (
-      'ConnectionDef=MSSQL_SCM2')
-    ConnectedStoredUsage = [auDesignTime]
-    Connected = True
-    LoginPrompt = False
-    Left = 80
-    Top = 24
   end
 end

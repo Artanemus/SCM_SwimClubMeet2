@@ -7,7 +7,6 @@ uses
   XSuperJSON in 'JSON\XSuperJSON.pas',
   XSuperObject in 'JSON\XSuperObject.pas',
   uUtility in 'TOOLS\uUtility.pas',
-  dmSCM2 in 'DATA\dmSCM2.pas' {SCM2: TDataModule},
   dmCORE in 'DATA\dmCORE.pas' {CORE: TDataModule},
   dmIMG in 'DATA\dmIMG.pas' {IMG: TDataModule},
   dmMM_CORE in 'MEMBERS\dmMM_CORE.pas' {MM_CORE: TDataModule},
@@ -82,7 +81,8 @@ uses
   dlgTeamPickerCTRL in 'LANES\dlgTeamPickerCTRL.pas' {TeamPickerCTRL},
   uPickerStage in 'LANES\uPickerStage.pas',
   dlgEditSession in 'SESSIONS\dlgEditSession.pas' {EditSession},
-  dlgNewSession in 'SESSIONS\dlgNewSession.pas' {NewSession};
+  dlgNewSession in 'SESSIONS\dlgNewSession.pas' {NewSession},
+  dmSCM2 in 'DATA\dmSCM2.pas' {SCM2: TDataModule};
 
 {$R *.res}
 

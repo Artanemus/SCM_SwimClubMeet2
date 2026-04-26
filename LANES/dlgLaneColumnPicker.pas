@@ -61,7 +61,7 @@ type
     function GetStateString(): string;
   protected
     procedure FillCheckBoxList;
-    function LookUpSysDefWidth(ABSIndex: integer; DataSetName: string): integer;
+    function LookUpSysDefWidth(Index: integer; DataSetName: string): integer;
   public
     { Public declarations }
     procedure Prepare(AGrid: TDBAdvGrid);
@@ -119,11 +119,16 @@ var
   J: Integer;
   LI: TLaneItem;
 begin
-  { Use sort order as given in statestring.
-  ... ADD visible items to the check list box.  }
-  for J := 0 to ss.ColCount - 1 do
+  { ADD visible items to the check list box.
+      Use the sort order as given in statestring.
+      ss.ColCount[0] is primary key LaneID and isn't included in cblLane as
+      this would give the user the ability to remove it - the hamberger would
+      vanish and the user wouldn't be unable to use the column picker!
+  }
+  // ADD visible items. They are stacked first.
+  for J := 1 to ss.ColCount - 1 do // ommit column 0 (selector)
   begin
-    if ss.GetColwidth(j) > 0 then // visible items are stacked first.
+    if ss.GetColwidth(j) > 0 then
     begin
       LI := nil;
       for I := 0 to LaneItems.Count - 1 do
@@ -139,10 +144,10 @@ begin
       end;
     end;
   end;
-  // ... ADD hidden items to the check list box.
-  for J := 0 to ss.ColCount - 1 do
+  // ADD hidden items to the check list box.
+  for J := 1 to ss.ColCount - 1 do // ommit column 0 (selector)
   begin
-    if ss.GetColWidth(J) = 0 then // in-visible items are stacked last.
+    if ss.GetColWidth(J) = 0 then
     begin
       LI := nil;
       for I := 0 to LaneItems.Count - 1 do
@@ -187,8 +192,8 @@ begin
   result := ss.value;
 end;
 
-function TLaneColumnPicker.LookUpSysDefWidth(ABSIndex: integer;
-  DataSetName: string): integer;
+function TLaneColumnPicker.LookUpSysDefWidth(Index: integer; DataSetName:
+    string): integer;
 var
   s: string;
   SysStateString: TStateString;
@@ -207,7 +212,7 @@ begin
     if not s.IsEmpty then
     begin
       SysStateString := s;
-      width := SysStateString.GetColWidth(ABSIndex);
+      width := SysStateString.GetColWidth(Index);
       if width > 0 then Result := width;
     end;
   end;
@@ -231,10 +236,12 @@ begin
   for J := 0 to ss.ColCount - 1 do
   begin
     RealColIndex := ss.GetColOrder(j); // value held here is the TMS RealColIndex.
-    GI := AGrid.Columns[j]; // TMS auto - sortorder to realcol done here.
+    GI := AGrid.Columns[j]; // TMS auto transforms - sort-order index to realcol index.
     fld := DS.FieldByName(GI.FieldName);
-    if fld <> nil then
+    if (fld <> nil) then
     begin
+//      if fld.FieldName = 'LaneID' then
+//        continue;
       LI := TLaneItem.Create;
       LI.fFieldName := fld.FieldName;
       LI.fFieldDisplayLabel := fld.DisplayLabel;

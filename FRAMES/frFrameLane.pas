@@ -75,6 +75,8 @@ type
     procedure actnLn_GridViewExecute(Sender: TObject);
     procedure btnUpdateLableStateStringClick(Sender: TObject);
   private
+
+    // CALL-BACK NOTIFICATION...
     FOnGridViewChange: TFrameNotifyLane_GridViewChange;
 
     { Design Time Grid UI state. Captured on load.
@@ -86,8 +88,11 @@ type
       User may include/excude columns when in expanded grid view. }
     fStateStringExpanded: String;
 
-    procedure SetGridView_IconIndex;
-    procedure SetDefGridSchemaState();
+    procedure SetGridViewIconState;
+    procedure SetCollapsedGridState;
+    procedure SetCollapsedUIState;
+    procedure SetGridViewDQState;
+    procedure SetExpandedUIState;
 
   protected
     procedure Loaded; override;
@@ -96,10 +101,14 @@ type
     destructor Destroy; override; // Must be "override"
 
     procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
+    // Makes UI/Grid changes for TEAM/INDIVUAL events.
     procedure OnEventTypeChange(AEventTypeID: Integer);
+    // Tools preferences calls here, via main form.
     procedure OnPreferenceChange();
+    // after Connection, after change of swimming club, after manage-clubs.
     procedure UpdateUI(DoFullUpdate: boolean = false);
 
+    // CALL-BACK...
     // Notify main form of a grid view change (expand/collapse)...
     property OnGridViewChanged: TFrameNotifyLane_GridViewChange
       read FOnGridViewChange write FOnGridViewChange;
@@ -132,56 +141,34 @@ end;
 procedure TFrameLane.actnLn_GridViewExecute(Sender: TObject);
 var
   LaneAction: TAction;
-  item: TRelativePanelControlItem;
-  indx: integer;
 begin
   LaneAction := TAction(Sender);
-
   grid.BeginUpdate;
   CORE.qryLane.DisableControls;
-
   LaneAction.Checked := not LaneAction.Checked; // TOGGLE
-
   try
-    SetGridView_IconIndex; // uses actnEv_GridView.Checked state.
-
-    if LaneAction.Checked then
+    if LaneAction.Checked then // GRID-VIEW EXPANDED..
     begin
-      // capture the collapsed state prior to expanding.
+      // store the collapsed state prior to expanding.
       fStateStringCollapsed := Grid.ColumnStatesToString;
-      Grid.ReSetColumnOrder;
+      Grid.ReSetColumnOrder; // best practice prior to assigning StatesString.
       Grid.StringToColumnStates(fStateStringExpanded);
-
-      actnLn_HeatPicker.Visible := true;
-      indx := rpnlCntrl.ControlCollection.IndexOf(ShapeLnBar2);
-      if indx <> -1 then
-      begin
-        item := rpnlCntrl.ControlCollection.Items[indx];
-        item.Below := spbtnHeatPicker;
-      end;
+      SetExpandedUIState;
     end
-    else
+    else // GRID-VIEW COLLAPSED..
     begin
-      // capture the expanded state prior to collapsing.
+      // store the expanded state prior to collapsing.
       fStateStringExpanded := Grid.ColumnStatesToString;
-      Grid.ReSetColumnOrder;
+      Grid.ReSetColumnOrder; // best practice prior to assigning StatesString.
       Grid.StringToColumnStates(fStateStringCollapsed);
-      actnLn_HeatPicker.Visible := false;
-      indx := rpnlCntrl.ControlCollection.IndexOf(ShapeLnBar2);
-      if indx <> -1 then
-      begin
-        item := rpnlCntrl.ControlCollection.Items[indx];
-        item.Below := spbtnGridView;
-      end;
+      SetCollapsedUIState;
     end;
-
   finally
     begin
       CORE.qryLane.EnableControls;
       grid.EndUpdate;
     end;
   end;
-
   // Call-back to main form.
   if Assigned(FOnGridViewChange) then
     FOnGridViewChange(self, LaneAction.Checked);
@@ -523,124 +510,84 @@ begin
   end;
 end;
 
-procedure TFrameLane.SetDefGridSchemaState();
+procedure TFrameLane.SetCollapsedGridState;
 var
 fld: Tfield;
 begin
   // Set ALL fields too visible...
   for fld in CORE.qryLane.Fields do fld.Visible := true;
 
-  // ASSERT field visibility per SCM (version 1) schema.
+  { COLLAPSE SCHEMA (same as SCMv1.)
+    LaneID, LaneNum, FullName, Gender, Age, RaceTime, TTB, PB, (S,D) or (DQ). }
   CORE.qryLane.FieldByName('LaneID').Visible := false;
   CORE.qryLane.FieldByName('RecordTime').Visible := false;
   CORE.qryLane.FieldByName('HeatID').Visible := false;
   CORE.qryLane.FieldByName('TeamID').Visible := false;
   CORE.qryLane.FieldByName('NomineeID').Visible := false;
-  CORE.qryLane.FieldByName('GenderABREV').Visible := false;
-  CORE.qryLane.FieldByName('AGE').Visible := false;
   CORE.qryLane.FieldByName('EventTypeID').Visible := false;
-  // extended stuff
+  // hide DB extended features.
   CORE.qryLane.FieldByName('RecordTime').Visible := false;
   CORE.qryLane.FieldByName('luHouse').Visible := false;
   CORE.qryLane.FieldByName('EvScore').Visible := false;
   CORE.qryLane.FieldByName('EvPlace').Visible := false;
   CORE.qryLane.FieldByName('HtScore').Visible := false;
   CORE.qryLane.FieldByName('HtPlace').Visible := false;
+  CORE.qryLane.FieldByName('SplitCount').Visible := false;
 
-  // Set ... Simplified or FINA disqualification codes.
+  { Set: COLLAPSED Simplified (Scratched, Disqualified)
+      or FINA (DQ) disqualification codes. }
   OnPreferenceChange;
 
-  // Set grid visiblity for EXPANDED grid columns .
+  { Set: grid visiblity for COLLAPSED (extended features) grid columns .}
   Grid.ColumnByFieldName['RecordTime'].Width := 0;
   Grid.ColumnByFieldName['EventTypeID'].Width := 0;
-  Grid.ColumnByFieldName['GenderABREV'].Width := 0;
-  Grid.ColumnByFieldName['AGE'].Width := 0;
   Grid.ColumnByFieldName['luHouse'].Width := 0;
   Grid.ColumnByFieldName['EvScore'].Width := 0;
   Grid.ColumnByFieldName['EvPlace'].Width := 0;
   Grid.ColumnByFieldName['HtScore'].Width := 0;
   Grid.ColumnByFieldName['HtPlace'].Width := 0;
+  Grid.ColumnByFieldName['SplitCount'].Width := 0;
 end;
 
-procedure TFrameLane.SetGridView_IconIndex;
-begin
-  // logic saves on unessesary repaints.
-  if (actnLn_GridView.Checked) then // Expanded view - icon has no slash.
-  begin
-    if (spbtnGridView.ImageIndex <> 11) then
-      spbtnGridView.ImageIndex := 11;
-  end
-  else // Collapsed view - icon contains a slash.
-  begin
-    if (spbtnGridView.ImageIndex <> 12) then
-       spbtnGridView.ImageIndex := 12;
-  end;
-end;
-
-procedure TFrameLane.Loaded;
+procedure TFrameLane.SetCollapsedUIState;
 var
-  item: TCollectionItem;
   indx: integer;
 begin
-  inherited;
-  // While all columns are visible at design time...
-  // Take a snapshot of the columnwidths. These will be used when the user
-  // adds columns to the grid view and the width is unknown.
-  Grid.SetColumnOrder; // reference needed to restore state.
-  fStateStringSystem := Grid.ColumnStatesToString;
-
-  // ASSERT STATE: The user have the option to assign 'none' (or empty)
-  // in the combobox drop-down for disqualification codes.
-  item := Grid.ColumnByFieldName['luDQ'];
-  TDBGridColumnItem(item).AllowBlank := true;
-
   // ASSERT STATE: Collapsed Grid-View UI State...
-  actnLn_GridView.Checked := false; // Collapsed - indicates fixed defult gridview.
-  actnLn_HeatPicker.Visible := false; // hide. Button only visible when grid view is Expanded.
-  spbtnGridView.ImageIndex := 12; // a button icon that displays a grid with slash.
-  // position all control icons to stack after btnGridView.
+  // Collapsed grid-view.
+  if actnLn_GridView.Checked <> false then
+    actnLn_GridView.Checked := false;
+  // Button icon that displays a grid-view state.
+  SetGridViewIconState;
+  // Hide. Button is only visible in Expanded gridview.
+  actnLn_HeatPicker.Visible := false;
+  // With the heat-picker button hidden, tidy up the control panel's display.
+  // Position all control icons to stack after btnGridView.
   indx := rpnlCntrl.ControlCollection.IndexOf(ShapeLnBar2);
   if indx <> -1 then
     rpnlCntrl.ControlCollection.Items[indx].Below := spbtnGridView;
-
-  // The default 'lane' grid column order, width, visibility used by SCM1
-  SetDefGridSchemaState();
-
-  // Performed again as this is the preferred state for a grid UI reset.
-  // Grid.SetColumnOrder;
-  // store the 'default grid design schema' column states.
-  fStateStringCollapsed := Grid.ColumnStatesToString;
-
-  // snap-shot of the grid's default (expanded) column state. Used to reset UI.
-  if Assigned(Settings) then
-    Settings.Ln_ColumnStatesStringSystem := fStateStringSystem;
-
-  // User's custom column layout that is displayed in expanded gridview.
-  if Assigned(Settings) then
-  begin
-    fStateStringExpanded := Settings.Ln_ColumnStatesStringExpanded;
-    if fStateStringExpanded.IsEmpty then
-      fStateStringExpanded := fStateStringCollapsed;
-  end
-  else
-    fStateStringExpanded := Grid.ColumnStatesToString;
-
-
-  OnEventTypeChange(CORE.qryLane.FieldByName('EventTypeID').AsInteger);
 end;
 
-procedure TFrameLane.OnEventTypeChange(AEventTypeID: Integer);
+procedure TFrameLane.SetExpandedUIState;
 var
-  item: TDBGridColumnItem;
+  indx: integer;
 begin
-  item := Grid.ColumnByFieldName['FullName'];
-  if AEventTypeID = 2 then
-    item.Header := 'Relay Team'
-  else
-    item.Header := 'Entrant';
+  // ASSERT STATE: Collapsed Grid-View UI State...
+  // Collapsed grid-view.
+  if actnLn_GridView.Checked <> true then
+    actnLn_GridView.Checked := true;
+  // Button icon that displays a grid-view state.
+  SetGridViewIconState;
+  // Hide. Button is only visible in Expanded gridview.
+  actnLn_HeatPicker.Visible := true;
+  // With the heat-picker button hidden, tidy up the control panel's display.
+  // Position all control icons to stack after btnGridView.
+  indx := rpnlCntrl.ControlCollection.IndexOf(ShapeLnBar2);
+  if indx <> -1 then
+    rpnlCntrl.ControlCollection.Items[indx].Below := spbtnHeatPicker;
 end;
 
-procedure TFrameLane.OnPreferenceChange;
+procedure TFrameLane.SetGridViewDQState;
 begin
   LockDrawing;
   Grid.BeginUpdate;
@@ -670,6 +617,97 @@ begin
   end;
 end;
 
+procedure TFrameLane.SetGridViewIconState;
+begin
+  // logic saves on unessesary repaints.
+  if (actnLn_GridView.Checked) then // Expanded view - icon has no slash.
+  begin
+    if (spbtnGridView.ImageIndex <> 11) then
+      spbtnGridView.ImageIndex := 11;
+  end
+  else // Collapsed view - icon contains a slash.
+  begin
+    if (spbtnGridView.ImageIndex <> 12) then
+       spbtnGridView.ImageIndex := 12;
+  end;
+end;
+
+procedure TFrameLane.Loaded;
+var
+  item: TCollectionItem;
+begin
+  inherited;
+  { IMPORTANT: At design time all columns are visible.}
+  { IMPORTANT: Store column-order, needed by TMS to restore state.}
+  Grid.SetColumnOrder;
+  { Store the design-time layout. This contains default column display widths
+     that will be useful later.}
+  fStateStringSystem := Grid.ColumnStatesToString;
+  // store the grid's design-time column state into settings.
+  if Assigned(Settings) then
+    Settings.Ln_ColumnStatesStringSystem := fStateStringSystem;
+
+  { ASSERT STATE: The user have the option to assign 'none' (or empty)
+    in the combobox drop-down for disqualification codes.
+    TMS BUG: This is set at design-time but isn't persistent on construction
+    of the TFrame.}
+  item := Grid.ColumnByFieldName['luDQ'];
+  if (item <> nil) then
+    TDBGridColumnItem(item).AllowBlank := true;
+
+  { Collapsed control panel UI State...  }
+  SetCollapsedUIState;
+
+  { The grid's collapsed 'lane' grid column order, width, visibility.
+    This grid dis[play schema is identical to SCM version 1.
+    Display widths for visible columns are not handled in this routine.
+    It's presumed to be correctly set at design-time.
+    Extended column features have their display widths set to 0.}
+  SetCollapsedGridState; // DEFAULT GRID LAYOUT.
+
+  // store the 'grid design schema'. (DEAULT GRID LAYOUT.)
+  fStateStringCollapsed := Grid.ColumnStatesToString;
+
+  // Get the user's custom column layout that is displayed in expanded gridview.
+  if Assigned(Settings) then
+  begin
+    fStateStringExpanded := Settings.Ln_ColumnStatesStringExpanded;
+    if fStateStringExpanded.IsEmpty then
+      fStateStringExpanded := fStateStringCollapsed; // DEFAULT GRID LAYOUT.
+  end
+  else
+    fStateStringExpanded := fStateStringCollapsed; // DEFAULT GRID LAYOUT.
+
+  // TEAM/INDIVIDUAL
+  OnEventTypeChange(CORE.qryLane.FieldByName('EventTypeID').AsInteger);
+end;
+
+procedure TFrameLane.OnEventTypeChange(AEventTypeID: Integer);
+var
+  item: TDBGridColumnItem;
+begin
+  item := Grid.ColumnByFieldName['FullName'];
+  if item <> nil then
+  begin
+    if AEventTypeID = 2 then
+      item.Header := 'Relay Team'
+    else
+      item.Header := 'Entrant';
+  end;
+end;
+
+procedure TFrameLane.OnPreferenceChange;
+begin
+  SetGridViewDQState;
+  // Debug mode state...
+  pnlDebug.Visible := false; // default
+  if Assigned(Settings) then
+  begin
+    if Settings.ShowDebugInfo then
+      pnlDebug.Visible := true;
+  end;
+end;
+
 procedure TFrameLane.UpdateUI(DoFullUpdate: boolean = false);
 begin
 
@@ -691,7 +729,14 @@ begin
       grid.Enabled := true;
       grid.BeginUpdate;
       grid.ResetColumnOrder;
-      grid.StringToColumnStates(fStateStringCollapsed);
+
+      // Collapsed control panel UI State...
+      SetCollapsedUIState;
+      // The grid's collapsed 'lane' grid column order, width, visibility.
+      SetCollapsedGridState; // DEFAULT SCHEMA
+      // store the 'default grid design schema'. (DEAULT UI LAYOUT.)
+      fStateStringCollapsed := Grid.ColumnStatesToString;
+
       grid.EndUpdate;
       UnlockDrawing;
   end;

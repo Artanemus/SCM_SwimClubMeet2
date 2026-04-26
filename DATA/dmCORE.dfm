@@ -26,7 +26,6 @@ object CORE: TCORE
   end
   object qrySession: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     BeforePost = qrySessionBeforePost
     AfterPost = qrySessionAfterPost
     AfterScroll = qrySessionAfterScroll
@@ -48,7 +47,6 @@ object CORE: TCORE
     MasterSource = dsSwimClub
     MasterFields = 'SwimClubID'
     DetailFields = 'SwimClubID'
-    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayDateTime]
     FormatOptions.FmtDisplayDateTime = 'YYYY-MM-DD hh:nn'
     UpdateOptions.AssignedValues = [uvEInsert]
@@ -153,7 +151,6 @@ object CORE: TCORE
   end
   object qryEvent: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     AfterEdit = qryEventAfterEdit
     AfterScroll = qryEventAfterScroll
     OnNewRecord = qryEventNewRecord
@@ -169,7 +166,6 @@ object CORE: TCORE
     MasterSource = dsSession
     MasterFields = 'SessionID'
     DetailFields = 'SessionID'
-    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'hh:nn'
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Event'
@@ -413,7 +409,6 @@ object CORE: TCORE
     MasterSource = dsEvent
     MasterFields = 'EventID'
     DetailFields = 'EventID'
-    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'hh.nn'
     UpdateOptions.AssignedValues = [uvCheckRequired]
@@ -494,7 +489,6 @@ object CORE: TCORE
   end
   object qrySwimClub: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     OnNewRecord = qrySwimClubNewRecord
     Filter = 'IsArchived <> 1'
     Indexes = <
@@ -511,7 +505,6 @@ object CORE: TCORE
         Fields = 'SwimClubID'
       end>
     IndexName = 'indxHideArchived'
-    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..SwimClub'
     UpdateOptions.KeyFields = 'SwimClubID'
     SQL.Strings = (
@@ -653,7 +646,6 @@ object CORE: TCORE
   end
   object qryLane: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     BeforePost = qryLaneBeforePost
     AfterScroll = qryLaneAfterScroll
     OnCalcFields = qryLaneCalcFields
@@ -753,6 +745,7 @@ object CORE: TCORE
       '     ,HtPlace'
       '     ,EvScore'
       '     ,HtScore'
+      '     ,SplitCount'
       '       '
       '  FROM [SwimClubMeet2].[dbo].[Lane] AS L'
       '  LEFT JOIN Nominee ON l.NomineeID = Nominee.NomineeID'
@@ -918,6 +911,12 @@ object CORE: TCORE
       FieldName = 'luHouse'
       Calculated = True
     end
+    object qryLaneSplitCount: TIntegerField
+      DisplayLabel = 'Split Count'
+      DisplayWidth = 58
+      FieldName = 'SplitCount'
+      Origin = 'SplitCount'
+    end
   end
   object dsLane: TDataSource
     DataSet = qryLane
@@ -935,7 +934,6 @@ object CORE: TCORE
         DescFields = 'EventID'
       end>
     IndexFieldNames = 'NomineeID'
-    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn.ss.zzz'
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Nominee'
@@ -1121,9 +1119,7 @@ object CORE: TCORE
   end
   object tblStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'StrokeID'
-    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Stroke'
     UpdateOptions.KeyFields = 'StrokeID'
@@ -1135,11 +1131,9 @@ object CORE: TCORE
   end
   object tblDistance: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     Filtered = True
     Filter = 'IsArchived <> 1'
     IndexFieldNames = 'Laps;DistanceID'
-    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -1292,7 +1286,6 @@ object CORE: TCORE
     MasterSource = dsSwimClub
     MasterFields = 'SwimClubID'
     DetailFields = 'SwimClubID'
-    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.MemberLink'
     UpdateOptions.KeyFields = 'SwimClubID;MemberID'
     SQL.Strings = (
@@ -1333,9 +1326,7 @@ object CORE: TCORE
   end
   object tblEventType: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'EventTypeID'
-    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
@@ -1350,9 +1341,7 @@ object CORE: TCORE
   end
   object tblGender: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'GenderID'
-    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
@@ -1362,9 +1351,7 @@ object CORE: TCORE
   end
   object tblRound: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'RoundID'
-    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
@@ -1374,9 +1361,7 @@ object CORE: TCORE
   end
   object tblEventCat: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'EventCategoryID'
-    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
@@ -1386,9 +1371,7 @@ object CORE: TCORE
   end
   object tblParalympicType: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'ParalympicTypeID'
-    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
@@ -1668,8 +1651,6 @@ object CORE: TCORE
   end
   object qryNominate: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
-    Connection = SCM2.scmConnection
     SQL.Strings = (
       'USE SwimClubMeet2;'
       ''
@@ -1819,7 +1800,6 @@ object CORE: TCORE
   end
   object qryMemberMetrics: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss:.zzz'
     SQL.Strings = (
@@ -1914,10 +1894,8 @@ object CORE: TCORE
   end
   object tblDisqualifyCode: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'DisqualifyCodeID'
     DetailFields = 'DisqualifyCodeID'
-    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -1937,7 +1915,6 @@ object CORE: TCORE
     Top = 552
   end
   object qryNominees: TFDQuery
-    Connection = SCM2.scmConnection
     SQL.Strings = (
       'USE SwimClubMeet2;'
       ''
@@ -1959,9 +1936,7 @@ object CORE: TCORE
   end
   object tblSwimClubType: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'SwimClubTypeID'
-    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -1982,12 +1957,10 @@ object CORE: TCORE
   end
   object qryPoolType: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'PoolTypeID'
     MasterSource = dsSwimClub
     MasterFields = 'PoolTypeID'
     DetailFields = 'PoolTypeID'
-    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
@@ -2020,9 +1993,7 @@ object CORE: TCORE
   end
   object tblPooltype: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'PoolTypeID'
-    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -2043,7 +2014,6 @@ object CORE: TCORE
   end
   object qryDistanceEx: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     Indexes = <
       item
         Active = True
@@ -2055,7 +2025,6 @@ object CORE: TCORE
     MasterSource = dsSwimClub
     MasterFields = 'PoolTypeID'
     DetailFields = 'PoolTypeID'
-    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False

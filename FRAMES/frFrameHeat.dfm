@@ -867,7 +867,8 @@ object FrameHeat: TFrameHeat
     end
     object actnHT_RefreshStats: TAction
       Category = 'Heats'
-      Caption = 'Refresh Lane Stats'
+      Caption = 'Refresh metrics in heats.'
+      Hint = 'Update the lane metrics in all heats.'
       OnExecute = actnHT_RefreshStatsExecute
       OnUpdate = actnHt_GenericUpdate
     end

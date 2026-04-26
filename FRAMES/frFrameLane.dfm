@@ -1,7 +1,7 @@
 object FrameLane: TFrameLane
   Left = 0
   Top = 0
-  Width = 1410
+  Width = 1452
   Height = 526
   ParentShowHint = False
   ShowHint = True
@@ -142,6 +142,7 @@ object FrameLane: TFrameLane
       Top = 112
       Width = 48
       Height = 48
+      Hint = 'Move lane up.'
       Anchors = []
       ImageIndex = 0
       ImageName = 'up'
@@ -156,6 +157,7 @@ object FrameLane: TFrameLane
       Top = 160
       Width = 48
       Height = 48
+      Hint = 'Move lane down.'
       Anchors = []
       ImageIndex = 1
       ImageName = 'down'
@@ -170,6 +172,7 @@ object FrameLane: TFrameLane
       Top = 208
       Width = 48
       Height = 48
+      Hint = 'Switch lanes tool.'
       Anchors = []
       ImageIndex = 9
       ImageName = 'swap'
@@ -184,6 +187,7 @@ object FrameLane: TFrameLane
       Top = 256
       Width = 48
       Height = 48
+      Hint = 'Remove entrant from lane. '
       Anchors = []
       ImageIndex = 4
       ImageName = 'delete'
@@ -198,6 +202,7 @@ object FrameLane: TFrameLane
       Top = 304
       Width = 48
       Height = 48
+      Hint = 'Strike entrant from lane and entrant'#39's nomination.'
       Anchors = []
       ImageIndex = 5
       ImageName = 'delete-forever'
@@ -226,6 +231,7 @@ object FrameLane: TFrameLane
       Top = 368
       Width = 48
       Height = 48
+      Hint = 'Display lane report for printing and export.'
       Anchors = []
       ImageIndex = 8
       ImageName = 'report'
@@ -240,6 +246,7 @@ object FrameLane: TFrameLane
       Top = 416
       Width = 48
       Height = 48
+      Hint = 'Refresh metrics for all lanes in heat.'
       Action = actnLn_RefreshStat
       Anchors = []
       ImageIndex = 10
@@ -254,6 +261,7 @@ object FrameLane: TFrameLane
       Top = 464
       Width = 48
       Height = 48
+      Hint = 'Display splits for selected lane.'
       Anchors = []
       Caption = 'Split-Times'
       ImageIndex = 13
@@ -269,6 +277,7 @@ object FrameLane: TFrameLane
       Top = 0
       Width = 54
       Height = 48
+      Hint = 'Expand/Collapse grid.'
       Action = actnLn_GridView
       ImageIndex = 12
       ImageName = 'grid-off'
@@ -286,6 +295,7 @@ object FrameLane: TFrameLane
       Top = 48
       Width = 48
       Height = 48
+      Hint = 'Quick heat picker.'
       Action = actnLn_HeatPicker
       Anchors = []
       ImageIndex = 14
@@ -311,7 +321,7 @@ object FrameLane: TFrameLane
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 1352
+    Width = 1394
     Height = 526
     Align = alClient
     BevelOuter = bvNone
@@ -320,7 +330,7 @@ object FrameLane: TFrameLane
     object pnlG: TPanel
       Left = 0
       Top = 0
-      Width = 1352
+      Width = 1394
       Height = 491
       Align = alClient
       BevelOuter = bvNone
@@ -328,12 +338,12 @@ object FrameLane: TFrameLane
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 1352
+        Width = 1394
         Height = 491
         Cursor = crDefault
         Align = alClient
         Color = clWhite
-        ColCount = 18
+        ColCount = 19
         DefaultRowHeight = 32
         DrawingStyle = gdsClassic
         FixedColor = clWhite
@@ -761,6 +771,64 @@ object FrameLane: TFrameLane
             Width = 220
           end
           item
+            Alignment = taCenter
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'GenderABREV'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = ' '
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            Name = 'lnGenderABREV'
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 32
+          end
+          item
+            Alignment = taCenter
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'AGE'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = 'Age'
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            HeaderAlignment = taCenter
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 39
+          end
+          item
             AllowBlank = True
             Alignment = taRightJustify
             Borders = []
@@ -960,7 +1028,7 @@ object FrameLane: TFrameLane
             Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
-            Header = 'Record-Time'
+            Header = 'Rec.Time'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = clBlack
             HeaderFont.Height = -16
@@ -974,64 +1042,6 @@ object FrameLane: TFrameLane
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
             Width = 100
-          end
-          item
-            Alignment = taCenter
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWhite
-            FieldName = 'GenderABREV'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clBlack
-            Font.Height = -16
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            Header = ' '
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = clBlack
-            HeaderFont.Height = -16
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            Name = 'lnGenderABREV'
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clBlack
-            PrintFont.Height = -16
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 32
-          end
-          item
-            Alignment = taCenter
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWhite
-            FieldName = 'AGE'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clBlack
-            Font.Height = -16
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            Header = 'Age'
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = clBlack
-            HeaderFont.Height = -16
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            HeaderAlignment = taCenter
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clBlack
-            PrintFont.Height = -16
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 39
           end
           item
             Borders = []
@@ -1203,6 +1213,34 @@ object FrameLane: TFrameLane
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
             Width = 82
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWhite
+            FieldName = 'SplitCount'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clBlack
+            Font.Height = -16
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = 'Split'
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clBlack
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            HeaderAlignment = taCenter
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clBlack
+            PrintFont.Height = -16
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 58
           end>
         DataSource = CORE.dsLane
         InvalidPicture.Data = {
@@ -1347,6 +1385,8 @@ object FrameLane: TFrameLane
           20
           42
           220
+          32
+          39
           90
           90
           90
@@ -1354,20 +1394,19 @@ object FrameLane: TFrameLane
           39
           47
           100
-          32
-          39
           34
           118
           72
           82
           72
-          82)
+          82
+          58)
       end
     end
     object pnlDebug: TPanel
       Left = 0
       Top = 491
-      Width = 1352
+      Width = 1394
       Height = 35
       Align = alBottom
       BevelOuter = bvNone

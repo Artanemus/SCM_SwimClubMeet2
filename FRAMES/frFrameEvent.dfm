@@ -1,13 +1,13 @@
 object FrameEvent: TFrameEvent
   Left = 0
   Top = 0
-  Width = 775
+  Width = 1041
   Height = 521
   TabOrder = 0
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 717
+    Width = 983
     Height = 521
     Align = alClient
     BevelOuter = bvNone
@@ -16,7 +16,7 @@ object FrameEvent: TFrameEvent
     object pnlG: TPanel
       Left = 0
       Top = 0
-      Width = 717
+      Width = 983
       Height = 521
       Margins.Left = 10
       Margins.Top = 10
@@ -28,29 +28,32 @@ object FrameEvent: TFrameEvent
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 717
+        Width = 983
         Height = 521
         Cursor = crDefault
         Align = alClient
         Color = clWhite
-        ColCount = 14
+        ColCount = 13
         DefaultRowHeight = 32
         DrawingStyle = gdsClassic
         FixedColor = clWhite
-        RowCount = 2
+        RowCount = 101
         FixedRows = 1
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -16
         Font.Name = 'Segoe UI'
         Font.Style = []
-        Options = [goVertLine, goHorzLine, goEditing, goTabs, goFixedRowDefAlign]
+        Options = [goVertLine, goHorzLine, goColSizing, goColMoving, goEditing, goTabs, goFixedRowDefAlign]
         ParentFont = False
         PopupMenu = pumenuEvent
         ScrollBars = ssBoth
         TabOrder = 0
         StyleElements = [seClient, seBorder]
         OnDrawCell = gridDrawCell
+        OnFixedCellClick = gridFixedCellClick
+        OnGetEditMask = gridGetEditMask
+        OnGetEditText = gridGetEditText
         OnKeyPress = gridKeyPress
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
@@ -58,6 +61,7 @@ object FrameEvent: TFrameEvent
         OnGetDisplText = gridGetDisplText
         OnGetCellColor = gridGetCellColor
         OnCanEditCell = gridCanEditCell
+        OnGetEditorType = gridGetEditorType
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
         ActiveCellFont.Height = -12
@@ -189,6 +193,7 @@ object FrameEvent: TFrameEvent
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWindow
+            FieldName = 'EventID'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -19
@@ -206,34 +211,6 @@ object FrameEvent: TFrameEvent
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
             Width = 20
-          end
-          item
-            Alignment = taRightJustify
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWindow
-            FieldName = 'EventID'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -19
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            Header = 'ID'
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -16
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -12
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 0
           end
           item
             Alignment = taCenter
@@ -291,7 +268,7 @@ object FrameEvent: TFrameEvent
             PrintFont.Height = -12
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 120
+            Width = 88
           end
           item
             AllowBlank = True
@@ -320,7 +297,35 @@ object FrameEvent: TFrameEvent
             PrintFont.Height = -12
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 132
+            Width = 133
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = clWindow
+            EditLength = 128
+            FieldName = 'Caption'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -19
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            Header = 'Description'
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = 3881787
+            HeaderFont.Height = -16
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clWindowText
+            PrintFont.Height = -12
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 187
           end
           item
             Borders = []
@@ -350,34 +355,6 @@ object FrameEvent: TFrameEvent
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
             Width = 32
-          end
-          item
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWindow
-            EditLength = 128
-            FieldName = 'Caption'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -19
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            Header = 'Description'
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -16
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -12
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 0
           end
           item
             Alignment = taRightJustify
@@ -435,7 +412,7 @@ object FrameEvent: TFrameEvent
             PrintFont.Height = -12
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 43
+            Width = 32
           end
           item
             Alignment = taRightJustify
@@ -494,6 +471,7 @@ object FrameEvent: TFrameEvent
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
+            Width = 43
           end
           item
             AllowBlank = True
@@ -522,7 +500,7 @@ object FrameEvent: TFrameEvent
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
+            Width = 67
           end
           item
             AllowBlank = True
@@ -550,7 +528,7 @@ object FrameEvent: TFrameEvent
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
+            Width = 85
           end
           item
             AllowBlank = True
@@ -578,7 +556,7 @@ object FrameEvent: TFrameEvent
             PrintFont.Height = -16
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-            Width = 64
+            Width = 102
           end>
         DataSource = CORE.dsEvent
         InvalidPicture.Data = {
@@ -720,19 +698,18 @@ object FrameEvent: TFrameEvent
         ShowUnicode = False
         ColWidths = (
           20
-          0
           43
-          120
-          132
+          88
+          133
+          187
           32
-          0
+          32
           32
           43
           43
-          50
-          64
-          64
-          64)
+          67
+          85
+          102)
       end
     end
   end

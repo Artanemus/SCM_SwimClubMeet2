@@ -14644,6 +14644,11 @@ object IMG: TIMG
         CollectionIndex = 55
         CollectionName = 'post'
         Name = 'post'
+      end
+      item
+        CollectionIndex = 118
+        CollectionName = 'hamburger'
+        Name = 'hamburger'
       end>
     ImageCollection = CollectionCore
     Width = 24

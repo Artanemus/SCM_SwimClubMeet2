@@ -47,6 +47,7 @@ object CORE: TCORE
     MasterSource = dsSwimClub
     MasterFields = 'SwimClubID'
     DetailFields = 'SwimClubID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayDateTime]
     FormatOptions.FmtDisplayDateTime = 'YYYY-MM-DD hh:nn'
     UpdateOptions.AssignedValues = [uvEInsert]
@@ -151,6 +152,7 @@ object CORE: TCORE
   end
   object qryEvent: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     AfterEdit = qryEventAfterEdit
     AfterScroll = qryEventAfterScroll
     OnNewRecord = qryEventNewRecord
@@ -166,6 +168,7 @@ object CORE: TCORE
     MasterSource = dsSession
     MasterFields = 'SessionID'
     DetailFields = 'SessionID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'hh:nn'
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Event'
@@ -227,9 +230,11 @@ object CORE: TCORE
     Left = 144
     Top = 120
     object qryEventEventID: TFDAutoIncField
+      DisplayWidth = 20
       FieldName = 'EventID'
       Origin = 'EventID'
       ProviderFlags = [pfInWhere, pfInKey]
+      Visible = False
     end
     object qryEventEventNum: TIntegerField
       DisplayLabel = ' Ev#'
@@ -237,61 +242,15 @@ object CORE: TCORE
       FieldName = 'EventNum'
       Origin = 'EventNum'
     end
-    object qryEventCaption: TWideStringField
-      DisplayLabel = 'Event Description'
-      DisplayWidth = 60
-      FieldName = 'Caption'
-      Origin = 'Caption'
-      Size = 128
-    end
-    object qryEventStartTime: TTimeField
-      FieldName = 'StartTime'
-      Origin = 'StartTime'
-      DisplayFormat = 'hh:nn'
-    end
-    object qryEventNomineeCount: TIntegerField
-      FieldName = 'NomineeCount'
-      Origin = 'NomineeCount'
-    end
-    object qryEventEntrantCount: TIntegerField
-      FieldName = 'EntrantCount'
-      Origin = 'EntrantCount'
-    end
-    object qryEventSessionID: TIntegerField
-      FieldName = 'SessionID'
-      Origin = 'SessionID'
-    end
-    object qryEventStrokeID: TIntegerField
-      FieldName = 'StrokeID'
-      Origin = 'StrokeID'
-    end
-    object qryEventDistanceID: TIntegerField
-      FieldName = 'DistanceID'
-      Origin = 'DistanceID'
-    end
-    object qryEventEventStatusID: TIntegerField
-      FieldName = 'EventStatusID'
-      Origin = 'EventStatusID'
-    end
-    object qryEventRoundID: TIntegerField
-      FieldName = 'RoundID'
-      Origin = 'RoundID'
-    end
-    object qryEventGenderID: TIntegerField
-      FieldName = 'GenderID'
-      Origin = 'GenderID'
-    end
-    object qryEventParalympicTypeID: TIntegerField
-      FieldName = 'ParalympicTypeID'
-      Origin = 'ParalympicTypeID'
-    end
-    object qryEventEventTypeID: TIntegerField
-      FieldName = 'EventTypeID'
-      Origin = 'EventTypeID'
-    end
-    object qryEventEventCategoryID: TIntegerField
-      FieldName = 'EventCategoryID'
-      Origin = 'EventCategoryID'
+    object qryEventluDistance: TStringField
+      FieldKind = fkLookup
+      FieldName = 'luDistance'
+      LookupDataSet = tblDistance
+      LookupKeyFields = 'DistanceID'
+      LookupResultField = 'CalcCaption'
+      KeyFields = 'DistanceID'
+      Size = 10
+      Lookup = True
     end
     object LookUpStroke: TStringField
       DisplayLabel = 'Stroke'
@@ -305,18 +264,31 @@ object CORE: TCORE
       LookupCache = True
       Lookup = True
     end
-    object LookUpEventType: TStringField
-      DisplayLabel = 'EventType'
-      FieldKind = fkLookup
-      FieldName = 'luEventType'
-      LookupDataSet = tblEventType
-      LookupKeyFields = 'EventTypeID'
-      LookupResultField = 'ABREV'
-      KeyFields = 'EventTypeID'
-      LookupCache = True
-      Lookup = True
+    object qryEventCaption: TWideStringField
+      DisplayLabel = 'Event Description'
+      DisplayWidth = 400
+      FieldName = 'Caption'
+      Origin = 'Caption'
+      Size = 128
+    end
+    object qryEventEventTypeID: TIntegerField
+      FieldName = 'EventTypeID'
+      Origin = 'EventTypeID'
+    end
+    object qryEventEventStatusID: TIntegerField
+      FieldName = 'EventStatusID'
+      Origin = 'EventStatusID'
+    end
+    object qryEventNomineeCount: TIntegerField
+      FieldName = 'NomineeCount'
+      Origin = 'NomineeCount'
+    end
+    object qryEventEntrantCount: TIntegerField
+      FieldName = 'EntrantCount'
+      Origin = 'EntrantCount'
     end
     object LookUpGender: TStringField
+      DisplayWidth = 38
       FieldKind = fkLookup
       FieldName = 'luGender'
       LookupDataSet = tblGender
@@ -329,6 +301,7 @@ object CORE: TCORE
     end
     object LookUpRound: TStringField
       DisplayLabel = 'Round'
+      DisplayWidth = 80
       FieldKind = fkLookup
       FieldName = 'luRound'
       LookupDataSet = tblRound
@@ -339,7 +312,20 @@ object CORE: TCORE
       Size = 8
       Lookup = True
     end
+    object LookUpEventCat: TStringField
+      DisplayWidth = 100
+      FieldKind = fkLookup
+      FieldName = 'luEventCat'
+      LookupDataSet = tblEventCat
+      LookupKeyFields = 'EventCategoryID'
+      LookupResultField = 'ABREV'
+      KeyFields = 'EventCategoryID'
+      LookupCache = True
+      Size = 10
+      Lookup = True
+    end
     object LookUpParalympicType: TStringField
+      DisplayWidth = 140
       FieldKind = fkLookup
       FieldName = 'luParalympicType'
       LookupDataSet = tblParalympicType
@@ -350,15 +336,20 @@ object CORE: TCORE
       Size = 24
       Lookup = True
     end
-    object LookUpEventCat: TStringField
+    object qryEventStartTime: TTimeField
+      FieldName = 'StartTime'
+      Origin = 'StartTime'
+      DisplayFormat = 'hh:nn'
+    end
+    object LookUpEventType: TStringField
+      DisplayLabel = 'EventType'
       FieldKind = fkLookup
-      FieldName = 'luEventCat'
-      LookupDataSet = tblEventCat
-      LookupKeyFields = 'EventCategoryID'
+      FieldName = 'luEventType'
+      LookupDataSet = tblEventType
+      LookupKeyFields = 'EventTypeID'
       LookupResultField = 'ABREV'
-      KeyFields = 'EventCategoryID'
+      KeyFields = 'EventTypeID'
       LookupCache = True
-      Size = 10
       Lookup = True
     end
     object qryEventluDistanceEx: TStringField
@@ -372,20 +363,39 @@ object CORE: TCORE
       KeyFields = 'DistanceID'
       Lookup = True
     end
-    object qryEventluDistance: TStringField
-      FieldKind = fkLookup
-      FieldName = 'luDistance'
-      LookupDataSet = tblDistance
-      LookupKeyFields = 'DistanceID'
-      LookupResultField = 'CalcCaption'
-      KeyFields = 'DistanceID'
-      Size = 10
-      Lookup = True
-    end
     object qryEventABREV: TWideStringField
       FieldName = 'ABREV'
       Origin = 'ABREV'
       Size = 5
+    end
+    object qryEventSessionID: TIntegerField
+      FieldName = 'SessionID'
+      Origin = 'SessionID'
+      Visible = False
+    end
+    object qryEventDistanceID: TIntegerField
+      FieldName = 'DistanceID'
+      Origin = 'DistanceID'
+    end
+    object qryEventStrokeID: TIntegerField
+      FieldName = 'StrokeID'
+      Origin = 'StrokeID'
+    end
+    object qryEventRoundID: TIntegerField
+      FieldName = 'RoundID'
+      Origin = 'RoundID'
+    end
+    object qryEventGenderID: TIntegerField
+      FieldName = 'GenderID'
+      Origin = 'GenderID'
+    end
+    object qryEventParalympicTypeID: TIntegerField
+      FieldName = 'ParalympicTypeID'
+      Origin = 'ParalympicTypeID'
+    end
+    object qryEventEventCategoryID: TIntegerField
+      FieldName = 'EventCategoryID'
+      Origin = 'EventCategoryID'
     end
   end
   object qryHeat: TFDQuery
@@ -505,6 +515,7 @@ object CORE: TCORE
         Fields = 'SwimClubID'
       end>
     IndexName = 'indxHideArchived'
+    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..SwimClub'
     UpdateOptions.KeyFields = 'SwimClubID'
     SQL.Strings = (
@@ -1119,7 +1130,9 @@ object CORE: TCORE
   end
   object tblStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'StrokeID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Stroke'
     UpdateOptions.KeyFields = 'StrokeID'
@@ -1131,9 +1144,11 @@ object CORE: TCORE
   end
   object tblDistance: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     Filtered = True
     Filter = 'IsArchived <> 1'
     IndexFieldNames = 'Laps;DistanceID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -1326,7 +1341,9 @@ object CORE: TCORE
   end
   object tblEventType: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'EventTypeID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
@@ -1341,7 +1358,9 @@ object CORE: TCORE
   end
   object tblGender: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'GenderID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
@@ -1351,7 +1370,9 @@ object CORE: TCORE
   end
   object tblRound: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'RoundID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
@@ -1361,7 +1382,9 @@ object CORE: TCORE
   end
   object tblEventCat: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'EventCategoryID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
@@ -1371,7 +1394,9 @@ object CORE: TCORE
   end
   object tblParalympicType: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'ParalympicTypeID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
@@ -1894,8 +1919,10 @@ object CORE: TCORE
   end
   object tblDisqualifyCode: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'DisqualifyCodeID'
     DetailFields = 'DisqualifyCodeID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -1936,7 +1963,9 @@ object CORE: TCORE
   end
   object tblSwimClubType: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'SwimClubTypeID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -1993,7 +2022,9 @@ object CORE: TCORE
   end
   object tblPooltype: TFDTable
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexFieldNames = 'PoolTypeID'
+    Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -2014,6 +2045,7 @@ object CORE: TCORE
   end
   object qryDistanceEx: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     Indexes = <
       item
         Active = True
@@ -2025,6 +2057,7 @@ object CORE: TCORE
     MasterSource = dsSwimClub
     MasterFields = 'PoolTypeID'
     DetailFields = 'PoolTypeID'
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False

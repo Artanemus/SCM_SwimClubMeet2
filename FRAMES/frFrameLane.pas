@@ -140,14 +140,15 @@ end;
 
 procedure TFrameLane.actnLn_GridViewExecute(Sender: TObject);
 var
-  LaneAction: TAction;
+  AAction: TAction;
 begin
-  LaneAction := TAction(Sender);
+  AAction := TAction(Sender);
   grid.BeginUpdate;
+  CORE.qryEvent.CheckBrowseMode;
   CORE.qryLane.DisableControls;
-  LaneAction.Checked := not LaneAction.Checked; // TOGGLE
+  AAction.Checked := not AAction.Checked; // TOGGLE
   try
-    if LaneAction.Checked then // GRID-VIEW EXPANDED..
+    if AAction.Checked then // GRID-VIEW EXPANDED..
     begin
       // store the collapsed state prior to expanding.
       fStateStringCollapsed := Grid.ColumnStatesToString;
@@ -171,7 +172,7 @@ begin
   end;
   // Call-back to main form.
   if Assigned(FOnGridViewChange) then
-    FOnGridViewChange(self, LaneAction.Checked);
+    FOnGridViewChange(self, AAction.Checked);
 end;
 
 procedure TFrameLane.actnLn_RefreshStatExecute(Sender: TObject);
@@ -209,6 +210,8 @@ var
 begin
   G := TDBAdvGrid(Sender);
   CanEdit := false;
+  if uSession.IsLocked then exit;
+
   fld := G.FieldAtColumn[Acol];
   if Assigned(fld) then
   begin
@@ -237,12 +240,13 @@ begin
 end;
 
 procedure TFrameLane.gridClickCell(Sender: TObject; ARow, ACol: Integer);
-var
-  item: TDBGridColumnItem;
+//var
+//  item: TDBGridColumnItem;
 begin
-  // this param keeps getting scrubbed.
-  item := Grid.Columns[ACol];
-  if item.FieldName = 'luDQ' then item.AllowBlank := true;
+{ removed here - done OnLoad.}
+  // TMS Bug: AllowBlank keeps getting disabled.
+//  item := Grid.Columns[ACol];
+//  if item.FieldName = 'luDQ' then item.AllowBlank := true;
 end;
 
 procedure TFrameLane.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
@@ -254,17 +258,25 @@ begin
   G := TDBAdvGrid(Sender);
   if (ARow = 0) then // GRID's HEADER BAR.
   begin
-    // This method deals with sorted columns and correctly draws ...
+    // Best practise to deal withsorted columns.
     item := G.Columns[ACol];
 
     // Hamburger
     if (item.FieldName = 'LaneID') and actnLn_GridView.Checked then
+    begin
       IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 6);
-
+      exit;
+    end;
     if item.FieldName = 'GenderABREV' then  // male-female
+    begin
       IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 3);
+      exit;
+    end;
     if item.FieldName = 'EventTypeID' then  // Event Type IND-R
+    begin
       IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 7);
+      exit;
+    end;
   end;
 end;
 
@@ -442,7 +454,7 @@ end;
 procedure TFrameLane.gridKeyPress(Sender: TObject; var Key: Char);
 var
   G: TDBAdvGrid;
-  indx: integer;
+  fld: TField;
 begin
   {TODO -oBSA -cGeneral :
     Clear lookup cells, whether in edit state of not, using the BACKSPACE key.
@@ -452,38 +464,39 @@ begin
 //      begin
 //      end;
 
-  G := TDBAdvGrid(Sender);
-  indx := G.FieldIndexAtColumn[G.Col]; // fields index on tag at TFrameLane.Loaded..
-  // FullName (Entrant.RelayTeam, Race-Time, luDQ).
-  if (grid.row >= grid.FixedRows) and (indx in [2, 3, 8]) then
+  if (grid.row >= grid.FixedRows) then
   begin
-    if (Key = char(VK_BACK)) then
+    G := TDBAdvGrid(Sender);
+    fld := G.FieldAtColumn[G.Col];
+    if (Key = char(VK_BACK))  or (Key = #$7F)  then
     begin
-      grid.BeginUpdate;
-      try
-        begin
-          try
-            begin
-              if (CORE.qryLane.State <> dsEdit) then
-                CORE.qryLane.Edit;
-
-              case (indx) of
-                2:
-                CORE.qryLane.FieldByName('FullName').Clear;
-                3:
-                CORE.qryLane.FieldByName('RaceTime').Clear;
-                8:
-                CORE.qryLane.FieldByName('DisqualifyCodeID').Clear;
+      if (fld.FieldName = 'FullName') or
+      (fld.FieldName = 'RaceTime') or
+      (fld.FieldName = 'DisqualifyCodeID') then
+      begin
+        grid.BeginUpdate;
+        try
+          begin
+            try
+              begin
+                if (CORE.qryLane.State <> dsEdit) then
+                  CORE.qryLane.Edit;
+                if (fld.FieldName = 'FullName') then
+                  CORE.qryLane.FieldByName('FullName').Clear;
+                if (fld.FieldName = 'RaceTime') then
+                  CORE.qryLane.FieldByName('RaceTime').Clear;
+                if (fld.FieldName = 'DisqualifyCodeID') then
+                  CORE.qryLane.FieldByName('DisqualifyCodeID').Clear;
+                CORE.qryLane.Post;
+                Key := char(0);
               end;
-              CORE.qryLane.Post;
-              Key := char(0);
+            except
+              on E: Exception do ShowMessage(E.Message);
             end;
-          except
-            on E: Exception do ShowMessage(E.Message);
           end;
+        finally
+          grid.EndUpdate;
         end;
-      finally
-        grid.EndUpdate;
       end;
     end;
   end;
@@ -714,6 +727,10 @@ begin
   {CASES: after Connection, after change of swimming club, after manage-clubs. }
   if DoFullUpdate then
   begin
+    // CHECK TMS rule..
+    if grid.RowCount < grid.FixedRows  then
+      grid.RowCount := grid.FixedRows + 1;
+
     if (not Assigned(SCM2)) or (not SCM2.scmConnection.connected) or
         (not Assigned(CORE)) or (not CORE.IsActive) or (CORE.qrySession.IsEmpty)
         or (CORE.qryEvent.IsEmpty) or (CORE.qryHeat.IsEmpty) then
@@ -721,24 +738,22 @@ begin
       Self.Visible := false;
       exit;
     end;
-        { NOTE: grid must be visible to sync + forces re-paint. }
-      LockDrawing;
-      Self.Visible := true;
-      pnlBody.Visible := true;
-      pnlG.Visible := true;
-      grid.Enabled := true;
-      grid.BeginUpdate;
-      grid.ResetColumnOrder;
-
-      // Collapsed control panel UI State...
-      SetCollapsedUIState;
-      // The grid's collapsed 'lane' grid column order, width, visibility.
-      SetCollapsedGridState; // DEFAULT SCHEMA
-      // store the 'default grid design schema'. (DEAULT UI LAYOUT.)
-      fStateStringCollapsed := Grid.ColumnStatesToString;
-
-      grid.EndUpdate;
-      UnlockDrawing;
+    { NOTE: grid must be visible to sync + forces re-paint. }
+    LockDrawing;
+    Self.Visible := true;
+    pnlBody.Visible := true;
+    pnlG.Visible := true;
+    grid.Enabled := true;
+    grid.BeginUpdate;
+    grid.ResetColumnOrder;
+    // Collapsed control panel UI State...
+    SetCollapsedUIState;
+    // The grid's collapsed 'lane' grid column order, width, visibility.
+    SetCollapsedGridState; // DEFAULT SCHEMA
+    // store the 'default grid design schema'. (DEAULT UI LAYOUT.)
+    fStateStringCollapsed := Grid.ColumnStatesToString;
+    grid.EndUpdate;
+    UnlockDrawing;
   end;
 
 
@@ -763,6 +778,17 @@ begin
     begin
       pnlBody.Visible := true;
       pnlG.Visible := true;
+      {
+      // Are we making a Connection or changing SwimClubs?
+      if CORE.IsWorkingOnConnection then
+      begin
+        if actnEv_GridView.Checked <> false then
+        begin
+          // SET TO COLLAPSED GRID OR DO FULL UPDATE?
+        end;
+      end;
+      }
+
     end;
 
   finally

@@ -354,7 +354,7 @@ object FrameLane: TFrameLane
         Font.Height = -16
         Font.Name = 'Segoe UI'
         Font.Style = []
-        Options = [goVertLine, goHorzLine, goRangeSelect, goColSizing, goColMoving, goEditing, goTabs, goFixedRowDefAlign]
+        Options = [goVertLine, goHorzLine, goColSizing, goColMoving, goEditing, goTabs, goFixedRowDefAlign]
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0

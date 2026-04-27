@@ -90,15 +90,35 @@ type
         Boolean);
     procedure gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
         State: TGridDrawState);
+    procedure gridFixedCellClick(Sender: TObject; ACol, ARow: LongInt);
     procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
     procedure gridGetDisplText(Sender: TObject; ACol, ARow: Integer; var Value:
         string);
+    procedure gridGetEditMask(Sender: TObject; ACol, ARow: LongInt; var Value:
+        string);
+    procedure gridGetEditorType(Sender: TObject; ACol, ARow: Integer; var AEditor:
+        TEditorType);
+    procedure gridGetEditText(Sender: TObject; ACol, ARow: LongInt; var Value:
+        string);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
   private
     FOnGridViewChange: TFrameNotifyEvent_GridViewChange;
-    procedure SetGridView_ColVisibility;
-    procedure SetGridView_IconIndex;
+
+    { Design Time Grid UI state. Captured on load.
+      Captures column widths for all fields.}
+    fStateStringSystem: String;
+    { Grid-View Collapsed StringState. }
+    fStateStringCollapsed: String;
+    { Grid-View Expanded StringState.
+      User may include/excude columns when in expanded grid view. }
+    fStateStringExpanded: String;
+
+    procedure SetGridViewIconState;
+    procedure SetCollapsedGridState;
+    procedure SetCollapsedUIState;
+    procedure SetExpandedUIState;
+
   protected
     procedure Loaded; override;
   public
@@ -110,6 +130,9 @@ type
   end;
 
 implementation
+
+uses
+  dlgLaneColumnPicker;
 
 {$R *.dfm}
 
@@ -163,23 +186,40 @@ begin
 end;
 
 procedure TFrameEvent.actnEv_GridViewExecute(Sender: TObject);
+var
+  AAction: TAction;
 begin
-    TAction(Sender).Checked := not TAction(Sender).Checked; // T O G G L E .
-    grid.BeginUpdate;
-    CORE.qryEvent.CheckBrowseMode;
-    CORE.qryEvent.DisableControls;
-    try
-      SetGridView_IconIndex;  // uses actnEv_GridView.Checked state.
-      SetGridView_ColVisibility;  // uses actnEv_GridView.Checked state.
-    finally
-      begin
-        CORE.qryEvent.EnableControls;
-        grid.EndUpdate;
-      end;
+  AAction := TAction(Sender);
+  grid.BeginUpdate;
+  CORE.qryEvent.CheckBrowseMode;
+  CORE.qryLane.DisableControls;
+  AAction.Checked := not AAction.Checked; // TOGGLE
+  try
+    if AAction.Checked then // GRID-VIEW EXPANDED..
+    begin
+      // store the collapsed state prior to expanding.
+      fStateStringCollapsed := Grid.ColumnStatesToString;
+      Grid.ReSetColumnOrder; // best practice prior to assigning StatesString.
+      Grid.StringToColumnStates(fStateStringExpanded);
+      SetExpandedUIState;
+    end
+    else // GRID-VIEW COLLAPSED..
+    begin
+      // store the expanded state prior to collapsing.
+      fStateStringExpanded := Grid.ColumnStatesToString;
+      Grid.ReSetColumnOrder; // best practice prior to assigning StatesString.
+      Grid.StringToColumnStates(fStateStringCollapsed);
+      SetCollapsedUIState;
     end;
-
-    if Assigned(FOnGridViewChange) then
-      FOnGridViewChange(self, TAction(Sender).Checked);
+  finally
+    begin
+      CORE.qryLane.EnableControls;
+      grid.EndUpdate;
+    end;
+  end;
+  // Call-back to main form.
+  if Assigned(FOnGridViewChange) then
+    FOnGridViewChange(self, AAction.Checked);
 end;
 
 procedure TFrameEvent.actnEv_GridViewUpdate(Sender: TObject);
@@ -286,74 +326,149 @@ end;
 
 procedure TFrameEvent.gridCanEditCell(Sender: TObject; ARow, ACol: Integer;
     var CanEdit: Boolean);
+var
+  G: TDBAdvGrid;
+  fld: TField;
 begin
-  // inhibit -  description, gender, round.
-  if actnEv_GridView.Checked then // Expanded.
-    CanEdit := not (ACol in [0, 1, 2, 5, 7, 8, 9])
-  else
-    CanEdit := not (ACol in [0, 1, 2, 5 ,6, 7, 8, 9, 10, 11, 12, 13]); // collapsed.
+  G := TDBAdvGrid(Sender);
+  CanEdit := false;
+  if uSession.IsLocked then exit;
+
+  fld := G.FieldAtColumn[Acol];
+  if Assigned(fld) then
+  begin
+    if not uEvent.AllHeatsAreClosed then
+    begin
+      if fld.FieldName = 'luDistance' then CanEdit := true;
+      if fld.FieldName = 'luStroke' then CanEdit := true;
+      if fld.FieldName = 'Caption' then CanEdit := true;
+      if fld.FieldName = 'EventTypeID' then CanEdit := true;
+      if fld.FieldName = 'luGender' then CanEdit := true;
+      if fld.FieldName = 'luRound' then CanEdit := true;
+      if fld.FieldName = 'luEventCat' then CanEdit := true;
+      if fld.FieldName = 'luParalympicType' then CanEdit := true;
+    end;
+  end;
 end;
 
 procedure TFrameEvent.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
   TRect; State: TGridDrawState);
 var
   G: TDBAdvGrid;
+  item: TDBGridColumnItem;
 begin
   G := TDBAdvGrid(Sender);
-
+  { As columns can be moved - best practise is to use fieldname.}
   if (ARow = 0) then
   begin
-    case ACol of // Draw icons in the header line of the grid.
-      5: // EntrantType
-        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4,
-          Rect.top + 4, 4);
-      7: // EventStatus (ticked - all heats raced).
-        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4,
-          Rect.top + 4, 5);
-      8:
-        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4,
-          Rect.top + 4, 1);
-      9:
-        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4,
-          Rect.top + 4, 2);
-      10: // centered gender icon...
-        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 6,
-          Rect.top + 4, 3);
+    item := G.Columns[ACol];
+
+    // Hamburger
+    if (item.FieldName = 'EventID') and actnEv_GridView.Checked then
+    begin
+      IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 6);
+      exit;
+    end;
+    // INDV/RELAY ICON
+    if (item.FieldName = 'EntrantTypeID') then
+    begin
+      IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4, Rect.top + 4, 4);
+      exit;
+    end;
+    // TICK ICON
+    if (item.FieldName = 'EventStatusID') then
+    begin
+        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4, Rect.top + 4, 5);
+      exit;
+    end;
+    // PERSON ICON
+    if (item.FieldName = 'NomineeCount') then
+    begin
+        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4, Rect.top + 4, 1);
+      exit;
+    end;
+    // PERSON WITH TICK ICON.
+    if (item.FieldName = 'EntrantCount') then
+    begin
+        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4, Rect.top + 4, 2);
+      exit;
+    end;
+    // MALE/FEMAL ICON.
+    if (item.FieldName = 'luGender') then
+    begin
+        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4, Rect.top + 4, 2);
+      exit;
+    end;
+  end;
+end;
+
+procedure TFrameEvent.gridFixedCellClick(Sender: TObject; ACol, ARow: LongInt);
+var
+  dlg: TLaneColumnPicker;
+  mr: TModalResult;
+begin
+  // Must be in EXPANDED column mode to alter grid columns, withs, index, etc.
+  if (ARow = 0) and (ACol = 0) and actnEv_GridView.Checked then
+  begin
+    LockDrawing;
+    Grid.BeginUpdate;
+    try
+      // display dlg to select column visibility...
+      dlg := TLaneColumnPicker.Create(Self);
+      // Current string state, system state for default widths and grid ref.
+      dlg.Prepare(Grid);
+      // RULE. must call prepare before showing dialogue.
+      mr := dlg.ShowModal();
+      if (mr = mrOK) then
+      begin
+          Grid.ReSetColumnOrder;
+          // Move the new string state into expanded grid view.
+          fStateStringExpanded := dlg.StateString;
+          // apply UI changes to the grid.
+          Grid.StringToColumnStates(fStateStringExpanded);
+      end;
+      dlg.Free;
+    finally
+      Grid.EndUpdate;
+      UnLockDrawing;
     end;
   end;
 end;
 
 procedure TFrameEvent.gridGetCellColor(Sender: TObject; ARow, ACol: Integer;
-    AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
+  AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
+var
+  fld: TField;
 begin
   { C E L L   C O L O R S  .
     1. the StyleElements seFont has been disabled for the session grid.
     2. the property UseSelectionColor has been disabled.
     3. the property SelectionTextColor has been set but will be ignored.
-
     - results : all assignments of font color are handles here.
   }
-  if (ARow >= grid.FixedRows) then   // (ARow >= grid.FixedCols)
+  if (ARow >= grid.FixedRows) then // (ARow >= grid.FixedCols)
   begin
-
-    if (ACol in [2, 8, 9]) then
-      AFont.Color := clWebLightgrey // readonly fields - not so white...
-
-    else
-    begin
-      if (gdSelected in AState) then
+      fld := TDBAdvGrid(Sender).FieldAtColumn[ACol];
+      if Assigned(fld) then
       begin
-        AFont.Color := clWhite;
-      end
-      else
-        AFont.Color :=  clWebGhostWhite;
-    end;
+        if (fld.FieldName = 'EventNum') or (fld.FieldName = 'NomineeCount') or
+        (fld.FieldName = 'EntrantCount') then
+          AFont.Color := clWebLightgrey // readonly fields - not so white...
+        else
+        begin
+          if (gdSelected in AState) then
+          begin
+            AFont.Color := clWhite;
+          end
+          else
+            AFont.Color := clWebGhostWhite;
+        end;
 
-    // overrides all
-    if uSession.IsLocked then
-      AFont.Color := grid.DisabledFontColor;
+        // overrides all
+        if uSession.IsLocked then
+          AFont.Color := grid.DisabledFontColor;
+      end;
   end;
-
 end;
 
 procedure TFrameEvent.gridGetDisplText(Sender: TObject; ACol, ARow: Integer;
@@ -377,7 +492,61 @@ begin
     end;
 end;
 
+procedure TFrameEvent.gridGetEditMask(Sender: TObject; ACol, ARow: LongInt; var
+    Value: string);
+var
+  G: TDBAdvGrid;
+  fld: TField;
+begin
+  G := TDBAdvGrid(Sender);
+  fld := G.FieldAtColumn[ACol];
+  if Assigned(fld) then
+  begin
+    if (ARow >= G.FixedRows) and (fld.FieldName = 'StartTime') then
+    begin
+      Value := '!00:00;1;0';
+    end;
+  end;
+end;
+
+procedure TFrameEvent.gridGetEditorType(Sender: TObject; ACol, ARow: Integer;
+    var AEditor: TEditorType);
+var
+  G: TDBAdvGrid;
+  fld: TField;
+begin
+  G := TDBAdvGrid(Sender);
+  fld := G.FieldAtColumn[ACol];
+  if Assigned(fld) then
+  begin
+    if (ARow >= G.FixedRows) then
+    begin
+      if fld.FieldName = 'StartTime' then AEditor := edNumeric
+    end;
+  end;
+end;
+
+procedure TFrameEvent.gridGetEditText(Sender: TObject; ACol, ARow: LongInt; var
+    Value: string);
+var
+  Hour, Min, Sec, MSec: word;
+  G: TDBAdvGrid;
+  dt: TDateTime;
+begin
+  G := TDBAdvGrid(Sender);
+  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'StartTime')then
+  begin
+    // This method FIXES display format issues.
+    dt := G.DataSource.DataSet.FieldByName('StartTime').AsDateTime;
+    DecodeTime(dt, Hour, Min, Sec, MSec);
+    Value := Format('%0:2.2u:%1:2.2u', [Hour, Min]);
+  end;
+end;
+
 procedure TFrameEvent.gridKeyPress(Sender: TObject; var Key: Char);
+var
+  G: TDBAdvGrid;
+  fld: TField;
 begin
   {TODO -oBSA -cGeneral :
     Clear lookup cells, whether in edit state of not, using the BACKSPACE key.
@@ -386,38 +555,42 @@ begin
 //      if ((GetKeyState(VK_CONTROL) and 128) = 128) then
 //      begin
 //      end;
-
-  if (grid.row >= grid.FixedRows) and
-      (grid.RealColIndex(grid.Col) in [10, 11, 12, 13]) then
+  if (grid.row >= grid.FixedRows) then
   begin
+    G := TDBAdvGrid(Sender);
+    fld := G.FieldAtColumn[G.Col];
     if (Key = char(VK_BACK)) or (Key = #$7F) then
     begin
-      grid.BeginUpdate;
-      try
-        begin
-          try
-            begin
-              if (CORE.qryEvent.State <> dsEdit) then
-                CORE.qryEvent.Edit;
-              case (grid.RealColIndex(grid.Col)) of
-                10:
-                CORE.qryEvent.FieldByName('GenderID').Clear;
-                11:
-                CORE.qryEvent.FieldByName('RoundID').Clear;
-                12:
-                CORE.qryEvent.FieldByName('EventCategoryID').Clear;
-                13:
-                CORE.qryEvent.FieldByName('ParalympicTypeID').Clear;
+      if (fld.FieldName = 'GenderID') or
+      (fld.FieldName = 'RoundID') or
+      (fld.FieldName = 'EventCategoryID') or
+      (fld.FieldName = 'ParalympicTypeID') then
+      begin
+        grid.BeginUpdate;
+        try
+          begin
+            try
+              begin
+                if (CORE.qryEvent.State <> dsEdit) then
+                  CORE.qryEvent.Edit;
+                if (fld.FieldName = 'GenderID') then
+                  CORE.qryEvent.FieldByName('GenderID').Clear;
+                if (fld.FieldName = 'RoundID') then
+                  CORE.qryEvent.FieldByName('RoundID').Clear;
+                if (fld.FieldName = 'EventCategoryID') then
+                  CORE.qryEvent.FieldByName('EventCategoryID').Clear;
+                if (fld.FieldName = 'ParalympicTypeID') then
+                  CORE.qryEvent.FieldByName('ParalympicTypeID').Clear;
+                CORE.qryEvent.Post;
+                Key := char(0);
               end;
-              CORE.qryEvent.Post;
-              Key := char(0);
+            except
+              on E: Exception do ShowMessage(E.Message);
             end;
-          except
-            on E: Exception do ShowMessage(E.Message);
           end;
+        finally
+          grid.EndUpdate;
         end;
-      finally
-        grid.EndUpdate;
       end;
     end;
   end;
@@ -449,39 +622,110 @@ var
   item: TDBGridColumnItem;
 begin
   inherited;
-  // This executes after the DFM has loaded and ActionLinks have synced.
-  // Fix Delphi's disabling column settings.
-  item := Grid.ColumnByFieldName['luRound'];
-  if item <> nil then item.AllowBlank := true;
-  item := Grid.ColumnByFieldName['luEventCat'];
-  if item <> nil then item.AllowBlank := true;
-  item := Grid.ColumnByFieldName['luParalympicType'];
-  if item <> nil then item.AllowBlank := true;
-  // UNSAFE - Grid.Columns[?].AllowBlank := true;
-end;
 
-procedure TFrameEvent.SetGridView_ColVisibility;
-begin
-  // EXPANDED or COLLAPSED grid views...
-  if actnEv_GridView.Checked then
-  begin  // EXPANDED...
-    grid.Columns[6].Width := 400;   // DESCRIPTION.
-    grid.Columns[10].Width := 38;   // Gender (ABREV)
-    grid.Columns[11].Width := 80;   // Round (ABREV)
-    grid.Columns[12].Width := 100;   // Event Category (ABREV)
-    grid.Columns[13].Width := 140;   // ParaOlympic (Caption)
+  { IMPORTANT: At design time all columns are visible.}
+  { IMPORTANT: Store column-order, needed by TMS to restore state.}
+  Grid.SetColumnOrder;
+  { Store the design-time layout. This contains default column display widths
+     that will be useful later.}
+  fStateStringSystem := Grid.ColumnStatesToString;
+  // store the grid's design-time column state into settings.
+  if Assigned(Settings) then
+    Settings.Ln_ColumnStatesStringSystem := fStateStringSystem;
+
+  { ASSERT STATE: The user have the option to assign 'none' (or empty)
+    in the combobox drop-down for disqualification codes.
+    TMS BUG: This is set at design-time but isn't persistent on construction
+    of the TFrame.}
+  item := Grid.ColumnByFieldName['luRound'];
+  if item <> nil then
+    TDBGridColumnItem(item).AllowBlank := true;
+  item := Grid.ColumnByFieldName['luEventCat'];
+  if item <> nil then
+    TDBGridColumnItem(item).AllowBlank := true;
+  item := Grid.ColumnByFieldName['luParalympicType'];
+  if item <> nil then
+    TDBGridColumnItem(item).AllowBlank := true;
+
+  { Collapsed control panel UI State...  }
+  SetCollapsedUIState;
+
+  { The grid's collapsed 'lane' grid column order, width, visibility.
+    This grid dis[play schema is identical to SCM version 1.
+    Display widths for visible columns are not handled in this routine.
+    It's presumed to be correctly set at design-time.
+    Extended column features have their display widths set to 0.}
+  SetCollapsedGridState; // DEFAULT GRID LAYOUT.
+
+  // store the 'grid design schema'. (DEAULT GRID LAYOUT.)
+  fStateStringCollapsed := Grid.ColumnStatesToString;
+
+  // Get the user's custom column layout that is displayed in expanded gridview.
+  if Assigned(Settings) then
+  begin
+    fStateStringExpanded := Settings.Ln_ColumnStatesStringExpanded;
+    if fStateStringExpanded.IsEmpty then
+      fStateStringExpanded := fStateStringCollapsed; // DEFAULT GRID LAYOUT.
   end
   else
-  begin  // COLLAPSED...
-    grid.Columns[6].Width := 0;
-    grid.Columns[10].Width := 0;
-    grid.Columns[11].Width := 0;
-    grid.Columns[12].Width := 0;
-    grid.Columns[13].Width := 0;
-  end;
+    fStateStringExpanded := fStateStringCollapsed; // DEFAULT GRID LAYOUT.
+
+
 end;
 
-procedure TFrameEvent.SetGridView_IconIndex;
+procedure TFrameEvent.SetCollapsedGridState;
+var
+fld: Tfield;
+begin
+  // Set ALL fields too visible...
+  for fld in CORE.qryEvent.Fields do fld.Visible := true;
+  { COLLAPSE SCHEMA (same as SCMv1.)
+    EventNum, LuDistance, luStroke, Caption, EventTypeID, EventStatusID,
+    NomineeCount, EntrantCount.
+  }
+  CORE.qryEvent.FieldByName('EventID').Visible := false;
+  CORE.qryEvent.FieldByName('SessionID').Visible := false;
+  CORE.qryEvent.FieldByName('DistanceID').Visible := false;
+  CORE.qryEvent.FieldByName('StrokeID').Visible := false;
+  CORE.qryEvent.FieldByName('RoundID').Visible := false;
+  CORE.qryEvent.FieldByName('GenderID').Visible := false;
+  CORE.qryEvent.FieldByName('ParalympicTypeID').Visible := false;
+  CORE.qryEvent.FieldByName('EventCategoryID').Visible := false;
+  CORE.qryEvent.FieldByName('ABBREV').Visible := false;
+
+  { Set: grid visiblity for COLLAPSED (extended features) grid columns .}
+  Grid.ColumnByFieldName['luGender'].Width := 0;
+  Grid.ColumnByFieldName['luRound'].Width := 0;
+  Grid.ColumnByFieldName['luEventCat'].Width := 0;
+  Grid.ColumnByFieldName['luParalympicType'].Width := 0;
+  Grid.ColumnByFieldName['StartTime'].Width := 0;
+  Grid.ColumnByFieldName['luEventType'].Width := 0;
+  Grid.ColumnByFieldName['luDistanceEx'].Width := 0;
+
+end;
+
+procedure TFrameEvent.SetCollapsedUIState;
+begin
+  // ASSERT STATE: Collapsed Grid-View UI State...
+  // Collapsed grid-view.
+  if actnEv_GridView.Checked <> false then
+    actnEv_GridView.Checked := false;
+  // Button icon that displays a grid-view state.
+  SetGridViewIconState;
+end;
+
+procedure TFrameEvent.SetExpandedUIState;
+begin
+  // ASSERT STATE: Collapsed Grid-View UI State...
+  // Collapsed grid-view.
+  if actnEv_GridView.Checked <> true then
+    actnEv_GridView.Checked := true;
+  // Button icon that displays a grid-view state.
+  SetGridViewIconState;
+end;
+
+
+procedure TFrameEvent.SetGridViewIconState;
 begin
   // logic saves on unessesary repaints.
   if (actnEv_GridView.Checked) then // Expanded view - icon has no slash.
@@ -513,14 +757,21 @@ begin
       Self.Visible := false; // hide everthing - move on.
       exit;
     end;
-
     { grid must be visible to sync + forces re-paint. }
     LockDrawing;
     Self.Visible := true;
     pnlBody.Visible := true;
     pnlG.Visible := true;
     grid.Enabled := true;
-//    grid.Refresh;
+    grid.BeginUpdate;
+    grid.ResetColumnOrder;
+    // Collapsed control panel UI State...
+    SetCollapsedUIState;
+    // The grid's collapsed 'lane' grid column order, width, visibility.
+    SetCollapsedGridState; // DEFAULT SCHEMA
+    // store the 'default grid design schema'. (DEAULT UI LAYOUT.)
+    fStateStringCollapsed := Grid.ColumnStatesToString;
+    grid.EndUpdate;
     UnlockDrawing;
   end;
 
@@ -532,9 +783,7 @@ begin
       Self.Visible := false;   // hide TMS grid.
       exit;
     end;
-
     if not Self.Visible then Self.Visible := true;
-
     if CORE.qryEvent.IsEmpty then
     begin
       // CNTRL panel is displayed but not the grid.
@@ -546,12 +795,16 @@ begin
     begin
       pnlBody.Visible := true;
       pnlG.Visible := true;
+      {
       // Are we making a Connection or changing SwimClubs?
       if CORE.IsWorkingOnConnection then
-        actnEv_GridView.Checked := false;
-
-      SetGridView_IconIndex();
-      SetGridView_ColVisibility;
+      begin
+        if actnEv_GridView.Checked <> false then
+        begin
+          // SET TO COLLAPSED GRID OR DO FULL UPDATE?
+        end;
+      end;
+      }
     end;
 
   finally

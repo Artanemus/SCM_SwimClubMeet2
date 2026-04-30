@@ -250,7 +250,6 @@ begin
   end;
 end;
 
-
 function RefreshStat(aEventID, aMemberID: integer): boolean;
 var
   Metrics: TSCMSwimmerMetrics;

@@ -45,7 +45,7 @@ object Preferences: TPreferences
     Top = 0
     Width = 695
     Height = 436
-    ActivePage = ts_Charts
+    ActivePage = TabSheet7
     Align = alClient
     TabOrder = 1
     object TabSheet2: TTabSheet
@@ -541,7 +541,7 @@ object Preferences: TPreferences
   end
   object BalloonHintPreferences: TBalloonHint
     Delay = 0
-    Left = 92
-    Top = 232
+    Left = 516
+    Top = 48
   end
 end

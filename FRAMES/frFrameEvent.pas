@@ -396,7 +396,7 @@ begin
     // MALE/FEMAL ICON.
     if (item.FieldName = 'luGender') then
     begin
-        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4, Rect.top + 4, 2);
+        IMG.imglstEventCell.Draw(G.Canvas, Rect.left + 4, Rect.top + 4, 3);
       exit;
     end;
   end;
@@ -691,16 +691,16 @@ begin
   CORE.qryEvent.FieldByName('GenderID').Visible := false;
   CORE.qryEvent.FieldByName('ParalympicTypeID').Visible := false;
   CORE.qryEvent.FieldByName('EventCategoryID').Visible := false;
-  CORE.qryEvent.FieldByName('ABBREV').Visible := false;
+//  CORE.qryEvent.FieldByName('ABBREV').Visible := false;
 
   { Set: grid visiblity for COLLAPSED (extended features) grid columns .}
   Grid.ColumnByFieldName['luGender'].Width := 0;
   Grid.ColumnByFieldName['luRound'].Width := 0;
   Grid.ColumnByFieldName['luEventCat'].Width := 0;
   Grid.ColumnByFieldName['luParalympicType'].Width := 0;
-  Grid.ColumnByFieldName['StartTime'].Width := 0;
-  Grid.ColumnByFieldName['luEventType'].Width := 0;
-  Grid.ColumnByFieldName['luDistanceEx'].Width := 0;
+//  Grid.ColumnByFieldName['StartTime'].Width := 0;
+//  Grid.ColumnByFieldName['luEventType'].Width := 0;
+//  Grid.ColumnByFieldName['luDistanceEx'].Width := 0;
 
 end;
 

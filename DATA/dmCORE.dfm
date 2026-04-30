@@ -152,7 +152,6 @@ object CORE: TCORE
   end
   object qryEvent: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     AfterEdit = qryEventAfterEdit
     AfterScroll = qryEventAfterScroll
     OnNewRecord = qryEventNewRecord
@@ -237,12 +236,13 @@ object CORE: TCORE
       Visible = False
     end
     object qryEventEventNum: TIntegerField
-      DisplayLabel = ' Ev#'
+      DisplayLabel = ' Event Number'
       DisplayWidth = 5
       FieldName = 'EventNum'
       Origin = 'EventNum'
     end
     object qryEventluDistance: TStringField
+      DisplayLabel = 'Distance'
       FieldKind = fkLookup
       FieldName = 'luDistance'
       LookupDataSet = tblDistance
@@ -272,22 +272,28 @@ object CORE: TCORE
       Size = 128
     end
     object qryEventEventTypeID: TIntegerField
+      DisplayLabel = 'Event Type (INDV/RELAY)'
       FieldName = 'EventTypeID'
       Origin = 'EventTypeID'
     end
     object qryEventEventStatusID: TIntegerField
+      DisplayLabel = 'All raced Status (Ticked)'
       FieldName = 'EventStatusID'
       Origin = 'EventStatusID'
     end
     object qryEventNomineeCount: TIntegerField
+      DisplayLabel = 'Nominee Count'
       FieldName = 'NomineeCount'
       Origin = 'NomineeCount'
     end
     object qryEventEntrantCount: TIntegerField
+      DisplayLabel = 'Entrant Count'
       FieldName = 'EntrantCount'
       Origin = 'EntrantCount'
     end
     object LookUpGender: TStringField
+      Alignment = taCenter
+      DisplayLabel = 'Gender (M,Y,X)'
       DisplayWidth = 38
       FieldKind = fkLookup
       FieldName = 'luGender'
@@ -313,6 +319,7 @@ object CORE: TCORE
       Lookup = True
     end
     object LookUpEventCat: TStringField
+      DisplayLabel = 'Event Category'
       DisplayWidth = 100
       FieldKind = fkLookup
       FieldName = 'luEventCat'
@@ -325,6 +332,7 @@ object CORE: TCORE
       Lookup = True
     end
     object LookUpParalympicType: TStringField
+      DisplayLabel = 'Paralympic Type'
       DisplayWidth = 140
       FieldKind = fkLookup
       FieldName = 'luParalympicType'
@@ -337,12 +345,13 @@ object CORE: TCORE
       Lookup = True
     end
     object qryEventStartTime: TTimeField
+      DisplayLabel = 'Start Time (HH:MM)'
       FieldName = 'StartTime'
       Origin = 'StartTime'
       DisplayFormat = 'hh:nn'
     end
     object LookUpEventType: TStringField
-      DisplayLabel = 'EventType'
+      DisplayLabel = 'Event Type Label'
       FieldKind = fkLookup
       FieldName = 'luEventType'
       LookupDataSet = tblEventType
@@ -353,7 +362,7 @@ object CORE: TCORE
       Lookup = True
     end
     object qryEventluDistanceEx: TStringField
-      DisplayLabel = 'Distance'
+      DisplayLabel = 'Distance (Detailed)'
       DisplayWidth = 12
       FieldKind = fkLookup
       FieldName = 'luDistanceEx'
@@ -364,6 +373,7 @@ object CORE: TCORE
       Lookup = True
     end
     object qryEventABREV: TWideStringField
+      DisplayLabel = 'Gender Label'
       FieldName = 'ABREV'
       Origin = 'ABREV'
       Size = 5
@@ -371,7 +381,6 @@ object CORE: TCORE
     object qryEventSessionID: TIntegerField
       FieldName = 'SessionID'
       Origin = 'SessionID'
-      Visible = False
     end
     object qryEventDistanceID: TIntegerField
       FieldName = 'DistanceID'
@@ -1130,7 +1139,6 @@ object CORE: TCORE
   end
   object tblStroke: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'StrokeID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -1144,7 +1152,6 @@ object CORE: TCORE
   end
   object tblDistance: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     Filtered = True
     Filter = 'IsArchived <> 1'
     IndexFieldNames = 'Laps;DistanceID'
@@ -1341,7 +1348,6 @@ object CORE: TCORE
   end
   object tblEventType: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'EventTypeID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -1358,7 +1364,6 @@ object CORE: TCORE
   end
   object tblGender: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'GenderID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -1370,7 +1375,6 @@ object CORE: TCORE
   end
   object tblRound: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'RoundID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -1382,7 +1386,6 @@ object CORE: TCORE
   end
   object tblEventCat: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'EventCategoryID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -1394,7 +1397,6 @@ object CORE: TCORE
   end
   object tblParalympicType: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'ParalympicTypeID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -1919,7 +1921,6 @@ object CORE: TCORE
   end
   object tblDisqualifyCode: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'DisqualifyCodeID'
     DetailFields = 'DisqualifyCodeID'
     Connection = SCM2.scmConnection
@@ -1963,7 +1964,6 @@ object CORE: TCORE
   end
   object tblSwimClubType: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'SwimClubTypeID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -2022,7 +2022,6 @@ object CORE: TCORE
   end
   object tblPooltype: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'PoolTypeID'
     Connection = SCM2.scmConnection
     ResourceOptions.AssignedValues = [rvEscapeExpand]
@@ -2045,7 +2044,6 @@ object CORE: TCORE
   end
   object qryDistanceEx: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     Indexes = <
       item
         Active = True

@@ -396,6 +396,15 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
+        <DCCReference Include="AUTOBUILD\INDV\dlgAutoBuild_Heats.pas">
+            <Form>AutoBuild_Heats</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="AUTOBUILD\INDV\dmAutoBuild_INDVHeats.pas">
+            <Form>AutoBuild_INDVHeats</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

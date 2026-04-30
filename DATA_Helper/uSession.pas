@@ -457,7 +457,9 @@ end;
 
 function SessionDT: TDateTime;
 begin
-  result := CORE.qrySession.FieldByName('SessionDT').AsDateTime;
+  result := Now();
+  if uSession.Assert then
+    result := CORE.qrySession.FieldByName('SessionDT').AsDateTime;
 end;
 
 procedure NewSession();

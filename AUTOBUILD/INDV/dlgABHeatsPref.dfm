@@ -1,4 +1,4 @@
-object AutoBuild_Heats: TAutoBuild_Heats
+object ABHeatsPref: TABHeatsPref
   Left = 0
   Top = 0
   BorderStyle = bsDialog
@@ -2690,7 +2690,6 @@ object AutoBuild_Heats: TAutoBuild_Heats
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 508
     object Label1: TLabel
       Left = 86
       Top = 20
@@ -2808,8 +2807,6 @@ object AutoBuild_Heats: TAutoBuild_Heats
     BevelKind = bkFlat
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 496
-    ExplicitWidth = 508
     object btnCancel: TButton
       Left = 380
       Top = 8
@@ -2841,8 +2838,6 @@ object AutoBuild_Heats: TAutoBuild_Heats
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = 60
-    ExplicitHeight = 435
     object Label7: TLabel
       Left = 22
       Top = 130

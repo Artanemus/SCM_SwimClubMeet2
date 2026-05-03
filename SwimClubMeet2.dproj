@@ -396,12 +396,12 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="AUTOBUILD\INDV\dlgAutoBuild_Heats.pas">
-            <Form>AutoBuild_Heats</Form>
+        <DCCReference Include="AUTOBUILD\INDV\dlgABHeatsPref.pas">
+            <Form>ABHeatsPref</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="AUTOBUILD\INDV\dmAutoBuild_INDVHeats.pas">
-            <Form>AutoBuild_INDVHeats</Form>
+        <DCCReference Include="AUTOBUILD\INDV\dmABHeats.pas">
+            <Form>ABHeats</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>

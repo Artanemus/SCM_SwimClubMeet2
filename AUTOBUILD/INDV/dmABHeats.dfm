@@ -1,10 +1,11 @@
-object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
+object ABHeats: TABHeats
   OnCreate = DataModuleCreate
-  Height = 501
+  Height = 737
   Width = 773
-  object qryHeatsToDelete: TFDQuery
+  object qryHeatOrderedOpenList: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'HeatID'
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
@@ -12,18 +13,22 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
     UpdateOptions.UpdateTableName = 'SwimClubMeet..HeatIndividual'
     UpdateOptions.KeyFields = 'HeatID'
     SQL.Strings = (
-      'USE SwimClubMeet;'
+      'USE SwimClubMeet2;'
       ''
       'DECLARE @EventID AS INT'
       'SET @EventID = :EVENTID;'
       ''
-      'SELECT HeatIndividual.HeatID'
-      ',HeatIndividual.HeatStatusID'
-      'FROM HeatIndividual'
-      'WHERE HeatIndividual.EventID = @EventID'
-      'AND HeatIndividual.HeatStatusID = 1;')
-    Left = 88
-    Top = 24
+      'SELECT Heat.HeatID'
+      ',Heat.HeatStatusID'
+      'FROM Heat'
+      'WHERE Heat.EventID = @EventID'
+      'AND Heat.HeatStatusID = 1'
+      ''
+      
+        'ORDER BY (CASE WHEN HeatNum IS NULL THEN 1 ELSE 0 END), HeatNum ' +
+        'ASC;')
+    Left = 200
+    Top = 624
     ParamData = <
       item
         Name = 'EVENTID'
@@ -36,18 +41,20 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
     ActiveStoredUsage = [auDesignTime]
     IndexesActive = False
     IndexFieldNames = 'NomineeID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'NN:SS.zzz'
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Nominee'
     UpdateOptions.KeyFields = 'NomineeID'
     SQL.Strings = (
-      'USE SwimClubMeet;'
-      ''
+      'USE SwimClubMeet2;'
+      '                              '
       'DECLARE @EventID AS INT;'
-      'DECLARE @SessionStart AS DATETIME;'
+      'DECLARE @SeedDate AS DATETIME;'
       'DECLARE @Algorithm AS INT;'
       'DECLARE @Calcdefault AS INT;'
       'DECLARE @Percent AS FLOAT;'
@@ -81,10 +88,13 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       'SET @Age = :AGE; --0'
       'SET @SwimClubID = 1;'
       ''
-      'SET @SessionStart = :SESSIONSTART;'
+      'SET @SeedDate = :SESSIONSTART;'
       ''
-      'IF @SessionStart IS NULL'
-      '    SET @SessionStart = GETDATE();'
+      'IF @SeedDate IS NULL'
+      '    SET @SeedDate = GETDATE();'
+      '    '
+      'IF @SeedDate IS NULL'
+      '    SET @SeedDate = GETDATE();'
       '    '
       'IF @SwimmerCategoryID IS NULL'
       '    SET @SwimmerCategoryID = 0;    '
@@ -101,18 +111,20 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       '    DROP TABLE #MembersInClosedHeats;'
       '-- Create the temporary table '
       'SELECT Event.EventID'
-      '     , Entrant.MemberID'
+      '     , Nominee.MemberID'
       'INTO #MembersInClosedHeats'
-      'FROM [SwimClubMeet].[dbo].[Event]'
-      '    INNER JOIN HeatIndividual'
-      '        ON Event.EventID = HeatIndividual.EventID'
-      '    INNER JOIN Entrant'
-      '        ON HeatIndividual.HeatID = Entrant.HeatID'
+      'FROM [SwimClubMeet2].[dbo].[Event]'
+      '    INNER JOIN Heat'
+      '        ON Event.EventID = Heat.EventID'
+      '    INNER JOIN Lane'
+      '        ON Heat.HeatID = Lane.HeatID'
+      '    INNER JOIN Nominee'
+      '        ON Lane.NomineeID = Nominee.NomineeID'
       'WHERE ('
-      '          HeatIndividual.HeatStatusID = 2'
-      '          OR HeatIndividual.HeatStatusID = 3'
+      '          Heat.HeatStatusID = 2'
+      '          OR Heat.HeatStatusID = 3'
       '      )'
-      '      AND (Entrant.MemberID IS NOT NULL);'
+      '      AND (Lane.NomineeID IS NOT NULL);'
       ''
       
         '-- LIST OF ALL NOMINEES FOR THE GIVEN EVENT AND THEIR PERSONAL D' +
@@ -127,22 +139,22 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       'SELECT [Nominee].[NomineeID]'
       '     , [Nominee].[EventID]'
       '     , [Nominee].[MemberID]'
-      '     , [Nominee].[SeedTime]'
+      '     , [Nominee].[PBSeedTime]'
       '     , [Member].[GenderID]'
-      '    , dbo.SwimmerAge(@SessionStart, Member.DOB) AS AGE'
+      '    , dbo.SwimmerAge(@SeedDate, Member.DOB) AS AGE'
       
         '    , dbo.TimeToBeat(@Algorithm, @Calcdefault, @Percent, [Nomine' +
-        'e].[MemberID], [Event].[DistanceID], [Event].[StrokeID], @Sessio' +
-        'nStart) AS TTB     '
+        'e].[MemberID], [Event].[DistanceID], [Event].[StrokeID], @SeedDa' +
+        'te) AS TTB     '
       
-        '    , dbo.MembersSwimmerCategory([Nominee].[MemberID], @SwimClub' +
-        'Id, @SessionStart) AS SwimmerCategoryID'
+        '    --, dbo.MembersSwimmerCategory([Nominee].[MemberID], @SwimCl' +
+        'ubId, @SeedDate) AS SwimmerCategoryID'
       
         '    , dbo.PersonalBest([Nominee].[MemberID], [Event].[DistanceID' +
-        '], [Event].[StrokeID], @SessionStart) AS PB'
+        '], [Event].[StrokeID], @SeedDate) AS PB'
       'INTO #NomineesInEvent'
-      'FROM [SwimClubMeet].[dbo].[Nominee]'
-      '    LEFT OUTER JOIN [SwimClubMeet].[dbo].[Member]'
+      'FROM [SwimClubMeet2].[dbo].[Nominee]'
+      '    LEFT OUTER JOIN [SwimClubMeet2].[dbo].[Member]'
       '        ON [Nominee].[MemberID] = [Member].[MemberID]'
       '    LEFT OUTER JOIN Event'
       '        ON Nominee.EventID = Event.EventID'
@@ -157,19 +169,19 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
         'OSED.'
       'SELECT NomineeID'
       '    , #NomineesInEvent.MemberID'
-      '    , SwimmerCategoryID'
+      '    --, SwimmerCategoryID'
       '    , #NomineesInEvent.GenderID'
       '    , AGE'
       '    , PB'
       '    , TTB'
       '-- SEEDTIME IS USED TO INJECT DATA INTO THE ENTRANT RESORD'
-      ', SeedTime'
+      ', PBSeedTime'
       
         '-- If we use the TTB value below - it will not get evaluated ...' +
         '. '
       
         '--,dbo.TimeToBeat(@Algorithm, @Calcdefault, @Percent, Nominee.Me' +
-        'mberID, Event.DistanceID, Event.StrokeID, @SessionStart) AS TTB'
+        'mberID, Event.DistanceID, Event.StrokeID, @SeedDate) AS TTB'
       'FROM #NomineesInEvent'
       'LEFT OUTER JOIN Event'
       '    ON #NomineesInEvent.EventID = Event.EventID'
@@ -192,6 +204,7 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       '            AND #NomineesInEvent.GenderID = @GenderID'
       '            )'
       '        )'
+      '/*'
       '    AND ('
       '        ('
       '            @SwimmerCategoryID = 0'
@@ -205,6 +218,8 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       '            AND SwimmerCategoryID = @SwimmerCategoryID'
       '            )'
       '        )'
+      '*/'
+      ''
       '    AND ('
       '        ('
       '            @Age = 0'
@@ -276,31 +291,31 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
         Value = Null
       end>
   end
-  object qryRenumberHeats: TFDQuery
+  object qryHeatOrderedList: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     IndexesActive = False
     IndexFieldNames = 'HeatID'
+    Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet..HeatIndividual'
     UpdateOptions.KeyFields = 'HeatID'
     SQL.Strings = (
-      'USE SwimClubMeet;'
+      'USE SwimClubMeet2;'
       ''
       'DECLARE @EventID AS INT'
       'SET @EventID = :EVENTID;'
       ''
-      'SELECT HeatIndividual.HeatID'
-      ',HeatIndividual.HeatNum'
-      'FROM HeatIndividual'
-      'WHERE HeatIndividual.EventID = @EventID'
+      'SELECT Heat.HeatID'
+      ',Heat.HeatNum'
+      'FROM Heat'
+      'WHERE Heat.EventID = @EventID'
       '-- NULL LAST'
       
         'ORDER BY (CASE WHEN HeatNum IS NULL THEN 1 ELSE 0 END), HeatNum ' +
         'ASC;'
       ''
-      '-- DEPRECIATED 15/03/2022'
-      '-- ORDER BY HeatIndividual.HeatID ASC;')
-    Left = 184
-    Top = 24
+      '')
+    Left = 64
+    Top = 624
     ParamData = <
       item
         Name = 'EVENTID'
@@ -311,12 +326,13 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
   end
   object qryGenderSwimmerCATCount: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
     SQL.Strings = (
-      'USE SwimClubMeet;'
+      'USE SwimClubMeet2;'
       ''
       'DECLARE @EventID AS INT;'
       'DECLARE @SwimClubID AS INT;'
@@ -339,18 +355,20 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       '    DROP TABLE #MembersInClosedHeats;'
       '-- Create the temporary table '
       'SELECT Event.EventID'
-      '     , Entrant.MemberID'
+      '     , Nominee.MemberID'
       'INTO #MembersInClosedHeats'
-      'FROM [SwimClubMeet].[dbo].[Event]'
-      '    INNER JOIN HeatIndividual'
-      '        ON Event.EventID = HeatIndividual.EventID'
-      '    INNER JOIN Entrant'
-      '        ON HeatIndividual.HeatID = Entrant.HeatID'
+      'FROM [SwimClubMeet2].[dbo].[Event]'
+      '    INNER JOIN Heat'
+      '        ON Event.EventID = Heat.EventID'
+      '    INNER JOIN Lane'
+      '        ON Heat.HeatID = Lane.HeatID'
+      '    INNER JOIN Nominee'
+      '        ON Lane.NomineeID = Nominee.NomineeID'
       'WHERE ('
-      '          HeatIndividual.HeatStatusID = 2'
-      '          OR HeatIndividual.HeatStatusID = 3'
+      '          Heat.HeatStatusID = 2'
+      '          OR Heat.HeatStatusID = 3'
       '      )'
-      '      AND (Entrant.MemberID IS NOT NULL);'
+      '      AND (Lane.NomineeID IS NOT NULL);'
       ''
       ''
       
@@ -368,11 +386,11 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       '     , [Nominee].[MemberID]'
       '     , [Member].[GenderID]'
       
-        '     , dbo.MembersSwimmerCategory([Member].[MemberID], @SwimClub' +
-        'Id, @SeedDate) AS SwimmerCategoryID'
+        '    -- , dbo.MembersSwimmerCategory([Member].[MemberID], @SwimCl' +
+        'ubId, @SeedDate) AS SwimmerCategoryID'
       'INTO #NomineeCAT'
-      'FROM [SwimClubMeet].[dbo].[Nominee]'
-      '    LEFT OUTER JOIN [SwimClubMeet].[dbo].[Member]'
+      'FROM [SwimClubMeet2].[dbo].[Nominee]'
+      '    LEFT OUTER JOIN [SwimClubMeet2].[dbo].[Member]'
       '        ON [Nominee].[MemberID] = [Member].[MemberID]'
       'WHERE ([Nominee].[EventID] = @EventID);'
       ''
@@ -386,7 +404,7 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
         'OSED.'
       '-- return count, CAT and gender.'
       'SELECT COUNT(#NomineeCAT.NomineeID) AS countNominees'
-      '     , #NomineeCAT.SwimmerCategoryID'
+      '    -- , #NomineeCAT.SwimmerCategoryID'
       '     , #NomineeCAT.GenderID'
       'FROM #NomineeCAT'
       '    LEFT OUTER JOIN #MembersInClosedHeats'
@@ -396,16 +414,18 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
         'ID'
       'WHERE (#NomineeCAT.EventID = @EventID)'
       '      AND (#MembersInClosedHeats.MemberID IS NULL)'
-      'GROUP BY SwimmerCategoryID'
-      '       , #NomineeCAT.GenderID'
+      'GROUP BY '
+      '   /*SwimmerCategoryID ,*/ #NomineeCAT.GenderID'
       'ORDER BY GenderID DESC'
-      '       , SwimmerCategoryID DESC;'
+      '       /*, SwimmerCategoryID DESC */'
+      '       '
+      '       ;'
       ''
       ''
       ''
       '')
-    Left = 576
-    Top = 80
+    Left = 376
+    Top = 624
     ParamData = <
       item
         Name = 'EVENTID'
@@ -473,7 +493,7 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       'ORDER BY GenderID DESC;'
       '')
     Left = 576
-    Top = 184
+    Top = 104
     ParamData = <
       item
         Name = 'EVENTID'
@@ -569,8 +589,8 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       'GROUP BY SwimmerCategoryID'
       'ORDER BY SwimmerCategoryID DESC;'
       '')
-    Left = 576
-    Top = 128
+    Left = 528
+    Top = 624
     ParamData = <
       item
         Name = 'EVENTID'
@@ -663,7 +683,7 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       'ORDER BY AGE ASC'
       '')
     Left = 576
-    Top = 296
+    Top = 216
     ParamData = <
       item
         Name = 'EVENTID'
@@ -763,7 +783,7 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       'GROUP BY GenderID, AGE'
       'ORDER BY GenderID DESC, AGE ASC;')
     Left = 576
-    Top = 240
+    Top = 160
     ParamData = <
       item
         Name = 'EVENTID'
@@ -826,7 +846,7 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       #9'AND (#MembersInClosedHeats.MemberID IS NULL)'
       '')
     Left = 576
-    Top = 352
+    Top = 272
     ParamData = <
       item
         Name = 'EVENTID'
@@ -835,24 +855,25 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
         Value = 2
       end>
   end
-  object qryHeatMaxSeedNumber: TFDQuery
+  object qryHeatMaxHeatNum: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
     SQL.Strings = (
-      'USE SwimClubMeet;'
+      'USE SwimClubMeet2;'
       ''
       'DECLARE @EventID AS INT;'
       ''
       'SET @EventID = :EVENTID; -- 135'
       ''
       
-        'SELECT MAX(HeatNum) AS HeatMaxSeedNumber FROM HeatIndividual WHE' +
-        'RE HeatIndividual.EventID = @EventID ;')
-    Left = 144
-    Top = 88
+        'SELECT MAX(HeatNum) AS HeatMaxSeedNumber FROM Heat WHERE Heat.Ev' +
+        'entID = @EventID ;')
+    Left = 104
+    Top = 32
     ParamData = <
       item
         Name = 'EVENTID'
@@ -864,31 +885,42 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
   object tbl_ABHeat: TFDTable
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'HeatID'
-    UpdateOptions.UpdateTableName = 'SwimClubMeet..HeatIndividual'
+    DetailFields = 'HeatID'
+    Connection = SCM2.scmConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Heat'
     UpdateOptions.KeyFields = 'HeatID'
-    TableName = 'SwimClubMeet..HeatIndividual'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
+    TableName = 'SwimClubMeet2.dbo.Heat'
     Left = 104
     Top = 184
   end
-  object tbl_ABEntrant: TFDTable
+  object tbl_ABLane: TFDTable
     ActiveStoredUsage = [auDesignTime]
-    IndexFieldNames = 'EntrantID'
-    UpdateOptions.UpdateTableName = 'SwimClubMeet..Entrant'
-    UpdateOptions.KeyFields = 'EntrantID'
-    TableName = 'SwimClubMeet..Entrant'
+    IndexFieldNames = 'LaneID'
+    DetailFields = 'LaneID'
+    Connection = SCM2.scmConnection
+    ResourceOptions.AssignedValues = [rvEscapeExpand]
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Lane'
+    UpdateOptions.KeyFields = 'LaneID'
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
+    TableName = 'Lane'
     Left = 104
     Top = 240
   end
   object qrySourceEvent: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'MemberID'
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
     UpdateOptions.KeyFields = 'MemberID'
     SQL.Strings = (
-      'USE SwimClubMeet;'
+      'USE SwimClubMeet2;'
       ''
       ''
       'DECLARE @EventID AS INT'
@@ -897,7 +929,7 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       ''
       'SELECT '
       '[Event].EventID'
-      ',Entrant.MemberID'
+      ',Nominee.MemberID'
       ',Member.GenderID'
       ',[Event].SessionID '
       ',[Event].EventNum'
@@ -909,16 +941,15 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
         '--INNER JOIN Distance ON [Event].DistanceID = Distance.DistanceI' +
         'D'
       '--INNER JOIN Stroke ON [Event].StrokeID = Stroke.StrokeID'
-      
-        'INNER JOIN HeatIndividual ON [Event].EventID = HeatIndividual.Ev' +
-        'entID'
-      'LEFT JOIN Entrant ON HeatIndividual.HeatID = Entrant.HeatID'
-      'LEFT JOIN Member ON Entrant.MemberID = Member.MemberID'
+      'INNER JOIN Heat ON [Event].EventID = Heat.EventID'
+      'LEFT JOIN Lane ON Heat.HeatID = Lane.HeatID'
+      'LEFT JOIN Nominee ON Lane.NomineeID = Nominee.NomineeID'
+      'LEFT JOIN Member ON Nominee.MemberID = Member.MemberID'
       'WHERE [Event].EventID = @EventID'
-      '    AND Entrant.MemberID IS NOT NULL'
-      '    AND (Entrant.RaceTime IS NOT NULL)'
-      #9#9'    AND (Entrant.IsDisqualified <> 1) -- added 16/5/2020'
-      #9#9'    AND (Entrant.IsScratched <> 1) '#9'-- added 16/5/2020    ')
+      '    AND Lane.NomineeID IS NOT NULL'
+      '    AND (Lane.RaceTime IS NOT NULL)'
+      #9#9'    AND (Lane.IsDisqualified <> 1) -- added 16/5/2020'
+      #9#9'    AND (Lane.IsScratched <> 1) '#9'-- added 16/5/2020    ')
     Left = 360
     Top = 136
     ParamData = <
@@ -931,12 +962,13 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
   end
   object qryNomineeCountExt: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
     SQL.Strings = (
-      'USE SwimClubMeet;;'
+      'USE SwimClubMeet2;'
       ''
       'DECLARE @EventID AS INT'
       ''
@@ -952,17 +984,19 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       '    )'
       'AS ('
       '    SELECT [Event].EventID'
-      '        , Entrant.MemberID'
+      '        , Nominee.MemberID'
       '    FROM Event'
-      '    INNER JOIN HeatIndividual'
-      '        ON [Event].EventID = HeatIndividual.EventID'
-      '    INNER JOIN Entrant'
-      '        ON HeatIndividual.HeatID = Entrant.HeatID'
+      '    INNER JOIN Heat'
+      '        ON [Event].EventID = Heat.EventID'
+      '    INNER JOIN Lane'
+      '        ON Heat.HeatID = Lane.HeatID'
+      '    INNER JOIN Nominee'
+      '        ON Lane.NomineeID = Nominee.NomineeID'
       '    WHERE ('
-      '            Entrant.MemberID IS NOT NULL'
-      '            AND (Entrant.RaceTime IS NOT NULL)'
-      '            AND (Entrant.IsDisqualified <> 1)'
-      '            AND (Entrant.IsScratched <> 1)'
+      '            Lane.NomineeID IS NOT NULL'
+      '            AND (Lane.RaceTime IS NOT NULL)'
+      '            AND (Lane.IsDisqualified <> 1)'
+      '            AND (Lane.IsScratched <> 1)'
       '            AND [Event].EventID = @EventID'
       '            )'
       '    )'
@@ -985,6 +1019,7 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
     ActiveStoredUsage = [auDesignTime]
     IndexesActive = False
     IndexFieldNames = 'NomineeID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'NN:SS.zzz'
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
@@ -993,7 +1028,7 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
     UpdateOptions.EnableUpdate = False
     UpdateOptions.KeyFields = 'NomineeID'
     SQL.Strings = (
-      'USE SwimClubMeet;'
+      'USE SwimClubMeet2;'
       ''
       'DECLARE @destEventID AS INT;'
       'DECLARE @srcEventID AS INT;'
@@ -1046,19 +1081,21 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
       '    , RaceTime'
       '    )'
       'AS ('
-      '    SELECT Entrant.MemberID'
-      '        , GenderID'
+      '    SELECT Nominee.MemberID'
+      '        , Member.GenderID'
       '        , RaceTime'
-      '    FROM HeatIndividual'
-      '    LEFT JOIN Entrant'
-      '        ON HeatIndividual.HeatID = Entrant.HeatID'
+      '    FROM Heat'
+      '    LEFT JOIN Lane'
+      '        ON Heat.HeatID = Lane.HeatID'
+      '    LEFT JOIN Nominee'
+      '        ON Lane.NomineeID = Nominee.NomineeID'
       '    LEFT JOIN Member'
-      '        ON Entrant.MemberID = Member.MemberID'
-      '    WHERE HeatIndividual.EventID = @srcEventID'
-      '        AND Entrant.MemberID IS NOT NULL'
-      '        AND (Entrant.RaceTime IS NOT NULL)'
-      '        AND (Entrant.IsDisqualified <> 1)'
-      '        AND (Entrant.IsScratched <> 1)'
+      '        ON Nominee.MemberID = Member.MemberID'
+      '    WHERE Heat.EventID = @srcEventID'
+      '        AND Lane.NomineeID IS NOT NULL'
+      '        AND (Lane.RaceTime IS NOT NULL)'
+      '        AND (Lane.IsDisqualified <> 1)'
+      '        AND (Lane.IsScratched <> 1)'
       '    )'
       '--'#9
       '-- Define the outer query referencing the CTE name.'
@@ -1128,13 +1165,14 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
         Name = 'GENDERID'
         DataType = ftInteger
         ParamType = ptInput
-        Value = 0
+        Value = 1
       end>
   end
   object qryInsertEvent: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Connection = SCM2.scmConnection
     SQL.Strings = (
-      'USE SwimClubMeet;'
+      'USE SwimClubMeet2;'
       ''
       'DECLARE @Caption AS NVARCHAR(80);'
       'DECLARE @DistanceID AS INT;'
@@ -1189,48 +1227,49 @@ object AutoBuild_INDVHeats: TAutoBuild_INDVHeats
         Value = Null
       end>
   end
-  object qryUnplaced: TFDQuery
+  object qryEventMetrics: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
     SQL.Strings = (
-      'USE SwimClubMeet'
+      'USE SwimClubMeet2;'
       ''
       'DECLARE @EventID AS INT'
       ''
       'SET @EventID = :EVENTID;'
       ''
       'SELECT '
-      'dbo.NomineeCount(@EventID) AS NomCount'
-      ',dbo.EntrantCount(@EventID) AS EntCount'
-      ';')
-    Left = 352
-    Top = 360
+      '  EventID'
+      '  ,dbo.NomineeCount(@EventID) AS NomCount'
+      '  ,dbo.EntrantCount(@EventID) AS EntCount'
+      '  '
+      'FROM dbo.[Event] WHERE EventID = @EventID;'
+      '')
+    Left = 104
+    Top = 312
     ParamData = <
       item
         Name = 'EVENTID'
         DataType = ftInteger
         ParamType = ptInput
-        Value = 835
+        Value = 10
       end>
   end
   object qryGender: TFDQuery
     Connection = SCM2.scmConnection
     SQL.Strings = (
-      'USE [SwimClubMeet2]'
-      ';'
+      'USE [SwimClubMeet2];'
       ''
       'SELECT [GenderID]'
       '      ,[Caption]'
       '      ,[ABREV]'
-      '  FROM [dbo].[Gender]'
-      ''
-      ';'
+      '  FROM [dbo].[Gender];'
       ''
       '')
     Left = 104
-    Top = 344
+    Top = 88
   end
 end

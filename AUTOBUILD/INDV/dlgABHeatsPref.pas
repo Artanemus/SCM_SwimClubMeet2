@@ -1,4 +1,4 @@
-unit dlgAutoBuild_Heats;
+unit dlgABHeatsPref;
 
 interface
 
@@ -8,7 +8,7 @@ uses
   Vcl.ExtCtrls, Vcl.Imaging.jpeg, Vcl.WinXPickers, Vcl.Buttons, uDefines;
 
 type
-  TAutoBuild_Heats = class(TForm)
+  TABHeatsPref = class(TForm)
     Panel1: TPanel;
     Label1: TLabel;
     Image1: TImage;
@@ -51,7 +51,7 @@ type
   end;
 
 var
-  AutoBuild_Heats: TAutoBuild_Heats;
+  ABHeatsPref: TABHeatsPref;
 
 implementation
 
@@ -59,12 +59,12 @@ implementation
 
 uses uUtility, uSettings;
 
-procedure TAutoBuild_Heats.btnCancelClick(Sender: TObject);
+procedure TABHeatsPref.btnCancelClick(Sender: TObject);
 begin
   ModalResult := mrCancel;
 end;
 
-procedure TAutoBuild_Heats.btnOkClick(Sender: TObject);
+procedure TABHeatsPref.btnOkClick(Sender: TObject);
 begin
   ModalResult := mrOk;
 end;
@@ -83,18 +83,18 @@ end;
  lanes. Slowest, the two outer lanes.
 }
 
-procedure TAutoBuild_Heats.FormCreate(Sender: TObject);
+procedure TABHeatsPref.FormCreate(Sender: TObject);
 begin
   if not Assigned(Settings) then Close();
   ReadSettings(); // I N I T  L O C A L   U I   P A R A M S .
 end;
 
-procedure TAutoBuild_Heats.FormDestroy(Sender: TObject);
+procedure TABHeatsPref.FormDestroy(Sender: TObject);
 begin
   WriteSettings();
 end;
 
-procedure TAutoBuild_Heats.FormKeyDown(Sender: TObject; var Key: Word; Shift:
+procedure TABHeatsPref.FormKeyDown(Sender: TObject; var Key: Word; Shift:
     TShiftState);
 begin
   if Key = VK_ESCAPE then
@@ -104,12 +104,12 @@ begin
   end;
 end;
 
-procedure TAutoBuild_Heats.FormShow(Sender: TObject);
+procedure TABHeatsPref.FormShow(Sender: TObject);
 begin
   btnOk.SetFocus;
 end;
 
-procedure TAutoBuild_Heats.ReadSettings;
+procedure TABHeatsPref.ReadSettings;
 var
   indx: integer;
 begin
@@ -135,7 +135,7 @@ begin
     rgrpMembersAge.ItemIndex := indx;
 end;
 
-procedure TAutoBuild_Heats.WriteSettings();
+procedure TABHeatsPref.WriteSettings();
 var
   i: integer;
 begin

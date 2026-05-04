@@ -45,7 +45,7 @@ object Preferences: TPreferences
     Top = 0
     Width = 695
     Height = 436
-    ActivePage = TabSheet7
+    ActivePage = tab1
     Align = alClient
     TabOrder = 1
     object TabSheet2: TTabSheet
@@ -232,14 +232,14 @@ object Preferences: TPreferences
       end
       object lblSeedDepth2: TLabel
         Left = 435
-        Top = 226
+        Top = 242
         Width = 73
         Height = 21
         Caption = '(Default 3)'
       end
       object lblSeedDepth1: TLabel
         Left = 298
-        Top = 226
+        Top = 242
         Width = 81
         Height = 21
         Caption = 'Seed depth:'
@@ -264,21 +264,20 @@ object Preferences: TPreferences
       end
       object prefGroupBy: TRadioGroup
         Left = 3
-        Top = 123
+        Top = 139
         Width = 254
-        Height = 175
+        Height = 131
         Hint = 'Broad categories that gather together entants.'
         Caption = 'Group entrants by ...'
         Items.Strings = (
           'Don'#39't group.'
           'Entrant'#39's age.'
-          'Swimming Category.'
-          'Divisions.')
+          'Divisions (age range).')
         TabOrder = 2
       end
       object prefSeedMethod: TRadioGroup
         Left = 298
-        Top = 123
+        Top = 139
         Width = 264
         Height = 87
         Hint = 'Decides what lane an entrant is given.'
@@ -291,7 +290,7 @@ object Preferences: TPreferences
       end
       object prefSeedDepth: TSpinEdit
         Left = 388
-        Top = 223
+        Top = 239
         Width = 41
         Height = 31
         MaxValue = 10

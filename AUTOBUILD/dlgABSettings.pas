@@ -1,4 +1,4 @@
-unit dlgABHeatsPref;
+unit dlgABSettings;
 
 interface
 
@@ -8,7 +8,7 @@ uses
   Vcl.ExtCtrls, Vcl.Imaging.jpeg, Vcl.WinXPickers, Vcl.Buttons, uDefines;
 
 type
-  TABHeatsPref = class(TForm)
+  TABSettings = class(TForm)
     Panel1: TPanel;
     Label1: TLabel;
     Image1: TImage;
@@ -51,7 +51,7 @@ type
   end;
 
 var
-  ABHeatsPref: TABHeatsPref;
+  ABSettings: TABSettings;
 
 implementation
 
@@ -59,12 +59,12 @@ implementation
 
 uses uUtility, uSettings;
 
-procedure TABHeatsPref.btnCancelClick(Sender: TObject);
+procedure TABSettings.btnCancelClick(Sender: TObject);
 begin
   ModalResult := mrCancel;
 end;
 
-procedure TABHeatsPref.btnOkClick(Sender: TObject);
+procedure TABSettings.btnOkClick(Sender: TObject);
 begin
   ModalResult := mrOk;
 end;
@@ -83,18 +83,18 @@ end;
  lanes. Slowest, the two outer lanes.
 }
 
-procedure TABHeatsPref.FormCreate(Sender: TObject);
+procedure TABSettings.FormCreate(Sender: TObject);
 begin
   if not Assigned(Settings) then Close();
   ReadSettings(); // I N I T  L O C A L   U I   P A R A M S .
 end;
 
-procedure TABHeatsPref.FormDestroy(Sender: TObject);
+procedure TABSettings.FormDestroy(Sender: TObject);
 begin
   WriteSettings();
 end;
 
-procedure TABHeatsPref.FormKeyDown(Sender: TObject; var Key: Word; Shift:
+procedure TABSettings.FormKeyDown(Sender: TObject; var Key: Word; Shift:
     TShiftState);
 begin
   if Key = VK_ESCAPE then
@@ -104,12 +104,12 @@ begin
   end;
 end;
 
-procedure TABHeatsPref.FormShow(Sender: TObject);
+procedure TABSettings.FormShow(Sender: TObject);
 begin
   btnOk.SetFocus;
 end;
 
-procedure TABHeatsPref.ReadSettings;
+procedure TABSettings.ReadSettings;
 var
   indx: integer;
 begin
@@ -135,7 +135,7 @@ begin
     rgrpMembersAge.ItemIndex := indx;
 end;
 
-procedure TABHeatsPref.WriteSettings();
+procedure TABSettings.WriteSettings();
 var
   i: integer;
 begin

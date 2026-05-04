@@ -1,4 +1,4 @@
-object ABHeatsPref: TABHeatsPref
+object ABSettings: TABSettings
   Left = 0
   Top = 0
   BorderStyle = bsDialog
@@ -2948,13 +2948,12 @@ object ABHeatsPref: TABHeatsPref
       Left = 22
       Top = 290
       Width = 227
-      Height = 137
+      Height = 111
       Caption = 'Group by ...'
       Items.Strings = (
         'Don'#39't group.'
         'Entrant'#39's age.'
-        'Swimmer Category.'
-        'Divisions.')
+        'Divisions (age range).')
       TabOrder = 5
     end
     object prefSeedMethod: TRadioGroup

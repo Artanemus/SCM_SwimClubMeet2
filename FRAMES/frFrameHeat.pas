@@ -77,7 +77,10 @@ type
     spbtnToggleStatus: TSpeedButton;
     actnHT_RefreshStats: TAction;
     RefreshStats1: TMenuItem;
+    procedure actnHt_AutoBuildExecute(Sender: TObject);
+    procedure actnHt_AutoBuildUpdate(Sender: TObject);
     procedure actnHt_GenericUpdate(Sender: TObject);
+    procedure actnHt_NewExecute(Sender: TObject);
     procedure actnHT_RefreshStatsExecute(Sender: TObject);
     procedure actnHt_ToggleStatusExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
@@ -86,6 +89,13 @@ type
         State: TGridDrawState);
     procedure gridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
+
+  private
+    fVerbose: boolean;
+  protected
+    procedure Loaded; override;
+
+
   public
     procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
     procedure UpdateUI(DoFullUpdate: boolean = false);
@@ -95,7 +105,48 @@ implementation
 
 {$R *.dfm}
 
-uses uNominee;
+uses uNominee, uABINDV;
+
+procedure TFrameHeat.actnHt_AutoBuildExecute(Sender: TObject);
+var
+  AB: TABINDV;
+  rtnValue: boolean;
+begin
+  AB := nil;
+  LockDrawing;
+  grid.BeginUpdate;
+  CORE.qryEvent.Refresh;
+  uEvent.DetailTBLs_DisableCNTRLs;
+  try
+    AB := TABINDV.Create(Self);
+    AB.Prepare(SCM2.scmConnection);
+    rtnValue := AB.AutoBuildExec;
+  finally
+    if Assigned(AB) then AB.free;
+    uEvent.DetailTBLs_ApplyMaster;
+    uEvent.DetailTBLs_EnableCNTRLs;
+    CORE.qryHeat.Refresh;
+    if rtnValue and fVerbose then
+      MessageDlg('Auto-Build done.', TMsgDlgType.mtInformation, [mbOK], 0, mbOK);
+    grid.EndUpdate;
+    UnlockDrawing;
+  end;
+end;
+
+procedure TFrameHeat.actnHt_AutoBuildUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and
+    not CORE.qryEvent.IsEmpty then
+  begin
+    if not uSession.IsLocked then
+      DoEnable := true;
+  end;
+  TAction(Sender).Enabled := DoEnable;
+end;
 
 procedure TFrameHeat.actnHt_GenericUpdate(Sender: TObject);
 var
@@ -106,10 +157,16 @@ begin
     Assigned(CORE) and CORE.IsActive and
     not CORE.qryHeat.IsEmpty then
   begin
-//    if not uSession.IsLocked then
+    if not uSession.IsLocked then
       DoEnable := true;
   end;
   TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TFrameHeat.actnHt_NewExecute(Sender: TObject);
+begin
+  // create a new heat (including lanes);
+  uHeat.NewHeat;
 end;
 
 procedure TFrameHeat.actnHT_RefreshStatsExecute(Sender: TObject);
@@ -212,6 +269,12 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TFrameHeat.Loaded;
+begin
+  inherited;
+  fVerbose := true;
 end;
 
 procedure TFrameHeat.UpdateUI(DoFullUpdate: boolean = false);

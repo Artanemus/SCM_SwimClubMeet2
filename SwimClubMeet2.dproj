@@ -396,8 +396,8 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="AUTOBUILD\INDV\dmABINDV_Data.pas">
-            <Form>ABINV_Data</Form>
+        <DCCReference Include="AUTOBUILD\INDV\dmABINDV.pas">
+            <Form>ABINV</Form>
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
@@ -405,7 +405,7 @@
             <Form>ABSettings</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="AUTOBUILD\INDV\uABINDV_Main.pas"/>
+        <DCCReference Include="AUTOBUILD\INDV\uABINDV.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

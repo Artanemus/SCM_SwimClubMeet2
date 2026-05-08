@@ -83,9 +83,9 @@ uses
   dlgEditSession in 'SESSIONS\dlgEditSession.pas' {EditSession},
   dlgNewSession in 'SESSIONS\dlgNewSession.pas' {NewSession},
   dmSCM2 in 'DATA\dmSCM2.pas' {SCM2: TDataModule},
-  dmABINDV_Data in 'AUTOBUILD\INDV\dmABINDV_Data.pas' {ABINV_Data: TDataModule},
+  dmABINDV in 'AUTOBUILD\INDV\dmABINDV.pas' {ABINV: TDataModule},
   dlgABSettings in 'AUTOBUILD\dlgABSettings.pas' {ABSettings},
-  uABINDV_Main in 'AUTOBUILD\INDV\uABINDV_Main.pas';
+  uABINDV in 'AUTOBUILD\INDV\uABINDV.pas';
 
 {$R *.res}
 

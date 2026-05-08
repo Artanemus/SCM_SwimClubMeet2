@@ -1,7 +1,7 @@
-object ABINV_Data: TABINV_Data
+object ABINV: TABINV
   OnCreate = DataModuleCreate
   Height = 737
-  Width = 773
+  Width = 1049
   object qryHeatOrderedOpenList: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'HeatID'
@@ -27,8 +27,8 @@ object ABINV_Data: TABINV_Data
       
         'ORDER BY (CASE WHEN HeatNum IS NULL THEN 1 ELSE 0 END), HeatNum ' +
         'ASC;')
-    Left = 200
-    Top = 624
+    Left = 632
+    Top = 656
     ParamData = <
       item
         Name = 'EVENTID'
@@ -240,7 +240,7 @@ object ABINV_Data: TABINV_Data
       '        ELSE 0'
       '        END'
       '    , TTB ASC;')
-    Left = 576
+    Left = 688
     Top = 24
     ParamData = <
       item
@@ -309,8 +309,8 @@ object ABINV_Data: TABINV_Data
         'ASC;'
       ''
       '')
-    Left = 64
-    Top = 624
+    Left = 496
+    Top = 656
     ParamData = <
       item
         Name = 'EVENTID'
@@ -419,8 +419,8 @@ object ABINV_Data: TABINV_Data
       ''
       ''
       '')
-    Left = 376
-    Top = 624
+    Left = 808
+    Top = 656
     ParamData = <
       item
         Name = 'EVENTID'
@@ -490,7 +490,7 @@ object ABINV_Data: TABINV_Data
       'GROUP BY Member.GenderID'
       'ORDER BY GenderID DESC;'
       '')
-    Left = 576
+    Left = 688
     Top = 80
     ParamData = <
       item
@@ -586,8 +586,8 @@ object ABINV_Data: TABINV_Data
       'GROUP BY SwimmerCategoryID'
       'ORDER BY SwimmerCategoryID DESC;'
       '')
-    Left = 528
-    Top = 624
+    Left = 960
+    Top = 656
     ParamData = <
       item
         Name = 'EVENTID'
@@ -682,7 +682,7 @@ object ABINV_Data: TABINV_Data
       'GROUP BY AGE'
       'ORDER BY AGE ASC'
       '')
-    Left = 576
+    Left = 688
     Top = 192
     ParamData = <
       item
@@ -785,7 +785,7 @@ object ABINV_Data: TABINV_Data
       #9'AND (#MembersInClosedHeats.MemberID IS NULL)'
       'GROUP BY GenderID, AGE'
       'ORDER BY GenderID DESC, AGE ASC;')
-    Left = 576
+    Left = 688
     Top = 136
     ParamData = <
       item
@@ -801,7 +801,7 @@ object ABINV_Data: TABINV_Data
         Value = Null
       end>
   end
-  object qryGenericCount: TFDQuery
+  object qryCountNominees: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
@@ -851,8 +851,8 @@ object ABINV_Data: TABINV_Data
       'WHERE ([Nominee].[EventID] = @EventID)'
       #9'AND (#MembersInClosedHeats.MemberID IS NULL)'
       '')
-    Left = 576
-    Top = 248
+    Left = 64
+    Top = 24
     ParamData = <
       item
         Name = 'EVENTID'
@@ -878,8 +878,8 @@ object ABINV_Data: TABINV_Data
       
         'SELECT MAX(HeatNum) AS HeatMaxSeedNumber FROM Heat WHERE Heat.Ev' +
         'entID = @EventID ;')
-    Left = 104
-    Top = 32
+    Left = 448
+    Top = 24
     ParamData = <
       item
         Name = 'EVENTID'
@@ -899,8 +899,8 @@ object ABINV_Data: TABINV_Data
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2.dbo.Heat'
-    Left = 104
-    Top = 184
+    Left = 448
+    Top = 176
   end
   object tbl_ABLane: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -913,8 +913,8 @@ object ABINV_Data: TABINV_Data
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'Lane'
-    Left = 104
-    Top = 240
+    Left = 448
+    Top = 232
   end
   object qrySourceEvent: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -956,7 +956,7 @@ object ABINV_Data: TABINV_Data
       '    AND (Lane.RaceTime IS NOT NULL)'
       #9#9'    AND (Lane.IsDisqualified <> 1) -- added 16/5/2020'
       #9#9'    AND (Lane.IsScratched <> 1) '#9'-- added 16/5/2020    ')
-    Left = 360
+    Left = 544
     Top = 136
     ParamData = <
       item
@@ -1011,8 +1011,8 @@ object ABINV_Data: TABINV_Data
       'INNER JOIN FinalsNominees_CTE'
       '    ON [Event].EventID = FinalsNominees_CTE.EventID'
       'WHERE [Event].EventID = @EventID')
-    Left = 360
-    Top = 80
+    Left = 688
+    Top = 312
     ParamData = <
       item
         Name = 'EVENTID'
@@ -1146,7 +1146,7 @@ object ABINV_Data: TABINV_Data
       '        END'
       '    -- a valid time'
       '    , TTB ASC;')
-    Left = 360
+    Left = 544
     Top = 24
     ParamData = <
       item
@@ -1205,7 +1205,7 @@ object ABINV_Data: TABINV_Data
       ''
       ' '
       '')
-    Left = 360
+    Left = 544
     Top = 192
     ParamData = <
       item
@@ -1254,8 +1254,8 @@ object ABINV_Data: TABINV_Data
       '  '
       'FROM dbo.[Event] WHERE EventID = @EventID;'
       '')
-    Left = 104
-    Top = 312
+    Left = 448
+    Top = 304
     ParamData = <
       item
         Name = 'EVENTID'
@@ -1275,7 +1275,34 @@ object ABINV_Data: TABINV_Data
       '  FROM [dbo].[Gender];'
       ''
       '')
-    Left = 104
-    Top = 88
+    Left = 448
+    Top = 80
+  end
+  object procDeleteHeats: TFDStoredProc
+    Connection = SCM2.scmConnection
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
+    StoredProcName = 'DeleteAllHeats'
+    Left = 544
+    Top = 384
+    ParamData = <
+      item
+        Position = 1
+        Name = '@RETURN_VALUE'
+        DataType = ftInteger
+        ParamType = ptResult
+      end
+      item
+        Position = 2
+        Name = '@EventID'
+        DataType = ftInteger
+        ParamType = ptInput
+      end
+      item
+        Position = 3
+        Name = '@Exclude'
+        DataType = ftBoolean
+        ParamType = ptInput
+      end>
   end
 end

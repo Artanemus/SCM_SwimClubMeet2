@@ -239,13 +239,13 @@ var
 begin
   result := 0;
   if CORE.qryHeat.IsEmpty then exit;
+  if CORE.qryHeat.FieldByName('HeatID').AsInteger = 0 then exit;
+
   laneCount := uHeat.CountLanes();
   if laneCount < uSwimClub.NumberOfLanes() then
   begin
     repeat
-      {
-        uLane.NewLane();
-      }
+      uLane.NewLane();
       Inc(laneCount);
     until laneCount = uSwimClub.NumberOfLanes();
   end;
@@ -309,6 +309,7 @@ begin
       CORE.qryHeat.FieldByName('HeatTypeID').AsInteger := 1; // Preliminary.
       CORE.qryHeat.FieldByName('HeatStatusID').AsInteger := 1; // Open.
       CORE.qryHeat.Post;
+
       uHeat.PadLanes();
     except on E: Exception do
         CORE.qryHeat.Cancel;

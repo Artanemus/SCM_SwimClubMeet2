@@ -1,4 +1,4 @@
-unit dmABINDV_Data;
+unit dmABINDV;
 
 interface
 
@@ -10,7 +10,7 @@ uses
 
 type
 
-  TABINV_Data = class(TDataModule)
+  TABINV = class(TDataModule)
     qryHeatOrderedOpenList: TFDQuery;
     qryNominees: TFDQuery;
     qryHeatOrderedList: TFDQuery;
@@ -19,7 +19,7 @@ type
     qryDivisionCount: TFDQuery;
     qryAgeCount: TFDQuery;
     qryGenderAgeCount: TFDQuery;
-    qryGenericCount: TFDQuery;
+    qryCountNominees: TFDQuery;
     qryHeatMaxHeatNum: TFDQuery;
     tbl_ABHeat: TFDTable;
     tbl_ABLane: TFDTable;
@@ -29,6 +29,7 @@ type
     qryInsertEvent: TFDQuery;
     qryEventMetrics: TFDQuery;
     qryGender: TFDQuery;
+    procDeleteHeats: TFDStoredProc;
     procedure DataModuleCreate(Sender: TObject);
 
   private
@@ -57,8 +58,8 @@ type
     // SECTION A
     function AssignHeats(EventID, numOfSwimmingLanes, GroupBy,
       Unplaced: integer; SeperateGender: boolean): integer;
-    function AssignNomineesExt(DataSet: TFDQuery;
-      destEventID, MaxNumOfNominees: integer): integer;
+//    function AssignNomineesExt(DataSet: TFDQuery;
+//      destEventID, MaxNumOfNominees: integer): integer;
     function AssignLanes(DataSet: TFDQuery;
       HeatID, numOfNomineesInHeat: integer): integer;
     function AssignLane(DataSet: TFDQuery; HeatID, laneNumber: integer)
@@ -106,7 +107,7 @@ type
   end;
 
 var
-  ABINV_Data: TABINV_Data;
+  ABINV: TABINV;
 
 implementation
 
@@ -123,14 +124,25 @@ VAR
   NomineesInHeat: Array of integer;
   HeatIDs: Array of integer;
 
-function TABINV_Data.AssertConnection: boolean;
+procedure TABINV.ActivateData;
+begin
+  IsActive := false;
+  //  procDeleteHeats.Connection := SCM2.scmConnection;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected then
+  begin
+    qryCountNominees.Connection := SCM2.scmConnection;
+    IsActive := true;
+  end;
+end;
+
+function TABINV.AssertConnection: boolean;
 begin
   result := false;
   if Assigned(SCM2) and Assigned(CORE) then
       fIsActive := true;
 end;
 
-function TABINV_Data.AssignHeats(EventID, numOfSwimmingLanes, GroupBy,
+function TABINV.AssignHeats(EventID, numOfSwimmingLanes, GroupBy,
   Unplaced: integer; SeperateGender: boolean): integer;
 var
   Success: boolean;
@@ -186,7 +198,7 @@ begin
     else
       // DON'T GROUP.
       // A simple count of the nominees who are UNPLACED.
-      ds := qryGenericCount;
+      ds := qryCountNominees;
       ;
     end;
   end;
@@ -346,7 +358,7 @@ begin
 
 end;
 
-function TABINV_Data.AssignLane(DataSet: TFDQuery;
+function TABINV.AssignLane(DataSet: TFDQuery;
   HeatID, laneNumber: integer): boolean;
 var
   SearchOptions: TLocateOptions;
@@ -395,7 +407,7 @@ begin
   end;
 end;
 
-function TABINV_Data.AssignLanes(DataSet: TFDQuery;
+function TABINV.AssignLanes(DataSet: TFDQuery;
   HeatID, numOfNomineesInHeat: integer): integer;
 var
   pass: boolean;
@@ -430,7 +442,7 @@ end;
 // ***********************************************************************
 // C O L L A T E    E N T R A N T S . . . .
 // ***********************************************************************
-function TABINV_Data.AssignNominees(DataSet: TFDQuery;
+function TABINV.AssignNominees(DataSet: TFDQuery;
   EventID, Age, GenderID, SwimmerCategoryID: integer): boolean;
 begin
   {
@@ -497,7 +509,7 @@ begin
 end;
 }
 
-function TABINV_Data.AutoBuildExecute(DatasetHeat: TDataSet; EventID: integer;
+function TABINV.AutoBuildExecute(DatasetHeat: TDataSet; EventID: integer;
   Verbose: boolean): boolean;
 // ***********************************************************************
 // A U T O B U I L D . . .  ENTRY POINT
@@ -671,7 +683,7 @@ begin
   end;
 end;
 
-function TABINV_Data.AutoBuildExecuteExt(SourceEventID: integer;
+function TABINV.AutoBuildExecuteExt(SourceEventID: integer;
   TypeOfFinals: scmEventFinalsType): boolean;
 var
   NomineeCountExt, numOfSwimmingLanes, NumOfPoolLanes, MaxNumOfNominees,
@@ -767,8 +779,8 @@ begin
           qryGender.FieldByName('GenderID').AsString;
         qrySourceEvent.Filtered := true;
         // build the list of nominees for the FINAL TYPE ...
-        numOfNominees := AssignNomineesExt(qrySourceEvent, destEventID,
-          MaxNumOfNominees);
+//        numOfNominees := AssignNomineesExt(qrySourceEvent, destEventID,
+//          MaxNumOfNominees);
         // Special arrays that manage the seeding
         PrepDynamicArrays(destEventID, numOfNominees, numberOfHeats);
         // prepare the destination query
@@ -793,8 +805,8 @@ begin
       qrySourceEvent.Filter := '';
       qrySourceEvent.Filtered := false;
       destEventID := CreateNewEvent(qrySourceEvent, TypeOfFinals);
-      numOfNominees := AssignNomineesExt(qrySourceEvent, destEventID,
-        MaxNumOfNominees);
+//      numOfNominees := AssignNomineesExt(qrySourceEvent, destEventID,
+//        MaxNumOfNominees);
       PrepDynamicArrays(destEventID, numOfNominees, numberOfHeats);
       qryNomineesExt.Close;
       // retrive memberID, genderID and RaceTime . TTB
@@ -823,7 +835,7 @@ begin
 
 end;
 
-function TABINV_Data.CircleSeed(DataSet: TFDQuery; seedDepth: integer)
+function TABINV.CircleSeed(DataSet: TFDQuery; seedDepth: integer)
   : integer;
 var
   i, j, laneNumber, NumOfPoolLanes, entrantsAssigned, lowBounds: integer;
@@ -876,26 +888,9 @@ begin
   end;
   result := entrantsAssigned;
 end;
-{
-function TAutoBuildV2.CountNominees(EventID: integer): integer;
-begin
-  result := 0;
-  if AssertConnection then
-  begin
-    qryGenericCount.Close;
-    qryGenericCount.ParamByName('EVENTID').AsInteger := EventID;
-    qryGenericCount.Prepare;
-    qryGenericCount.Open;
-    if not qryGenericCount.Active then
-      exit;
-    if not qryGenericCount.IsEmpty then
-      // return the number of nominees
-      result := qryGenericCount.FieldByName('countNominees').AsInteger;
-    qryGenericCount.Close;
-  end;
-end;
-}
-function TABINV_Data.CreateNewEmptyHeat(EventID: integer): integer;
+
+
+function TABINV.CreateNewEmptyHeat(EventID: integer): integer;
 var
   SearchOptions: TLocateOptions;
   NextHeatNum, NumberOfLanes, iterLanes, HeatID: integer;
@@ -948,7 +943,7 @@ begin
   tbl_ABHeat.Close;
 end;
 
-function TABINV_Data.CreateNewEvent(SourceEvent: TFDQuery;
+function TABINV.CreateNewEvent(SourceEvent: TFDQuery;
   TypeOfFinals: scmEventFinalsType): integer;
 var
   s: string;
@@ -980,7 +975,7 @@ begin
   result := SCM2.scmConnection.ExecSQLScalar(s);
 end;
 
-procedure TABINV_Data.DataModuleCreate(Sender: TObject);
+procedure TABINV.DataModuleCreate(Sender: TObject);
 var
   iniFileName: string;
 begin
@@ -1000,6 +995,7 @@ begin
 
   if not Assigned(SCM2) then
     raise Exception.Create('SCM data module not assigned.');
+
 
   // As SCM is a TEMPORY connection - ASSERT assignment for FireDAC.
   //qrySwimmerCATCount.Connection := SCM2.scmConnection;
@@ -1026,7 +1022,13 @@ begin
     ReadPreferences(iniFileName);
 end;
 
-function TABINV_Data.GetHeatMaxHeatNum(EventID: integer): integer;
+procedure TABINV.DeActivateData;
+begin
+    //  procDeleteHeats.Connection := SCM2.scmConnection;
+
+end;
+
+function TABINV.GetHeatMaxHeatNum(EventID: integer): integer;
 var
   ds: TFDQuery;
 begin
@@ -1044,7 +1046,7 @@ begin
   ds.Close;
 end;
 
-function TABINV_Data.GetNumOfSwimmingLanes(var NumOfPoolLanes: integer;
+function TABINV.GetNumOfSwimmingLanes(var NumOfPoolLanes: integer;
   DoExcludeOutsideLanes: boolean): integer;
 begin
   result := 0;
@@ -1057,7 +1059,7 @@ begin
   end;
 end;
 
-procedure TABINV_Data.PrepDynamicArrays(EventID, numOfNominees,
+procedure TABINV.PrepDynamicArrays(EventID, numOfNominees,
   numberOfHeats: integer);
 var
   i, j: integer;
@@ -1090,7 +1092,7 @@ begin
   end;
 end;
 
-procedure TABINV_Data.ReadPreferences(iniFileName: string);
+procedure TABINV.ReadPreferences(iniFileName: string);
 var
   iFile: TIniFile;
   i: integer;
@@ -1222,7 +1224,7 @@ end;
   end;
 *)
 
-function TABINV_Data.SeedNominees(DataSet: TFDQuery; mySeedMethod: seedMethod;
+function TABINV.SeedNominees(DataSet: TFDQuery; mySeedMethod: seedMethod;
   mySeedDepth: integer): integer;
 var
   i, entrantsAssigned, totalNumberOfEntrants, fSeedDepth: integer;

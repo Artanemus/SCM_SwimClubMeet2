@@ -803,6 +803,8 @@ object FrameHeat: TFrameHeat
       ImageIndex = 8
       ImageName = 'new'
       ShortCut = 16429
+      OnExecute = actnHt_NewExecute
+      OnUpdate = actnHt_AutoBuildUpdate
     end
     object actnHt_Delete: TAction
       Category = 'Heats'
@@ -816,6 +818,8 @@ object FrameHeat: TFrameHeat
       Caption = 'Auto-Build'
       ImageIndex = 11
       ImageName = 'build'
+      OnExecute = actnHt_AutoBuildExecute
+      OnUpdate = actnHt_AutoBuildUpdate
     end
     object actnHt_MarshallSheet: TAction
       Category = 'Heats'

@@ -54,6 +54,8 @@ type
 
     // variables for Auto-Build.
     ab_ExcludeOutsideLanes: boolean;
+    ab_ExcludeLanesCustom: boolean;
+    ab_ListOfExcludeLanes: string;
     ab_SeperateGender: boolean;
     ab_GroupByIndx: integer;     // originally - GroupBy.
     ab_SeedMethodIndx: integer;  // originally - SeedMethod.
@@ -137,6 +139,8 @@ begin
   mm_ActivePageIndex := -1;
 
   ab_ExcludeOutsideLanes := false;
+  ab_ExcludeLanesCustom := false;
+  ab_ListOfExcludeLanes := '';
   ab_SeperateGender := false;
   ab_GroupByIndx := 0; // 0=none, 1=Entrant's Age, 2-Swimming category, 3=Division.
   ab_SeedMethodIndx := 0; // 0=SCM2 Method 1=Circle Seeding

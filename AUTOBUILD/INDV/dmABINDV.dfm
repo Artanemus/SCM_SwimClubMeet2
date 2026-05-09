@@ -240,7 +240,7 @@ object ABINV: TABINV
       '        ELSE 0'
       '        END'
       '    , TTB ASC;')
-    Left = 688
+    Left = 928
     Top = 24
     ParamData = <
       item
@@ -490,7 +490,7 @@ object ABINV: TABINV
       'GROUP BY Member.GenderID'
       'ORDER BY GenderID DESC;'
       '')
-    Left = 688
+    Left = 928
     Top = 80
     ParamData = <
       item
@@ -682,7 +682,7 @@ object ABINV: TABINV
       'GROUP BY AGE'
       'ORDER BY AGE ASC'
       '')
-    Left = 688
+    Left = 928
     Top = 192
     ParamData = <
       item
@@ -785,7 +785,7 @@ object ABINV: TABINV
       #9'AND (#MembersInClosedHeats.MemberID IS NULL)'
       'GROUP BY GenderID, AGE'
       'ORDER BY GenderID DESC, AGE ASC;')
-    Left = 688
+    Left = 928
     Top = 136
     ParamData = <
       item
@@ -815,9 +815,7 @@ object ABINV: TABINV
       ''
       'SET @EventID = :EVENTID;'
       ''
-      
-        '-- LIST OF MEMBERS IN CLOSED OR RACED HEATS (FOR THE CURRENT EVE' +
-        'NT)'
+      '-- LIST OF NOMINEES IN CLOSED OR RACED HEATS'
       
         '----------------------------------------------------------------' +
         '----'
@@ -841,7 +839,12 @@ object ABINV: TABINV
       '      )'
       '      AND (Lane.NomineeID IS NOT NULL);'
       '     '
+      '-- LIST OF UNPLACED NOMINEES (THEY DON'#39'T HAVE LANE)'
+      
+        '----------------------------------------------------------------' +
+        '----'
       'SELECT '
+      ''
       #9'COUNT([Nominee].[NomineeID]) AS countNominees'
       'FROM [Nominee]'
       
@@ -851,8 +854,8 @@ object ABINV: TABINV
       'WHERE ([Nominee].[EventID] = @EventID)'
       #9'AND (#MembersInClosedHeats.MemberID IS NULL)'
       '')
-    Left = 64
-    Top = 24
+    Left = 584
+    Top = 16
     ParamData = <
       item
         Name = 'EVENTID'
@@ -878,7 +881,7 @@ object ABINV: TABINV
       
         'SELECT MAX(HeatNum) AS HeatMaxSeedNumber FROM Heat WHERE Heat.Ev' +
         'entID = @EventID ;')
-    Left = 448
+    Left = 688
     Top = 24
     ParamData = <
       item
@@ -899,7 +902,7 @@ object ABINV: TABINV
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2.dbo.Heat'
-    Left = 448
+    Left = 688
     Top = 176
   end
   object tbl_ABLane: TFDTable
@@ -913,7 +916,7 @@ object ABINV: TABINV
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'Lane'
-    Left = 448
+    Left = 688
     Top = 232
   end
   object qrySourceEvent: TFDQuery
@@ -956,7 +959,7 @@ object ABINV: TABINV
       '    AND (Lane.RaceTime IS NOT NULL)'
       #9#9'    AND (Lane.IsDisqualified <> 1) -- added 16/5/2020'
       #9#9'    AND (Lane.IsScratched <> 1) '#9'-- added 16/5/2020    ')
-    Left = 544
+    Left = 784
     Top = 136
     ParamData = <
       item
@@ -1011,7 +1014,7 @@ object ABINV: TABINV
       'INNER JOIN FinalsNominees_CTE'
       '    ON [Event].EventID = FinalsNominees_CTE.EventID'
       'WHERE [Event].EventID = @EventID')
-    Left = 688
+    Left = 928
     Top = 312
     ParamData = <
       item
@@ -1146,7 +1149,7 @@ object ABINV: TABINV
       '        END'
       '    -- a valid time'
       '    , TTB ASC;')
-    Left = 544
+    Left = 784
     Top = 24
     ParamData = <
       item
@@ -1205,7 +1208,7 @@ object ABINV: TABINV
       ''
       ' '
       '')
-    Left = 544
+    Left = 784
     Top = 192
     ParamData = <
       item
@@ -1254,7 +1257,7 @@ object ABINV: TABINV
       '  '
       'FROM dbo.[Event] WHERE EventID = @EventID;'
       '')
-    Left = 448
+    Left = 688
     Top = 304
     ParamData = <
       item
@@ -1275,16 +1278,16 @@ object ABINV: TABINV
       '  FROM [dbo].[Gender];'
       ''
       '')
-    Left = 448
-    Top = 80
+    Left = 64
+    Top = 248
   end
   object procDeleteHeats: TFDStoredProc
     Connection = SCM2.scmConnection
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     StoredProcName = 'DeleteAllHeats'
-    Left = 544
-    Top = 384
+    Left = 64
+    Top = 88
     ParamData = <
       item
         Position = 1
@@ -1302,6 +1305,120 @@ object ABINV: TABINV
         Position = 3
         Name = '@Exclude'
         DataType = ftBoolean
+        ParamType = ptInput
+      end>
+  end
+  object qryUnplacedNominees: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
+    Indexes = <
+      item
+        Active = True
+        Name = 'indxTTB'
+        Fields = 'PB;NomineeID'
+        DescFields = 'PB'
+      end
+      item
+        Active = True
+        Name = 'indxTTBGender'
+        Fields = 'TTB;GenderID;MemberID'
+        DescFields = 'TTB'
+      end
+      item
+        Active = True
+        Selected = True
+        Name = 'indxPK'
+        Fields = 'NomineeID'
+      end>
+    IndexName = 'indxPK'
+    Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    SQL.Strings = (
+      'USE SwimClubMeet2'
+      ''
+      'DECLARE @EventID AS INT'
+      ''
+      'SET @EventID = :EVENTID;'
+      ''
+      '-- LIST OF NOMINEES PLACED IN CLOSED OR RACED HEATS'
+      
+        '----------------------------------------------------------------' +
+        '----'
+      '-- Drop a temporary table '
+      'IF OBJECT_ID('#39'tempDB..#MembersInClosedHeats'#39', '#39'U'#39') IS NOT NULL'
+      '    DROP TABLE #MembersInClosedHeats;'
+      '-- Create the temporary table '
+      'SELECT Event.EventID'
+      '     , Nominee.MemberID'
+      'INTO #MembersInClosedHeats'
+      'FROM [SwimClubMeet2].[dbo].[Event]'
+      '    INNER JOIN Heat'
+      '        ON Event.EventID = Heat.EventID'
+      '    INNER JOIN Lane'
+      '        ON Heat.HeatID = Lane.HeatID'
+      '    INNER JOIN Nominee'
+      '        ON Lane.NomineeID = Nominee.NomineeID'
+      'WHERE ('
+      '          Heat.HeatStatusID = 2'
+      '          OR Heat.HeatStatusID = 3'
+      '      )'
+      '      AND (Lane.NomineeID IS NOT NULL);'
+      '     '
+      '-- LIST OF UNPLACED NOMINEES (THEY DON'#39'T HAVE A LANE.)'
+      
+        '----------------------------------------------------------------' +
+        '----'
+      'SELECT '
+      '[Nominee].[NomineeID]'
+      ',[Nominee].[AGE]'
+      ',[Nominee].[TTB]'
+      ',[Nominee].[PB]'
+      ',[Nominee].[IsEntrant]'
+      ',[Nominee].[PBSeedTime]'
+      ',[Nominee].[RecordTime]'
+      ',[Nominee].[AutoBuildFlag]'
+      ',[Nominee].[EventID]'
+      ',[Nominee].[MemberID]'
+      ',[Member].GenderID'
+      'FROM [SwimClubMeet2].[dbo].[Nominee]'
+      
+        'LEFT OUTER JOIN #MembersInClosedHeats ON #MembersInClosedHeats.M' +
+        'emberID = [Nominee].[MemberID]'
+      #9'AND #MembersInClosedHeats.EventID = [Nominee].[EventID]'
+      'LEFT JOIN [Member] ON [Nominee].MemberID = [Member].MemberID'
+      'WHERE ([Nominee].[EventID] = @EventID)'
+      #9'AND (#MembersInClosedHeats.MemberID IS NULL)'
+      '')
+    Left = 64
+    Top = 24
+    ParamData = <
+      item
+        Name = 'EVENTID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = 2
+      end>
+  end
+  object procRenumberHeats: TFDStoredProc
+    Connection = SCM2.scmConnection
+    CatalogName = 'SwimClubMeet2'
+    SchemaName = 'dbo'
+    StoredProcName = 'RenumberHeats'
+    Left = 64
+    Top = 168
+    ParamData = <
+      item
+        Position = 1
+        Name = '@RETURN_VALUE'
+        DataType = ftInteger
+        ParamType = ptResult
+      end
+      item
+        Position = 2
+        Name = '@EventID'
+        DataType = ftInteger
         ParamType = ptInput
       end>
   end

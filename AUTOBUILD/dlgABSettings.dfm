@@ -3,7 +3,7 @@ object ABSettings: TABSettings
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Auto Build Heats'
-  ClientHeight = 549
+  ClientHeight = 570
   ClientWidth = 754
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -2799,7 +2799,7 @@ object ABSettings: TABSettings
   end
   object Panel2: TPanel
     Left = 0
-    Top = 503
+    Top = 524
     Width = 754
     Height = 46
     Align = alBottom
@@ -2807,6 +2807,7 @@ object ABSettings: TABSettings
     BevelKind = bkFlat
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitTop = 503
     object btnCancel: TButton
       Left = 380
       Top = 8
@@ -2834,10 +2835,11 @@ object ABSettings: TABSettings
     Left = 0
     Top = 61
     Width = 754
-    Height = 442
+    Height = 463
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitHeight = 442
     object Label7: TLabel
       Left = 22
       Top = 130
@@ -2854,7 +2856,7 @@ object ABSettings: TABSettings
     end
     object lblSeedDepth1: TLabel
       Left = 447
-      Top = 385
+      Top = 375
       Width = 70
       Height = 16
       Caption = 'Seed depth:'
@@ -2894,6 +2896,14 @@ object ABSettings: TABSettings
       Height = 16
       Caption = 'age and gender.)'
     end
+    object lblListOfLanes: TLabel
+      Left = 136
+      Top = 308
+      Width = 182
+      Height = 16
+      Caption = '(Use comma seperated values.)'
+      Enabled = False
+    end
     object prefAlgorithm: TRadioGroup
       Left = 22
       Top = 6
@@ -2930,23 +2940,29 @@ object ABSettings: TABSettings
     end
     object prefExcludeOutsideLanes: TCheckBox
       Left = 22
-      Top = 263
+      Top = 259
       Width = 160
       Height = 17
+      Hint = 'Ignores the gutter lanes. '
       Caption = 'Exclude outside lanes.'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 4
     end
     object prefSeperateGender: TCheckBox
       Left = 22
-      Top = 240
+      Top = 234
       Width = 134
       Height = 17
+      Hint = 'Groups heats on gender. (Typically: F,M,X)'
       Caption = 'Seperate gender.'
+      ParentShowHint = False
+      ShowHint = True
       TabOrder = 3
     end
     object prefGroupBy: TRadioGroup
       Left = 22
-      Top = 290
+      Top = 338
       Width = 227
       Height = 111
       Caption = 'Group by ...'
@@ -2958,7 +2974,7 @@ object ABSettings: TABSettings
     end
     object prefSeedMethod: TRadioGroup
       Left = 416
-      Top = 290
+      Top = 280
       Width = 254
       Height = 86
       Hint = 'Decides what lane an entrant is given.'
@@ -2971,7 +2987,7 @@ object ABSettings: TABSettings
     end
     object prefSeedDepth: TSpinEdit
       Left = 523
-      Top = 382
+      Top = 372
       Width = 41
       Height = 26
       MaxValue = 10
@@ -3032,6 +3048,27 @@ object ABSettings: TABSettings
       ParentShowHint = False
       ShowHint = True
       TabOrder = 11
+    end
+    object prefExcludeLanesCustom: TCheckBox
+      Left = 22
+      Top = 284
+      Width = 117
+      Height = 17
+      Hint = 'Broken lane rope? Use this.'
+      Caption = 'Exclude Lanes...'
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 12
+    end
+    object prefListOfExcludeLanes: TEdit
+      Left = 141
+      Top = 282
+      Width = 84
+      Height = 25
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 13
+      TextHint = '1,4,5'
     end
   end
 end

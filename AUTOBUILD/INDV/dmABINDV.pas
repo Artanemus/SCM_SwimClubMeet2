@@ -30,6 +30,8 @@ type
     qryEventMetrics: TFDQuery;
     qryGender: TFDQuery;
     procDeleteHeats: TFDStoredProc;
+    qryUnplacedNominees: TFDQuery;
+    procRenumberHeats: TFDStoredProc;
     procedure DataModuleCreate(Sender: TObject);
 
   private
@@ -511,26 +513,6 @@ end;
 
 function TABINV.AutoBuildExecute(DatasetHeat: TDataSet; EventID: integer;
   Verbose: boolean): boolean;
-// ***********************************************************************
-// A U T O B U I L D . . .  ENTRY POINT
-// SPECIAL NOTES:
-// Prior to calling here ....
-// ALL Heats (and associated Entrants) that are NOT CLOSED OR RACED
-// have been REMOVED.
-//
-// ***********************************************************************
-// IMPORTANT NOTE:
-// TMain's instance of the Heat DataSet must be sent to AutoBuildExecute(...)
-// Normally a call SCM.dsHeat.DataSet.Delete would be use but this
-// doesn't work!... (tbl is locked?)
-//
-//
-// EventID - CURRENT EVENT  in SCM.dsEvent.DataSet
-// dataHeat - ptr to SCM.dsHeat.DataSet
-//
-// Verbose
-// USED BY BATCH Auto-Build Heats. DEFAULT := ON. Displays/Hides messages.
-//
 var
   Unplaced, NumberOfPoolLanes, numOfSwimmingLanes, numberOfHeats: integer;
   s, SQL: string;
@@ -538,132 +520,8 @@ begin
   result := false;
   Unplaced := 0;
 
-  if not AssertConnection then
-  begin
-    if (Verbose) then
-      MessageDlg('No database connection!' + sLineBreak +
-        'Auto-Build Heats will abort..', mtError, [mbOK], 0, mbOK);
-    exit;
-  end;
 
-  if (EventID = 0) then
-  begin
-    if (Verbose) then
-      MessageDlg('The event ID was invalid.' + sLineBreak +
-        'Auto-Build Heats will abort.', mtError, [mbOK], 0, mbOK);
-    exit;
-  end;
 
-  if (prefSeedMethod = smDualSeeding) then
-  begin
-    if (Verbose) then
-      MessageDlg('The event selected is an individual event.' + sLineBreak +
-        'Dual seeding can only be applied to teamed events (relays).' +
-        sLineBreak + 'Auto-Build Heats will abort.', mtError, [mbOK], 0, mbOK);
-    exit;
-  end;
-
-  if (prefSeedMethod = smMastersChampionSeeding) then
-  begin
-    if (Verbose) then
-      MessageDlg('Master Champion seeding is in development' + sLineBreak +
-        'and was made not available for this build.' + sLineBreak +
-        'Auto-Build Heats will abort.', mtError, [mbOK], 0, mbOK);
-    exit;
-  end;
-
-  // G R O U P B Y   D I V I S I O N S . . .
-  if (prefGroupBy = 3) then
-  begin
-    if (Verbose) then
-      MessageDlg('GroupBy Divisions is in development' + sLineBreak +
-        'and was made not available for this build.' + sLineBreak +
-        'Auto-Build Heats will abort.', mtError, [mbOK], 0, mbOK);
-    exit;
-  end;
-
-  // TODO : Test/Locate SwimClubID ... for future multi-club DB.
-  numOfSwimmingLanes := GetNumOfSwimmingLanes(NumberOfPoolLanes,
-    prefExcludeOutsideLanes);
-
-  // There must be a least 2 lanes for the scatter algorithm.
-  if (numOfSwimmingLanes < 2) then
-  begin
-    if (Verbose) then
-    begin
-      s := '';
-      s := s + 'Your pool needs at least two swimming lanes' + sLineBreak +
-        'else the scatter algorithm cannot run.' + sLineBreak +
-        'Is the Club''s number of pool lanes correctly assigned?' + sLineBreak +
-        'Auto-Build Heats will abort.';
-      MessageDlg(s, mtError, [mbOK], 0, mbOK);
-    end;
-    exit;
-  end;
-
-  // FROM THIS POINT ...
-  // Auto-Build must return true as the grids need a refresh.
-  // *******************************************************
-  result := true;
-  // *******************************************************
-
-  // CLEAN UP HEATS - make readyfor auto build
-  if not DatasetHeat.IsEmpty then
-  begin
-    // EXCLUDE RACED OR CLOSED HEATS
-    SQL := 'EXEC dbo.DeleteAllHeats(:ID1, ID2)';
-    // ID1 EventID, ID2 1       '
-    // uEvent.DeleteHeats(EventID, true); // also renumbers heats.
-    // qryOrderedHeatList(EventID); // Not needed? ommit...
-  end;
-
-  {
-    With Heats CLEANED ....
-    Count the number of Nominees to be placed into lanes.
-    EXCLUDES pre-placed nominees in closed or raced heats
-  }
-
-  qryEventMetrics.Close;
-  qryEventMetrics.Params.ParamByName('EVENTID').AsInteger := EventID;
-  qryEventMetrics.Prepare;
-  qryEventMetrics.Open;
-  if (qryEventMetrics.Active) then
-  begin
-    Unplaced := qryEventMetrics.FieldByName('NomCount').AsInteger -
-      qryEventMetrics.FieldByName('EntCount').AsInteger;
-    // FINISHED WITH QUERY
-    qryEventMetrics.Close;
-    // Message disabled for BATCH AUTO-BUILD
-    if (Unplaced = 0) then
-    begin
-      if (Verbose) then
-      begin
-        s := 'Heats have been cleaned.' + sLineBreak;
-        s := s + 'After excluding entrants in closed and raced heats ...' +
-          sLineBreak + 'all outstanding nominees have been given a lane.' +
-          sLineBreak + 'Done - Auto-Build Heats will exit.';
-        MessageDlg(s, mtError, [mbOK], 0, mbOK);
-      end;
-      // All the nominees are placed - nothing more to do. OK.
-      exit;
-    end;
-    // Message disabled for BATCH AUTO-BUILD
-    // NOTE: if UnPlaced < 0 :: UNEXPECTED ERROR.
-    if (Unplaced < 0) then
-    begin
-      if (Verbose) then
-      begin
-        s := 'Heats have been cleaned.' + sLineBreak;
-        s := s + 'Unexpected error ...' + sLineBreak +
-          'There are more entrants (assigned a lane)' + sLineBreak +
-          'than club members who nominated for the event!' + sLineBreak +
-          'Auto-Build Heats will exit.';
-        MessageDlg(s, mtError, [mbOK], 0, mbOK);
-      end;
-      // Return true - need refresh of grids after cleaning heats.
-      exit;
-    end;
-  end;
 
   // ***************************************************
   // GOTO SECTION A. - HEAT ASSIGNMENT

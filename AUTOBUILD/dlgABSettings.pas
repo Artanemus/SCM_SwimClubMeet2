@@ -35,6 +35,9 @@ type
     btnDate: TButton;
     Label2: TLabel;
     Label3: TLabel;
+    prefExcludeLanesCustom: TCheckBox;
+    prefListOfExcludeLanes: TEdit;
+    lblListOfLanes: TLabel;
     procedure btnCancelClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -117,12 +120,18 @@ begin
   prefcalcDefRT.Checked := Settings.ttb_calcDefRT;
   prefcalcDefRTpercent.Value := Round(Settings.ttb_calcDefRTpercent);
   prefExcludeOutsideLanes.Checked := Settings.ab_ExcludeOutsideLanes;
+
+  // Added: 2026.05.09.
+  prefExcludeLanesCustom.Checked := Settings.ab_ExcludeLanesCustom;
+  prefListOfExcludeLanes.Text := Settings.ab_ListOfExcludeLanes;
+
   prefGroupBy.ItemIndex := Settings.ab_GroupByIndx;
   prefSeperateGender.Checked := Settings.ab_SeperateGender;
   prefSeedMethod.ItemIndex := Settings.ab_SeedMethodIndx;
   prefSeedDepth.Value := Settings.ab_SeedDepth;
 
-  // scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate);
+  { scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason,
+      sdaCustomDate, sdaMeetDate); }
   case scmSeedDateAuto(Settings.SeedDateAuto) of
     sdaTodaysDate: indx := 3;
     sdaSessionDate: indx := 2;
@@ -143,13 +152,18 @@ begin
   Settings.ttb_calcDefRT := prefcalcDefRT.Checked;
   Settings.ttb_calcDefRTpercent := prefcalcDefRTpercent.Value;
   Settings.ab_ExcludeOutsideLanes := prefExcludeOutsideLanes.Checked;
+
+  // Added: 2026.05.09.
+  Settings.ab_ExcludeLanesCustom := prefExcludeLanesCustom.Checked;
+  Settings.ab_ListOfExcludeLanes := prefListOfExcludeLanes.Text;
+
   Settings.ab_GroupByIndx := prefGroupBy.ItemIndex;
   Settings.ab_SeperateGender := prefSeperateGender.Checked;
   Settings.ab_SeedMethodIndx := prefSeedMethod.ItemIndex;
   Settings.ab_SeedDepth := prefSeedDepth.Value;
 
-  // scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate);
-
+  { scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason,
+      sdaCustomDate, sdaMeetDate); }
   if rgrpMembersAge.ItemIndex > -1 then
   begin
     case rgrpMembersAge.ItemIndex of

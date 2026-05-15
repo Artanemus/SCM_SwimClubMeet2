@@ -1279,7 +1279,7 @@ object ABINV: TABINV
       ''
       '')
     Left = 64
-    Top = 248
+    Top = 192
   end
   object procDeleteHeats: TFDStoredProc
     Connection = SCM2.scmConnection
@@ -1287,7 +1287,7 @@ object ABINV: TABINV
     SchemaName = 'dbo'
     StoredProcName = 'DeleteAllHeats'
     Left = 64
-    Top = 88
+    Top = 80
     ParamData = <
       item
         Position = 1
@@ -1407,7 +1407,7 @@ object ABINV: TABINV
     SchemaName = 'dbo'
     StoredProcName = 'RenumberHeats'
     Left = 64
-    Top = 168
+    Top = 136
     ParamData = <
       item
         Position = 1

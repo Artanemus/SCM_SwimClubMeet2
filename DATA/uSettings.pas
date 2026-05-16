@@ -53,8 +53,7 @@ type
     // ImportSeedTime: integer; // see.. ttb_checkMembersPB.
 
     // variables for Auto-Build.
-    ab_ExcludeOutsideLanes: boolean;
-    ab_ExcludeLanesCustom: boolean;
+    ab_ExcludeLanes: boolean;
     ab_ListOfExcludeLanes: string;
     ab_SeperateGender: boolean;
     ab_GroupByIndx: integer;     // originally - GroupBy.
@@ -138,8 +137,7 @@ begin
   mm_HideNonSwimmer := false;
   mm_ActivePageIndex := -1;
 
-  ab_ExcludeOutsideLanes := false;
-  ab_ExcludeLanesCustom := false;
+  ab_ExcludeLanes := false;
   ab_ListOfExcludeLanes := '';
   ab_SeperateGender := false;
   ab_GroupByIndx := 0; // 0=none, 1=Entrant's Age, 2-Swimming category, 3=Division.

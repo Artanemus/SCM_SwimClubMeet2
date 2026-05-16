@@ -2807,7 +2807,6 @@ object ABSettings: TABSettings
     BevelKind = bkFlat
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 503
     object btnCancel: TButton
       Left = 380
       Top = 8
@@ -2839,7 +2838,6 @@ object ABSettings: TABSettings
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitHeight = 442
     object Label7: TLabel
       Left = 22
       Top = 130
@@ -2938,17 +2936,6 @@ object ABSettings: TABSettings
       TabOrder = 2
       Value = 50
     end
-    object prefExcludeOutsideLanes: TCheckBox
-      Left = 22
-      Top = 259
-      Width = 160
-      Height = 17
-      Hint = 'Ignores the gutter lanes. '
-      Caption = 'Exclude outside lanes.'
-      ParentShowHint = False
-      ShowHint = True
-      TabOrder = 4
-    end
     object prefSeperateGender: TCheckBox
       Left = 22
       Top = 234
@@ -2970,7 +2957,7 @@ object ABSettings: TABSettings
         'Don'#39't group.'
         'Entrant'#39's age.'
         'Divisions (age range).')
-      TabOrder = 5
+      TabOrder = 4
     end
     object prefSeedMethod: TRadioGroup
       Left = 416
@@ -2983,7 +2970,7 @@ object ABSettings: TABSettings
       Items.Strings = (
         'SwimClubMeet (default)'
         'Circle Seeding')
-      TabOrder = 6
+      TabOrder = 5
     end
     object prefSeedDepth: TSpinEdit
       Left = 523
@@ -2992,7 +2979,7 @@ object ABSettings: TABSettings
       Height = 26
       MaxValue = 10
       MinValue = 0
-      TabOrder = 7
+      TabOrder = 6
       Value = 3
     end
     object rgrpMembersAge: TRadioGroup
@@ -3007,7 +2994,7 @@ object ABSettings: TABSettings
         'The session date.'
         'Use current date (Today).'
         'Use custom date...')
-      TabOrder = 8
+      TabOrder = 7
     end
     object datePickerCustom: TDatePicker
       Left = 416
@@ -3019,7 +3006,7 @@ object ABSettings: TABSettings
       Font.Height = -16
       Font.Name = 'Segoe UI'
       Font.Style = []
-      TabOrder = 9
+      TabOrder = 8
     end
     object btnToday: TButton
       Tag = 1
@@ -3033,7 +3020,7 @@ object ABSettings: TABSettings
       ImageName = 'today'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 10
+      TabOrder = 9
     end
     object btnDate: TButton
       Tag = 1
@@ -3047,9 +3034,9 @@ object ABSettings: TABSettings
       ImageName = 'pick-date'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 11
+      TabOrder = 10
     end
-    object prefExcludeLanesCustom: TCheckBox
+    object prefExcludeLanes: TCheckBox
       Left = 22
       Top = 284
       Width = 117
@@ -3058,16 +3045,16 @@ object ABSettings: TABSettings
       Caption = 'Exclude Lanes...'
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 12
+      TabOrder = 11
     end
     object prefListOfExcludeLanes: TEdit
       Left = 141
       Top = 282
-      Width = 84
-      Height = 25
+      Width = 100
+      Height = 24
       ParentShowHint = False
       ShowHint = True
-      TabOrder = 13
+      TabOrder = 12
       TextHint = '1,4,5'
     end
   end

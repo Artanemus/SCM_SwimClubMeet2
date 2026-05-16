@@ -22,7 +22,6 @@ type
     prefAlgorithm: TRadioGroup;
     prefcalcDefRT: TCheckBox;
     prefcalcDefRTpercent: TSpinEdit;
-    prefExcludeOutsideLanes: TCheckBox;
     prefSeperateGender: TCheckBox;
     prefGroupBy: TRadioGroup;
     prefSeedMethod: TRadioGroup;
@@ -35,7 +34,7 @@ type
     btnDate: TButton;
     Label2: TLabel;
     Label3: TLabel;
-    prefExcludeLanesCustom: TCheckBox;
+    prefExcludeLanes: TCheckBox;
     prefListOfExcludeLanes: TEdit;
     lblListOfLanes: TLabel;
     procedure btnCancelClick(Sender: TObject);
@@ -119,10 +118,9 @@ begin
   prefAlgorithm.ItemIndex := Settings.ttb_algorithmIndx;
   prefcalcDefRT.Checked := Settings.ttb_calcDefRT;
   prefcalcDefRTpercent.Value := Round(Settings.ttb_calcDefRTpercent);
-  prefExcludeOutsideLanes.Checked := Settings.ab_ExcludeOutsideLanes;
 
   // Added: 2026.05.09.
-  prefExcludeLanesCustom.Checked := Settings.ab_ExcludeLanesCustom;
+  prefExcludeLanes.Checked := Settings.ab_ExcludeLanes;
   prefListOfExcludeLanes.Text := Settings.ab_ListOfExcludeLanes;
 
   prefGroupBy.ItemIndex := Settings.ab_GroupByIndx;
@@ -151,10 +149,9 @@ begin
   Settings.ttb_algorithmIndx := prefAlgorithm.ItemIndex;
   Settings.ttb_calcDefRT := prefcalcDefRT.Checked;
   Settings.ttb_calcDefRTpercent := prefcalcDefRTpercent.Value;
-  Settings.ab_ExcludeOutsideLanes := prefExcludeOutsideLanes.Checked;
 
   // Added: 2026.05.09.
-  Settings.ab_ExcludeLanesCustom := prefExcludeLanesCustom.Checked;
+  Settings.ab_ExcludeLanes := prefExcludeLanes.Checked;
   Settings.ab_ListOfExcludeLanes := prefListOfExcludeLanes.Text;
 
   Settings.ab_GroupByIndx := prefGroupBy.ItemIndex;

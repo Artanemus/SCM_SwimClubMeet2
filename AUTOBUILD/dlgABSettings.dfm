@@ -2852,13 +2852,6 @@ object ABSettings: TABSettings
       Height = 16
       Caption = 'percent. (With consideration to'
     end
-    object lblSeedDepth1: TLabel
-      Left = 447
-      Top = 375
-      Width = 70
-      Height = 16
-      Caption = 'Seed depth:'
-    end
     object lblMembersAge: TLabel
       Left = 416
       Top = -21
@@ -2901,6 +2894,35 @@ object ABSettings: TABSettings
       Height = 16
       Caption = '(Use comma seperated values.)'
       Enabled = False
+    end
+    object lblSeedDepth1: TLabel
+      Left = 443
+      Top = 402
+      Width = 70
+      Height = 16
+      Caption = 'Seed depth:'
+    end
+    object lblSeedingDepthAll: TLabel
+      Left = 443
+      Top = 429
+      Width = 200
+      Height = 16
+      Caption = 'Use seed depth 0 to circle seed all.'
+      Enabled = False
+    end
+    object prefSeedMethod: TRadioGroup
+      Left = 416
+      Top = 282
+      Width = 273
+      Height = 111
+      Hint = 'Decides what lane an entrant is given.'
+      Caption = 'Seed Method.'
+      ItemIndex = 0
+      Items.Strings = (
+        'Default seeding.'
+        'Circle Seeding to depth.'
+        'Random seeding.')
+      TabOrder = 5
     end
     object prefAlgorithm: TRadioGroup
       Left = 22
@@ -2959,22 +2981,9 @@ object ABSettings: TABSettings
         'Divisions (age range).')
       TabOrder = 4
     end
-    object prefSeedMethod: TRadioGroup
-      Left = 416
-      Top = 280
-      Width = 254
-      Height = 86
-      Hint = 'Decides what lane an entrant is given.'
-      Caption = 'Seed Method.'
-      ItemIndex = 0
-      Items.Strings = (
-        'SwimClubMeet (default)'
-        'Circle Seeding')
-      TabOrder = 5
-    end
     object prefSeedDepth: TSpinEdit
-      Left = 523
-      Top = 372
+      Left = 519
+      Top = 399
       Width = 41
       Height = 26
       MaxValue = 10

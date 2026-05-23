@@ -37,6 +37,7 @@ type
     prefExcludeLanes: TCheckBox;
     prefListOfExcludeLanes: TEdit;
     lblListOfLanes: TLabel;
+    lblSeedingDepthAll: TLabel;
     procedure btnCancelClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);

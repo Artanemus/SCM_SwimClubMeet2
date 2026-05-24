@@ -2905,9 +2905,9 @@ object ABSettings: TABSettings
     object lblSeedingDepthAll: TLabel
       Left = 443
       Top = 429
-      Width = 200
+      Width = 235
       Height = 16
-      Caption = 'Use seed depth 0 to circle seed all.'
+      Caption = 'Use seed depth 0 to circle seed all heats.'
       Enabled = False
     end
     object prefSeedMethod: TRadioGroup
@@ -2919,7 +2919,7 @@ object ABSettings: TABSettings
       Caption = 'Seed Method.'
       ItemIndex = 0
       Items.Strings = (
-        'Default seeding.'
+        'Standard (default) seeding.'
         'Circle Seeding to depth.'
         'Random seeding.')
       TabOrder = 5

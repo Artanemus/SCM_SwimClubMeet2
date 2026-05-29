@@ -31,17 +31,18 @@ type
     fNumOfLanes: integer;
     fRealNumOfLanes: integer;
     fVerbose: boolean;
+    fSeedHeatNum: integer;
     { main execution routine. }
-    function AutoBuildCORE: Boolean;
+    function AutoBuildCORE(StartHeatNum: Integer): Integer;
     procedure Entrants_AssignLaneNum;
     procedure Entrants_AssignRanking;
     { Initialise }
     procedure InitEntrantsPerHeat(var NumOfHeats: Integer);
     function InitExcludedLanes: Integer;
-    function InitNumberOfHeats(NumOfNominees: Integer): Integer;
+    function CalcNumberOfHeats(NumOfNominees, NumOfRealLanes: Integer): Integer;
     procedure InitScatterLanes(NumOfPoolLanes: integer);
     { Seeding routine. }
-    function Seeding_Circle: Integer; // rtns numofheat done.
+    function Seeding_Circle(StartHeatNum, EndHeatNum: Integer): Integer;
     function Seeding_Default(StartHeatNum, EndHeatNum: Integer): Integer;
     function Seeding_Random: Integer;
     function TestExcludedLane(LaneNum: integer): Boolean;
@@ -87,6 +88,8 @@ begin
   fVerbose := true;
   fError := false;
   fErrorNum := 0;
+  fSeedHeatNum := 1;
+
   ABData := TABINV.Create(Self);
 end;
 
@@ -106,43 +109,19 @@ begin
   inherited;
 end;
 
-function TABINDV.AutoBuildCORE: Boolean;
+function TABINDV.AutoBuildCORE(StartHeatNum: Integer): Integer;
 var
   msg: string;
-  NumOfHeatsSeeded: integer;
+  NumOfHeatsSeeded, EndHeatNum, NumOfHeatsToSeed: integer;
+  SeedDepth, HeatNum: integer;
 begin
-  result := true;
+  result := 0;
   NumOfHeatsSeeded := 0;
-  fNumOfLanes := uSwimClub.NumberOfLanes;
-  // PREPARE ArrayExcludeLanes.
-  fExcludeLaneCount := InitExcludedLanes;
-  // Acutal available lanes in the swimming pool.
-  fRealNumOfLanes:=fNumOfLanes-fExcludeLaneCount;
-
-  if (fRealNumOfLanes <= 0) then
-  begin
-    if (fVerbose) then
-    begin
-      msg := '''
-        After taking into consideration "exclude outside lanes"
-        and the user''s selected lanes to exclude, the total number
-        of lanes available for a heat is zero. Consider making
-        adjustment to the auto-build settings.
-        Auto-Build will exit.
-        ''';
-      MessageDlg(msg, mtError, [mbOK], 0, mbOK);
-    end;
-    // Is this an error or a warning.
-    fError := true;
-    fErrorNum := 1;
-    result := false;
-    exit;
-  end;
-
   // CALCULATE the number of heats needed to build.
-  fNumOfHeats := InitNumberOfHeats(fNomineeCount);
+  NumOfHeatsToSeed := CalcNumberOfHeats(fNomineeCount, fRealNumOfLanes);
   // CALCULATE swimmers per heat. Populate ArrayEntrantsPerHeat.
-  InitEntrantsPerHeat(fNumOfHeats);
+  InitEntrantsPerHeat(NumOfHeatsToSeed);
+
   { Algorithm to scatter lanes. Fast swimmers center lanes, slow swimmers
       outside lanes. Ignores excluded lanes...}
   InitScatterLanes(uSwimClub.NumberOfLanes);
@@ -151,18 +130,52 @@ begin
 
   case Settings.ab_SeedMethodIndx of
     0:
-      Seeding_Default(fNumOfHeats, 1); // STANDARD SEEDING.
+      begin
+        {  STANDARD SEEDING.}
+        NumOfHeatsSeeded := Seeding_Default(StartHeatNum, NumOfHeatsToSeed + StartHeatNum);
+      end;
+
     1:
-      NumOfHeatsSeeded := Seeding_Circle(); // CIRCLE SEEDING.
+      begin
+        SeedDepth := Settings.ab_SeedDepth;
+        if SeedDepth = 0 then
+          EndHeatNum := (NumOfHeatsToSeed + StartHeatNum) // circle seed all heats.
+        else
+          EndHeatNum := (SeedDepth + StartHeatNum);
+
+        {CIRCLE SEEDING.}
+        NumOfHeatsSeeded := Seeding_Circle(StartHeatNum, EndHeatNum);
+
+        {DEFAULT SEEDING.}
+        if NumOfHeatsSeeded < NumOfHeatsToSeed then
+        begin
+          HeatNum := StartHeatNum + NumOfHeatsSeeded;
+          { do the remaining heats using STANDARD SEEDING.}
+          NumOfHeatsSeeded := Seeding_Default(HeatNum, HeatNum+NumOfHeatsToSeed);
+        end;
+
+        // assign rank number.
+        Entrants_AssignRanking;
+        // assign lane number.
+        Entrants_AssignLaneNum;
+
+
+      end;
     2:
-      NumOfHeatsSeeded := Seeding_Random // RANDOM SEEDING.
+      begin
+        ;
+        NumOfHeatsSeeded := Seeding_Random // RANDOM SEEDING.
+      end;
   end;
+  if NumOfHeatsSeeded > 0 then result := NumOfHeatsSeeded;
+
 end;
 
 function TABINDV.AutoBuildExec: Boolean;
 var
   msg: string;
   totalHeatCount, I, J, indx: Integer;
+  NumOfHeatsSeeded: integer;
 begin
   result := false;
 
@@ -245,6 +258,32 @@ begin
     exit;
   end;
 
+  fNumOfLanes := uSwimClub.NumberOfLanes;
+  // PREPARE ArrayExcludeLanes.
+  fExcludeLaneCount := InitExcludedLanes;
+  // Get the real number of available lanes.
+  fRealNumOfLanes:=fNumOfLanes-fExcludeLaneCount;
+
+  if (fRealNumOfLanes <= 0) then
+  begin
+    if (fVerbose) then
+    begin
+      msg := '''
+        After considering the total number of pool lanes,
+        less the selected lanes to exclude, the total number
+        of lanes available for a heat is zero! Consider making
+        adjustment to the auto-build settings.
+        Auto-Build will exit.
+        ''';
+      MessageDlg(msg, mtError, [mbOK], 0, mbOK);
+    end;
+    // Is this an error or a warning.
+    fError := true;
+    fErrorNum := 1;
+    result := false;
+    exit;
+  end;
+
 
   { Create a list of unplaced nominees in the event.}
   ABData.qryUnplacedNominees.Connection := SCM2.scmConnection;
@@ -277,7 +316,7 @@ begin
     if (fVerbose) then
     begin
       msg := '''
-        Heats have been cleaned.
+        Unswum heats have been cleared.
         After excluding entrants in closed and raced heats ...
         all outstanding nominees have been given a lane.
         Auto-Build Heats will exit.
@@ -300,7 +339,7 @@ begin
       ABData.qryUnplacedNominees.IndexName := 'indxTTB';
       if ABData.qryUnplacedNominees.Filtered then
         ABData.qryUnplacedNominees.Filtered := false;
-      result := AutoBuildCORE;
+      NumOfHeatsSeeded := AutoBuildCORE(fSeedHeatNum);
       exit;
   end;
 
@@ -321,15 +360,11 @@ begin
         var id: integer;
         id := ABData.qryGender.FieldByName('GenderID').AsInteger;
         ABData.qryUnplacedNominees.Filter := 'GenderID = ' + IntToStr(id); // gender M.
-        fNumOfHeats := InitNumberOfHeats(ABData.qryUnplacedNominees.RecordCount);
+        fNumOfHeats := CalcNumberOfHeats(ABData.qryUnplacedNominees.RecordCount, fRealNumOfLanes);
         totalHeatCount := totalHeatCount + fNumOfHeats;
-
-
         ABData.qryGender.Next;
       end;
     end;
-
-
   end;
 
   // *******************************************************
@@ -470,17 +505,19 @@ begin
 
 end;
 
-function TABINDV.InitNumberOfHeats(NumOfNominees: Integer): Integer;
+function TABINDV.CalcNumberOfHeats(NumOfNominees, NumOfRealLanes: Integer):
+    Integer;
 var
-NumOfLanes, NumOfHeats: integer;
+NumOfHeats: integer;
 begin
+  Result := 0;
+  if NumOfNominees <= 0 then exit;
   Result := 1;
-  NumOfLanes:= uSwimClub.NumberOfLanes;
   // Calculate the number of heats in each event.
-  if (numOfNominees > NumOfLanes) then
+  if (numOfNominees > NumOfRealLanes) then
   begin
     NumOfHeats :=
-      Ceil(double(numOfNominees) / double(NumOfLanes));
+      Ceil(double(numOfNominees) / double(NumOfRealLanes));
     Result := NumOfHeats;
   end;
 end;
@@ -531,7 +568,7 @@ begin
   end;
 end;
 
-function TABINDV.Seeding_Circle: Integer;
+function TABINDV.Seeding_Circle(StartHeatNum, EndHeatNum: Integer): Integer;
 var
   Seeddepth, I, J, Count: integer;
   obj: TLaneEntrant;
@@ -539,9 +576,7 @@ begin
   // iterate.
   result := 0;
   Count := 0;
-  SeedDepth := Settings.ab_SeedDepth;
-  if SeedDepth = 0 then SeedDepth := (fNumOfHeats-1); // circle seed all heats.
-
+ 
   for J := fNumOfHeats downto (fNumOfHeats - SeedDepth) do // entrants/heats
   begin
     // Nominees are Sorted on fastest to slowest TTB.
@@ -561,12 +596,6 @@ begin
       { check if all }
     end;
   end;
-  if J > 0 then
-    Seeding_Default(J, 1); // default seed remaining heats.
-  // assign rank number.
-  Entrants_AssignRanking;
-  // assign lane number.
-  Entrants_AssignLaneNum;
 
   if Count <> 0 then
     { obj.LaneNum needs assignment}

@@ -32,6 +32,7 @@ type
     procDeleteHeats: TFDStoredProc;
     qryUnplacedNominees: TFDQuery;
     procRenumberHeats: TFDStoredProc;
+    qryLanes: TFDQuery;
     procedure DataModuleCreate(Sender: TObject);
 
   private
@@ -519,8 +520,6 @@ var
 begin
   result := false;
   Unplaced := 0;
-
-
 
 
   // ***************************************************

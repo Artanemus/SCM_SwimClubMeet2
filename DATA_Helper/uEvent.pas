@@ -42,7 +42,7 @@ procedure SetEventStatusID(aEventStatusID: integer);
 procedure SetEvent_EntrantCount; // performs calculation
 procedure SetEvent_NomineeCount; // performs calculation
 procedure FNameEllipse(); // todo: move out of uEvent to frame.
-procedure NewEvent();
+function NewEvent: Integer;
 
 procedure MoveUpDown(MoveDirection: scmMoveDirection);
 procedure DetailTBLs_DisableCNTRLs;
@@ -452,10 +452,12 @@ begin
   result := CORE.qryEvent.Locate('EventID', aEventID,  SearchOptions);
 end;
 
-procedure NewEvent();
+function NewEvent: Integer;
 var
   aEventNum: integer;
+  SQL: string;
 begin
+  result := 0;
   if CORE.qrySession.IsEmpty then exit;
   CORE.qryEvent.CheckBrowseMode;
   CORE.qryEvent.DisableControls();
@@ -468,6 +470,12 @@ begin
       // assignment of default field values done in CORE: qryEventNewRecord.
       CORE.qryEvent.FieldByName('EventNum').AsInteger := aEventNum;
       CORE.qryEvent.Post;
+
+      // How To Get Last Inserted ID On SQL Server for a specific table.
+      SQL := 'SELECT IDENT_CURRENT(''SwimClubMeet.dbo.Event'') AS LastID;';
+      // return EventID
+      result := SCM2.scmConnection.ExecSQLScalar(SQL);
+
     except on E: Exception do
         CORE.qryHeat.Cancel;
     end;

@@ -33,7 +33,7 @@ function RenumberLanesAdv(DoLocate: Boolean = true): integer; deprecated
 function PadLanes()	: integer;
 function TrimLanes(DoExclude: Boolean = true): integer;
 //function ClearGutters(DoExclude: Boolean = true): integer;
-procedure NewHeat();
+function NewHeat: Integer;
 procedure ToggleStatus(); // current heat
 
 
@@ -286,12 +286,14 @@ begin
   *)
 end;
 
-procedure NewHeat;
+function NewHeat: Integer;
 var
   fld: TField;
   aHeatNum: integer;
+  SQL: string;
 begin
   fld := nil;
+  result := 0;
   if CORE.qryEvent.IsEmpty then exit;
   try
     aHeatNum := uHeat.LastHeatNum();
@@ -305,10 +307,16 @@ begin
     try
       CORE.qryHeat.Insert;
       CORE.qryHeat.FieldByName('EventID').AsInteger := uEvent.PK;
-      CORE.qryHeat.FieldByName('HeatNum').AsInteger := aHeatNum;
+      CORE.qryHeat.FieldByName('HeatNum').AsInteger := aHeatNum+1;
       CORE.qryHeat.FieldByName('HeatTypeID').AsInteger := 1; // Preliminary.
       CORE.qryHeat.FieldByName('HeatStatusID').AsInteger := 1; // Open.
       CORE.qryHeat.Post;
+
+      // How To Get Last Inserted ID On SQL Server for a specific table.
+      SQL := 'SELECT IDENT_CURRENT(''SwimClubMeet.dbo.Heat'') AS LastID;';
+      // return EventID
+      result := SCM2.scmConnection.ExecSQLScalar(SQL);
+
 
       uHeat.PadLanes();
     except on E: Exception do

@@ -1422,4 +1422,41 @@ object ABINV: TABINV
         ParamType = ptInput
       end>
   end
+  object qryLanes: TFDQuery
+    Connection = SCM2.scmConnection
+    SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
+      'DECLARE @HeatID as integer;'
+      ''
+      'SET @HeatID = :HEATID;'
+      ''
+      'SELECT [LaneID]'
+      '      ,[LaneNum]'
+      '      ,[RaceTime]'
+      '      ,[IsDisqualified]'
+      '      ,[IsScratched]'
+      '      ,[EvPlace]'
+      '      ,[HtPlace]'
+      '      ,[EvScore]'
+      '      ,[HtScore]'
+      '      ,[SplitCount]'
+      '      ,[Lane].[HeatID]'
+      '      ,[DisqualifyCodeID]'
+      '      ,[TeamID]'
+      '      ,[NomineeID]'
+      '      ,[Heat].[HeatNum]'
+      '  FROM [SwimClubMeet2].[dbo].[Lane]'
+      '  INNER JOIN [dbo].[Heat] on [Lane].[HeatID] = [Heat].[HeatID]'
+      '  WHERE [Lane].[HeatID] = @HeatID;')
+    Left = 64
+    Top = 248
+    ParamData = <
+      item
+        Name = 'HEATID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = Null
+      end>
+  end
 end

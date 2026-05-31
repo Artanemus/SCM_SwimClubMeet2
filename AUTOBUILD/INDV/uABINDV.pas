@@ -4,7 +4,9 @@ interface
 
 uses
   System.SysUtils, System.Classes, System.UITypes, System.Math,
-  System.StrUtils, System.Types,
+  System.StrUtils, System.Types,  System.Variants,
+  Data.DB,
+
   VCL.Dialogs,
   FireDAC.Comp.Client, FireDAC.Stan.Error,
   dmSCM2, dmCORE, uSettings,
@@ -31,9 +33,11 @@ type
     fNumOfLanes: integer;
     fRealNumOfLanes: integer;
     fVerbose: boolean;
-    fSeedHeatNum: integer;
+    fConnection: TFDConnection;
+
     { main execution routine. }
     function AutoBuildCORE(StartHeatNum: Integer): Integer;
+    function AutoBuildHeatsAndLanes(): Integer;
     procedure Entrants_AssignLaneNum(StartHeatNum, EndHeatNum: Integer);
     procedure Entrants_AssignRanking(StartHeatNum, EndHeatNum: Integer);
     { Initialise }
@@ -92,8 +96,8 @@ begin
   fVerbose := true;
   fError := false;
   fErrorNum := 0;
-  fSeedHeatNum := 1;
   Randomize;
+  fConnection := nil;
 
   ABData := TABINV.Create(Self);
 end;
@@ -120,16 +124,14 @@ var
   NumOfHeatsSeeded, EndHeatNum, NumOfHeatsToSeed: integer;
   SeedDepth, HeatNum: integer;
 begin
+  { Call here after qryUnplacedNominees has been prepared and active.
+  Nominees are ordered in qryUnplacedNominees : Fastest to Slowest.}
   result := 0;
 
   // CALCULATE the number of heats needed to build.
   NumOfHeatsToSeed := CalcNumberOfHeats(fNomineeCount, fRealNumOfLanes);
-  // CALCULATE swimmers per heat. Populate ArrayEntrantsPerHeat.
+  // CALCULATE the number ofswimmers per heat. Populate ArrayEntrantsPerHeat.
   InitEntrantsPerHeat(NumOfHeatsToSeed);
-
-  { Algorithm to scatter lanes. Fast swimmers center lanes, slow swimmers
-      outside lanes. Ignores excluded lanes...}
-  InitScatterLanes(uSwimClub.NumberOfLanes);
 
   { Populate ArrayEntrants with TLaneEntrants from ABData.qryUnplacedNominees }
   BuildEntrants();
@@ -176,7 +178,7 @@ function TABINDV.AutoBuildExec: Boolean;
 var
   msg: string;
   totalHeatCount, I, J, indx: Integer;
-  NumOfHeatsSeeded: integer;
+  NumOfHeatsSeeded, StartHeatNum: integer;
 begin
   result := false;
 
@@ -285,6 +287,9 @@ begin
     exit;
   end;
 
+ { Initialise ArrayScatteredLanes. Fast ranked swimmers take center lanes,
+    slow swimmers outside lanes. Routine ignores excluded lanes. }
+  InitScatterLanes(fNumOfLanes); // dbo.SwimClub ... number of pool lanes.
 
   { Create a list of unplaced nominees in the event.}
   ABData.qryUnplacedNominees.Connection := SCM2.scmConnection;
@@ -333,24 +338,29 @@ begin
 
   fNomineeCount := ABData.qryUnplacedNominees.RecordCount;
 
-  SetLength(ArrayEntrants, 0); // IMPORTANT.
+  StartHeatNum := uHeat.LastHeatNum + 1;
 
-  // BASIC Auto-Build.  Assign active index name.
+    // BASIC Auto-Build.  Assign active index name.
   if (Settings.ab_SeperateGender = false)
-    and (Settings.ab_GroupByIndx <= 0) then
+  and (Settings.ab_GroupByIndx <= 0) then
   begin
-      ABData.qryUnplacedNominees.IndexName := 'indxTTB';
-      if ABData.qryUnplacedNominees.Filtered then
-        ABData.qryUnplacedNominees.Filtered := false;
-      NumOfHeatsSeeded := AutoBuildCORE(fSeedHeatNum);
-      exit;
+    StartHeatNum := 1;
+    ABData.qryUnplacedNominees.IndexName := 'indxTTB';
+    if ABData.qryUnplacedNominees.Filtered then
+      ABData.qryUnplacedNominees.Filtered := false;
+    NumOfHeatsSeeded := AutoBuildCORE(StartHeatNum);
+    //********************************************
+    // BUILD THE HEATS.
+    //********************************************
+    exit;
   end;
 
-   // Filter by gender Auto-Build.
+     // Filter by gender Auto-Build.
   if (Settings.ab_SeperateGender = true)
-    and (Settings.ab_GroupByIndx <= 0) then
+  and (Settings.ab_GroupByIndx <= 0) then
   begin
     totalHeatCount := 0;
+    StartHeatNum := 1;
     ABData.qryUnplacedNominees.IndexName := 'indxTTB';
     if not ABData.qryUnplacedNominees.Filtered then
       ABData.qryUnplacedNominees.Filtered := true;
@@ -362,9 +372,26 @@ begin
       begin
         var id: integer;
         id := ABData.qryGender.FieldByName('GenderID').AsInteger;
-        ABData.qryUnplacedNominees.Filter := 'GenderID = ' + IntToStr(id); // gender M.
-        fNumOfHeats := CalcNumberOfHeats(ABData.qryUnplacedNominees.RecordCount, fRealNumOfLanes);
+        ABData.qryUnplacedNominees.Filter := 'GenderID = ' + IntToStr(id);
+          // gender M.
+        ABData.qryUnplacedNominees.Refresh;
+        fNumOfHeats := CalcNumberOfHeats(ABData.qryUnplacedNominees.RecordCount,
+          fRealNumOfLanes);
         totalHeatCount := totalHeatCount + fNumOfHeats;
+        NumOfHeatsSeeded := AutoBuildCORE(StartHeatNum);
+        StartHeatNum := StartHeatNum + NumOfHeatsSeeded;
+        //********************************************
+        // BUILD THE HEAT.
+        // aHeatID := uHeat.NewHeat;
+        // iterate over object - assigning data to lanes..
+        {
+        for obj in ArrayEntrants do
+        begin
+
+        end;
+        }
+
+        //********************************************
         ABData.qryGender.Next;
       end;
     end;
@@ -373,6 +400,45 @@ begin
   // *******************************************************
   result := true;
   // *******************************************************
+
+end;
+
+function TABINDV.AutoBuildHeatsAndLanes: Integer;
+var
+  I, EventID, HeatID, HeatNum: integer;
+  obj: TLaneEntrant;
+  SearchOptions: TLocateOptions;
+begin
+  result := 0;
+  if not assigned(fConnection) then exit;
+  ABData.qryLanes.Connection := fConnection;
+  SearchOptions := [];
+  EventID := uEvent.PK;
+  for I := 0 to fNumOfHeats-1 do
+  begin
+    HeatID := uHeat.NewHeat;
+    if ABData.qryLanes.Active then ABData.qryLanes.Close;
+    ABData.qryLanes.ParamByName('HEATID').AsInteger := HeatID;
+    ABData.qryLanes.Prepare;
+    ABData.qryLanes.Open;
+    if ABData.qryLanes.Active then
+    begin
+      HeatNum := ABData.qryLanes.FieldByName('HeatNum').AsInteger;
+      for obj in ArrayEntrants do
+      begin
+        if obj.HeatNum = HeatNum then
+        begin
+          if ABData.qryLanes.Locate('LaneNum', obj.LaneNum, SearchOptions) then
+          begin
+            ABData.qryLanes.Edit;
+            ABData.qryLanes.FieldByName('NomineeID').AsInteger := obj.NomineeID;
+            ABData.qryLanes.Post;
+          end;
+        end;
+      end;
+    end;
+    ABData.qryLanes.Close;
+  end;
 
 end;
 
@@ -413,41 +479,45 @@ end;
 
 procedure TABINDV.Entrants_AssignLaneNum(StartHeatNum, EndHeatNum: Integer);
 var
-  I, J, RankOffset, Rank: integer;
+  I, J, RankOffset, Rank, EntrantCount: integer;
   obj: TLaneEntrant;
 begin
-  { After seeding - (completed assigment of HeatNum, NomineeID)
-    AND after assigning rank number...
+  { Acll here after assigning HeatNum, NomineeID and RankNum.
     How rank works...
     Rank order of the swimmer. ie. 1st, 2nd, 3rd, etc.
-    Fast swimmers have a low rank value.}
-
-  RankOffset := 0;
-  Rank:= 0;
+    Fast swimmers have a lower value.}
 
   for J := StartHeatNum to EndHeatNum do // iterate on heat.
   begin
-    RankOffset := 0;
-    // reverse iterate. Fastest swimmer pushed to end of array.
-    for I := 0 downto Length(ArrayEntrants)-1 do
+    RankOffset := 0; // rankoffest is used to skip user-excluded lanes.
+    EntrantCount := 0; // used to test if heat has been processed.
+    // Fastest swimmer always at heat of array.
+    for I := 0 to Length(ArrayEntrants) - 1 do
     begin
+      { Optimise : this statement can be ommitted. }
+      // has all the entrants been assigned a lane for the given heat?
+      if (EntrantCount >= ArrayEntrantsPerHeat[J]) then break;
+
       obj := ArrayEntrants[i];
-      if (obj.HeatNum = J) and ArrayEntrantsPerHeat[J] then
+      if (obj.HeatNum <> J) then continue;  // wrong heat number.
+
+      Rank := obj.RankNum + RankOffset;
+      { Handle excluded lanes. Skipping lanes by lowing ranking.}
+      While (Rank <= Length(ArrayScatteredLanes))  do
       begin
-        Rank := obj.RankNum + RankOffset;
-        { Handle excluded lanes. Skipping lanes by lowing ranking.}
-        While (Rank <= Length(ArrayScatteredLanes))  do
-        begin
-          if TestExcludedLane(ArrayScatteredLanes[Rank]) then
-            INC(Rank,1)
-          else
-            break;
-        end;
-        if (Rank <= Length(ArrayScatteredLanes)) then
-          obj.LaneNum := ArrayScatteredLanes[Rank]
+        if TestExcludedLane(ArrayScatteredLanes[Rank]) then
+          INC(Rank,1)
         else
-          obj.LaneNum := 0;
+          break;
       end;
+      { Look-up rank and return with lane number. Fastest swim in center of pool. }
+      if (Rank <= Length(ArrayScatteredLanes)) then
+        obj.LaneNum := ArrayScatteredLanes[Rank]
+      else
+        {TODO -oBSA -cGeneral : ERROR -Entrant never got a lane in chosen heat.}
+        obj.LaneNum := 0;
+
+      INC(EntrantCount,1);
     end;
   end;
 end;
@@ -582,13 +652,17 @@ end;
 
 function TABINDV.Prepare(AConnection: TFDConnection): Boolean;
 begin
-  // TODO -cMM: Prepare default body inserted
+  // Attach auto-create data module to connection and activate.
   Result := false;
+  fConnection := nil;
   if Assigned(AConnection) then
   begin
     ABData.ActivateData;
     if ABData.IsActive then
+    begin
       Result := true;
+      fConnection := AConnection;
+    end;
   end;
 end;
 

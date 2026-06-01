@@ -1422,7 +1422,7 @@ object ABINV: TABINV
         ParamType = ptInput
       end>
   end
-  object qryLanes: TFDQuery
+  object qryLanes_US: TFDQuery
     Connection = SCM2.scmConnection
     SQL.Strings = (
       'USE SwimClubMeet2;'
@@ -1449,8 +1449,8 @@ object ABINV: TABINV
       '  FROM [SwimClubMeet2].[dbo].[Lane]'
       '  INNER JOIN [dbo].[Heat] on [Lane].[HeatID] = [Heat].[HeatID]'
       '  WHERE [Lane].[HeatID] = @HeatID;')
-    Left = 64
-    Top = 248
+    Left = 592
+    Top = 464
     ParamData = <
       item
         Name = 'HEATID'

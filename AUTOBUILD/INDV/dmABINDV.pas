@@ -32,7 +32,7 @@ type
     procDeleteHeats: TFDStoredProc;
     qryUnplacedNominees: TFDQuery;
     procRenumberHeats: TFDStoredProc;
-    qryLanes: TFDQuery;
+    qryLanes_US: TFDQuery;
     procedure DataModuleCreate(Sender: TObject);
 
   private
@@ -865,7 +865,7 @@ begin
   qryNomineeCountExt.Connection := SCM2.scmConnection;
   qrySourceEvent.Connection := SCM2.scmConnection;
   qryHeatMaxHeatNum.Connection := SCM2.scmConnection;
-  qryGenericCount.Connection := SCM2.scmConnection;
+  //qryGenericCount.Connection := SCM2.scmConnection;
   qryGenderAgeCount.Connection := SCM2.scmConnection;
   qryAgeCount.Connection := SCM2.scmConnection;
  //qryGenderSwimmerCATCount.Connection := SCM2.scmConnection;

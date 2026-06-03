@@ -954,6 +954,7 @@ object CORE: TCORE
         DescFields = 'EventID'
       end>
     IndexFieldNames = 'NomineeID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn.ss.zzz'
     UpdateOptions.UpdateTableName = 'SwimClubMeet2..Nominee'
@@ -982,12 +983,12 @@ object CORE: TCORE
         'D]'
       '')
     Left = 552
-    Top = 600
+    Top = 712
   end
   object dsNominee: TDataSource
     DataSet = qryNominee
     Left = 648
-    Top = 600
+    Top = 712
   end
   object qryTeam: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -1431,6 +1432,7 @@ object CORE: TCORE
     AfterScroll = qryFilterMemberAfterScroll
     FilterOptions = [foCaseInsensitive]
     IndexFieldNames = 'MemberID'
+    Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
@@ -1445,9 +1447,12 @@ object CORE: TCORE
       'DECLARE @SwimClubID INT = :SWIMCLUBID;'
       'DECLARE @SortOn INT = :SORTON;'
       'DECLARE @SeedDate DATETIME = :SEEDDATE;'
+      'DECLARE @Mode BIT = :MODE;'
+      'DECLARE @EventID INT = :EVENTID;'
       ''
       'if @SortOn IS NULL SET @SortOn = 0; '
       'if @SeedDate IS NULL SET @SeedDate = GETDATE(); '
+      'if @Mode IS NULL SET @Mode = 0;'
       ''
       'CREATE TABLE #SwimClubMembers'
       '('
@@ -1518,6 +1523,13 @@ object CORE: TCORE
         'INNER JOIN dbo.SwimClub AS scc ON mlist.SwimClubID = scc.SwimClu' +
         'bID'
       'INNER JOIN dbo.Gender ON mm.GenderID = Gender.GenderID'
+      
+        'LEFT JOIN dbo.Nominee ON Nominee.MemberID = mList.MemberID AND N' +
+        'ominee.EventID = @EventID'
+      'WHERE '
+      '  (@Mode = 0) OR '
+      '  (@Mode = 1 AND Nominee.MemberID IS NOT NULL)'
+      ''
       'ORDER BY '
       #9'CASE WHEN (@SortOn = 1) THEN mm.LastName ELSE mm.FirstName END '
       ';'
@@ -1622,6 +1634,18 @@ object CORE: TCORE
       item
         Name = 'SEEDDATE'
         DataType = ftDate
+        ParamType = ptInput
+        Value = Null
+      end
+      item
+        Name = 'MODE'
+        DataType = ftBoolean
+        ParamType = ptInput
+        Value = False
+      end
+      item
+        Name = 'EVENTID'
+        DataType = ftInteger
         ParamType = ptInput
         Value = Null
       end>
@@ -1880,7 +1904,7 @@ object CORE: TCORE
         '.DistanceID = @DistanceID AND PBT.StrokeID = @StrokeID'
       'WHERE m.MemberID = @MemberID;')
     Left = 552
-    Top = 712
+    Top = 824
     ParamData = <
       item
         Name = 'MEMBERID'
@@ -1953,7 +1977,7 @@ object CORE: TCORE
       '    FROM [SwimClubMeet2].[dbo].[Nominee]'
       '    WHERE EventID = @EventID;')
     Left = 552
-    Top = 656
+    Top = 768
     ParamData = <
       item
         Name = 'EVENTID'

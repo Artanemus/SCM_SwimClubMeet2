@@ -546,16 +546,7 @@ begin
     finally
       dlg.Free;
     end;
-    {
-      requery on dmSCM2 members
-     count the number of members in DB prior to PostMessage
-     Assert the 'No Members' Caption in TLabel lblNomWarning
-     refresh all controls and labels on active tabsheet
-     via page control - it also actions SCM_TABSHEETDISPLAYSTATE
-    }
-//    Refresh_Nominate;
-//    fCountOfMembers := SCM2.Members_Count;
-//    PageControl1Change(PageControl1);
+
   end;
 end;
 

@@ -2727,9 +2727,6 @@ object Main2: TMain2
         OnPaint = pnlTitleBarCustomButtons1Paint
         OnClick = pnlTitleBarCustomButtons1Click
       end>
-    DesignSize = (
-      1137
-      37)
     object DBTextClubName: TDBText
       Left = 6
       Top = 0

@@ -85,7 +85,8 @@ uses
   dmSCM2 in 'DATA\dmSCM2.pas' {SCM2: TDataModule},
   dmABINDV in 'AUTOBUILD\INDV\dmABINDV.pas' {ABINV: TDataModule},
   dlgABSettings in 'AUTOBUILD\dlgABSettings.pas' {ABSettings},
-  uABINDV in 'AUTOBUILD\INDV\uABINDV.pas';
+  uABINDV in 'AUTOBUILD\INDV\uABINDV.pas',
+  uMember in 'DATA_Helper\uMember.pas';
 
 {$R *.res}
 

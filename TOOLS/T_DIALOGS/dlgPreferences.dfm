@@ -3,7 +3,7 @@ object Preferences: TPreferences
   Top = 0
   BorderStyle = bsDialog
   Caption = 'SwimClubMeet Preferences...'
-  ClientHeight = 484
+  ClientHeight = 501
   ClientWidth = 695
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -20,12 +20,13 @@ object Preferences: TPreferences
   TextHeight = 21
   object Panel2: TPanel
     Left = 0
-    Top = 436
+    Top = 453
     Width = 695
     Height = 48
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitTop = 436
     DesignSize = (
       695
       48)
@@ -44,8 +45,8 @@ object Preferences: TPreferences
     Left = 0
     Top = 0
     Width = 695
-    Height = 436
-    ActivePage = tab1
+    Height = 453
+    ActivePage = TabSheet7
     Align = alClient
     TabOrder = 1
     object TabSheet2: TTabSheet
@@ -128,7 +129,7 @@ object Preferences: TPreferences
       ImageIndex = 2
       DesignSize = (
         687
-        400)
+        417)
       object lbl3: TLabel
         Left = 9
         Top = 19
@@ -231,18 +232,34 @@ object Preferences: TPreferences
         OnMouseLeave = infoBugAutoBuildMouseLeave
       end
       object lblSeedDepth2: TLabel
-        Left = 435
-        Top = 242
+        Left = 441
+        Top = 322
         Width = 73
         Height = 21
         Caption = '(Default 3)'
       end
       object lblSeedDepth1: TLabel
-        Left = 298
-        Top = 242
+        Left = 304
+        Top = 322
         Width = 81
         Height = 21
         Caption = 'Seed depth:'
+      end
+      object lblSeedingDepthAll: TLabel
+        Left = 304
+        Top = 356
+        Width = 277
+        Height = 21
+        Caption = 'Use seed depth 0 to circle seed all heats.'
+        Enabled = False
+      end
+      object lblListOfLanes: TLabel
+        Left = 123
+        Top = 120
+        Width = 215
+        Height = 21
+        Caption = '(Use comma seperated values.)'
+        Enabled = False
       end
       object prefSeperateGender: TCheckBox
         Left = 9
@@ -253,18 +270,9 @@ object Preferences: TPreferences
         Caption = 'Seperate gender.'
         TabOrder = 0
       end
-      object prefExcludeOutsideLanes: TCheckBox
-        Left = 9
-        Top = 92
-        Width = 184
-        Height = 25
-        Hint = 'No swimming in the gutter lanes.'
-        Caption = 'Exclude outside lanes.'
-        TabOrder = 1
-      end
       object prefGroupBy: TRadioGroup
-        Left = 3
-        Top = 139
+        Left = 9
+        Top = 171
         Width = 254
         Height = 131
         Hint = 'Broad categories that gather together entants.'
@@ -273,64 +281,60 @@ object Preferences: TPreferences
           'Don'#39't group.'
           'Entrant'#39's age.'
           'Divisions (age range).')
-        TabOrder = 2
+        TabOrder = 1
       end
       object prefSeedMethod: TRadioGroup
-        Left = 298
-        Top = 139
+        Left = 304
+        Top = 171
         Width = 264
-        Height = 87
+        Height = 131
         Hint = 'Decides what lane an entrant is given.'
         Caption = 'Seed Method.'
         ItemIndex = 0
         Items.Strings = (
-          'SwimClubMeet (default)'
-          'Circle Seeding')
-        TabOrder = 3
+          'Standard (default) seeding.'
+          'Circle Seeding to depth.'
+          'Random seeding.')
+        TabOrder = 2
       end
       object prefSeedDepth: TSpinEdit
-        Left = 388
-        Top = 239
+        Left = 394
+        Top = 319
         Width = 41
         Height = 31
         MaxValue = 10
         MinValue = 0
-        TabOrder = 4
+        TabOrder = 3
         Value = 3
       end
-    end
-    object TabSheet6: TTabSheet
-      Caption = 'Switches'
-      ImageIndex = 6
-      object prefEnableDQcodes: TCheckBox
-        Left = 32
-        Top = 27
-        Width = 649
-        Height = 54
-        Caption = 
-          'Enable FINA disqualification codes. '#13#10'(Else use the simplified m' +
-          'ethod of disqualification.)'
-        TabOrder = 0
-        OnClick = prefEnableDQcodesClick
+      object prefExcludeLanes: TCheckBox
+        Left = 9
+        Top = 96
+        Width = 117
+        Height = 17
+        Hint = 'Broken lane rope? Use this.'
+        Caption = 'Exclude Lanes...'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 4
       end
-      object prefShowDebugInfo: TCheckBox
-        Left = 32
-        Top = 109
-        Width = 633
-        Height = 65
-        Caption = 
-          'Show Debug Information. '#13#10'(Reveals a panel showing Primary Keys ' +
-          'of selected Session, Event, Heats, etc.) '
-        TabOrder = 1
-        WordWrap = True
+      object prefListOfExcludeLanes: TEdit
+        Left = 128
+        Top = 94
+        Width = 100
+        Height = 24
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 5
+        TextHint = '1,4,5'
       end
     end
     object TabSheet7: TTabSheet
-      Caption = 'Member'
+      Caption = 'AGE'
       ImageIndex = 7
       DesignSize = (
         687
-        400)
+        417)
       object lblMembersAge: TLabel
         Left = 24
         Top = 16
@@ -505,6 +509,32 @@ object Preferences: TPreferences
         ShowHint = True
         TabOrder = 3
         OnClick = btnDateClick
+      end
+    end
+    object TabSheet6: TTabSheet
+      Caption = 'Switches'
+      ImageIndex = 6
+      object prefEnableDQcodes: TCheckBox
+        Left = 32
+        Top = 27
+        Width = 649
+        Height = 54
+        Caption = 
+          'Enable FINA disqualification codes. '#13#10'(Else use the simplified m' +
+          'ethod of disqualification.)'
+        TabOrder = 0
+        OnClick = prefEnableDQcodesClick
+      end
+      object prefShowDebugInfo: TCheckBox
+        Left = 32
+        Top = 109
+        Width = 633
+        Height = 65
+        Caption = 
+          'Show Debug Information. '#13#10'(Reveals a panel showing Primary Keys ' +
+          'of selected Session, Event, Heats, etc.) '
+        TabOrder = 1
+        WordWrap = True
       end
     end
     object ts_Charts: TTabSheet

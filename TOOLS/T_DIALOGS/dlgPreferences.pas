@@ -37,7 +37,6 @@ type
     PageControl1: TPageControl;
     Panel2: TPanel;
     prefEnableDQcodes: TCheckBox;
-    prefExcludeOutsideLanes: TCheckBox;
     prefGroupBy: TRadioGroup;
     prefAlgorithm: TRadioGroup;
     prefcalcDefRTpercent: TSpinEdit;
@@ -63,6 +62,10 @@ type
     spbtnMembersAge: TSpeedButton;
     BalloonHintPreferences: TBalloonHint;
     ts_Charts: TTabSheet;
+    lblSeedingDepthAll: TLabel;
+    prefExcludeLanes: TCheckBox;
+    prefListOfExcludeLanes: TEdit;
+    lblListOfLanes: TLabel;
     procedure infoBugAutoBuildMouseLeave(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure btnDateClick(Sender: TObject);
@@ -161,7 +164,11 @@ begin
   prefAlgorithm.ItemIndex := Settings.ttb_algorithmIndx;
   prefcalcDefRT.Checked := Settings.ttb_calcDefRT;
   prefcalcDefRTpercent.Value := Round(Settings.ttb_calcDefRTpercent);
-  prefExcludeOutsideLanes.Checked := Settings.ab_ExcludeOutsideLanes;
+
+  // Added: 2026.05.09.
+  prefExcludeLanes.Checked := Settings.ab_ExcludeLanes;
+  prefListOfExcludeLanes.Text := Settings.ab_ListOfExcludeLanes;
+
   prefGroupBy.ItemIndex := Settings.ab_GroupByIndx;
   prefSeperateGender.Checked := Settings.ab_SeperateGender;
   prefSeedMethod.ItemIndex := Settings.ab_SeedMethodIndx;
@@ -196,7 +203,11 @@ begin
   Settings.ttb_algorithmIndx := prefAlgorithm.ItemIndex;
   Settings.ttb_calcDefRT := prefcalcDefRT.Checked;
   Settings.ttb_calcDefRTpercent := prefcalcDefRTpercent.Value;
-  Settings.ab_ExcludeOutsideLanes := prefExcludeOutsideLanes.Checked;
+
+  // Added: 2026.05.09.
+  Settings.ab_ExcludeLanes := prefExcludeLanes.Checked;
+  Settings.ab_ListOfExcludeLanes := prefListOfExcludeLanes.Text;
+
   Settings.ab_GroupByIndx := prefGroupBy.ItemIndex;
   Settings.ab_SeperateGender := prefSeperateGender.Checked;
   Settings.ab_SeedMethodIndx := prefSeedMethod.ItemIndex;

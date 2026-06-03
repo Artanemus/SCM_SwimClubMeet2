@@ -2,7 +2,7 @@ object FrameFilterMember: TFrameFilterMember
   Left = 0
   Top = 0
   Width = 640
-  Height = 480
+  Height = 482
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -16
@@ -14,7 +14,7 @@ object FrameFilterMember: TFrameFilterMember
     Left = 0
     Top = 0
     Width = 58
-    Height = 480
+    Height = 482
     ControlCollection = <
       item
         Control = ShapeMemBar1
@@ -28,7 +28,7 @@ object FrameFilterMember: TFrameFilterMember
       end
       item
         Control = lblNomWarning
-        AlignBottomWithPanel = False
+        AlignBottomWithPanel = True
         AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
         AlignRightWithPanel = False
@@ -66,7 +66,16 @@ object FrameFilterMember: TFrameFilterMember
       item
         Control = spbtnSort
         AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+      end
+      item
+        Control = spbtnChecked
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
         AlignRightWithPanel = False
         AlignTopWithPanel = False
@@ -75,9 +84,10 @@ object FrameFilterMember: TFrameFilterMember
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitHeight = 480
     DesignSize = (
       58
-      480)
+      482)
     object ShapeMemBar1: TShape
       AlignWithMargins = True
       Left = 5
@@ -93,21 +103,21 @@ object FrameFilterMember: TFrameFilterMember
     end
     object lblNomWarning: TLabel
       AlignWithMargins = True
-      Left = 6
-      Top = 237
-      Width = 45
-      Height = 187
+      Left = 15
+      Top = 305
+      Width = 27
+      Height = 167
       Margins.Left = 0
       Margins.Top = 20
       Margins.Right = 0
-      Margins.Bottom = 0
+      Margins.Bottom = 10
       Alignment = taCenter
       Anchors = []
-      Caption = 'No Members'
+      Caption = 'No Members Found'
       Color = clBtnFace
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clTomato
-      Font.Height = -32
+      Font.Height = -19
       Font.Name = 'Segoe UI'
       Font.Orientation = 900
       Font.Style = []
@@ -126,7 +136,7 @@ object FrameFilterMember: TFrameFilterMember
       Hint = 'Create and display a nominee'#39's report.'
       Anchors = []
       ImageIndex = 2
-      ImageName = 'Member'
+      ImageName = 'Members'
       Images = IMG.imglstNomCntrl
       Flat = True
       Layout = blGlyphTop
@@ -167,7 +177,7 @@ object FrameFilterMember: TFrameFilterMember
       NumGlyphs = 2
     end
     object spbtnSort: TSpeedButton
-      Left = 4
+      Left = 5
       Top = 1
       Width = 48
       Height = 48
@@ -180,24 +190,44 @@ object FrameFilterMember: TFrameFilterMember
       Layout = blGlyphTop
       Margin = 0
     end
+    object spbtnChecked: TSpeedButton
+      Tag = 1
+      Left = 5
+      Top = 216
+      Width = 48
+      Height = 48
+      Action = actnNom_Checked
+      AllowAllUp = True
+      Anchors = []
+      GroupIndex = 4
+      ImageIndex = 4
+      ImageName = 'checkbox'
+      Images = IMG.imglstNomCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      NumGlyphs = 2
+    end
   end
   object pnlBody: TPanel
     Left = 58
     Top = 0
     Width = 582
-    Height = 480
+    Height = 482
     Align = alClient
     BevelOuter = bvNone
     Caption = 'No members were found for this swimclub.'
     TabOrder = 1
+    ExplicitHeight = 480
     object pnlList: TPanel
       Left = 0
       Top = 0
       Width = 582
-      Height = 480
+      Height = 482
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
+      ExplicitHeight = 480
       object rpnlSearch: TRelativePanel
         Left = 0
         Top = 0
@@ -293,7 +323,7 @@ object FrameFilterMember: TFrameFilterMember
         Left = 0
         Top = 49
         Width = 582
-        Height = 431
+        Height = 433
         Cursor = crDefault
         Align = alClient
         Color = clWhite
@@ -628,6 +658,7 @@ object FrameFilterMember: TFrameFilterMember
           FFC003FF}
         ShowUnicode = False
         OnGetHTMLTemplate = gridGetHTMLTemplate
+        ExplicitHeight = 431
         ColWidths = (
           0
           300)
@@ -692,6 +723,13 @@ object FrameFilterMember: TFrameFilterMember
       Caption = 'Clear filtering'
       OnExecute = actnNom_ClearFilterExecute
       OnUpdate = actnNom_ClearFilterUpdate
+    end
+    object actnNom_Checked: TAction
+      Category = 'Nominate'
+      Caption = 'Members in event'
+      GroupIndex = 4
+      OnExecute = actnNom_CheckedExecute
+      OnUpdate = actnNom_CheckedUpdate
     end
   end
   object pumenuNomMember: TPopupMenu

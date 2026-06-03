@@ -144,8 +144,6 @@ begin
 end;
 
 procedure TABSettings.WriteSettings();
-var
-  i: integer;
 begin
   Settings.ttb_algorithmIndx := prefAlgorithm.ItemIndex;
   Settings.ttb_calcDefRT := prefcalcDefRT.Checked;

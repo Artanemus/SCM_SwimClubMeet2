@@ -56,6 +56,10 @@ type
     vimgSearch: TVirtualImage;
     spbtnReport: TSpeedButton;
     spbtnSort: TSpeedButton;
+    spbtnChecked: TSpeedButton;
+    actnNom_Checked: TAction;
+    procedure actnNom_CheckedExecute(Sender: TObject);
+    procedure actnNom_CheckedUpdate(Sender: TObject);
     procedure actnNom_ClearFilterExecute(Sender: TObject);
     procedure actnNom_ClearFilterUpdate(Sender: TObject);
     procedure actnNom_MemberDetailsUpdate(Sender: TObject);
@@ -81,6 +85,76 @@ uses
 
 uNominee;
 
+
+procedure TFrameFilterMember.actnNom_CheckedExecute(Sender: TObject);
+var
+  EventID: integer;
+begin
+  actnNom_Checked.Checked := not actnNom_Checked.Checked;
+  if actnNom_Checked.Checked then
+  begin
+    spbtnChecked.Down := true;
+    grid.BeginUpdate;
+    {TODO -oBSA -cGeneral : Check activate in CORE.}
+    CORE.qryFilterMember.DisableControls;
+    try
+      EventID := CORE.qryNominate.FieldByName('EventID').AsInteger;
+      if EventID <> 0 then
+      begin
+        CORE.qryFilterMember.Close;
+        CORE.qryFilterMember.ParamByName('EVENTID').AsInteger := EventID;
+        CORE.qryFilterMember.ParamByName('MODE').AsBoolean := true;
+        CORE.qryFilterMember.Prepare;
+        CORE.qryFilterMember.Open;
+        CORE.qryNominate.Locate('EventID', EventID, []);
+      end;
+    finally
+      CORE.qryFilterMember.EnableControls;
+      grid.EndUpdate;
+      // No Members Found.
+      if CORE.qryFilterMember.IsEmpty then
+        lblNomWarning.Visible := True else lblNomWarning.Visible := false;
+    end;
+  end
+  else
+  begin // BUTTON IS UP ... revert
+    spbtnChecked.Down := false;
+    grid.BeginUpdate;
+    {TODO -oBSA -cGeneral : Check activate in CORE.}
+    CORE.qryFilterMember.DisableControls;
+    try
+      EventID := CORE.qryNominate.FieldByName('EventID').AsInteger;
+      if EventID <> 0 then
+      begin
+        CORE.qryFilterMember.Close;
+        CORE.qryFilterMember.ParamByName('EVENTID').AsInteger := EventID;
+        CORE.qryFilterMember.ParamByName('MODE').AsBoolean := false;
+        CORE.qryFilterMember.Prepare;
+        CORE.qryFilterMember.Open;
+        CORE.qryNominate.Locate('EventID', EventID, []);
+      end;
+    finally
+      CORE.qryFilterMember.EnableControls;
+      grid.EndUpdate;
+      // No Members Found.
+      if CORE.qryFilterMember.IsEmpty then
+        lblNomWarning.Visible := True else lblNomWarning.Visible := false;
+    end;
+  end;
+end;
+
+procedure TFrameFilterMember.actnNom_CheckedUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+    // fix RAD STUDIO icon re-assignment issue.
+  if (spbtnChecked.imageindex <> 4) then spbtnReport.imageindex := 4;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and
+    not CORE.qryEvent.IsEmpty then DoEnable := true;
+  TAction(Sender).Enabled := DoEnable;
+end;
 
 procedure TFrameFilterMember.actnNom_ClearFilterExecute(Sender: TObject);
 begin
@@ -217,6 +291,11 @@ begin
   finally
     CORE.qryFilterMember.EnableControls;
     grid.EndUpdate;
+
+    // No Members Found.
+    if CORE.qryFilterMember.IsEmpty then
+      lblNomWarning.Visible := True else lblNomWarning.Visible := false;
+
   end;
 end;
 
@@ -284,6 +363,10 @@ begin
         CORE.qryFilterMember.ParamByName('SORTON').AsInteger := SortOn;
         CORE.qryFilterMember.Prepare;
         CORE.qryFilterMember.Open;
+
+        if CORE.qryFilterMember.IsEmpty then
+          lblNomWarning.Visible := true else lblNomWarning.Visible := false;
+
       end
     end;
   finally

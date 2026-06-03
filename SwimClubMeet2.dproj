@@ -406,6 +406,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="AUTOBUILD\INDV\uABINDV.pas"/>
+        <DCCReference Include="DATA_Helper\uMember.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

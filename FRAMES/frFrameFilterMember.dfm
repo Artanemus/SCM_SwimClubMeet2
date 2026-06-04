@@ -29,9 +29,9 @@ object FrameFilterMember: TFrameFilterMember
       item
         Control = lblNomWarning
         AlignBottomWithPanel = True
-        AlignHorizontalCenterWithPanel = True
+        AlignHorizontalCenterWithPanel = False
         AlignLeftWithPanel = False
-        AlignRightWithPanel = False
+        AlignRightWithPanel = True
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
       end
@@ -80,11 +80,19 @@ object FrameFilterMember: TFrameFilterMember
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
+      end
+      item
+        Control = lblCheckEventMsg
+        AlignBottomWithPanel = True
+        AlignHorizontalCenterWithPanel = False
+        AlignLeftWithPanel = True
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
       end>
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitHeight = 480
     DesignSize = (
       58
       482)
@@ -103,7 +111,7 @@ object FrameFilterMember: TFrameFilterMember
     end
     object lblNomWarning: TLabel
       AlignWithMargins = True
-      Left = 15
+      Left = 31
       Top = 305
       Width = 27
       Height = 167
@@ -111,7 +119,6 @@ object FrameFilterMember: TFrameFilterMember
       Margins.Top = 20
       Margins.Right = 0
       Margins.Bottom = 10
-      Alignment = taCenter
       Anchors = []
       Caption = 'No Members Found'
       Color = clBtnFace
@@ -208,6 +215,31 @@ object FrameFilterMember: TFrameFilterMember
       Margin = 0
       NumGlyphs = 2
     end
+    object lblCheckEventMsg: TLabel
+      AlignWithMargins = True
+      Left = 0
+      Top = 392
+      Width = 34
+      Height = 80
+      Margins.Left = 0
+      Margins.Top = 20
+      Margins.Right = 0
+      Margins.Bottom = 10
+      Anchors = []
+      Caption = 'Event #'
+      Color = clBtnFace
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clTomato
+      Font.Height = -24
+      Font.Name = 'Segoe UI'
+      Font.Orientation = 900
+      Font.Style = []
+      ParentColor = False
+      ParentFont = False
+      Visible = False
+      WordWrap = True
+      StyleElements = [seClient, seBorder]
+    end
   end
   object pnlBody: TPanel
     Left = 58
@@ -218,7 +250,6 @@ object FrameFilterMember: TFrameFilterMember
     BevelOuter = bvNone
     Caption = 'No members were found for this swimclub.'
     TabOrder = 1
-    ExplicitHeight = 480
     object pnlList: TPanel
       Left = 0
       Top = 0
@@ -227,7 +258,6 @@ object FrameFilterMember: TFrameFilterMember
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitHeight = 480
       object rpnlSearch: TRelativePanel
         Left = 0
         Top = 0
@@ -658,7 +688,6 @@ object FrameFilterMember: TFrameFilterMember
           FFC003FF}
         ShowUnicode = False
         OnGetHTMLTemplate = gridGetHTMLTemplate
-        ExplicitHeight = 431
         ColWidths = (
           0
           300)

@@ -516,11 +516,10 @@ function TABINV.AutoBuildExecute(DatasetHeat: TDataSet; EventID: integer;
   Verbose: boolean): boolean;
 var
   Unplaced, NumberOfPoolLanes, numOfSwimmingLanes, numberOfHeats: integer;
-  s, SQL: string;
 begin
   result := false;
   Unplaced := 0;
-
+  numberOfHeats := 0;
 
   // ***************************************************
   // GOTO SECTION A. - HEAT ASSIGNMENT

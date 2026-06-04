@@ -58,6 +58,7 @@ type
     spbtnSort: TSpeedButton;
     spbtnChecked: TSpeedButton;
     actnNom_Checked: TAction;
+    lblCheckEventMsg: TLabel;
     procedure actnNom_CheckedExecute(Sender: TObject);
     procedure actnNom_CheckedUpdate(Sender: TObject);
     procedure actnNom_ClearFilterExecute(Sender: TObject);
@@ -71,7 +72,7 @@ type
     procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
   private
-
+    function GetFullName: string;
   public
     procedure InitFilterMemberDB;
     procedure UpdateUI(DoFullUpdate: boolean = false);
@@ -88,12 +89,13 @@ uNominee;
 
 procedure TFrameFilterMember.actnNom_CheckedExecute(Sender: TObject);
 var
-  EventID: integer;
+  EventID, EventNum: integer;
 begin
   actnNom_Checked.Checked := not actnNom_Checked.Checked;
   if actnNom_Checked.Checked then
   begin
     spbtnChecked.Down := true;
+    EventID := 0;
     grid.BeginUpdate;
     {TODO -oBSA -cGeneral : Check activate in CORE.}
     CORE.qryFilterMember.DisableControls;
@@ -106,14 +108,22 @@ begin
         CORE.qryFilterMember.ParamByName('MODE').AsBoolean := true;
         CORE.qryFilterMember.Prepare;
         CORE.qryFilterMember.Open;
-        CORE.qryNominate.Locate('EventID', EventID, []);
+        // CORE.qryNominate.Locate('EventID', EventID, []);
       end;
     finally
+      // clear any filtering (search)..
+      edtSearch.Text := '';
       CORE.qryFilterMember.EnableControls;
       grid.EndUpdate;
       // No Members Found.
       if CORE.qryFilterMember.IsEmpty then
         lblNomWarning.Visible := True else lblNomWarning.Visible := false;
+      if EventID <> 0 then
+      begin
+        EventNum := CORE.qryNominate.FieldByName('EventNum').AsInteger;
+        lblCheckEventMsg.Caption := 'LOOKUP EVENT #' + IntToStr(EventNum);
+        lblCheckEventMsg.Visible := true;
+      end;
     end;
   end
   else
@@ -131,7 +141,7 @@ begin
         CORE.qryFilterMember.ParamByName('MODE').AsBoolean := false;
         CORE.qryFilterMember.Prepare;
         CORE.qryFilterMember.Open;
-        CORE.qryNominate.Locate('EventID', EventID, []);
+        // CORE.qryNominate.Locate('EventID', EventID, []);
       end;
     finally
       CORE.qryFilterMember.EnableControls;
@@ -139,6 +149,7 @@ begin
       // No Members Found.
       if CORE.qryFilterMember.IsEmpty then
         lblNomWarning.Visible := True else lblNomWarning.Visible := false;
+      lblCheckEventMsg.Visible := false;
     end;
   end;
 end;
@@ -220,10 +231,10 @@ var
 begin
   // Switch name, TFDQuery needs param changes.
   grid.BeginUpdate;
-  CORE.qryFilterMember.DisableControls;
+//  CORE.qryFilterMember.DisableControls;
   try
     PK := CORE.qryFilterMember.FieldByName('MemberID').AsInteger;
-    CORE.qryFilterMember.Close;
+//    CORE.qryFilterMember.Close;
     // calls edtSearchChange, but aborts - table not active.
     edtSearch.Text := '';
     // turn of filtering, show all members.
@@ -232,18 +243,24 @@ begin
     // toogle state of action.
     actnNom_SwitchName.Checked := not actnNom_SwitchName.Checked;
     SortOn := ORD(actnNom_SwitchName.Checked);
+
+    if SortOn = 1 then
+      CORE.qryFilterMember.indexName := 'indxSortLastName'
+    else
+      CORE.qryFilterMember.indexName := 'indxSortFirstName';
+
     // store user preferences...
     if Assigned(Settings) then
       Settings.MemberSortOn := SortOn;
 
-    CORE.qryFilterMember.ParamByName('SORTON').AsInteger := SortOn;
-    CORE.qryFilterMember.Prepare;
-    CORE.qryFilterMember.Open;
+//    CORE.qryFilterMember.ParamByName('SORTON').AsInteger := SortOn;
+//    CORE.qryFilterMember.Prepare;
+//    CORE.qryFilterMember.Open;
 
     uNominee.Locate_FilterMember(PK); // re-locate to last member selected.
 
   finally
-    CORE.qryFilterMember.EnableControls;
+//    CORE.qryFilterMember.EnableControls;
     grid.EndUpdate;
   end;
 end;
@@ -277,7 +294,8 @@ begin
       // update filter string ....
       if (Length(edtSearch.Text) > 0) then
       begin
-        fs := fs + '[FName] LIKE ' + QuotedStr('%' + edtSearch.Text + '%');
+        fs := fs + '[FirstName] LIKE ' + QuotedStr('%' + edtSearch.Text + '%')
+        + ' OR [LastName] LIKE ' + QuotedStr('%' + edtSearch.Text + '%') ;
       end;
       // assign filter
       if fs.IsEmpty then CORE.qryFilterMember.Filtered := false
@@ -299,44 +317,60 @@ begin
   end;
 end;
 
+function TFrameFilterMember.GetFullName: string;
+var
+  SortOn: integer;
+  FN, MN, LN, s: string;
+begin
+  result := '';
+  s := '';
+  if Assigned(CORE) and CORE.IsActive then
+  begin
+    SortOn := ORD(actnNom_SwitchName.Checked);
+    FN := CORE.qryFilterMember.FieldByName('FirstName').AsString;
+    MN := CORE.qryFilterMember.FieldByName('MiddleName').AsString;
+    LN := CORE.qryFilterMember.FieldByName('LastName').AsString;
+    if Length(mn) > 0 then
+      MN := MN.Substring(1, 1);
+
+    case SortOn of
+      0:
+      begin
+        if Length(FN) > 0 then s := s + FN + ' ';
+        if Length(MN) > 0 then s := s + MN + '. ';
+        if Length(LN) > 0 then s := s + UpperCase(LN);
+        s := s.Trim();
+      end;
+      1:
+      begin
+        if Length(LN) > 0 then s := s + UpperCase(LN) + ' ';
+        if Length(MN) > 0 then s := s + MN + '. ';
+        if Length(FN) > 0 then s := s + FN;
+        s := s.Trim();
+      end;
+    end;
+  end;
+
+  if not s.IsEmpty then
+    result := s;
+
+end;
+
 procedure TFrameFilterMember.gridGetHTMLTemplate(Sender: TObject; ACol, ARow:
     Integer; var HTMLTemplate: string; Fields: TFields);
 var
-  s: string;
-  // SQL: String;
-//  v: variant;
-//  id1, id2: integer;
+  s, FullName: string;
 begin
   if (not Assigned(CORE)) or (not CORE.IsActive) or
     CORE.qryFilterMember.IsEmpty then exit;
-
   s := '';
-
+  FullName := GetFullName;
   if (ACol = 1) then
   begin
-    s := '''
-      <FONT size="14"><B><#FName></B></FONT><FONT size="12">  (<#ABREV>.<#Age>)</FONT>
-      ''';
+      s := '<FONT size="14"><B>' + FullName +
+        '</B></FONT><FONT size="12">  (<#ABREV>.<#Age>)</FONT>';
   end;
-
-  {
-  // if the member has nominations in this session then include an icon.
-  SQL := '''
-        SELECT COUNT(dbo.nominee.NomineeID) AS NomCount
-        FROM Nominee
-        INNER JOIN dbo.Event ON Nominee.Eventid = Event.EventID
-        WHERE Nominee.memberid = :ID1
-              AND Event.SessionID = :ID2;
-      ''';
-  id1 := CORE.qryFilterMember.FieldByName('MemberID').AsInteger;
-  id2 := CORE.qrySession.FieldByName('SessionID').AsInteger;
-  v := SCM2.scmConnection.ExecSQLScalar(SQL, [id1, id2]) ;
-  if (v <> 0) then
-    s := s + '  <IMG src="idx:14" align="middle">' + IntToStr(v);
-  }
-
   HTMLTemplate := s;
-
 end;
 
 procedure TFrameFilterMember.InitFilterMemberDB;
@@ -359,14 +393,10 @@ begin
         // set state of toggle in action.
         if (SortOn = 1) then actnNom_SwitchName.checked := true
         else actnNom_SwitchName.checked := false;
-
-        CORE.qryFilterMember.ParamByName('SORTON').AsInteger := SortOn;
         CORE.qryFilterMember.Prepare;
         CORE.qryFilterMember.Open;
-
         if CORE.qryFilterMember.IsEmpty then
           lblNomWarning.Visible := true else lblNomWarning.Visible := false;
-
       end
     end;
   finally

@@ -270,8 +270,22 @@ begin
       pnlG.Visible := true;
       if not CORE.qryFilterMember.IsEmpty() then
       begin
+        var StoreCurrentRecPos: integer;
         pnlG.Visible := true;
+
+        StoreCurrentRecPos := 0; // conditional locate to the last selected rec.
+
+
+        if not DoFullUpdate then
+          StoreCurrentRecPos := CORE.qryNominate.FieldByName('EventID').AsInteger;
+
         UpdateQryNominate();
+
+        if not DoFullUpdate then
+        begin
+          if StoreCurrentRecPos <> 0 then
+            CORE.qryNominate.Locate('EventID', StoreCurrentRecPos, []);
+        end;
       end
       else
       begin

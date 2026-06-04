@@ -110,7 +110,6 @@ type
     qryFilterMemberNickName: TWideStringField;
     qryFilterMemberAge: TIntegerField;
     qryFilterMemberABREV: TWideStringField;
-    qryFilterMemberFName: TWideStringField;
     qryNominate: TFDQuery;
     dsNominate: TDataSource;
     qryNominateEventID: TIntegerField;
@@ -192,6 +191,7 @@ type
     qryLaneHtScore: TFloatField;
     qryLaneluHouse: TStringField;
     qryLaneSplitCount: TIntegerField;
+    qryFilterMemberFName: TWideStringField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure dsSwimClubDataChange(Sender: TObject; Field: TField);

@@ -1431,7 +1431,21 @@ object CORE: TCORE
     ActiveStoredUsage = [auDesignTime]
     AfterScroll = qryFilterMemberAfterScroll
     FilterOptions = [foCaseInsensitive]
-    IndexFieldNames = 'MemberID'
+    Indexes = <
+      item
+        Active = True
+        Selected = True
+        Name = 'indxSortFirstName'
+        Fields = 'FirstName;LastName;SwimClubID'
+        CaseInsFields = 'FirstName;LastName'
+      end
+      item
+        Active = True
+        Name = 'indxSortLastName'
+        Fields = 'LastName;FirstName;SwimClubID'
+        CaseInsFields = 'LastName;FirstName'
+      end>
+    IndexName = 'indxSortFirstName'
     Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -1445,12 +1459,12 @@ object CORE: TCORE
       '    DROP TABLE #SwimClubMembers;    '
       ''
       'DECLARE @SwimClubID INT = :SWIMCLUBID;'
-      'DECLARE @SortOn INT = :SORTON;'
+      '-- DECLARE @SortOn INT = :SORTON;'
       'DECLARE @SeedDate DATETIME = :SEEDDATE;'
       'DECLARE @Mode BIT = :MODE;'
       'DECLARE @EventID INT = :EVENTID;'
       ''
-      'if @SortOn IS NULL SET @SortOn = 0; '
+      '-- if @SortOn IS NULL SET @SortOn = 0; '
       'if @SeedDate IS NULL SET @SeedDate = GETDATE(); '
       'if @Mode IS NULL SET @Mode = 0;'
       ''
@@ -1497,7 +1511,36 @@ object CORE: TCORE
       '    mm.LastName,'
       '    scc.NickName,'
       '    dbo.SwimmerAge(@SeedDate, mm.DOB) AS Age,'
-      #9'gender.ABREV,'
+      '    gender.ABREV,'
+      '    '
+      #9#9'CASE '
+      #9#9'WHEN (mm.MiddleName IS NULL OR mm.MiddleName = '#39#39') THEN'
+      #9#9#9'CONCAT(mm.FirstName, '#39' '#39', UPPER(mm.LastName))'
+      #9#9'ELSE'
+      
+        #9#9#9'CONCAT(mm.FirstName, '#39' '#39', LEFT(mm.MiddleName,1), '#39'. '#39', UPPER(' +
+        'mm.LastName))'
+      #9#9'END  AS FName'
+      '    '
+      '/*    '
+      #9#9'CASE '
+      #9#9'WHEN (mm.MiddleName IS NULL OR mm.MiddleName = '#39#39') THEN'
+      #9#9#9'CONCAT(mm.FirstName, '#39' '#39', UPPER(mm.LastName))'
+      #9#9'ELSE'
+      
+        #9#9#9'CONCAT(mm.FirstName, '#39' '#39', LEFT(mm.MiddleName,1), '#39'. '#39', UPPER(' +
+        'mm.LastName))'
+      #9#9'END  AS FNameFirstName,'
+      #9#9'CASE '
+      #9#9'WHEN (mm.MiddleName IS NULL OR mm.MiddleName = '#39#39') THEN'
+      #9#9#9'CONCAT(UPPER(mm.LastName), '#39', '#39', mm.FirstName)'
+      #9#9'ELSE'
+      
+        #9#9#9'CONCAT(UPPER(mm.LastName), '#39', '#39', mm.FirstName, '#39' .'#39', LEFT(mm.' +
+        'MiddleName, 1) )'
+      #9#9'END AS FNameLastName'
+      '*/                '#9
+      '/*    '
       #9'CASE WHEN @SortOn = 0 then'
       #9#9'CASE '
       #9#9'WHEN (mm.MiddleName IS NULL) THEN'
@@ -1517,6 +1560,10 @@ object CORE: TCORE
         'MiddleName, 1) )'
       #9#9'END '#9
       #9'END'#9'as FName '
+      ' '
+      '*/'
+      ''
+      ' '
       'FROM #SwimClubMembers AS mlist'
       'INNER JOIN dbo.Member AS mm ON mlist.MemberID = mm.MemberID'
       
@@ -1531,7 +1578,12 @@ object CORE: TCORE
       '  (@Mode = 1 AND Nominee.MemberID IS NOT NULL)'
       ''
       'ORDER BY '
-      #9'CASE WHEN (@SortOn = 1) THEN mm.LastName ELSE mm.FirstName END '
+      
+        #9'--CASE WHEN (@SortOn = 1) THEN mm.LastName ELSE mm.FirstName EN' +
+        'D '
+      
+        ' MemberID -- indexFieldNames are used to correctly sort on first' +
+        '/last name.'
       ';'
       ''
       'DROP TABLE #SwimClubMembers;'
@@ -1626,12 +1678,6 @@ object CORE: TCORE
         Value = 1
       end
       item
-        Name = 'SORTON'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = Null
-      end
-      item
         Name = 'SEEDDATE'
         DataType = ftDate
         ParamType = ptInput
@@ -1692,7 +1738,7 @@ object CORE: TCORE
       Origin = 'FName'
       ReadOnly = True
       Required = True
-      Size = 263
+      Size = 260
     end
   end
   object dsFilterMember: TDataSource

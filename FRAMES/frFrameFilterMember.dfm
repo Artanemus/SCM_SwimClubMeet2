@@ -29,9 +29,9 @@ object FrameFilterMember: TFrameFilterMember
       item
         Control = lblNomWarning
         AlignBottomWithPanel = True
-        AlignHorizontalCenterWithPanel = False
+        AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
-        AlignRightWithPanel = True
+        AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
       end
@@ -71,24 +71,6 @@ object FrameFilterMember: TFrameFilterMember
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
-      end
-      item
-        Control = spbtnChecked
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = True
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = False
-      end
-      item
-        Control = lblCheckEventMsg
-        AlignBottomWithPanel = True
-        AlignHorizontalCenterWithPanel = False
-        AlignLeftWithPanel = True
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = False
       end>
     Align = alLeft
     BevelOuter = bvNone
@@ -111,7 +93,7 @@ object FrameFilterMember: TFrameFilterMember
     end
     object lblNomWarning: TLabel
       AlignWithMargins = True
-      Left = 31
+      Left = 15
       Top = 305
       Width = 27
       Height = 167
@@ -196,49 +178,6 @@ object FrameFilterMember: TFrameFilterMember
       Flat = True
       Layout = blGlyphTop
       Margin = 0
-    end
-    object spbtnChecked: TSpeedButton
-      Tag = 1
-      Left = 5
-      Top = 216
-      Width = 48
-      Height = 48
-      Action = actnNom_Checked
-      AllowAllUp = True
-      Anchors = []
-      GroupIndex = 4
-      ImageIndex = 4
-      ImageName = 'checkbox'
-      Images = IMG.imglstNomCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      NumGlyphs = 2
-    end
-    object lblCheckEventMsg: TLabel
-      AlignWithMargins = True
-      Left = 0
-      Top = 392
-      Width = 34
-      Height = 80
-      Margins.Left = 0
-      Margins.Top = 20
-      Margins.Right = 0
-      Margins.Bottom = 10
-      Anchors = []
-      Caption = 'Event #'
-      Color = clBtnFace
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clTomato
-      Font.Height = -24
-      Font.Name = 'Segoe UI'
-      Font.Orientation = 900
-      Font.Style = []
-      ParentColor = False
-      ParentFont = False
-      Visible = False
-      WordWrap = True
-      StyleElements = [seClient, seBorder]
     end
   end
   object pnlBody: TPanel
@@ -752,13 +691,6 @@ object FrameFilterMember: TFrameFilterMember
       Caption = 'Clear filtering'
       OnExecute = actnNom_ClearFilterExecute
       OnUpdate = actnNom_ClearFilterUpdate
-    end
-    object actnNom_Checked: TAction
-      Category = 'Nominate'
-      Caption = 'Members in event'
-      GroupIndex = 4
-      OnExecute = actnNom_CheckedExecute
-      OnUpdate = actnNom_CheckedUpdate
     end
   end
   object pumenuNomMember: TPopupMenu

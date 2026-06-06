@@ -17,7 +17,7 @@ uses
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
-  uDefines, uSettings, dmIMG
+  uDefines, uSettings, dmIMG, Vcl.Buttons
   ;
 
 type
@@ -29,6 +29,10 @@ type
     pumenuNominate: TPopupMenu;
     rpnlCntrl: TRelativePanel;
     pnlG: TPanel;
+    actnNom_LookUp: TAction;
+    spbtnLookUp: TSpeedButton;
+    procedure actnNom_LookUpExecute(Sender: TObject);
+    procedure actnNom_LookUpUpdate(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
     procedure gridClickCell(Sender: TObject; ARow, ACol: Integer);
@@ -39,6 +43,8 @@ type
     procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
     procedure gridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+  private
+    fSortOn: boolean;
   public
     procedure UpdateUI(DoFullUpdate: boolean = false);
     // messages originate in the CORE and are forwarded by main form.
@@ -57,7 +63,42 @@ implementation
 
 
 uses
-  dmSCM2, dmCORE, uSwimClub, uSession, uNominee;
+  dmSCM2, dmCORE, uSwimClub, uSession, uNominee, DlgNom_LookUp;
+
+procedure TFrameNominate.actnNom_LookUpExecute(Sender: TObject);
+var
+  dlg: TNom_Lookup;
+  EventID: integer;
+begin
+  // display the nominees for the current selected event.
+  dlg := TNom_LookUp.Create(self);
+  try
+    EventId := CORE.qryNominate.FieldByName('EventID').AsInteger;
+    if EventID <> 0 then
+    begin
+      fSortOn := false;  // sort on firstname
+      dlg.Prepare(EventID, fSortOn);
+      dlg.ShowModal();
+    end;
+  finally
+    dlg.free;
+  end;
+
+end;
+
+procedure TFrameNominate.actnNom_LookUpUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+  // fix RAD STUDIO icon re-assignment issue.
+  // if (spbtnLookUp.imageindex <> 0) then spbtnLookUp.imageindex := 0;
+
+  if Assigned(SCM2) and SCM2.scmConnection.Connected and
+    Assigned(CORE) and CORE.IsActive and
+    not CORE.qryEvent.IsEmpty then DoEnable := true;
+  TAction(Sender).Enabled := DoEnable;
+end;
 
 procedure TFrameNominate.gridCanEditCell(Sender: TObject; ARow, ACol: Integer;
     var CanEdit: Boolean);

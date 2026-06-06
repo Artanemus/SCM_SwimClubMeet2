@@ -1,7 +1,7 @@
 object FrameNominate: TFrameNominate
   Left = 0
   Top = 0
-  Width = 590
+  Width = 596
   Height = 641
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -24,10 +24,22 @@ object FrameNominate: TFrameNominate
         AlignRightWithPanel = False
         AlignTopWithPanel = True
         AlignVerticalCenterWithPanel = False
+      end
+      item
+        Control = spbtnLookUp
+        AlignBottomWithPanel = True
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
       end>
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
+    DesignSize = (
+      58
+      641)
     object dbtxtNominateFullName: TDBText
       AlignWithMargins = True
       Left = 6
@@ -51,11 +63,33 @@ object FrameNominate: TFrameNominate
       Font.Style = []
       ParentFont = False
     end
+    object spbtnLookUp: TSpeedButton
+      Tag = 1
+      AlignWithMargins = True
+      Left = 5
+      Top = 573
+      Width = 48
+      Height = 48
+      Hint = 'View the nominees for the event.'
+      Margins.Left = 0
+      Margins.Top = 0
+      Margins.Right = 0
+      Margins.Bottom = 20
+      Anchors = []
+      ImageIndex = 5
+      ImageName = 'event-list'
+      Images = IMG.imglstNomCntrl
+      Flat = True
+      Layout = blGlyphTop
+      Margin = 0
+      NumGlyphs = 2
+      OnClick = actnNom_LookUpExecute
+    end
   end
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 532
+    Width = 538
     Height = 641
     Align = alClient
     BevelOuter = bvNone
@@ -64,7 +98,7 @@ object FrameNominate: TFrameNominate
     object pnlG: TPanel
       Left = 0
       Top = 0
-      Width = 532
+      Width = 538
       Height = 641
       Align = alClient
       BevelOuter = bvNone
@@ -72,16 +106,16 @@ object FrameNominate: TFrameNominate
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 532
+        Width = 538
         Height = 641
         Cursor = crDefault
         Align = alClient
         Color = clWhite
-        ColCount = 8
+        ColCount = 7
         DefaultRowHeight = 46
         DrawingStyle = gdsClassic
         FixedColor = clWhite
-        RowCount = 2
+        RowCount = 6
         FixedRows = 1
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -213,8 +247,8 @@ object FrameNominate: TFrameNominate
         SortSettings.HeaderMirrorColor = clWhite
         SortSettings.HeaderMirrorColorTo = clWhite
         Version = '2.5.1.3'
-        AutoCreateColumns = True
-        AutoRemoveColumns = True
+        AutoCreateColumns = False
+        AutoRemoveColumns = False
         Columns = <
           item
             Borders = []
@@ -411,32 +445,6 @@ object FrameNominate: TFrameNominate
             PrintFont.Height = -12
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
-          end
-          item
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWhite
-            FieldName = 'Meters'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clBlack
-            Font.Height = -16
-            Font.Name = 'Segoe UI'
-            Font.Style = []
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = clBlack
-            HeaderFont.Height = -16
-            HeaderFont.Name = 'Segoe UI'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clBlack
-            PrintFont.Height = -16
-            PrintFont.Name = 'Segoe UI'
-            PrintFont.Style = []
-            Width = 0
           end>
         DataSource = CORE.dsNominate
         InvalidPicture.Data = {
@@ -584,10 +592,13 @@ object FrameNominate: TFrameNominate
           50
           48
           250
-          50
-          0)
+          50)
         RowHeights = (
           0
+          46
+          46
+          46
+          46
           46)
       end
     end
@@ -595,9 +606,15 @@ object FrameNominate: TFrameNominate
   object actnlistNominate: TActionList
     Left = 258
     Top = 312
+    object actnNom_LookUp: TAction
+      Category = 'Nominate'
+      Caption = 'LookUp Event'
+      OnExecute = actnNom_LookUpExecute
+      OnUpdate = actnNom_LookUpUpdate
+    end
   end
   object pumenuNominate: TPopupMenu
     Left = 258
-    Top = 392
+    Top = 376
   end
 end

@@ -15,7 +15,7 @@ uses
 
   uDefines ;
 
-
+  function IsMetricsOK(aEventId: integer): boolean;
   function Locate_FilterMember(aMemberID: integer): Boolean;
   function Locate_Nominee(aMemberID, aEventID: integer): Boolean;
   function GetSeedDate(): TDate;
@@ -117,6 +117,41 @@ begin
   end;
 end;
 
+function IsMetricsOK(aEventId: integer): boolean;
+var
+  v: variant;
+begin
+  result := true;
+  if aEventID = 0 then exit;
+  if not Assigned(CORE) then exit;
+  if not CORE.IsActive then exit;
+
+  CORE.qryNominees.Connection := SCM2.scmConnection;
+  CORE.qryNominees.ParamByName('EVENTID').AsInteger := aEventID;
+  CORE.qryNominees.Prepare;
+  try
+    CORE.qryNominees.Open;
+    if CORE.qryNominees.Active then
+    begin
+      CORE.qryNominees.First;
+      while not CORE.qryNominees.Eof do
+      begin
+        v := CORE.qryNominees.FieldByName('TTB').AsVariant;
+        if VarIsNull(v) or VarIsEmpty(v) or (v = 0) then
+        begin
+          result := false;
+          break;
+        end;
+        CORE.qryNominees.Next;
+      end;
+    end;
+    { Refresh on SwimClubMeet2.dbo.qryLane may be needed...}
+  except on E: EFDDBEngineException do
+    exit;
+  end;
+end;
+
+
 procedure GetMetrics(var aMetrics: TSCMSwimmerMetrics);
 var
   Algorithm, CalcDefRT: integer;
@@ -181,6 +216,7 @@ begin
   CORE.qryNominees.Prepare;
   try
     CORE.qryNominees.Open;
+    CORE.qryNominees.First;
     if CORE.qryNominees.Active then
     begin
       while not CORE.qryNominees.Eof do
@@ -194,7 +230,6 @@ begin
   except on E: EFDDBEngineException do
     exit;
   end;
-
 end;
 
 function RefreshStat(aNomineeID: integer): boolean;

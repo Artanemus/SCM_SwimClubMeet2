@@ -1461,12 +1461,12 @@ object CORE: TCORE
       'DECLARE @SwimClubID INT = :SWIMCLUBID;'
       '-- DECLARE @SortOn INT = :SORTON;'
       'DECLARE @SeedDate DATETIME = :SEEDDATE;'
-      'DECLARE @Mode BIT = :MODE;'
+      '-- DECLARE @Mode BIT = :MODE;'
       'DECLARE @EventID INT = :EVENTID;'
       ''
       '-- if @SortOn IS NULL SET @SortOn = 0; '
       'if @SeedDate IS NULL SET @SeedDate = GETDATE(); '
-      'if @Mode IS NULL SET @Mode = 0;'
+      '-- if @Mode IS NULL SET @Mode = 0;'
       ''
       'CREATE TABLE #SwimClubMembers'
       '('
@@ -1570,12 +1570,13 @@ object CORE: TCORE
         'INNER JOIN dbo.SwimClub AS scc ON mlist.SwimClubID = scc.SwimClu' +
         'bID'
       'INNER JOIN dbo.Gender ON mm.GenderID = Gender.GenderID'
+      ''
       
-        'LEFT JOIN dbo.Nominee ON Nominee.MemberID = mList.MemberID AND N' +
-        'ominee.EventID = @EventID'
-      'WHERE '
-      '  (@Mode = 0) OR '
-      '  (@Mode = 1 AND Nominee.MemberID IS NOT NULL)'
+        '-- LEFT JOIN dbo.Nominee ON Nominee.MemberID = mList.MemberID AN' +
+        'D Nominee.EventID = @EventID'
+      '-- WHERE '
+      '--   (@Mode = 0) OR '
+      '--   (@Mode = 1 AND Nominee.MemberID IS NOT NULL)'
       ''
       'ORDER BY '
       
@@ -1684,12 +1685,6 @@ object CORE: TCORE
         Value = Null
       end
       item
-        Name = 'MODE'
-        DataType = ftBoolean
-        ParamType = ptInput
-        Value = False
-      end
-      item
         Name = 'EVENTID'
         DataType = ftInteger
         ParamType = ptInput
@@ -1748,6 +1743,8 @@ object CORE: TCORE
   end
   object qryNominate: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
+    Connection = SCM2.scmConnection
     SQL.Strings = (
       'USE SwimClubMeet2;'
       ''

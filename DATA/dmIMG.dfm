@@ -13527,6 +13527,16 @@ object IMG: TIMG
         CollectionIndex = 44
         CollectionName = 'checkbox'
         Name = 'checkbox'
+      end
+      item
+        CollectionIndex = 100
+        CollectionName = 'event-list'
+        Name = 'event-list'
+      end
+      item
+        CollectionIndex = 48
+        CollectionName = 'edit'
+        Name = 'edit'
       end>
     ImageCollection = CollectionCore
     Width = 48

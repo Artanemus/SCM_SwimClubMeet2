@@ -3,14 +3,18 @@ unit DlgNom_LookUp;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, AdvUtil, Vcl.Grids, AdvObj, BaseGrid,
-  AdvGrid, DBAdvGrid, Vcl.StdCtrls, Vcl.ExtCtrls,
+  Winapi.Windows, Winapi.Messages,
+  System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, Vcl.WinXCtrls,
+  Vcl.Grids, Vcl.StdCtrls, Vcl.ExtCtrls,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client,
-  dmSCM2, dmCORE, dmIMG, uNominee, Vcl.Buttons;
+  AdvGrid, DBAdvGrid,
+  AdvUtil,  AdvObj, BaseGrid,
+  dmSCM2, dmCORE, dmIMG, uNominee,
+  uEvent;
 
 type
   TNom_Lookup = class(TForm)
@@ -34,10 +38,20 @@ type
     qryNom_LookUpEventNum: TIntegerField;
     spbtnSort: TSpeedButton;
     spbtnEdit: TSpeedButton;
+    rpnlFooter: TRelativePanel;
+    lblEventNum: TLabel;
+    lblCountOfNominees: TLabel;
+    lblCount: TLabel;
+    qryNom_LookUpDistanceStr: TWideStringField;
+    qryNom_LookUpStrokeStr: TWideStringField;
     procedure btnCloseClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure GridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
+        Boolean);
     procedure qryNom_LookUpGetText(Sender: TField; var Text: string;
-        DisplayText: Boolean);
+          DisplayText: Boolean);
+    procedure qryNom_LookUpPBSeedTimeSetText(Sender: TField; const Text: string);
+    procedure spbtnEditClick(Sender: TObject);
     procedure spbtnSortClick(Sender: TObject);
   private
     { Private declarations }
@@ -75,17 +89,46 @@ begin
   end;
 end;
 
+
+
+procedure TNom_Lookup.GridCanEditCell(Sender: TObject; ARow, ACol: Integer;
+  var CanEdit: Boolean);
+var
+  fld: TField;
+begin
+  CanEdit := false;
+  if (ACol = 5) then
+  begin
+    fld := grid.Columns[4].Field;
+    if Assigned(fld) then
+    begin
+      if not (VarIsNull(fld.Value) or VarIsEmpty(fld.Value)) and (fld.Value = 0) then
+      begin
+        CanEdit := true;
+      end;
+    end;
+  end;
+end;
+
+
+
 { TNom_Lookup }
 
 function TNom_Lookup.Prepare(EventID: integer; SortOn: boolean): integer;
 var
   EventNum: integer;
+  s1, s2: string;
 begin
   fEventID := EventID;
   fSortOn := SortOn;
   result := 0;
   if not (Assigned(SCM2) and SCM2.scmConnection.Connected) or
     not (Assigned(CORE) and CORE.IsActive) then
+  begin
+    Close;
+    exit;
+  end;
+  if CORE.qryEvent.IsEmpty or CORE.qryNominee.IsEmpty then
   begin
     Close;
     exit;
@@ -119,8 +162,12 @@ begin
             qryNom_LookUp.IndexName := 'indxFirstName';
 
           EventNum := qryNom_LookUp.FieldByName('EventNum').AsInteger;
-          Caption := 'List nominees for event #' + IntToStr(EventNum);
+          s1 := qryNom_LookUp.FieldByName('DistanceStr').AsString;
+          s2 := qryNom_LookUp.FieldByName('StrokeStr').AsString;
 
+          lblEventNum.Caption := 'EVENT #' + IntToStr(EventNum) +
+            ' ' + s1 + ' '  + s2;
+          lblCount.Caption := IntToStr(qryNom_LookUp.RecordCount);
         end;
       end;
 
@@ -158,6 +205,66 @@ begin
     else if ((Min = 0) and (Sec = 0)) then Text := '';
   end
   else Text := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
+end;
+
+procedure TNom_Lookup.qryNom_LookUpPBSeedTimeSetText(Sender: TField; const
+    Text: string);
+var
+  Min, Sec, MSec: word;
+  s: string;
+  dt: TDateTime;
+  i: integer;
+  failed: Boolean;
+begin
+  s := Text;
+  failed := false;
+
+  // Take the user input that was entered into the time mask and replace
+  // spaces with '0'. Resulting in a valid TTime string.
+  // UnicodeString is '1-based'
+  for i := 1 to Length(s) do
+  begin
+    if (s[i] = ' ') then s[i] := '0';
+  end;
+
+  // SubString is '0-based'
+  Min := StrToIntDef(s.SubString(0, 2), 0);
+  Sec := StrToIntDef(s.SubString(3, 2), 0);
+  MSec := StrToIntDef(s.SubString(6, 3), 0);
+  try
+    begin
+      dt := EncodeTime(0, Min, Sec, MSec);
+      Sender.AsDateTime := dt;
+    end;
+  except
+    failed := true;
+  end;
+
+  if failed then Sender.Clear; // Sets the value of the field to NULL
+end;
+
+procedure TNom_Lookup.spbtnEditClick(Sender: TObject);
+var
+  fld: TField;
+begin
+  if spbtnEdit.Down then
+  begin
+  // check the nominee can have it's Seed PB set
+  fld := grid.Columns[4].Field;
+  if Assigned(fld) then
+  begin
+    if not (VarIsNull(fld.Value) or VarIsEmpty(fld.Value)) and (fld.Value = 0) then
+    begin
+      grid.Options := grid.Options - [goRowSelect] + [goEditing];
+      grid.Select;
+      // go edit field...
+    end;
+  end;
+  end
+  else
+  begin
+      grid.Options := grid.Options - [goEditing] + [goRowSelect];
+  end;
 end;
 
 procedure TNom_Lookup.spbtnSortClick(Sender: TObject);

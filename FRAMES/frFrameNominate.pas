@@ -69,6 +69,7 @@ procedure TFrameNominate.actnNom_LookUpExecute(Sender: TObject);
 var
   dlg: TNom_Lookup;
   EventID: integer;
+  CountOfNominees: integer;
 begin
   // display the nominees for the current selected event.
   dlg := TNom_LookUp.Create(self);
@@ -77,8 +78,11 @@ begin
     if EventID <> 0 then
     begin
       fSortOn := false;  // sort on firstname
-      dlg.Prepare(EventID, fSortOn);
-      dlg.ShowModal();
+      CountOfNominees := dlg.Prepare(EventID, fSortOn);
+      if CountOfNominees <> 0 then
+        dlg.ShowModal()
+      else
+        Beep();
     end;
   finally
     dlg.free;
@@ -92,11 +96,14 @@ var
 begin
   DoEnable := false;
   // fix RAD STUDIO icon re-assignment issue.
-  // if (spbtnLookUp.imageindex <> 0) then spbtnLookUp.imageindex := 0;
+  if (spbtnLookUp.imageindex <> 5) then spbtnLookUp.imageindex := 5;
 
   if Assigned(SCM2) and SCM2.scmConnection.Connected and
-    Assigned(CORE) and CORE.IsActive and
-    not CORE.qryEvent.IsEmpty then DoEnable := true;
+    Assigned(CORE) and CORE.IsActive then
+  begin
+   if not (CORE.qryEvent.IsEmpty or CORE.qryNominee.IsEmpty) then
+      DoEnable := true;
+  end;
   TAction(Sender).Enabled := DoEnable;
 end;
 

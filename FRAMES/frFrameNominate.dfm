@@ -22,16 +22,17 @@ object FrameNominate: TFrameNominate
         AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
         AlignRightWithPanel = False
-        AlignTopWithPanel = True
+        AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
+        Below = spbtnLookUp
       end
       item
         Control = spbtnLookUp
-        AlignBottomWithPanel = True
+        AlignBottomWithPanel = False
         AlignHorizontalCenterWithPanel = True
         AlignLeftWithPanel = False
         AlignRightWithPanel = False
-        AlignTopWithPanel = False
+        AlignTopWithPanel = True
         AlignVerticalCenterWithPanel = False
       end>
     Align = alLeft
@@ -43,15 +44,14 @@ object FrameNominate: TFrameNominate
     object dbtxtNominateFullName: TDBText
       AlignWithMargins = True
       Left = 6
-      Top = 40
+      Top = 68
       Width = 45
       Height = 351
       Margins.Left = 0
-      Margins.Top = 40
+      Margins.Top = 10
       Margins.Right = 0
       Margins.Bottom = 0
-      Align = alLeft
-      Anchors = []
+      Alignment = taRightJustify
       AutoSize = True
       DataField = 'FName'
       DataSource = CORE.dsFilterMember
@@ -67,14 +67,14 @@ object FrameNominate: TFrameNominate
       Tag = 1
       AlignWithMargins = True
       Left = 5
-      Top = 573
+      Top = 10
       Width = 48
       Height = 48
-      Hint = 'View the nominees for the event.'
       Margins.Left = 0
-      Margins.Top = 0
+      Margins.Top = 10
       Margins.Right = 0
-      Margins.Bottom = 20
+      Margins.Bottom = 0
+      Action = actnNom_LookUp
       Anchors = []
       ImageIndex = 5
       ImageName = 'event-list'
@@ -83,7 +83,6 @@ object FrameNominate: TFrameNominate
       Layout = blGlyphTop
       Margin = 0
       NumGlyphs = 2
-      OnClick = actnNom_LookUpExecute
     end
   end
   object pnlBody: TPanel

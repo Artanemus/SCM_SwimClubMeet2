@@ -8,7 +8,7 @@ uses
   Data.DB,
 
   VCL.Dialogs,
-  FireDAC.Comp.Client, FireDAC.Stan.Error,
+  FireDAC.Comp.Client, FireDAC.Stan.Error,  FireDAC.Stan.Param,
   dmSCM2, dmCORE, uSettings,
   dmABINDV,
   uDefines, uUtility, uSwimClub, uSession, uNominee, uEvent, uHeat, uLane
@@ -29,7 +29,7 @@ type
     fError: boolean;
     fErrorNum: integer;
     fExcludeLaneCount: integer;
-    fNumOfLanes: integer;
+    fNumOfPoolLanes: integer;
     fRealNumOfLanes: integer;
     fVerbose: boolean;
     { main execution routine. }
@@ -42,7 +42,7 @@ type
     function Build_Entrants(StartHeatNum, NumOfNominees: Integer): Integer;
     function Build_Heats(StartHeatNum, NomineeCount: Integer): integer;
     function Build_Lanes(HeatNum: Integer): Integer;
-    function CalcNumberOfHeats(NumOfNominees, NumOfRealLanes: Integer): Integer;
+    function CalcNumberOfHeats(NumOfNominees, RealNumOfLanes: Integer): Integer;
     procedure Entrants_AssignLaneNum(StartHeatNum, EndHeatNum: Integer);
     procedure Entrants_AssignRanking(StartHeatNum, EndHeatNum: Integer);
     { Seeding routine. }
@@ -52,11 +52,13 @@ type
     function TestExcludedLane(LaneNum: integer): Boolean;
     function TestIsHeatFull(HeatNum: integer): boolean;
   public
+
     constructor Create(AOwner: TComponent);
     destructor Destroy; override;
+
     function AutoBuildExec: Boolean;
     function CountNominees(): integer;
-    function Prepare(AConnection: TFDConnection): Boolean;
+    function Prepare(AConnection: TFDConnection; Verbose: boolean = false): Boolean;
   end;
 
   TLaneEntrant = class(TObject)
@@ -175,6 +177,7 @@ var
 begin
   result := 0;
   SeedDepth := Settings.ab_SeedDepth;
+  NumOfHeatsSeeded := 0;
   if SeedDepth = 0 then exit;
 
   case Settings.ab_SeedMethodIndx of
@@ -241,8 +244,8 @@ end;
 // -----------------------------------------------------------
 procedure TABINDV.AryScatterLanes_Build(NumOfPoolLanes: integer);
 var
-  i, j: integer;
-  IsEven, found: boolean;
+  i: integer;
+  IsEven: boolean;
 begin
   // NumOfPoolLanes must be greater than 1
   if (NumOfPoolLanes < 2) then
@@ -270,10 +273,8 @@ end;
 function TABINDV.AutoBuildExec: Boolean;
 var
   msg: string;
-  totalHeatCount, I, J, indx: Integer;
-  HeatID, HeatNum: integer;
-  NumOfHeatsSeeded, StartHeatNum, EndHeatNum: integer;
-  NumOfHeatsToSeed: Integer;
+  totalHeatCount: Integer;
+  StartHeatNum: integer;
   NomineeCount: Integer;
 begin
   result := false;
@@ -357,11 +358,11 @@ begin
     exit;
   end;
 
-  fNumOfLanes := uSwimClub.NumberOfLanes;
+  fNumOfPoolLanes := uSwimClub.NumberOfLanes;
   // PREPARE AryExcludeLanes.
   fExcludeLaneCount := AryExcludedLanes_Build;
   // Get the real number of available lanes.
-  fRealNumOfLanes:=fNumOfLanes-fExcludeLaneCount;
+  fRealNumOfLanes:=fNumOfPoolLanes-fExcludeLaneCount;
 
   if (fRealNumOfLanes <= 0) then
   begin
@@ -385,7 +386,7 @@ begin
 
  { Initialise AryScatteredLanes. Fast ranked swimmers take center lanes,
     slow swimmers outside lanes. Routine ignores excluded lanes. }
-  AryScatterLanes_Build(fNumOfLanes); // dbo.SwimClub ... number of pool lanes.
+  AryScatterLanes_Build(fNumOfPoolLanes); // dbo.SwimClub ... number of pool lanes.
 
   { Create a list of unplaced nominees in the event.}
   ABData.qryUnplacedNominees.Connection := SCM2.scmConnection;
@@ -473,7 +474,6 @@ begin
   if (Settings.ab_SeperateGender = true)
   and (Settings.ab_GroupByIndx <= 0) then
   begin
-    totalHeatCount := 0;
     StartHeatNum := 1;
     ABData.qryUnplacedNominees.IndexName := 'indxTTB';
     if not ABData.qryUnplacedNominees.Filtered then
@@ -510,7 +510,6 @@ end;
 
 function TABINDV.Build_Entrants(StartHeatNum, NumOfNominees: Integer): Integer;
 var
-  msg: string;
   count, NumOfHeats, EndHeatNum: integer;
 begin
   result := 0;
@@ -518,7 +517,8 @@ begin
   NumOfHeats := CalcNumberOfHeats(NumOfNominees, fRealNumOfLanes);
   EndHeatNum := StartHeatNum + NumOfHeats - 1;
   count := AryEntrants_AssignNominees();
-  count := AryEntrants_Seed(StartHeatNum, EndHeatNum);
+  if count > 0 then
+    count := AryEntrants_Seed(StartHeatNum, EndHeatNum);
   if Count > 0 then Result := Count;
 end;
 
@@ -538,8 +538,11 @@ begin
   for I := 0 to NumOfHeats-1 do
   begin
     HeatID := uHeat.NewHeat;
-    HeatNum := CORE.qryHeat.FieldByName('HeatNum').AsInteger;
-    Count := Build_Lanes(HeatNum);
+    if HeatID > 0 then
+    begin
+      HeatNum := CORE.qryHeat.FieldByName('HeatNum').AsInteger;
+      Count := Build_Lanes(HeatNum);
+    end;
   end;
   if Count > 0 then Result := Count;
 
@@ -548,12 +551,10 @@ end;
 function TABINDV.Build_Lanes(HeatNum: Integer): Integer;
 var
   fld: TField;
-  aHeatNum, Count: integer;
-  SQL: string;
+  Count: integer;
   obj: TLaneEntrant;
   SearchOptions: TLocateOptions;
 begin
-  fld := nil;
   result := 0;
   Count := 0;
   SearchOptions := [];
@@ -592,7 +593,7 @@ begin
   end;
 end;
 
-function TABINDV.CalcNumberOfHeats(NumOfNominees, NumOfRealLanes: Integer):
+function TABINDV.CalcNumberOfHeats(NumOfNominees, RealNumOfLanes: Integer):
     Integer;
 var
 NumOfHeats: integer;
@@ -601,10 +602,10 @@ begin
   if NumOfNominees <= 0 then exit;
   Result := 1;
   // Calculate the number of heats in each event.
-  if (numOfNominees > NumOfRealLanes) then
+  if (numOfNominees > RealNumOfLanes) then
   begin
     NumOfHeats :=
-      Ceil(double(numOfNominees) / double(NumOfRealLanes));
+      Ceil(double(numOfNominees) / double(RealNumOfLanes));
     Result := NumOfHeats;
   end;
 end;
@@ -698,7 +699,8 @@ end;
 
 { TABINDV }
 
-function TABINDV.Prepare(AConnection: TFDConnection): Boolean;
+function TABINDV.Prepare(AConnection: TFDConnection; Verbose: boolean = false):
+    Boolean;
 begin
   // Attach auto-create data module to connection and activate.
   Result := false;

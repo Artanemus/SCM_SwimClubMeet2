@@ -26,7 +26,6 @@ object Preferences: TPreferences
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitTop = 436
     DesignSize = (
       695
       48)
@@ -46,7 +45,7 @@ object Preferences: TPreferences
     Top = 0
     Width = 695
     Height = 453
-    ActivePage = TabSheet7
+    ActivePage = TabSheet6
     Align = alClient
     TabOrder = 1
     object TabSheet2: TTabSheet
@@ -322,7 +321,7 @@ object Preferences: TPreferences
         Left = 128
         Top = 94
         Width = 100
-        Height = 24
+        Height = 29
         ParentShowHint = False
         ShowHint = True
         TabOrder = 5
@@ -531,10 +530,26 @@ object Preferences: TPreferences
         Width = 633
         Height = 65
         Caption = 
-          'Show Debug Information. '#13#10'(Reveals a panel showing Primary Keys ' +
-          'of selected Session, Event, Heats, etc.) '
+          'Show Debug Information. '#13#10'(Reveals panels showing Primary Keys o' +
+          'f selected Session, Event, Heats, etc.) '
         TabOrder = 1
         WordWrap = True
+      end
+      object CheckBox1: TCheckBox
+        Left = 448
+        Top = 352
+        Width = 97
+        Height = 17
+        Caption = 'CheckBox1'
+        TabOrder = 2
+      end
+      object prefVerbose: TCheckBox
+        Left = 32
+        Top = 208
+        Width = 97
+        Height = 17
+        Caption = 'Verbose'
+        TabOrder = 3
       end
     end
     object ts_Charts: TTabSheet

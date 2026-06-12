@@ -45,6 +45,9 @@ type
     procedure gridKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     fSortOn: boolean;
+  protected
+    procedure Loaded; override;
+
   public
     procedure UpdateUI(DoFullUpdate: boolean = false);
     // messages originate in the CORE and are forwarded by main form.
@@ -71,6 +74,12 @@ var
   EventID: integer;
   CountOfNominees: integer;
 begin
+
+  // 1. Force the grid to finalize the current cell edit
+  Grid.HideInplaceEdit; // harmless if not in edit state.
+  // 2. Ensure the underlying dataset is posted.
+  CORE.qryNominate.CheckBrowseMode; // finish editing.
+
   // display the nominees for the current selected event.
   dlg := TNom_LookUp.Create(self);
   try
@@ -240,6 +249,13 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TFrameNominate.Loaded;
+begin
+  inherited;
+  // init variables here
+
 end;
 
 procedure TFrameNominate.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);

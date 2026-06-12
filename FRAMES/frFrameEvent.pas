@@ -121,6 +121,7 @@ type
 
   protected
     procedure Loaded; override;
+
   public
     procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
     procedure UpdateUI(DoFullUpdate: Boolean = false);

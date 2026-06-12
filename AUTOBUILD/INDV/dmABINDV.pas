@@ -77,6 +77,7 @@ type
     // Autobuild startup functions
     function GetNumOfSwimmingLanes(var NumOfPoolLanes: integer;
       DoExcludeOutsideLanes: boolean): integer;
+
     function GetHeatMaxHeatNum(EventID: integer): integer;
 //    function CountNominees(EventID: integer): integer; //--
 //    function qryOrderedHeatList(EventID: integer): integer; //--
@@ -97,11 +98,11 @@ type
     // IMPORTANT NOTE:
     // if TMain's instance of Heat DataSet isn't sent to Auto-Build
     // ... unable to delete Heat record. (locked)  !!!!!!!!!!!!
-    function AutoBuildExecute(DatasetHeat: TDataSet; EventID: integer;
-      Verbose: boolean = true): boolean;
+    function AutoBuildExecute(DatasetHeat: TDataSet; EventID, RealNumOfLanes:
+        integer; Verbose: boolean = true): boolean;
     // Auto build FINALS ... ENTRY POINT (also SEMI and QUARTER finals)
-    function AutoBuildExecuteExt(SourceEventID: integer;
-      TypeOfFinals: scmEventFinalsType = ftFinals): boolean;
+    function AutoBuildExecuteExt(SourceEventID: integer; TypeOfFinals:
+        scmEventFinalsType = ftFinals): boolean;
 
     procedure ActivateData;
     procedure DeActivateData;
@@ -512,18 +513,18 @@ begin
 end;
 }
 
-function TABINV.AutoBuildExecute(DatasetHeat: TDataSet; EventID: integer;
-  Verbose: boolean): boolean;
+function TABINV.AutoBuildExecute(DatasetHeat: TDataSet; EventID,
+    RealNumOfLanes: integer; Verbose: boolean = true): boolean;
 var
-  Unplaced, NumberOfPoolLanes, numOfSwimmingLanes, numberOfHeats: integer;
+  Unplaced, numberOfHeats: integer;
 begin
   result := false;
   Unplaced := 0;
-  numberOfHeats := 0;
+//  numberOfHeats := 0;
 
   // ***************************************************
   // GOTO SECTION A. - HEAT ASSIGNMENT
-  numberOfHeats := AssignHeats(EventID, numOfSwimmingLanes, prefGroupBy,
+  numberOfHeats := AssignHeats(EventID, RealNumOfLanes, prefGroupBy,
     Unplaced, prefSeperateGender);
 
   // no heats were constructed!
@@ -539,46 +540,41 @@ begin
   end;
 end;
 
-function TABINV.AutoBuildExecuteExt(SourceEventID: integer;
-  TypeOfFinals: scmEventFinalsType): boolean;
+function TABINV.AutoBuildExecuteExt(SourceEventID: integer; TypeOfFinals:
+    scmEventFinalsType = ftFinals): boolean;
 var
-  NomineeCountExt, numOfSwimmingLanes, NumOfPoolLanes, MaxNumOfNominees,
-    numberOfHeats, numOfNominees, destEventID, mySeedDepth: integer;
+  numberOfHeats, numOfNominees, destEventID, mySeedDepth: integer;
 
 begin
   result := false;
-  NomineeCountExt := 0;
+  numOfNominees := 0;
   mySeedDepth := 2;
-
-  numOfSwimmingLanes := GetNumOfSwimmingLanes(NumOfPoolLanes,
-    prefExcludeOutsideLanes);
 
   qryNomineeCountExt.Close;
   qryNomineeCountExt.ParamByName('EVENTID').AsInteger := SourceEventID;
   qryNomineeCountExt.Prepare;
   qryNomineeCountExt.Open;
   if (qryNomineeCountExt.Active) then
-    NomineeCountExt := qryNomineeCountExt.FieldByName('NomineeCountExt')
-      .AsInteger;
+    numOfNominees := qryNomineeCountExt.FieldByName('NomineeCountExt').AsInteger;
   qryNomineeCountExt.Close;
 
   case (TypeOfFinals) of
     ftFinals:
-      if (NomineeCountExt < 2) then
+      if (numOfNominees < 2) then
       begin
         MessageDlg('A least two swimmers are needed to build a final.', mtError,
           [mbOK], 0);
         exit;
       end;
     ftSemi:
-      if (NomineeCountExt < 4) then
+      if (numOfNominees < 4) then
       begin
         MessageDlg('The selected event must have at least' + sLineBreak +
           'four swimmers to build semi-finals.', mtError, [mbOK], 0);
         exit;
       end;
     ftQuarter:
-      if (NomineeCountExt < 8) then
+      if (numOfNominees < 8) then
       begin
         MessageDlg('The selected event must have at least' + sLineBreak +
           'eight swimmers to build quarter-finals.', mtError, [mbOK], 0);
@@ -603,22 +599,18 @@ begin
     case (TypeOfFinals) of
       ftFinals:
         begin
-          MaxNumOfNominees := numOfSwimmingLanes;
           numberOfHeats := 1;
         end;
       ftSemi:
         begin
-          MaxNumOfNominees := (numOfSwimmingLanes * 2);
           numberOfHeats := 2;
         end;
       ftQuarter:
         begin
-          MaxNumOfNominees := (numOfSwimmingLanes * 4);
           numberOfHeats := 4;
         end;
     else
       begin
-        MaxNumOfNominees := 0;
         numberOfHeats := 0;
       end;
     end;
@@ -634,9 +626,7 @@ begin
         qrySourceEvent.Filter := 'GenderID := ' +
           qryGender.FieldByName('GenderID').AsString;
         qrySourceEvent.Filtered := true;
-        // build the list of nominees for the FINAL TYPE ...
-//        numOfNominees := AssignNomineesExt(qrySourceEvent, destEventID,
-//          MaxNumOfNominees);
+
         // Special arrays that manage the seeding
         PrepDynamicArrays(destEventID, numOfNominees, numberOfHeats);
         // prepare the destination query

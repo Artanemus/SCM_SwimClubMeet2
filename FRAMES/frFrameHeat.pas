@@ -16,7 +16,7 @@ uses
 
   dmIMG, dmSCM2, dmCORE, System.Actions, Vcl.ActnList, Vcl.Menus, Vcl.Buttons,
 
-  uSession, uEvent, uHeat, uDefines, Vcl.StdCtrls;
+  uSession, uEvent, uHeat, uDefines, Vcl.StdCtrls, uSettings;
 
 type
 {
@@ -114,12 +114,14 @@ var
 begin
   AB := nil;
   LockDrawing;
+  grid.HideInplaceEdit;
+  CORE.qryHeat.CheckBrowseMode;
   grid.BeginUpdate;
   CORE.qryEvent.Refresh;
   uEvent.DetailTBLs_DisableCNTRLs;
   try
     AB := TABINDV.Create(Self);
-    AB.Prepare(SCM2.scmConnection);
+    AB.Prepare(SCM2.scmConnection, fVerbose);
     rtnValue := AB.AutoBuildExec;
   finally
     if Assigned(AB) then AB.free;
@@ -274,7 +276,10 @@ end;
 procedure TFrameHeat.Loaded;
 begin
   inherited;
-  fVerbose := true;
+  fVerbose := true; // default...
+  if Assigned(Settings) then
+    fVerbose := Settings.Verbose;
+
 end;
 
 procedure TFrameHeat.UpdateUI(DoFullUpdate: boolean = false);

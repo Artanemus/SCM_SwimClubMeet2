@@ -3,8 +3,8 @@ object Nom_Lookup: TNom_Lookup
   Top = 0
   BorderStyle = bsDialog
   Caption = 'List Nominees...'
-  ClientHeight = 581
-  ClientWidth = 684
+  ClientHeight = 632
+  ClientWidth = 748
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,20 +17,22 @@ object Nom_Lookup: TNom_Lookup
   object pnlBody: TPanel
     Left = 0
     Top = 31
-    Width = 684
-    Height = 502
+    Width = 748
+    Height = 553
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 684
+    ExplicitHeight = 502
     object Grid: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 684
-      Height = 502
+      Width = 748
+      Height = 553
       Cursor = crDefault
       Align = alClient
       Color = clWhite
-      ColCount = 7
+      ColCount = 8
       DefaultRowHeight = 32
       DrawingStyle = gdsClassic
       FixedColor = clWhite
@@ -45,10 +47,14 @@ object Nom_Lookup: TNom_Lookup
       ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
+      OnGetEditMask = GridGetEditMask
+      OnGetEditText = GridGetEditText
       GridLineColor = 15987699
       GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
+      OnClickCell = GridClickCell
       OnCanEditCell = GridCanEditCell
+      OnGetEditorType = GridGetEditorType
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
       ActiveCellFont.Height = -12
@@ -241,6 +247,34 @@ object Nom_Lookup: TNom_Lookup
           PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
           PrintFont.Charset = DEFAULT_CHARSET
           PrintFont.Color = clWindowText
+          PrintFont.Height = -16
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+        end
+        item
+          Alignment = taCenter
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWhite
+          FieldName = 'ABREV'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = 'M/F'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = clBlack
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          HeaderAlignment = taCenter
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clBlack
           PrintFont.Height = -16
           PrintFont.Name = 'Segoe UI'
           PrintFont.Style = []
@@ -500,6 +534,7 @@ object Nom_Lookup: TNom_Lookup
         20
         240
         50
+        50
         90
         90
         90
@@ -512,11 +547,12 @@ object Nom_Lookup: TNom_Lookup
   object pnlFooter: TPanel
     Left = 0
     Top = 0
-    Width = 684
+    Width = 748
     Height = 31
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitWidth = 684
     object lblEventNum: TLabel
       Left = 24
       Top = 3
@@ -533,8 +569,8 @@ object Nom_Lookup: TNom_Lookup
   end
   object rpnlFooter: TRelativePanel
     Left = 0
-    Top = 533
-    Width = 684
+    Top = 584
+    Width = 748
     Height = 48
     ControlCollection = <
       item
@@ -545,16 +581,6 @@ object Nom_Lookup: TNom_Lookup
         AlignRightWithPanel = True
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = True
-      end
-      item
-        Control = spbtnEdit
-        AlignBottomWithPanel = False
-        AlignHorizontalCenterWithPanel = False
-        AlignLeftWithPanel = False
-        AlignRightWithPanel = False
-        AlignTopWithPanel = False
-        AlignVerticalCenterWithPanel = True
-        RightOf = spbtnSort
       end
       item
         Control = spbtnSort
@@ -573,7 +599,7 @@ object Nom_Lookup: TNom_Lookup
         AlignRightWithPanel = False
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = True
-        RightOf = spbtnEdit
+        RightOf = spbtnSort
       end
       item
         Control = lblCount
@@ -587,12 +613,14 @@ object Nom_Lookup: TNom_Lookup
       end>
     Align = alBottom
     TabOrder = 2
+    ExplicitTop = 533
+    ExplicitWidth = 684
     DesignSize = (
-      684
+      748
       48)
     object btnClose: TButton
       AlignWithMargins = True
-      Left = 573
+      Left = 637
       Top = 7
       Width = 100
       Height = 32
@@ -604,27 +632,6 @@ object Nom_Lookup: TNom_Lookup
       Caption = 'Close'
       TabOrder = 0
       OnClick = btnCloseClick
-    end
-    object spbtnEdit: TSpeedButton
-      AlignWithMargins = True
-      Left = 69
-      Top = -1
-      Width = 48
-      Height = 48
-      Margins.Left = 10
-      Margins.Top = 0
-      Margins.Right = 0
-      Margins.Bottom = 0
-      AllowAllUp = True
-      Anchors = []
-      GroupIndex = 2
-      ImageIndex = 6
-      ImageName = 'edit'
-      Images = IMG.imglstNomCntrl
-      Flat = True
-      Layout = blGlyphTop
-      Margin = 0
-      OnClick = spbtnEditClick
     end
     object spbtnSort: TSpeedButton
       AlignWithMargins = True
@@ -648,7 +655,7 @@ object Nom_Lookup: TNom_Lookup
     end
     object lblCountOfNominees: TLabel
       AlignWithMargins = True
-      Left = 137
+      Left = 79
       Top = 12
       Width = 203
       Height = 21
@@ -661,7 +668,7 @@ object Nom_Lookup: TNom_Lookup
     end
     object lblCount: TLabel
       AlignWithMargins = True
-      Left = 344
+      Left = 286
       Top = 12
       Width = 36
       Height = 21
@@ -744,6 +751,7 @@ object Nom_Lookup: TNom_Lookup
       '        ,[Event].EventNum'
       '        ,[Distance].CalcCaption AS DistanceStr'
       '        ,[Stroke].Caption AS StrokeStr'
+      '        ,[gender].ABREV'
       '       '
       '  FROM [SwimClubMeet2].[dbo].[Nominee]'
       '  '
@@ -755,6 +763,7 @@ object Nom_Lookup: TNom_Lookup
         '  LEFT JOIN [Distance] ON [Event].DistanceID = [Distance].Distan' +
         'ceID'
       '  LEFT JOIN [Stroke] ON [Event].StrokeID = [Stroke].StrokeID'
+      '  Left join [gender] on [member].GenderID = [gender].genderid'
       '  WHERE [Nominee].[EventID] = @EventID'
       '  ORDER BY NomineeID;'
       '')
@@ -808,6 +817,7 @@ object Nom_Lookup: TNom_Lookup
       Alignment = taRightJustify
       DisplayLabel = 'Seed PB'
       FieldName = 'PBSeedTime'
+      KeyFields = 'NomineeID'
       Origin = 'PBSeedTime'
       OnGetText = qryNom_LookUpGetText
       OnSetText = qryNom_LookUpPBSeedTimeSetText
@@ -853,6 +863,13 @@ object Nom_Lookup: TNom_Lookup
       FieldName = 'StrokeStr'
       Origin = 'StrokeStr'
       Size = 128
+    end
+    object qryNom_LookUpABREV: TWideStringField
+      DisplayLabel = 'Gender'
+      DisplayWidth = 10
+      FieldName = 'ABREV'
+      Origin = 'ABREV'
+      Size = 16
     end
   end
   object dsNom_LookUp: TDataSource

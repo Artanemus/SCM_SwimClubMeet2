@@ -43,6 +43,8 @@ type
   protected
     // user selects a navigation event item.
     procedure NavEvItemClicked(Sender: TObject; EventID: Integer);
+    procedure Loaded; override;
+
   public
     procedure UpdateUI(DoFullUpdate: boolean = false);
     function SelectNavEvItem(EventID: integer): Integer; overload;
@@ -177,6 +179,12 @@ begin
     scrBox.HorzScrollBar.Increment :=
       TFrameNavEvItem.DesignWidth + TFrameNavEvItem.DesignSpacing;
   end;
+end;
+
+procedure TFrameNavEv.Loaded;
+begin
+  inherited;
+  // init params here...
 end;
 
 procedure TFrameNavEv.NavEvItemClicked(Sender: TObject; EventID: Integer);

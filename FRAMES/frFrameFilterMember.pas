@@ -68,6 +68,9 @@ type
         HTMLTemplate: string; Fields: TFields);
   private
     function GetFullName: string;
+  protected
+    procedure Loaded; override;
+
   public
     procedure InitFilterMemberDB;
     procedure UpdateUI(DoFullUpdate: boolean = false);
@@ -317,6 +320,12 @@ begin
   finally
     CORE.qryFilterMember.EnableControls;
   end;
+end;
+
+procedure TFrameFilterMember.Loaded;
+begin
+  inherited;
+  // init params
 end;
 
 { TFrameMember }

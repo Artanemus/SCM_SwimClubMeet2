@@ -37,21 +37,27 @@ type
     qryNom_LookUpFirstName: TWideStringField;
     qryNom_LookUpEventNum: TIntegerField;
     spbtnSort: TSpeedButton;
-    spbtnEdit: TSpeedButton;
     rpnlFooter: TRelativePanel;
     lblEventNum: TLabel;
     lblCountOfNominees: TLabel;
     lblCount: TLabel;
     qryNom_LookUpDistanceStr: TWideStringField;
     qryNom_LookUpStrokeStr: TWideStringField;
+    qryNom_LookUpABREV: TWideStringField;
     procedure btnCloseClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure GridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
+    procedure GridClickCell(Sender: TObject; ARow, ACol: Integer);
+    procedure GridGetEditMask(Sender: TObject; ACol, ARow: LongInt; var Value:
+        string);
+    procedure GridGetEditorType(Sender: TObject; ACol, ARow: Integer; var AEditor:
+        TEditorType);
+    procedure GridGetEditText(Sender: TObject; ACol, ARow: LongInt; var Value:
+        string);
     procedure qryNom_LookUpGetText(Sender: TField; var Text: string;
           DisplayText: Boolean);
     procedure qryNom_LookUpPBSeedTimeSetText(Sender: TField; const Text: string);
-    procedure spbtnEditClick(Sender: TObject);
     procedure spbtnSortClick(Sender: TObject);
   private
     { Private declarations }
@@ -75,6 +81,10 @@ implementation
 procedure TNom_Lookup.btnCloseClick(Sender: TObject);
 begin
   ModalResult := mrOK;
+  // 1. Force the grid to finalize the current cell edit
+  Grid.HideInplaceEdit; // harmless if not in edit state.
+  // 2. Ensure the underlying dataset is posted.
+  qryNom_LookUp.CheckBrowseMode;
   Close();
 end;
 
@@ -85,6 +95,10 @@ begin
   begin
     Key := 0;
     ModalResult := mrOK;
+    // 1. Force the grid to finalize the current cell edit
+    Grid.HideInplaceEdit; // harmless if not in edit state.
+    // 2. Ensure the underlying dataset is posted.
+    qryNom_LookUp.CheckBrowseMode;
     Close;
   end;
 end;
@@ -95,21 +109,98 @@ procedure TNom_Lookup.GridCanEditCell(Sender: TObject; ARow, ACol: Integer;
   var CanEdit: Boolean);
 var
   fld: TField;
+  G: TDBAdvGrid;
 begin
+  G := TDBAdvGrid(Sender);
   CanEdit := false;
-  if (ACol = 5) then
+
+  fld := G.FieldAtColumn[Acol];
+  if Assigned(fld) then
   begin
-    fld := grid.Columns[4].Field;
-    if Assigned(fld) then
+     if fld.FieldName = 'PBSeedTime' then
+      CanEdit := true
+  end;
+
+end;
+
+procedure TNom_Lookup.GridClickCell(Sender: TObject; ARow, ACol: Integer);
+var
+  G: TDBAdvGrid;
+  fld: TField;
+begin
+  G := TDBAdvGrid(Sender);
+  fld := G.FieldAtColumn[ACol];
+  if Assigned(fld) then
+  begin
+    if (ARow >= G.FixedRows) and (fld.FieldName = 'PBSeedTime') then
     begin
-      if not (VarIsNull(fld.Value) or VarIsEmpty(fld.Value)) and (fld.Value = 0) then
+      if not (goEditing in G.Options) then
       begin
-        CanEdit := true;
+        G.Options := G.Options - [goRowSelect] + [goEditing];
+        G.ShowInplaceEdit; // start editing.
+      end;
+    end
+    else
+    begin
+      if goEditing in G.Options  then
+      begin
+        G.HideInplaceEdit; // finish editing.
+        G.Options := G.Options - [goEditing] + [goRowSelect];
       end;
     end;
   end;
 end;
 
+procedure TNom_Lookup.GridGetEditMask(Sender: TObject; ACol, ARow: LongInt; var
+    Value: string);
+var
+  G: TDBAdvGrid;
+  fld: TField;
+begin
+  G := TDBAdvGrid(Sender);
+  fld := G.FieldAtColumn[ACol];
+  if Assigned(fld) then
+  begin
+    if (ARow >= G.FixedRows) and (fld.FieldName = 'PBSeedTime') then
+    begin
+      Value := '!00:00.000;1;0';
+    end;
+  end;
+end;
+
+procedure TNom_Lookup.GridGetEditorType(Sender: TObject; ACol, ARow: Integer;
+    var AEditor: TEditorType);
+var
+  G: TDBAdvGrid;
+  fld: TField;
+begin
+  G := TDBAdvGrid(Sender);
+  fld := G.FieldAtColumn[ACol];
+  if Assigned(fld) then
+  begin
+    if (ARow >= G.FixedRows) then
+    begin
+      if fld.FieldName = 'PBSeedTime' then AEditor := edNumeric
+    end;
+  end;
+end;
+
+procedure TNom_Lookup.GridGetEditText(Sender: TObject; ACol, ARow: LongInt; var
+    Value: string);
+var
+  Hour, Min, Sec, MSec: word;
+  G: TDBAdvGrid;
+  dt: TDateTime;
+begin
+  G := TDBAdvGrid(Sender);
+  if (ARow >= G.FixedRows) and (G.Columns[ACol].FieldName = 'PBSeedTime')then
+  begin
+    // This method FIXES display format issues.
+    dt := G.DataSource.DataSet.FieldByName('PBSeedTime').AsDateTime;
+    DecodeTime(dt, Hour, Min, Sec, MSec);
+    Value := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
+  end;
+end;
 
 
 { TNom_Lookup }
@@ -241,30 +332,6 @@ begin
   end;
 
   if failed then Sender.Clear; // Sets the value of the field to NULL
-end;
-
-procedure TNom_Lookup.spbtnEditClick(Sender: TObject);
-var
-  fld: TField;
-begin
-  if spbtnEdit.Down then
-  begin
-  // check the nominee can have it's Seed PB set
-  fld := grid.Columns[4].Field;
-  if Assigned(fld) then
-  begin
-    if not (VarIsNull(fld.Value) or VarIsEmpty(fld.Value)) and (fld.Value = 0) then
-    begin
-      grid.Options := grid.Options - [goRowSelect] + [goEditing];
-      grid.Select;
-      // go edit field...
-    end;
-  end;
-  end
-  else
-  begin
-      grid.Options := grid.Options - [goEditing] + [goRowSelect];
-  end;
 end;
 
 procedure TNom_Lookup.spbtnSortClick(Sender: TObject);

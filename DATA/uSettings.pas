@@ -28,6 +28,7 @@ type
 
     // FrameMember - grid sorton members name.
     MemberSortOn: integer; // 0 firstname-lastname 1 lastname-firstname;
+    Verbose: boolean;
 
     // variables used to calcuate a Time-To-Beat
     ttb_algorithmIndx: integer; // originally - HeatAlgorithm
@@ -116,6 +117,7 @@ begin
   LoginTimeOut := CONNECTIONTIMEOUT;
   DoLoginOnBoot := false;
   DoAutoLoad := false;
+  Verbose := false;
 
   LastSwimClubPK := 0; // Restore last swim club. Used when booting up and managing clubs.
   HideLockedSessions := false; // Display all sessions. Session grid variable.

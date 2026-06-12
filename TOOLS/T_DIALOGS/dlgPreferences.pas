@@ -66,6 +66,8 @@ type
     prefExcludeLanes: TCheckBox;
     prefListOfExcludeLanes: TEdit;
     lblListOfLanes: TLabel;
+    CheckBox1: TCheckBox;
+    prefVerbose: TCheckBox;
     procedure infoBugAutoBuildMouseLeave(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure btnDateClick(Sender: TObject);
@@ -177,6 +179,8 @@ begin
   prefEnableDQcodes.Checked := Settings.EnableDQcodes;
   prefMemberChartDataPoints.Text := FloatToStr(Settings.MemberChartDataPoints);
 
+  prefVerbose.Checked := Settings.Verbose;
+
   // scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate);
   case scmSeedDateAuto(Settings.SeedDateAuto) of
     sdaTodaysDate: indx := 3;
@@ -213,6 +217,7 @@ begin
   Settings.ab_SeedMethodIndx := prefSeedMethod.ItemIndex;
   Settings.ab_SeedDepth := prefSeedDepth.Value;
   Settings.ShowDebugInfo := prefShowDebugInfo.Checked;
+  Settings.Verbose := prefVerbose.Checked;
 
   // scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate);
 

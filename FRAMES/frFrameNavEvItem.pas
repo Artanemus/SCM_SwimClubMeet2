@@ -42,6 +42,10 @@ type
     fParentFrame: TFrame;
     procedure UpdateSelectionColors(Mode: Boolean);
     procedure SetSelected(const Value: boolean);
+
+  protected
+    procedure Loaded; override;
+
   public
 
     FOnNavEvItemSelected: TNavEvItemSelected; // MainForm proc for selection.
@@ -147,6 +151,12 @@ begin
   if Assigned(FOnNavEvItemSelected) then
     // TFrameNavEv callback. Tag = EventID.
     FOnNavEvItemSelected(Sender, Tag);
+end;
+
+procedure TFrameNavEvItem.Loaded;
+begin
+  inherited;
+  // init params here...
 end;
 
 procedure TFrameNavEvItem.UpdateSelectionColors(Mode: Boolean);

@@ -2888,11 +2888,11 @@ object ABSettings: TABSettings
       Caption = 'age and gender.)'
     end
     object lblListOfLanes: TLabel
-      Left = 136
-      Top = 308
-      Width = 182
+      Left = 140
+      Top = 293
+      Width = 224
       Height = 16
-      Caption = '(Use comma seperated values.)'
+      Caption = '(Use comma seperated lane numbers.)'
       Enabled = False
     end
     object lblSeedDepth1: TLabel
@@ -2960,7 +2960,7 @@ object ABSettings: TABSettings
     end
     object prefSeperateGender: TCheckBox
       Left = 22
-      Top = 234
+      Top = 240
       Width = 134
       Height = 17
       Hint = 'Groups heats on gender. (Typically: F,M,X)'
@@ -2971,7 +2971,7 @@ object ABSettings: TABSettings
     end
     object prefGroupBy: TRadioGroup
       Left = 22
-      Top = 338
+      Top = 333
       Width = 227
       Height = 111
       Caption = 'Group by ...'
@@ -2996,7 +2996,7 @@ object ABSettings: TABSettings
       Top = 6
       Width = 273
       Height = 187
-      Caption = 'Members AGE as of...'
+      Caption = 'Member'#39's AGE as of...'
       Items.Strings = (
         'Start of swimming season.'
         'The meet date.'
@@ -3047,7 +3047,7 @@ object ABSettings: TABSettings
     end
     object prefExcludeLanes: TCheckBox
       Left = 22
-      Top = 284
+      Top = 270
       Width = 117
       Height = 17
       Hint = 'Broken lane rope? Use this.'
@@ -3057,8 +3057,8 @@ object ABSettings: TABSettings
       TabOrder = 11
     end
     object prefListOfExcludeLanes: TEdit
-      Left = 141
-      Top = 282
+      Left = 145
+      Top = 267
       Width = 100
       Height = 24
       ParentShowHint = False

@@ -33,27 +33,29 @@ type
     fRealNumOfLanes: integer;
     fVerbose: boolean;
     { main execution routine. }
+
     function AryEntrantsPerHeat_Build(var NumOfHeats: Integer; NumOfNominees:
         Integer): integer;
+
     function AryEntrants_AssignNominees: integer;
-    function AryEntrants_Seed(StartHeatNum, EndHeatNum: Integer): integer;
+    function AryEntrants_Seed(StartHeatNum, Count: Integer): integer;
     function AryExcludedLanes_Build: Integer;
     procedure AryScatterLanes_Build(NumOfPoolLanes: integer);
     function Build_Entrants(StartHeatNum, NumOfNominees: Integer): Integer;
     function Build_Heats(StartHeatNum, NomineeCount: Integer): integer;
     function Build_Lanes(HeatNum: Integer): Integer;
     function CalcNumberOfHeats(NumOfNominees, RealNumOfLanes: Integer): Integer;
-    procedure Entrants_AssignLaneNum(StartHeatNum, EndHeatNum: Integer);
-    procedure Entrants_AssignRanking(StartHeatNum, EndHeatNum: Integer);
+    procedure Entrants_AssignLaneNum(StartHeatNum, Count: Integer);
+    procedure Entrants_AssignRanking(StartHeatNum, Count: Integer);
     { Seeding routine. }
-    function Seeding_Circle(StartHeatNum, EndHeatNum: Integer): Integer;
-    function Seeding_Default(StartHeatNum, EndHeatNum: Integer): Integer;
-    function Seeding_Random(StartHeatNum, EndHeatNum: Integer): Integer;
+    function Seeding_Circle(StartHeatNum, Count: Integer): Integer;
+    function Seeding_Default(StartHeatNum, Count: Integer): Integer;
+    function Seeding_Random(StartHeatNum, Count: Integer): Integer;
     function TestExcludedLane(LaneNum: integer): Boolean;
     function TestIsHeatFull(HeatNum: integer): boolean;
   public
 
-    constructor Create(AOwner: TComponent);
+    constructor Create(AOwner: TComponent); reintroduce;
     destructor Destroy; override;
 
     function AutoBuildExec: Boolean;
@@ -168,12 +170,11 @@ begin
   if Count > 0 then result := Count;
 end;
 
-function TABINDV.AryEntrants_Seed(StartHeatNum, EndHeatNum: Integer): integer;
+function TABINDV.AryEntrants_Seed(StartHeatNum, Count: Integer): integer;
 var
   SeedDepth: integer;
-  NewStartHeatNum: integer;
+  HeatNum: integer;
   NumOfHeatsSeeded: integer;
-  NumOfHeatsToBuild: integer;
 begin
   result := 0;
   SeedDepth := Settings.ab_SeedDepth;
@@ -184,25 +185,23 @@ begin
     0:
       begin
         {  STANDARD SEEDING.}
-        NumOfHeatsSeeded := Seeding_Default(StartHeatNum, EndHeatNum);
+        NumOfHeatsSeeded := Seeding_Default(StartHeatNum, Count);
       end;
     1:
       begin
-
         {CIRCLE SEEDING.}
-        NumOfHeatsSeeded := Seeding_Circle(StartHeatNum, EndHeatNum);
-
+        NumOfHeatsSeeded := Seeding_Circle(StartHeatNum, Count);
         {DEFAULT SEEDING.}
-        if NumOfHeatsSeeded < NumOfHeatsToBuild then
+        if (NumOfHeatsSeeded < Count) then
         begin
-          NewStartHeatNum := StartHeatNum + NumOfHeatsSeeded;
+          HeatNum := StartHeatNum + NumOfHeatsSeeded;
           { do the remaining heats using STANDARD SEEDING.}
-          NumOfHeatsSeeded := Seeding_Default(NewStartHeatNum, EndHeatNum);
+          NumOfHeatsSeeded := Seeding_Default(HeatNum, Count);
         end;
       end;
     2:
       begin
-        NumOfHeatsSeeded := Seeding_Random(StartHeatNum, NumOfHeatsToBuild + StartHeatNum);
+        NumOfHeatsSeeded := Seeding_Random(StartHeatNum, Count);
       end;
   end;
   if NumOfHeatsSeeded > 0 then result := NumOfHeatsSeeded;
@@ -273,7 +272,6 @@ end;
 function TABINDV.AutoBuildExec: Boolean;
 var
   msg: string;
-  totalHeatCount: Integer;
   StartHeatNum: integer;
   NomineeCount: Integer;
 begin
@@ -346,8 +344,7 @@ begin
     if (fVerbose) then
     begin
       msg := '''
-        Your pool needs at least two swimming lanes
-        else the scatter algorithm cannot run.
+        Your pool needs at least two swimming lanes.
         Is the Club''s number of pool lanes correctly assigned?
         Auto-Build will abort.
       ''';
@@ -525,7 +522,7 @@ end;
 function TABINDV.Build_Heats(StartHeatNum, NomineeCount: Integer): integer;
 var
   Count: Integer;
-  EndHeatNum, NumOfHeats: Integer;
+  NumOfHeats: Integer;
   HeatID: Integer;
   HeatNum: Integer;
   I: Integer;
@@ -534,7 +531,6 @@ begin
   Count := 0;
   // CALCULATE the number of heats needed to build.
   NumOfHeats := CalcNumberOfHeats(NomineeCount, fRealNumOfLanes);
-  EndHeatNum := StartHeatNum + NumOfHeats - 1;
   for I := 0 to NumOfHeats-1 do
   begin
     HeatID := uHeat.NewHeat;
@@ -550,7 +546,6 @@ end;
 
 function TABINDV.Build_Lanes(HeatNum: Integer): Integer;
 var
-  fld: TField;
   Count: integer;
   obj: TLaneEntrant;
   SearchOptions: TLocateOptions;
@@ -628,7 +623,7 @@ begin
   end;
 end;
 
-procedure TABINDV.Entrants_AssignLaneNum(StartHeatNum, EndHeatNum: Integer);
+procedure TABINDV.Entrants_AssignLaneNum(StartHeatNum, Count: Integer);
 var
   I, J, RankOffset, Rank, EntrantCount: integer;
   obj: TLaneEntrant;
@@ -638,7 +633,7 @@ begin
     Rank order of the swimmer. ie. 1st, 2nd, 3rd, etc.
     Fast swimmers have a lower value.}
 
-  for J := StartHeatNum to EndHeatNum do // iterate on heat.
+  for J := StartHeatNum to Count-1 do // iterate on heat.
   begin
     RankOffset := 0; // rankoffest is used to skip user-excluded lanes.
     EntrantCount := 0; // used to test if heat has been processed.
@@ -673,12 +668,12 @@ begin
   end;
 end;
 
-procedure TABINDV.Entrants_AssignRanking(StartHeatNum, EndHeatNum: Integer);
+procedure TABINDV.Entrants_AssignRanking(StartHeatNum, Count: Integer);
 var
   I, J, k, RankNum: integer;
   obj: TLaneEntrant;
 begin
-  for J := StartHeatNum to EndHeatNum do
+  for J := StartHeatNum to Count-1 do
   begin
     RankNum := 1;
     for K := 0 to AryEntrantsPerHeat[J] - 1 do
@@ -716,9 +711,9 @@ begin
   end;
 end;
 
-function TABINDV.Seeding_Circle(StartHeatNum, EndHeatNum: Integer): Integer;
+function TABINDV.Seeding_Circle(StartHeatNum, Count: Integer): Integer;
 var
-  I, J, K, Count: integer;
+  I, K: integer;
   obj: TLaneEntrant;
 
 begin
@@ -729,7 +724,7 @@ begin
   // Nominees are Sorted on fastest to slowest TTB.
   while K < Length(AryEntrants) do
   begin
-    for I := EndHeatNum downto StartHeatNum do // SEED DEPTH...
+    for I := Count downto StartHeatNum do // SEED DEPTH...
     begin
       // Check bounds and if more entrants can be placed into this heat.
       if (K < Length(AryEntrants)) and not TestIsHeatFull(I) then
@@ -743,33 +738,33 @@ begin
   end;
 
   // assign ranknum
-  Entrants_AssignRanking(StartHeatNum, EndHeatNum);
+  Entrants_AssignRanking(StartHeatNum, Count);
   // assign lane number.
-  Entrants_AssignLaneNum(StartHeatNum, EndHeatNum);
+  Entrants_AssignLaneNum(StartHeatNum, Count);
 
   if Count <> 0 then
     result := count;
 end;
 
-function TABINDV.Seeding_Default(StartHeatNum, EndHeatNum: Integer): Integer;
+function TABINDV.Seeding_Default(StartHeatNum, Count: Integer): Integer;
 var
-  I, J, K, RankNum, Count: integer;
+  I, J, K, RankNum: integer;
   obj: TLaneEntrant;
 begin
   result := 0;
   Count := 0;
   // bounds check
-  if StartHeatNum < EndHeatNum then
+  if StartHeatNum < Count then
   begin
     I := StartHeatNum;
-    StartHeatNum := EndHeatNum;
-    EndHeatNum := I;
+    StartHeatNum := Count;
+    Count := I;
   end;
-  if (StartHeatNum=EndHeatNum) then exit;
+  if (StartHeatNum=Count) then exit;
 
   // GO SEED HeatNum and Ranking.
   K := 0;
-  for I := EndHeatNum downto StartHeatNum do // iterate heats.
+  for I := Count downto StartHeatNum do // iterate heats.
   begin
     RankNum := 1; // reset on each heat
     for J :=0 to AryEntrantsPerHeat[i] -1  do // fill with entants until full.
@@ -788,29 +783,20 @@ begin
   end;
 
   // assign lane number.
-  Entrants_AssignLaneNum(StartHeatNum, EndHeatNum);
+  Entrants_AssignLaneNum(StartHeatNum, Count);
   if Count <> 0 then
     { obj.LaneNum needs assignment}
     result := count;
 
 end;
 
-function TABINDV.Seeding_Random(StartHeatNum, EndHeatNum: Integer): Integer;
+function TABINDV.Seeding_Random(StartHeatNum, Count: Integer): Integer;
 var
-  I, J, K, Count: integer;
+  I, J, K: integer;
   obj: TLaneEntrant;
 begin
   // iterate.
   result := 0;
-  Count := 0;
-  // bounds check
-  if StartHeatNum<EndHeatNum then
-  begin
-    I := StartHeatNum;
-    StartHeatNum := EndHeatNum;
-    EndHeatNum := I;
-  end;
-  if (StartHeatNum=EndHeatNum) then exit;
 
   ABData.qryUnplacedNominees.First;
   while not ABData.qryUnplacedNominees.EOF do
@@ -831,7 +817,7 @@ begin
 
   K := Low(AryEntrants);
   // GO SEED.
-  for I := StartHeatNum to EndHeatNum do // iterate heats.
+  for I := StartHeatNum to Count-1 do // iterate heats.
   begin
     for J :=0 to AryEntrantsPerHeat[i] -1  do // fill with entants until full.
     begin
@@ -845,9 +831,9 @@ begin
   end;
 
   // assign rank number.
-  Entrants_AssignRanking(StartHeatNum, EndHeatNum);
+  Entrants_AssignRanking(StartHeatNum, Count);
   // assign lane number.
-  Entrants_AssignLaneNum(StartHeatNum, EndHeatNum);
+  Entrants_AssignLaneNum(StartHeatNum, Count);
 
   if Count <> 0 then
     { obj.LaneNum needs assignment}
@@ -873,6 +859,7 @@ end;
 function TABINDV.TestIsHeatFull(HeatNum: integer): boolean;
 begin
   {is heatfull}
+  result := true;
 end;
 
 

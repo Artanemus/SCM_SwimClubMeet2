@@ -4,7 +4,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages,
-  System.SysUtils, System.Variants, System.Classes,
+  System.SysUtils, System.Variants, System.Classes, System.UITypes,
 
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.WinXCtrls, Vcl.Grids, Vcl.ImgList,
@@ -105,34 +105,54 @@ implementation
 
 {$R *.dfm}
 
-uses uNominee, uABINDV;
+uses uNominee, uABINDV, dlgABSettings;
 
 procedure TFrameHeat.actnHt_AutoBuildExecute(Sender: TObject);
 var
   AB: TABINDV;
   rtnValue: boolean;
+  rtn: TModalResult;
+  dlg: TABSettings;
 begin
   AB := nil;
-  LockDrawing;
+  rtnValue := false;
+  rtn := mrCancel;
   grid.HideInplaceEdit;
   CORE.qryHeat.CheckBrowseMode;
-  grid.BeginUpdate;
-  CORE.qryEvent.Refresh;
-  uEvent.DetailTBLs_DisableCNTRLs;
+
+  // open up the auto-build preference dialogue.
   try
-    AB := TABINDV.Create(Self);
-    AB.Prepare(SCM2.scmConnection, fVerbose);
-    rtnValue := AB.AutoBuildExec;
+    dlg := TABSettings.Create(Self);
+    rtn := dlg.ShowModal();
   finally
-    if Assigned(AB) then AB.free;
-    uEvent.DetailTBLs_ApplyMaster;
-    uEvent.DetailTBLs_EnableCNTRLs;
-    CORE.qryHeat.Refresh;
-    if rtnValue and fVerbose then
-      MessageDlg('Auto-Build done.', TMsgDlgType.mtInformation, [mbOK], 0, mbOK);
-    grid.EndUpdate;
-    UnlockDrawing;
+    dlg.Free;
   end;
+
+  if rtn = mrYes then
+  begin
+    LockDrawing;
+    grid.BeginUpdate;
+    CORE.qryEvent.Refresh;
+    uEvent.DetailTBLs_DisableCNTRLs;
+    try
+      AB := TABINDV.Create(Self);
+      AB.Prepare(SCM2.scmConnection, fVerbose);
+      rtnValue := AB.AutoBuildExec;
+    finally
+      if Assigned(AB) then AB.free;
+      uEvent.DetailTBLs_ApplyMaster;
+      uEvent.DetailTBLs_EnableCNTRLs;
+      CORE.qryHeat.Refresh;
+      if fVerbose then
+      begin
+        if rtnValue then
+          MessageDlg('Auto-Build done.', TMsgDlgType.mtInformation, [mbOK], 0, mbOK);
+      end;
+      grid.EndUpdate;
+      UnlockDrawing;
+    end;
+  end;
+
 end;
 
 procedure TFrameHeat.actnHt_AutoBuildUpdate(Sender: TObject);

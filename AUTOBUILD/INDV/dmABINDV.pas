@@ -74,10 +74,6 @@ type
       Age: integer = 0; GenderID: integer = 0;
       SwimmerCategoryID: integer = 0): boolean;
 
-    // Autobuild startup functions
-    function GetNumOfSwimmingLanes(var NumOfPoolLanes: integer;
-      DoExcludeOutsideLanes: boolean): integer;
-
     function GetHeatMaxHeatNum(EventID: integer): integer;
 //    function CountNominees(EventID: integer): integer; //--
 //    function qryOrderedHeatList(EventID: integer): integer; //--
@@ -890,19 +886,6 @@ begin
   if not ds.IsEmpty then
     result := ds.FieldByName('HeatMaxSeedNumber').AsInteger;
   ds.Close;
-end;
-
-function TABINV.GetNumOfSwimmingLanes(var NumOfPoolLanes: integer;
-  DoExcludeOutsideLanes: boolean): integer;
-begin
-  result := 0;
-  if AssertConnection then
-  begin
-    NumOfPoolLanes := uSwimClub.NumberOfLanes;
-    result := NumOfPoolLanes;
-    if (DoExcludeOutsideLanes) then
-      result := result - 2;
-  end;
 end;
 
 procedure TABINV.PrepDynamicArrays(EventID, numOfNominees,

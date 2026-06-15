@@ -83,7 +83,7 @@ uses
   dlgEditSession in 'SESSIONS\dlgEditSession.pas' {EditSession},
   dlgNewSession in 'SESSIONS\dlgNewSession.pas' {NewSession},
   dmSCM2 in 'DATA\dmSCM2.pas' {SCM2: TDataModule},
-  dmABINDV in 'AUTOBUILD\INDV\dmABINDV.pas' {ABINV: TDataModule},
+  dmABINDV_Data in 'AUTOBUILD\INDV\dmABINDV_Data.pas' {ABINDV_Data: TDataModule},
   dlgABSettings in 'AUTOBUILD\dlgABSettings.pas' {ABSettings},
   uABINDV in 'AUTOBUILD\INDV\uABINDV.pas',
   uMember in 'DATA_Helper\uMember.pas',

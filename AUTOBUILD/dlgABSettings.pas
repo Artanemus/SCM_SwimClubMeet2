@@ -69,7 +69,7 @@ end;
 
 procedure TABSettings.btnOkClick(Sender: TObject);
 begin
-  ModalResult := mrOk;
+  ModalResult := mrYes;
 end;
 
 {

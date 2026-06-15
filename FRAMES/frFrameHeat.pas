@@ -110,49 +110,43 @@ uses uNominee, uABINDV, dlgABSettings;
 procedure TFrameHeat.actnHt_AutoBuildExecute(Sender: TObject);
 var
   AB: TABINDV;
-  rtnValue: boolean;
+  success: boolean;
   rtn: TModalResult;
   dlg: TABSettings;
 begin
   AB := nil;
-  rtnValue := false;
-  rtn := mrCancel;
+  success := false;
   grid.HideInplaceEdit;
   CORE.qryHeat.CheckBrowseMode;
 
   // open up the auto-build preference dialogue.
-  try
-    dlg := TABSettings.Create(Self);
-    rtn := dlg.ShowModal();
-  finally
-    dlg.Free;
-  end;
+  dlg := TABSettings.Create(Self);
+  rtn := dlg.ShowModal();
+  dlg.Free;
 
   if rtn = mrYes then
   begin
     LockDrawing;
     grid.BeginUpdate;
-    CORE.qryEvent.Refresh;
     uEvent.DetailTBLs_DisableCNTRLs;
     try
       AB := TABINDV.Create(Self);
-      AB.Prepare(SCM2.scmConnection, fVerbose);
-      rtnValue := AB.AutoBuildExec;
+      AB.Prepare(SCM2.scmConnection, uEvent.PK, fVerbose);
+      success := AB.AutoBuildExec;
     finally
       if Assigned(AB) then AB.free;
       uEvent.DetailTBLs_ApplyMaster;
       uEvent.DetailTBLs_EnableCNTRLs;
-      CORE.qryHeat.Refresh;
-      if fVerbose then
-      begin
-        if rtnValue then
-          MessageDlg('Auto-Build done.', TMsgDlgType.mtInformation, [mbOK], 0, mbOK);
-      end;
+      // CORE.qryHeat.Refresh;
       grid.EndUpdate;
       UnlockDrawing;
+      if fVerbose then
+      begin
+        if success then
+          MessageDlg('Auto-Build done.', TMsgDlgType.mtInformation, [mbOK], 0, mbOK);
+      end;
     end;
   end;
-
 end;
 
 procedure TFrameHeat.actnHt_AutoBuildUpdate(Sender: TObject);

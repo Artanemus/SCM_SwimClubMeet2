@@ -10,17 +10,17 @@ uses
   VCL.Dialogs,
   FireDAC.Comp.Client, FireDAC.Stan.Error,  FireDAC.Stan.Param,
   dmSCM2, dmCORE, uSettings,
-  dmABINDV,
+  dmABINDV_Data,
   uDefines, uUtility, uSwimClub, uSession, uNominee, uEvent, uHeat, uLane
   ;
 
 type
 
-  TLaneEntrant = class;
+  TLaneEntrant = class;  // forward declaration.
 
   TABINDV = class(TComponent)
   private
-    ABData: TABINV;
+    ABData: TABINDV_Data;
     AryEntrants: Array of TLaneEntrant;
     AryEntrantsPerHeat: Array of Integer;
     AryExcludeLanes: Array of Integer;
@@ -28,6 +28,7 @@ type
     fConnection: TFDConnection;
     fError: boolean;
     fErrorNum: integer;
+    fEventID: Integer;
     fExcludeLaneCount: integer;
     fNumOfPoolLanes: integer;
     fRealNumOfLanes: integer;
@@ -41,12 +42,16 @@ type
     function AryEntrants_Seed(StartHeatNum, Count: Integer): integer;
     function AryExcludedLanes_Build: Integer;
     procedure AryScatterLanes_Build(NumOfPoolLanes: integer);
-    function Build_Entrants(StartHeatNum, NumOfNominees: Integer): Integer;
-    function Build_Heats(StartHeatNum, NomineeCount: Integer): integer;
+    function Build_Entrants(NumOfHeats, StartHeatNum, NumOfNominees: Integer):
+        Integer;
+    function Build_Heats(NumOfHeats, StartHeatNum, NumOfNominees: Integer): integer;
     function Build_Lanes(HeatNum: Integer): Integer;
     function CalcNumberOfHeats(NumOfNominees, RealNumOfLanes: Integer): Integer;
     procedure Entrants_AssignLaneNum(StartHeatNum, Count: Integer);
     procedure Entrants_AssignRanking(StartHeatNum, Count: Integer);
+
+    procedure FreeAryEntrantsObjs();
+
     { Seeding routine. }
     function Seeding_Circle(StartHeatNum, Count: Integer): Integer;
     function Seeding_Default(StartHeatNum, Count: Integer): Integer;
@@ -60,7 +65,8 @@ type
 
     function AutoBuildExec: Boolean;
     function CountNominees(): integer;
-    function Prepare(AConnection: TFDConnection; Verbose: boolean = false): Boolean;
+    function Prepare(AConnection: TFDConnection; EventID: Integer; Verbose: boolean
+        = false): Boolean;
   end;
 
   TLaneEntrant = class(TObject)
@@ -95,28 +101,26 @@ end;
 constructor TABINDV.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fVerbose := true;
+
+  fConnection := nil;
   fError := false;
   fErrorNum := 0;
-  Randomize;
-  fConnection := nil;
+  fEventID := 0;
+  fExcludeLaneCount := 0;
+  fNumOfPoolLanes:= 0;
+  fRealNumOfLanes := 0;
+  fVerbose := true;
 
-  ABData := TABINV.Create(Self);
+  Randomize; // initialize RAND seed.
+  ABData := TABINDV_Data.Create(Self);
 end;
 
 destructor TABINDV.Destroy;
-var
-  I: integer;
 begin
   // TODO -cMM: TABINDV.Destroy default body inserted
   ABData.DeActivateData;
   ABData.Free;
-  if Length(AryEntrants) > 0 then
-  begin
-    for I := LOW(AryEntrants) to HIGH(AryEntrants) do
-      AryEntrants[I].Free;
-    SetLength(AryEntrants, 0);
-  end;
+  FreeAryEntrantsObjs;
   inherited;
 end;
 
@@ -155,7 +159,7 @@ var
 begin
   result := 0;
   count := 0;
-  SetLength(AryEntrants, 0);
+  FreeAryEntrantsObjs; // clears TLaneEntrant objects and SetLength = 0.
   ABData.qryUnplacedNominees.First;
   while not ABData.qryUnplacedNominees.EOF do
   begin // populate the AryEntrants...
@@ -272,10 +276,20 @@ end;
 function TABINDV.AutoBuildExec: Boolean;
 var
   msg: string;
-  StartHeatNum: integer;
-  NomineeCount: Integer;
+  StartHeatNum, NomineeCount, NumOfHeats, count: integer;
 begin
   result := false;
+
+  if fEventID = 0 then
+  begin
+    if (fVerbose) then
+      MessageDlg('No event number was given.' + sLineBreak +
+        'Auto-Build will abort..', mtError, [mbOK], 0, mbOK);
+    fError := true;
+    fErrorNum := 1;
+    exit;
+  end;
+
 
   if not Assigned(Settings) then
   begin
@@ -387,7 +401,7 @@ begin
 
   { Create a list of unplaced nominees in the event.}
   ABData.qryUnplacedNominees.Connection := SCM2.scmConnection;
-  ABData.qryUnplacedNominees.ParamByName('EVENTID').AsInteger  := uEvent.PK;
+  ABData.qryUnplacedNominees.ParamByName('EVENTID').AsInteger  := fEventID;
   ABData.qryUnplacedNominees.Prepare;
   try
     begin
@@ -419,7 +433,7 @@ begin
         Unswum heats have been cleared.
         After excluding entrants in closed and raced heats ...
         all outstanding nominees have been given a lane.
-        Auto-Build Heats will exit.
+        Auto-Build will exit.
         ''';
       MessageDlg(msg, mtError, [mbOK], 0, mbOK);
     end;
@@ -433,14 +447,15 @@ begin
   StartHeatNum := uHeat.LastHeatNum + 1;
 
   // *********************************************
-  // BASIC Auto-Build.  Assign active index name.
-  if (Settings.ab_SeperateGender = false)
-  and (Settings.ab_GroupByIndx <= 0) then
+  // B A S I C   A u t o - B u i l d . (NO GROUPING)
+  // *********************************************
+  if (Settings.ab_GroupByIndx <= 0) then
   begin
     ABData.qryUnplacedNominees.IndexName := 'indxTTB';
     if ABData.qryUnplacedNominees.Filtered then
       ABData.qryUnplacedNominees.Filtered := false;
-    // after filter is applied - gwt the number of unplaced nominees.
+
+
     NomineeCount := ABData.qryUnplacedNominees.RecordCount;
     if NomineeCount = 0 then
     begin
@@ -451,7 +466,7 @@ begin
           After excluding entrants in closed and raced heats,
           and applying the basic auto-build filters...
           all outstanding nominees have been given a lane.
-          Auto-Build Heats will exit.
+          Auto-Build will exit.
           ''';
         MessageDlg(msg, mtError, [mbOK], 0, mbOK);
       end;
@@ -461,20 +476,112 @@ begin
       exit;
     end;
 
-    Build_Entrants(StartHeatNum, NomineeCount);
-    Build_Heats(StartHeatNum, NomineeCount); // build heats and lanes
 
+    // GENDER LOOP START ....
+    // for each gender - run filter....
+    // StartHeatNum := uHeat.LastHeatNum + 1;
+    // NomineeCount := ABData.qryUnplacedNominees.RecordCount;
+    // if NomineeCount = 0 continue
+
+    {
+        ABData.qryGender.Connection := SCM2.scmConnection;
+    ABData.qryGender.Open;
+    if ABData.qryGender.Active then
+    begin
+      ABData.qryGender.Last; // reverse order, female then male swimmers.
+      while not ABData.qryGender.EOF do
+      begin
+        var id: integer;
+        id := ABData.qryGender.FieldByName('GenderID').AsInteger;
+        ABData.qryUnplacedNominees.Filter := 'GenderID = ' + IntToStr(id);
+        if not ABData.qryUnplacedNominees.Filtered then
+          ABData.qryUnplacedNominees.Filtered := true;
+        ABData.qryUnplacedNominees.Refresh; // play it safe.
+        // after filter is applied - get the number of unplaced nominees.
+        NomineeCount := ABData.qryUnplacedNominees.RecordCount;
+        count := Build_Entrants(NumOfHeats, StartHeatNum, NomineeCount);
+        if count <> 0 then
+          Build_Heats(NumOfHeats, StartHeatNum, NomineeCount); // build heats and lanes
+      end;
+    }
+
+    // CALCULATE the number of heats needed to build.
+    NumOfHeats := CalcNumberOfHeats(NomineeCount, fRealNumOfLanes);
+    if NumOfHeats = 0 then
+    begin
+      if (fVerbose) then
+      begin
+        msg := '''
+          Internal error...
+          Calculate number of heats returned zero.
+          Auto-Build will exit.
+          ''';
+        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
+      end;
+      fError := true;
+      fErrorNum := 1;
+      result := false;
+      exit;
+    end;
+
+    // construct the AryEntrants array with it's TLaneEntrant objects.
+    count := Build_Entrants(NumOfHeats, StartHeatNum, NomineeCount);
+    if count = 0 then
+    begin
+      if (fVerbose) then
+      begin
+        msg := '''
+          Internal error...
+          The Entrants Array couldn't be built.
+          Auto-Build will exit.
+          ''';
+        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
+      end;
+      fError := true;
+      fErrorNum := 1;
+      result := false;
+      exit;
+    end;
+
+    // build heats and lanes
+    count := Build_Heats(NumOfHeats, StartHeatNum, NomineeCount);
+    if count = 0 then
+    begin
+      if (fVerbose) then
+      begin
+        msg := '''
+          Internal error...
+          Unable to create the heats.
+          Auto-Build will exit.
+          ''';
+        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
+      end;
+      fError := true;
+      fErrorNum := 1;
+      result := false;
+      exit;
+    end;
+
+    // GENDER LOOP END...
+
+    // **** S U C C E S S *****
+    result := true;
+    // ************************
     exit;
   end;
 
-     // Filter by gender Auto-Build.
+  // *********************************************
+  // FILTER BY GENDER   A u t o - B u i l d .
+  // *********************************************
   if (Settings.ab_SeperateGender = true)
   and (Settings.ab_GroupByIndx <= 0) then
   begin
     StartHeatNum := 1;
+    NumOfHeats := 0;
     ABData.qryUnplacedNominees.IndexName := 'indxTTB';
     if not ABData.qryUnplacedNominees.Filtered then
-      ABData.qryUnplacedNominees.Filtered := true;
+      ABData.qryUnplacedNominees.Filtered := false;
+
     ABData.qryGender.Connection := SCM2.scmConnection;
     ABData.qryGender.Open;
     if ABData.qryGender.Active then
@@ -488,16 +595,16 @@ begin
         if not ABData.qryUnplacedNominees.Filtered then
           ABData.qryUnplacedNominees.Filtered := true;
         ABData.qryUnplacedNominees.Refresh; // play it safe.
-
-        // after filter is applied - gwt the number of unplaced nominees.
+        // after filter is applied - get the number of unplaced nominees.
         NomineeCount := ABData.qryUnplacedNominees.RecordCount;
-
-        Build_Entrants(StartHeatNum, NomineeCount);
-        Build_Heats(StartHeatNum, NomineeCount); // build heats and lanes
-
+        count := Build_Entrants(NumOfHeats, StartHeatNum, NomineeCount);
+        if count <> 0 then
+          Build_Heats(NumOfHeats, StartHeatNum, NomineeCount); // build heats and lanes
       end;
     end;
   end;
+
+
 
   // *******************************************************
   result := true;
@@ -505,32 +612,33 @@ begin
 
 end;
 
-function TABINDV.Build_Entrants(StartHeatNum, NumOfNominees: Integer): Integer;
+function TABINDV.Build_Entrants(NumOfHeats, StartHeatNum, NumOfNominees:
+    Integer): Integer;
 var
-  count, NumOfHeats, EndHeatNum: integer;
+  count: integer;
+  msg: string;
 begin
   result := 0;
-  // CALCULATE the number of heats needed to build.
-  NumOfHeats := CalcNumberOfHeats(NumOfNominees, fRealNumOfLanes);
-  EndHeatNum := StartHeatNum + NumOfHeats - 1;
+  count := 0;
+  if fRealNumOfLanes = 0 then exit;
+  // populate AryEntrants...
   count := AryEntrants_AssignNominees();
   if count > 0 then
-    count := AryEntrants_Seed(StartHeatNum, EndHeatNum);
+    // Give each TObject.TLaneEntrant in AryEntrant a lane number.
+    count := AryEntrants_Seed(StartHeatNum, NumOfHeats);
   if Count > 0 then Result := Count;
 end;
 
-function TABINDV.Build_Heats(StartHeatNum, NomineeCount: Integer): integer;
+function TABINDV.Build_Heats(NumOfHeats, StartHeatNum, NumOfNominees: Integer):
+    integer;
 var
   Count: Integer;
-  NumOfHeats: Integer;
   HeatID: Integer;
   HeatNum: Integer;
   I: Integer;
 begin
   result := 0;
   Count := 0;
-  // CALCULATE the number of heats needed to build.
-  NumOfHeats := CalcNumberOfHeats(NomineeCount, fRealNumOfLanes);
   for I := 0 to NumOfHeats-1 do
   begin
     HeatID := uHeat.NewHeat;
@@ -541,7 +649,6 @@ begin
     end;
   end;
   if Count > 0 then Result := Count;
-
 end;
 
 function TABINDV.Build_Lanes(HeatNum: Integer): Integer;
@@ -605,23 +712,6 @@ begin
   end;
 end;
 
-function TABINDV.CountNominees(): integer;
-begin
-  result := 0;
-  with  ABData.qryCountNominees do
-  begin
-    Close;
-    ParamByName('EVENTID').AsInteger := uEvent.PK;
-    Prepare;
-    Open;
-    if Active and not IsEmpty then
-    begin
-      // return the number of nominees
-      result := FieldByName('countNominees').AsInteger;
-      Close;
-    end;
-  end;
-end;
 
 procedure TABINDV.Entrants_AssignLaneNum(StartHeatNum, Count: Integer);
 var
@@ -692,14 +782,27 @@ begin
   end;
 end;
 
+procedure TABINDV.FreeAryEntrantsObjs;
+var
+  I: integer;
+begin
+  if Length(AryEntrants) > 0 then
+  begin
+    for I := LOW(AryEntrants) to HIGH(AryEntrants) do
+      AryEntrants[I].Free;
+    SetLength(AryEntrants, 0);
+  end;
+end;
+
 { TABINDV }
 
-function TABINDV.Prepare(AConnection: TFDConnection; Verbose: boolean = false):
-    Boolean;
+function TABINDV.Prepare(AConnection: TFDConnection; EventID: Integer; Verbose:
+    boolean = false): Boolean;
 begin
   // Attach auto-create data module to connection and activate.
   Result := false;
   fConnection := nil;
+  fEventID := EventID;
   if Assigned(AConnection) then
   begin
     ABData.ActivateData;
@@ -715,7 +818,6 @@ function TABINDV.Seeding_Circle(StartHeatNum, Count: Integer): Integer;
 var
   I, K: integer;
   obj: TLaneEntrant;
-
 begin
   // iterate.
   result := 0;

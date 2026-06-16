@@ -40,10 +40,6 @@ uses uUtility, System.Math, vcl.Dialogs, System.Variants, IniFiles,
 
 {$R *.dfm}
 
-VAR
-  NomineesInHeat: Array of integer;
-  HeatIDs: Array of integer;
-
 procedure TABINDV_Data.ActivateData;
 begin
   IsActive := false;

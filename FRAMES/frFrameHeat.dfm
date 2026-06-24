@@ -812,6 +812,8 @@ object FrameHeat: TFrameHeat
       ImageIndex = 9
       ImageName = 'delete'
       ShortCut = 16430
+      OnExecute = actnHt_DeleteExecute
+      OnUpdate = actnHt_GenericUpdate
     end
     object actnHt_AutoBuild: TAction
       Category = 'Heats'

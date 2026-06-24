@@ -50,7 +50,7 @@ type
     function Build_EntrantsPerHeat(NumOfHeats: Integer; NumOfNominees: Integer):
         Integer;
     function Build_Heats(NumOfHeats, StartHeatNum, NumOfNominees: Integer): integer;
-    function Build_Lanes(HeatNum: Integer): Integer;
+    function Build_FillLanes(HeatID: Integer): Integer;
     function CalcNumberOfHeats(NumOfNominees, RealNumOfLanes: Integer): Integer;
     procedure ClearAryEntrants;
     function Entrants_AssignLaneNum(StartHeatNum, Count: Integer): Integer;
@@ -814,15 +814,12 @@ begin
   begin
     HeatID := uHeat.NewHeat;
     if HeatID > 0 then
-    begin
-      HeatNum := CORE.qryHeat.FieldByName('HeatNum').AsInteger;
-      Count := Build_Lanes(HeatNum);
-    end;
+      Count := Build_FillLanes(HeatID);
   end;
   if Count > 0 then Result := Count;
 end;
 
-function TABINDV.Build_Lanes(HeatNum: Integer): Integer;
+function TABINDV.Build_FillLanes(HeatID: Integer): Integer;
 var
   Count: integer;
   obj: TLaneEntrant;
@@ -835,21 +832,23 @@ begin
     CORE.qrySplitTime.DisableControls;
     CORE.qryWatchTime.DisableControls;
     CORE.qryLane.DisableControls();
-    CORE.qryLane.ApplyMaster;
-
-    for obj in AryEntrants do
+    if CORE.qryHeat.Locate('HeatID', HeatID, SearchOptions) then
     begin
-      if obj.HeatNum = HeatNum then
+      CORE.qryLane.ApplyMaster; // syncro.
+      for obj in AryEntrants do
       begin
-        if CORE.qryLane.Locate('LaneNum', obj.LaneNum, SearchOptions) then
+        if obj.HeatNum <> Core.qryHeat.FieldByName('HeatNum').AsInteger then continue;
         begin
-          try
-            CORE.qryLane.Edit;
-            CORE.qryLane.FieldByName('NomineeID').AsInteger := obj.NomineeID;
-            CORE.qryLane.Post;
-            INC(Count, 1);
-          except on E: Exception do
-              CORE.qryLane.Cancel;
+          if CORE.qryLane.Locate('LaneNum', obj.LaneNum, SearchOptions) then
+          begin
+            try
+              CORE.qryLane.Edit;
+              CORE.qryLane.FieldByName('NomineeID').AsInteger := obj.NomineeID;
+              CORE.qryLane.Post;
+              INC(Count, 1);
+            except on E: Exception do
+                CORE.qryLane.Cancel;
+            end;
           end;
         end;
       end;

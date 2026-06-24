@@ -116,8 +116,12 @@ begin
     // D E L E T E   L A N E S .
     CORE.qryLane.ApplyMaster; // ASSERT MASTER-DETAILED.
     CORE.qryLane.First;
-    while not eof do
+    while not CORE.qryLane.eof do
     begin
+      // un-nessary check on master/detail relationship - remove...
+      {if CORE.qryLane.FieldByName('HeatID').AsInteger <> uHeat.PK  then
+              continue;}
+
       // deletes watch-times and split-times and finally the lane.
       done := uLane.DeleteLane();
       if done then
@@ -291,6 +295,7 @@ var
   fld: TField;
   aHeatNum: integer;
   SQL: string;
+  v: Variant;
 begin
   fld := nil;
   result := 0;
@@ -315,7 +320,8 @@ begin
       // How To Get Last Inserted ID On SQL Server for a specific table.
       SQL := 'SELECT IDENT_CURRENT(''SwimClubMeet.dbo.Heat'') AS LastID;';
       // return EventID
-      result := SCM2.scmConnection.ExecSQLScalar(SQL);
+      v := SCM2.scmConnection.ExecSQLScalar(SQL);
+      if not VarIsNull(v) then result := v;
 
 
       uHeat.PadLanes();

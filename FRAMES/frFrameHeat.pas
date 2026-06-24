@@ -79,6 +79,7 @@ type
     RefreshStats1: TMenuItem;
     procedure actnHt_AutoBuildExecute(Sender: TObject);
     procedure actnHt_AutoBuildUpdate(Sender: TObject);
+    procedure actnHt_DeleteExecute(Sender: TObject);
     procedure actnHt_GenericUpdate(Sender: TObject);
     procedure actnHt_NewExecute(Sender: TObject);
     procedure actnHT_RefreshStatsExecute(Sender: TObject);
@@ -162,6 +163,12 @@ begin
       DoEnable := true;
   end;
   TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TFrameHeat.actnHt_DeleteExecute(Sender: TObject);
+begin
+  // delete current selected heat (including lanes);
+  uHeat.DeleteHeat();
 end;
 
 procedure TFrameHeat.actnHt_GenericUpdate(Sender: TObject);

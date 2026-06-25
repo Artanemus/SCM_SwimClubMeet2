@@ -74,6 +74,7 @@ type
     spbtnEvNew: TSpeedButton;
     spbtnEvReport: TSpeedButton;
     spbtnEvUp: TSpeedButton;
+    pnlDebug: TPanel;
     procedure actnEv_DeleteExecute(Sender: TObject);
     procedure actnEv_DeleteUpdate(Sender: TObject);
     procedure actnEv_EventTypeExecute(Sender: TObject);
@@ -114,6 +115,8 @@ type
       User may include/excude columns when in expanded grid view. }
     fStateStringExpanded: String;
 
+    fLastEventTypeID: integer;
+
     procedure SetGridViewIconState;
     procedure SetCollapsedGridState;
     procedure SetCollapsedUIState;
@@ -128,6 +131,9 @@ type
     // Notify main form of a grid view change (expand/collapse)...
     property OnGridViewChanged: TFrameNotifyEvent_GridViewChange
       read FOnGridViewChange write FOnGridViewChange;
+
+    procedure OnPreferenceChange(); // Tools preferences calls here, via main form.
+    procedure OnAfterScroll(); // handles debug panel.
   end;
 
 implementation
@@ -623,6 +629,8 @@ var
   item: TDBGridColumnItem;
 begin
   inherited;
+  pnlDebug.Visible := false; // DEBUG PANEL
+  fLastEventTypeID := 0;
 
   { IMPORTANT: At design time all columns are visible.}
   { IMPORTANT: Store column-order, needed by TMS to restore state.}
@@ -672,6 +680,37 @@ begin
     fStateStringExpanded := fStateStringCollapsed; // DEFAULT GRID LAYOUT.
 
 
+end;
+
+procedure TFrameEvent.OnAfterScroll;
+var
+  s: string;
+  ID: integer;
+begin
+
+  if pnlDebug.Visible then
+  begin
+    s := 'EventID:' + IntToStr(CORE.qryEvent.FieldByName('EventID').AsInteger);
+    pnlDebug.Caption := s;
+  end;
+  ID := CORE.qryEvent.FieldByName('EventTypeID').AsInteger;
+  if fLastEventTypeID <> ID then
+  begin
+    // notify of change in eventtype. (managed in main form)
+    PostMessage(Handle, SCM_SCROLL_EVENTTYPE, WPARAM(ID),0);
+    fLastEventTypeID := ID;
+  end;
+end;
+
+procedure TFrameEvent.OnPreferenceChange;
+begin
+  // Debug mode state...
+  pnlDebug.Visible := false; // default
+  if Assigned(Settings) then
+  begin
+    if Settings.ShowDebugInfo then
+      pnlDebug.Visible := true;
+  end;
 end;
 
 procedure TFrameEvent.SetCollapsedGridState;
@@ -796,16 +835,8 @@ begin
     begin
       pnlBody.Visible := true;
       pnlG.Visible := true;
-      {
-      // Are we making a Connection or changing SwimClubs?
-      if CORE.IsWorkingOnConnection then
-      begin
-        if actnEv_GridView.Checked <> false then
-        begin
-          // SET TO COLLAPSED GRID OR DO FULL UPDATE?
-        end;
-      end;
-      }
+      if Assigned(Settings) and Settings.ShowDebugInfo then
+        pnlDebug.Visible := true else pnlDebug.Visible := false;
     end;
 
   finally

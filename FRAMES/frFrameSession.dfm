@@ -17,15 +17,16 @@ object FrameSession: TFrameSession
       Left = 0
       Top = 0
       Width = 388
-      Height = 698
+      Height = 663
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
+      ExplicitHeight = 698
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
         Width = 388
-        Height = 698
+        Height = 663
         Cursor = crDefault
         Margins.Left = 0
         Margins.Top = 0
@@ -397,6 +398,7 @@ object FrameSession: TFrameSession
           FFC003FF}
         ShowUnicode = False
         OnGetHTMLTemplate = gridGetHTMLTemplate
+        ExplicitHeight = 698
         ColWidths = (
           0
           340
@@ -405,6 +407,17 @@ object FrameSession: TFrameSession
           24
           58)
       end
+    end
+    object pnlDebug: TPanel
+      Left = 0
+      Top = 663
+      Width = 388
+      Height = 35
+      Align = alBottom
+      BevelOuter = bvNone
+      TabOrder = 1
+      ExplicitTop = 491
+      ExplicitWidth = 1394
     end
   end
   object rpnlCntrl: TRelativePanel

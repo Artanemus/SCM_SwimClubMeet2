@@ -77,6 +77,7 @@ type
     spbtnToggleStatus: TSpeedButton;
     actnHT_RefreshStats: TAction;
     RefreshStats1: TMenuItem;
+    pnlDebug: TPanel;
     procedure actnHt_AutoBuildExecute(Sender: TObject);
     procedure actnHt_AutoBuildUpdate(Sender: TObject);
     procedure actnHt_DeleteExecute(Sender: TObject);
@@ -100,6 +101,9 @@ type
   public
     procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
     procedure UpdateUI(DoFullUpdate: boolean = false);
+
+    procedure OnPreferenceChange(); // Tools preferences calls here, via main form.
+    procedure OnAfterScroll(); // handles debug panel.
   end;
 
 implementation
@@ -297,10 +301,33 @@ end;
 procedure TFrameHeat.Loaded;
 begin
   inherited;
+  pnlDebug.Visible := false; // DEBUG PANEL
   fVerbose := true; // default...
   if Assigned(Settings) then
     fVerbose := Settings.Verbose;
 
+end;
+
+procedure TFrameHeat.OnAfterScroll;
+var
+  s: string;
+begin
+  if pnlDebug.Visible then
+  begin
+    s := 'HeatID:' + IntToStr(CORE.qryHeat.FieldByName('HeatID').AsInteger);
+    pnlDebug.Caption := s;
+  end;
+end;
+
+procedure TFrameHeat.OnPreferenceChange;
+begin
+  // Debug mode state...
+  pnlDebug.Visible := false; // default
+  if Assigned(Settings) then
+  begin
+    if Settings.ShowDebugInfo then
+      pnlDebug.Visible := true;
+  end;
 end;
 
 procedure TFrameHeat.UpdateUI(DoFullUpdate: boolean = false);
@@ -360,6 +387,8 @@ begin
     begin
       pnlBody.Visible := true;
       pnlG.Visible := true;
+      if Assigned(Settings) and Settings.ShowDebugInfo then
+        pnlDebug.Visible := true else pnlDebug.Visible := false;
     end;
 
   finally

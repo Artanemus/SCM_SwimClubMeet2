@@ -1411,34 +1411,6 @@ object FrameLane: TFrameLane
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
-      object lblStateString: TLabel
-        Left = 97
-        Top = 10
-        Width = 57
-        Height = 15
-        Caption = 'StateString'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-      end
-      object btnUpdateLableStateString: TButton
-        Left = 16
-        Top = 6
-        Width = 75
-        Height = 25
-        Caption = 'Update'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -12
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
-        TabOrder = 0
-        OnClick = btnUpdateLableStateStringClick
-      end
     end
   end
   object actnlist: TActionList

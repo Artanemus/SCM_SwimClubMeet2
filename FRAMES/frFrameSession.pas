@@ -61,6 +61,7 @@ type
     spbtnSessNew: TSpeedButton;
     spbtnSessReport: TSpeedButton;
     spbtnSessVisiblity: TSpeedButton;
+    pnlDebug: TPanel;
     procedure actnSess_CheckLockUpdate(Sender: TObject);
     procedure actnSess_CloneUpdate(Sender: TObject);
     procedure actnSess_DeleteExecute(Sender: TObject);
@@ -89,6 +90,9 @@ type
   public
     procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
     procedure UpdateUI(DoFullUpdate: boolean = false);
+    procedure OnPreferenceChange(); // Tools preferences calls here, via main form.
+    procedure OnAfterScroll(); // handles debug panel.
+
   end;
 
 implementation
@@ -463,10 +467,11 @@ end;
 procedure TFrameSession.Loaded;
 begin
   inherited Loaded;
+  pnlDebug.Visible := false; // DEBUG PANEL
   // This executes after the DFM has loaded and ActionLinks have synced.
   // Manually re-apply 48x48 icon indices.
-//  spbtnSessVisiblity.images := IMG.imglstSessCntrl;
-//  spbtnSessVisiblity.ImageIndex := -1;
+  //  spbtnSessVisiblity.images := IMG.imglstSessCntrl;
+  //  spbtnSessVisiblity.ImageIndex := -1;
   spbtnSessVisiblity.ImageName := 'visible_on';
   //  spbtnSessLockState.ImageIndex := 3;
   spbtnSessLockState.ImageName := 'lock2-open';
@@ -480,6 +485,31 @@ begin
   spbtnSessDelete.ImageName := 'delete';
   //  spbtnSessReport.ImageIndex := 9;
   spbtnSessReport.ImageName := 'report';
+end;
+
+procedure TFrameSession.OnAfterScroll;
+var
+  s: string;
+begin
+  if pnlDebug.Visible then
+  begin
+    s := 'SwimClubID: ' + IntToStr(CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger);
+    s := s + ' SessionID:' + IntToStr(CORE.qrySession.FieldByName('SessionID').AsInteger);
+    pnlDebug.Caption := s;
+  end;
+
+
+end;
+
+procedure TFrameSession.OnPreferenceChange;
+begin
+  // Debug mode state...
+  pnlDebug.Visible := false; // default
+  if Assigned(Settings) then
+  begin
+    if Settings.ShowDebugInfo then
+      pnlDebug.Visible := true;
+  end;
 end;
 
 procedure TFrameSession.SetLockStateIcon;
@@ -579,7 +609,8 @@ begin
       // Display all controls and grid.
       pnlBody.Visible := true;
       pnlG.Visible := true;
-
+      if Assigned(Settings) and Settings.ShowDebugInfo then
+        pnlDebug.Visible := true else pnlDebug.Visible := false;
       // Are we making a Connection or changing SwimClubs?
       if CORE.IsWorkingOnConnection then
       begin

@@ -339,7 +339,7 @@ object FrameHeat: TFrameHeat
       Left = 8
       Top = 8
       Width = 138
-      Height = 608
+      Height = 573
       Margins.Left = 8
       Margins.Top = 8
       Margins.Right = 8
@@ -362,15 +362,16 @@ object FrameHeat: TFrameHeat
       Left = 0
       Top = 0
       Width = 154
-      Height = 624
+      Height = 589
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
+      ExplicitHeight = 624
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
         Width = 154
-        Height = 624
+        Height = 589
         Cursor = crDefault
         Align = alClient
         Color = 4800817
@@ -757,6 +758,7 @@ object FrameHeat: TFrameHeat
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
+        ExplicitHeight = 624
         ColWidths = (
           0
           0
@@ -766,6 +768,17 @@ object FrameHeat: TFrameHeat
           0
           64)
       end
+    end
+    object pnlDebug: TPanel
+      Left = 0
+      Top = 589
+      Width = 154
+      Height = 35
+      Align = alBottom
+      BevelOuter = bvNone
+      TabOrder = 1
+      ExplicitTop = 491
+      ExplicitWidth = 1394
     end
   end
   object actnlist: TActionList

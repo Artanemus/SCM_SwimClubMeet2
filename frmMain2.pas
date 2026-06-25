@@ -162,6 +162,10 @@ type
 
     procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
       message SCM_SCROLL_NOMINATE_FILTERMEMBER;
+
+    procedure Msg_SCM_Scroll_EventType(var Msg: TMessage);
+      message SCM_SCROLL_EVENTTYPE;
+
   end;
 
 var
@@ -594,6 +598,11 @@ begin
     File_Connection.Execute;
 end;
 
+procedure TMain2.Msg_SCM_Scroll_EventType(var Msg: TMessage);
+begin
+  frLane.OnScroll_EventType(Msg.WParam);
+end;
+
 procedure TMain2.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
 begin
     frNominate.UpdateUI();
@@ -625,20 +634,19 @@ end;
 
 procedure TMain2.Msg_SCM_AfterScroll_Event(var Msg: TMessage);
 begin
-  frEvent.UpdateUI();
-  if Assigned(CORE) and CORE.IsActive then
-    frLane.OnEventTypeChange(CORE.qryEvent.FieldByName('EventTypeID').AsInteger);
+  frHeat.UpdateUI;
+  frEvent.OnAfterScroll();
 end;
 
 procedure TMain2.Msg_SCM_AfterScroll_Heat(var Msg: TMessage);
 begin
-  frHeat.UpdateUI;
   frLane.UpdateUI;
+  frHeat.OnAfterScroll();
 end;
 
 procedure TMain2.Msg_SCM_AfterScroll_Lane(var Msg: TMessage);
 begin
-  frLane.UpdateUI();
+  frLane.OnAfterScroll();
 end;
 
 procedure TMain2.Msg_SCM_AfterScroll_Session(var Msg: TMessage);
@@ -670,13 +678,8 @@ begin
       StatusBar.Panels[3].Text := 'ERR';
     end;
   end;
-
-  frSession.UpdateUI();
-
-  // DETAILED specific UI changes...
-//  frEvent.UpdateUI; - after session called - OnEventScroll triggered...
-//  frNavEv.UpdateUI; - let tabsheet do the triggering
-//  frNominate.UpdateUI; - let filtermember and tabsheet do the triggering...
+  frEvent.UpdateUI;
+  frSession.OnAfterScroll();
 end;
 
 procedure TMain2.PageControlChange(Sender: TObject);

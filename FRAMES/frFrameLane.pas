@@ -52,8 +52,6 @@ type
     actnLn_GridView: TAction;
     actnLn_HeatPicker: TAction;
     pnlDebug: TPanel;
-    lblStateString: TLabel;
-    btnUpdateLableStateString: TButton;
     procedure actnLn_GenericUpdate(Sender: TObject);
     procedure actnLn_RefreshStatExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
@@ -73,7 +71,6 @@ type
         string);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
     procedure actnLn_GridViewExecute(Sender: TObject);
-    procedure btnUpdateLableStateStringClick(Sender: TObject);
   private
 
     // CALL-BACK NOTIFICATION...
@@ -102,9 +99,10 @@ type
 
     procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
     // Makes UI/Grid changes for TEAM/INDIVUAL events.
-    procedure OnEventTypeChange(AEventTypeID: Integer);
-    // Tools preferences calls here, via main form.
-    procedure OnPreferenceChange();
+    procedure OnScroll_EventType(AEventTypeID: Integer);
+    procedure OnPreferenceChange(); // Tools preferences calls here, via main form.
+    procedure OnAfterScroll(); // handles debug panel.
+
     // after Connection, after change of swimming club, after manage-clubs.
     procedure UpdateUI(DoFullUpdate: boolean = false);
 
@@ -195,11 +193,6 @@ destructor TFrameLane.Destroy;
 begin
   ;
   inherited;
-end;
-
-procedure TFrameLane.btnUpdateLableStateStringClick(Sender: TObject);
-begin
-  lblStateString.Caption := Grid.ColumnStatesToString;
 end;
 
 procedure TFrameLane.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var
@@ -650,6 +643,9 @@ var
   item: TCollectionItem;
 begin
   inherited;
+
+  pnlDebug.Visible := false; // DEBUG PANEL
+
   { IMPORTANT: At design time all columns are visible.}
   { IMPORTANT: Store column-order, needed by TMS to restore state.}
   Grid.SetColumnOrder;
@@ -692,10 +688,23 @@ begin
     fStateStringExpanded := fStateStringCollapsed; // DEFAULT GRID LAYOUT.
 
   // TEAM/INDIVIDUAL
-  OnEventTypeChange(CORE.qryLane.FieldByName('EventTypeID').AsInteger);
+  OnScroll_EventType(CORE.qryLane.FieldByName('EventTypeID').AsInteger);
 end;
 
-procedure TFrameLane.OnEventTypeChange(AEventTypeID: Integer);
+procedure TFrameLane.OnAfterScroll;
+var
+  s: string;
+begin
+  if pnlDebug.Visible then
+  begin
+    s := 'LaneID:' + IntToStr(CORE.qryLane.FieldByName('LaneID').AsInteger);
+    s := s + ' NomineeID:' + IntToStr(CORE.qryLane.FieldByName('NomineeID').AsInteger);
+    s := s + ' TeamID:' + IntToStr(CORE.qryLane.FieldByName('TeamID').AsInteger);
+    pnlDebug.Caption := s;
+  end;
+end;
+
+procedure TFrameLane.OnScroll_EventType(AEventTypeID: Integer);
 var
   item: TDBGridColumnItem;
 begin
@@ -778,17 +787,8 @@ begin
     begin
       pnlBody.Visible := true;
       pnlG.Visible := true;
-      {
-      // Are we making a Connection or changing SwimClubs?
-      if CORE.IsWorkingOnConnection then
-      begin
-        if actnEv_GridView.Checked <> false then
-        begin
-          // SET TO COLLAPSED GRID OR DO FULL UPDATE?
-        end;
-      end;
-      }
-
+      if Assigned(Settings) and Settings.ShowDebugInfo then
+        pnlDebug.Visible := true else pnlDebug.Visible := false;
     end;
 
   finally

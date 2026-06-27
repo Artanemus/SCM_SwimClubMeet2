@@ -694,12 +694,26 @@ end;
 procedure TFrameLane.OnAfterScroll;
 var
   s: string;
+  et: scmEventType;
 begin
   if pnlDebug.Visible then
   begin
     s := 'LaneID:' + IntToStr(CORE.qryLane.FieldByName('LaneID').AsInteger);
-    s := s + ' NomineeID:' + IntToStr(CORE.qryLane.FieldByName('NomineeID').AsInteger);
-    s := s + ' TeamID:' + IntToStr(CORE.qryLane.FieldByName('TeamID').AsInteger);
+    et := uEvent.GetEventType;
+    case et of
+      etUnknown:
+        s := s + 'EventType not specified.';
+      etINDV:
+      begin
+        if not CORE.qryLane.FieldByName('NomineeID').IsNull then
+          s := s + ' NomineeID:' + IntToStr(CORE.qryLane.FieldByName('NomineeID').AsInteger);
+      end;
+      etTEAM:
+      begin
+        if not CORE.qryLane.FieldByName('TeamID').IsNull then
+        s := s + ' TeamID:' + IntToStr(CORE.qryLane.FieldByName('TeamID').AsInteger);
+      end;
+    end;
     pnlDebug.Caption := s;
   end;
 end;
@@ -779,13 +793,18 @@ begin
 
     if CORE.qryLane.IsEmpty then
     begin
-      Self.Visible := false;
+      pnlBody.Visible := true;
+      pnlG.Visible := false;
+      pnlDebug.Visible := false;
       actnLn_GridView.Checked := false; // DEFAULT: Collapsed grid view.
-      exit;
     end
     else
     begin
-      pnlBody.Visible := true;
+      if pnlBody.Visible <> true then
+      begin
+        CORE.qryEvent.Refresh;
+        pnlBody.Visible := true;
+      end;
       pnlG.Visible := true;
       if Assigned(Settings) and Settings.ShowDebugInfo then
         pnlDebug.Visible := true else pnlDebug.Visible := false;

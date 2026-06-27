@@ -40,8 +40,8 @@ type
     fToggleNameState: boolean;
     // 6 grid columns containing TriState: unsorted, ascend, descend.
     TSortState: Array [0 .. 5] of scmSortState;
-    procedure SortGrid(aActiveSortCol: Integer);
-    procedure ToogleSortState(indx: integer);
+    procedure SortGrid(aActiveSortCol: Integer); // not used...
+    procedure ToogleSortState(indx: integer); // not used...
   public
     function Prepare(LaneID: Integer): boolean;
   end;

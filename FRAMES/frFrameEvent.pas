@@ -797,26 +797,31 @@ begin
       Self.Visible := false; // hide everthing - move on.
       exit;
     end;
-    { grid must be visible to sync + forces re-paint. }
     LockDrawing;
-    Self.Visible := true;
-    pnlBody.Visible := true;
-    pnlG.Visible := true;
-    grid.Enabled := true;
-    grid.BeginUpdate;
-    grid.ResetColumnOrder;
-    // Collapsed control panel UI State...
-    SetCollapsedUIState;
-    // The grid's collapsed 'lane' grid column order, width, visibility.
-    SetCollapsedGridState; // DEFAULT SCHEMA
-    // store the 'default grid design schema'. (DEAULT UI LAYOUT.)
-    fStateStringCollapsed := Grid.ColumnStatesToString;
-    grid.EndUpdate;
-    UnlockDrawing;
+    try
+      { grid must be visible to sync + forces re-paint. }
+
+//      Self.Visible := true;
+//      pnlBody.Visible := true;
+//      pnlG.Visible := true;
+
+      grid.BeginUpdate;
+      grid.Enabled := true;
+      grid.ResetColumnOrder;
+      // Collapsed control panel UI State...
+      SetCollapsedUIState;
+      // The grid's collapsed 'lane' grid column order, width, visibility.
+      SetCollapsedGridState; // DEFAULT SCHEMA
+      // store the 'default grid design schema'. (DEAULT UI LAYOUT.)
+      fStateStringCollapsed := Grid.ColumnStatesToString;
+      grid.EndUpdate;
+
+    finally
+      UnlockDrawing;
+    end;
   end;
 
   LockDrawing;
-
   try
     if CORE.qrySession.IsEmpty() then
     begin
@@ -829,11 +834,19 @@ begin
       // CNTRL panel is displayed but not the grid.
       pnlBody.Visible := true;
       pnlG.Visible := false;
+      pnlDebug.Visible := false;
       actnEv_GridView.Checked := false; // DEFAULT: Collapsed grid view.
     end
     else
     begin
-      pnlBody.Visible := true;
+      { switching from a session with no events to one with events
+        results in debug info showing EventID:0. Doing a refresh
+        fixes this issue. }
+      if pnlBody.Visible <> true then
+      begin
+        CORE.qryEvent.Refresh;
+        pnlBody.Visible := true;
+      end;
       pnlG.Visible := true;
       if Assigned(Settings) and Settings.ShowDebugInfo then
         pnlDebug.Visible := true else pnlDebug.Visible := false;

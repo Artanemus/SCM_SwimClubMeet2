@@ -745,6 +745,8 @@ end;
 
 procedure TCORE.qrySessionAfterPost(DataSet: TDataSet);
 begin
+
+
   CheckAllTablesReadOnlyState(); // handle SessionStatusID state.
 
 
@@ -762,6 +764,7 @@ end;
 
 procedure TCORE.qrySessionAfterScroll(DataSet: TDataSet);
 begin
+
   CheckAllTablesReadOnlyState; // handle SessionStatusID state.
 
   if (msgHandle <> 0) then

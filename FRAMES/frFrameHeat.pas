@@ -382,10 +382,15 @@ begin
       // CNTRL panel is displayed but not the grid.
       pnlBody.Visible := true;
       pnlG.Visible := false;
+      pnlDebug.Visible := false;
     end
     else
     begin
-      pnlBody.Visible := true;
+      if pnlBody.Visible <> true then
+      begin
+        CORE.qryEvent.Refresh;
+        pnlBody.Visible := true;
+      end;
       pnlG.Visible := true;
       if Assigned(Settings) and Settings.ShowDebugInfo then
         pnlDebug.Visible := true else pnlDebug.Visible := false;

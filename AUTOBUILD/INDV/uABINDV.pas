@@ -36,16 +36,14 @@ type
     fVerbose: boolean;
     fSortMode: scmABSortMode;
     function AryEntrants_AssignEventRankNum: integer;
-    function AryEntrants_AssignLaneNum(StartHeatNum, NumOfHeats: Integer): integer;
-    function AryEntrants_AssignHeatRankNum(StartHeatNum, NumOfHeats: Integer):
-        integer;
+
+    function AryEntrants_AssignLaneNum(StartHeatNum, NumOfHeats: Integer): integer;  // not used
+    function AryEntrants_AssignHeatRankNum(StartHeatNum, NumOfHeats: Integer): integer; // not used
+
     function AryEntrants_AssignNominees: integer;
     function AryEntrants_HeatNum(StartHeatNum, NumOfHeats: Integer): integer;
     function AryExcludedLanes_Build: Integer;
     procedure AryScatterLanes_Build(NumOfPoolLanes: integer);
-    function Build_Entrants(NumOfHeats, StartHeatNum, NumOfNominees: Integer):
-        Integer;
-    { main execution routine. }
 
     function Build_EntrantsPerHeat(NumOfHeats: Integer; NumOfNominees: Integer):
         Integer;
@@ -54,15 +52,19 @@ type
     function CalcNumberOfHeats(NumOfNominees, RealNumOfLanes: Integer): Integer;
     procedure ClearAryEntrants;
     function Entrants_AssignLaneNum(StartHeatNum, Count: Integer): Integer;
+
     { Seeding routine. }
     function Seeding_Circle(StartHeatNum, NumOfHeats, SeedDepth: Integer): Integer;
     function Seeding_Default(StartHeatNum, NumOfHeats: Integer): Integer;
     function Seeding_Random(StartHeatNum, NumOfHeats: Integer): Integer;
+
     procedure SortAryEntrantsByRandom;
     procedure SortAryEntrantsByTime;
-    function TestExcludedLane(LaneNum: integer): Boolean;
-    function TestIsHeatFull(HeatNum: integer): boolean;
-    function TestLaneIsFilled(HeatNum, LaneNum: integer): boolean;
+
+    function IsLaneExcluded(LaneNum: integer): Boolean; // not used
+    function IsHeatFull(HeatNum: integer): boolean; // not used
+    function IsLaneFilled(HeatNum, LaneNum: integer): boolean; // not used
+
   public
     constructor Create(AOwner: TComponent); reintroduce;
     destructor Destroy; override;
@@ -724,52 +726,11 @@ begin
     exit;
   end;
 
-  // *********************************************
-  // FILTER BY GENDER   A u t o - B u i l d .
-  // *********************************************
-  if (Settings.ab_SeperateGender = true)
-  and (Settings.ab_GroupByIndx <= 0) then
-  begin
-    StartHeatNum := 1;
-    NumOfHeats := 0;
-    ABData.qryUnplacedNominees.IndexName := 'indxTTB';
-    if not ABData.qryUnplacedNominees.Filtered then
-      ABData.qryUnplacedNominees.Filtered := false;
-
-    ABData.qryGender.Connection := SCM2.scmConnection;
-    ABData.qryGender.Open;
-    if ABData.qryGender.Active then
-    begin
-      ABData.qryGender.Last; // reverse order, female then male swimmers.
-      while not ABData.qryGender.EOF do
-      begin
-        var id: integer;
-        id := ABData.qryGender.FieldByName('GenderID').AsInteger;
-        ABData.qryUnplacedNominees.Filter := 'GenderID = ' + IntToStr(id);
-        if not ABData.qryUnplacedNominees.Filtered then
-          ABData.qryUnplacedNominees.Filtered := true;
-        ABData.qryUnplacedNominees.Refresh; // play it safe.
-        // after filter is applied - get the number of unplaced nominees.
-        NomineeCount := ABData.qryUnplacedNominees.RecordCount;
-        count := Build_Entrants(NumOfHeats, StartHeatNum, NomineeCount);
-        if count <> 0 then
-          Build_Heats(NumOfHeats, StartHeatNum, NomineeCount); // build heats and lanes
-      end;
-    end;
-  end;
-
-
 
   // *******************************************************
   result := true;
   // *******************************************************
 
-end;
-
-function TABINDV.Build_Entrants(NumOfHeats, StartHeatNum,
-  NumOfNominees: Integer): Integer;
-begin
-  ; //todo
 end;
 
 function TABINDV.Build_EntrantsPerHeat(NumOfHeats: Integer; NumOfNominees:
@@ -805,7 +766,6 @@ function TABINDV.Build_Heats(NumOfHeats, StartHeatNum, NumOfNominees: Integer):
 var
   Count: Integer;
   HeatID: Integer;
-  HeatNum: Integer;
   I: Integer;
 begin
   result := 0;
@@ -1137,8 +1097,6 @@ begin
     end;
   end;
 
-  if (J > 0) then Result := j; // Number of heats seeded.
-
 end;
 
 function TABINDV.Seeding_Random(StartHeatNum, NumOfHeats: Integer): Integer;
@@ -1181,20 +1139,20 @@ begin
   fSortMode := abTime;
 end;
 
-function TABINDV.TestExcludedLane(LaneNum: integer): Boolean;
+function TABINDV.IsLaneExcluded(LaneNum: integer): Boolean;
 begin
   result := false;
   if (LaneNum > 0) and (LaneNum <= fNumOfPoolLanes) then
     result := AryExcludedLanes[LaneNum-1];
 end;
 
-function TABINDV.TestIsHeatFull(HeatNum: integer): boolean;
+function TABINDV.IsHeatFull(HeatNum: integer): boolean;
 begin
   {is heatfull}
   result := true;
 end;
 
-function TABINDV.TestLaneIsFilled(HeatNum, LaneNum: integer): boolean;
+function TABINDV.IsLaneFilled(HeatNum, LaneNum: integer): boolean;
 var
   I: integer;
   obj: TLaneEntrant;

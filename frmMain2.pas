@@ -924,13 +924,11 @@ begin
   dlg.ShowModal;
   dlg.Free;
 
-  if Assigned(frlane) then
-  begin
     // enable/disable FINA codes....
-    frLane.OnPreferenceChange;
-  end;
-
-  // show/hide debug info.
+    if Assigned(frlane) then frLane.OnPreferenceChange;
+    if Assigned(frHeat) then frHeat.OnPreferenceChange;
+    if Assigned(frEvent) then frEvent.OnPreferenceChange;
+    if Assigned(frSession) then frSession.OnPreferenceChange;
 
 end;
 

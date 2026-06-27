@@ -25,7 +25,6 @@ object FrameEvent: TFrameEvent
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitHeight = 521
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
@@ -697,7 +696,6 @@ object FrameEvent: TFrameEvent
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitHeight = 521
         ColWidths = (
           20
           43
@@ -722,8 +720,6 @@ object FrameEvent: TFrameEvent
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitTop = 491
-      ExplicitWidth = 1394
     end
   end
   object rpnlCntrl: TRelativePanel

@@ -497,8 +497,6 @@ begin
     s := s + ' SessionID:' + IntToStr(CORE.qrySession.FieldByName('SessionID').AsInteger);
     pnlDebug.Caption := s;
   end;
-
-
 end;
 
 procedure TFrameSession.OnPreferenceChange;
@@ -593,6 +591,7 @@ begin
       // CNTRL panel is displayed but not the grid.
       pnlBody.Visible := true;
       pnlG.Visible := false;
+      pnlDebug.Visible := false;
 
       if actnSess_Visibilty.Checked <> false then
       begin

@@ -312,6 +312,7 @@ procedure TFrameHeat.OnAfterScroll;
 var
   s: string;
 begin
+
   if pnlDebug.Visible then
   begin
     s := 'HeatID:' + IntToStr(CORE.qryHeat.FieldByName('HeatID').AsInteger);
@@ -331,8 +332,10 @@ begin
 end;
 
 procedure TFrameHeat.UpdateUI(DoFullUpdate: boolean = false);
+var
+  DoRefresh: boolean;
 begin
-
+  DoRefresh := false;
   if DoFullUpdate then
   begin
     // CHECK TMS rule..
@@ -350,6 +353,7 @@ begin
     end;
 
     { NOTE: grid must be visible to sync + forces re-paint. }
+    {
     LockDrawing;
     try
       Self.Visible := true;
@@ -360,38 +364,52 @@ begin
     finally
       UnlockDrawing;
     end;
+    }
+
   end;
 
+  if CORE.qryEvent.IsEmpty then
+  begin
+    // if located within Lock/UnLock-Drawing - doesn't get repainted.
+    Self.Visible := false;
+    exit;
+  end;
 
   LockDrawing;
 
-  if (uSession.IsUnLocked()) AND (not grid.Enabled) then
-    grid.Enabled := true;
-
   try
-    if CORE.qryEvent.IsEmpty then
+    if not Self.Visible then
     begin
-      Self.Visible := false; // hide everthing - move on.
-      exit;
+      Self.Visible := true; // we have heat(s) - enforce show lanes.
+      DoRefresh := true; // enforce a re-sync?
+      Self.Invalidate;  // enforce a repaint?
     end;
 
-    if not Self.Visible then Self.Visible := true;
+    pnlBody.Visible := true; // CNTRL panel is made visible.
 
     if CORE.qryHeat.IsEmpty then
     begin
-      // CNTRL panel is displayed but not the grid.
-      pnlBody.Visible := true;
       pnlG.Visible := false;
       pnlDebug.Visible := false;
     end
     else
     begin
-      if pnlBody.Visible <> true then
-      begin
-        CORE.qryEvent.Refresh;
-        pnlBody.Visible := true;
-      end;
+      if DoRefresh then CORE.qryHeat.Refresh;
       pnlG.Visible := true;
+
+      // conditionals..
+      if (uSession.IsLocked()) then
+      begin
+        if grid.Enabled then
+          grid.Enabled := false; // mitigate grid repaints.
+      end
+      else
+      begin
+        if not grid.enabled then
+          grid.Enabled := true; // mitigate grid repaints.
+      end;
+
+      // conditionals..
       if Assigned(Settings) and Settings.ShowDebugInfo then
         pnlDebug.Visible := true else pnlDebug.Visible := false;
     end;

@@ -745,7 +745,11 @@ begin
 end;
 
 procedure TFrameLane.UpdateUI(DoFullUpdate: boolean = false);
+var
+  DoRefresh: boolean;
 begin
+
+  DoRefresh := false;
 
   {CASES: after Connection, after change of swimming club, after manage-clubs. }
   if DoFullUpdate then
@@ -780,16 +784,21 @@ begin
   end;
 
 
+  if CORE.qryHeat.IsEmpty then
+  begin
+    // if located within Lock/UnLock-Drawing - doesn't get repainted.
+    Self.Visible := false;
+    exit;
+  end;
+
   LockDrawing;
   try
-
-    if CORE.qryHeat.IsEmpty then
+    if not Self.Visible then
     begin
-      Self.Visible := false;
-      exit;
+      Self.Visible := true; // we have heat(s) - enforce show lanes.
+      DoRefresh := true; // enforce a re-sync?
+      Self.Invalidate;  // enforce a repaint?
     end;
-
-    if not Self.Visible then Self.Visible := true;
 
     if CORE.qryLane.IsEmpty then
     begin
@@ -800,11 +809,9 @@ begin
     end
     else
     begin
-      if pnlBody.Visible <> true then
-      begin
-        CORE.qryEvent.Refresh;
-        pnlBody.Visible := true;
-      end;
+      if DoRefresh then
+        CORE.qryLane.Refresh;
+      pnlBody.Visible := true;
       pnlG.Visible := true;
       if Assigned(Settings) and Settings.ShowDebugInfo then
         pnlDebug.Visible := true else pnlDebug.Visible := false;

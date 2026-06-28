@@ -2855,6 +2855,8 @@ object Main2: TMain2
         BevelOuter = bvNone
         Caption = 'Panel for TFrameEvent (frEvent)'
         TabOrder = 1
+        ExplicitLeft = 433
+        ExplicitTop = 24
       end
     end
     object tabNominate: TTabSheet

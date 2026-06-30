@@ -352,20 +352,6 @@ begin
       exit;
     end;
 
-    { NOTE: grid must be visible to sync + forces re-paint. }
-    {
-    LockDrawing;
-    try
-      Self.Visible := true;
-      pnlBody.Visible := true;
-      pnlG.Visible := true;
-      grid.Enabled := true;
-//      grid.Refresh;
-    finally
-      UnlockDrawing;
-    end;
-    }
-
   end;
 
   if CORE.qryEvent.IsEmpty then
@@ -397,7 +383,8 @@ begin
       if DoRefresh then CORE.qryHeat.Refresh;
       pnlG.Visible := true;
 
-      // conditionals..
+      // conditionals.. locks out user from browseing and reports
+      {
       if (uSession.IsLocked()) then
       begin
         if grid.Enabled then
@@ -408,6 +395,7 @@ begin
         if not grid.enabled then
           grid.Enabled := true; // mitigate grid repaints.
       end;
+      }
 
       // conditionals..
       if Assigned(Settings) and Settings.ShowDebugInfo then

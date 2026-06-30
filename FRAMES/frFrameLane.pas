@@ -765,13 +765,15 @@ begin
       Self.Visible := false;
       exit;
     end;
+
     { NOTE: grid must be visible to sync + forces re-paint. }
     LockDrawing;
-    Self.Visible := true;
-    pnlBody.Visible := true;
-    pnlG.Visible := true;
-    grid.Enabled := true;
+//    Self.Visible := true;
+//    pnlBody.Visible := true;
+//    pnlG.Visible := true;
+
     grid.BeginUpdate;
+    grid.Enabled := true;
     grid.ResetColumnOrder;
     // Collapsed control panel UI State...
     SetCollapsedUIState;
@@ -800,9 +802,10 @@ begin
       Self.Invalidate;  // enforce a repaint?
     end;
 
+    pnlBody.Visible := true;
+
     if CORE.qryLane.IsEmpty then
     begin
-      pnlBody.Visible := true;
       pnlG.Visible := false;
       pnlDebug.Visible := false;
       actnLn_GridView.Checked := false; // DEFAULT: Collapsed grid view.
@@ -811,10 +814,26 @@ begin
     begin
       if DoRefresh then
         CORE.qryLane.Refresh;
-      pnlBody.Visible := true;
       pnlG.Visible := true;
+
+      // conditionals.. locks out user from browseing and reports
+      {
+      if (uSession.IsLocked()) then
+      begin
+        if grid.Enabled then
+          grid.Enabled := false; // mitigate grid repaints.
+      end
+      else
+      begin
+        if not grid.enabled then
+          grid.Enabled := true; // mitigate grid repaints.
+      end;
+      }
+
+      // conditionals..
       if Assigned(Settings) and Settings.ShowDebugInfo then
         pnlDebug.Visible := true else pnlDebug.Visible := false;
+
     end;
 
   finally

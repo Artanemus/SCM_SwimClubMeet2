@@ -702,6 +702,7 @@ begin
         // inserted, deleted, modified..
         frNavEv.UpdateUI;
         frNavEv.SelectNavEvItem(uEvent.PK);
+        frHeat.UpdateUI;
       end;
   end;
 end;

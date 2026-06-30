@@ -781,8 +781,11 @@ begin
 end;
 
 procedure TFrameEvent.UpdateUI(DoFullUpdate: Boolean = false);
-begin
+var
+  DoRefresh: boolean;
 
+begin
+  DoRefresh := false;
   if DoFullUpdate then
   begin
     // CHECK TMS rule..
@@ -797,6 +800,7 @@ begin
       Self.Visible := false; // hide everthing - move on.
       exit;
     end;
+
     LockDrawing;
     try
       { grid must be visible to sync + forces re-paint. }
@@ -821,18 +825,28 @@ begin
     end;
   end;
 
+  if CORE.qrySession.IsEmpty() then
+  begin
+    Self.Visible := false;   // hide TMS grid.
+    exit;
+  end;
+
   LockDrawing;
+
   try
-    if CORE.qrySession.IsEmpty() then
+
+    if not Self.Visible then
     begin
-      Self.Visible := false;   // hide TMS grid.
-      exit;
+      Self.Visible := true; // we have heat(s) - enforce show lanes.
+      DoRefresh := true; // enforce a re-sync?
+      Self.Invalidate;  // enforce a repaint?
     end;
-    if not Self.Visible then Self.Visible := true;
+
+    pnlBody.Visible := true;
+
     if CORE.qryEvent.IsEmpty then
     begin
       // CNTRL panel is displayed but not the grid.
-      pnlBody.Visible := true;
       pnlG.Visible := false;
       pnlDebug.Visible := false;
       actnEv_GridView.Checked := false; // DEFAULT: Collapsed grid view.
@@ -842,12 +856,25 @@ begin
       { switching from a session with no events to one with events
         results in debug info showing EventID:0. Doing a refresh
         fixes this issue. }
-      if pnlBody.Visible <> true then
-      begin
+      if DoRefresh then
         CORE.qryEvent.Refresh;
-        pnlBody.Visible := true;
-      end;
       pnlG.Visible := true;
+
+      // conditionals.. locks out user from browseing and reports
+      {
+      if (uSession.IsLocked()) then
+      begin
+        if grid.Enabled then
+          grid.Enabled := false; // mitigate grid repaints.
+      end
+      else
+      begin
+        if not grid.enabled then
+          grid.Enabled := true; // mitigate grid repaints.
+      end;
+      }
+
+      // conditionals..
       if Assigned(Settings) and Settings.ShowDebugInfo then
         pnlDebug.Visible := true else pnlDebug.Visible := false;
     end;

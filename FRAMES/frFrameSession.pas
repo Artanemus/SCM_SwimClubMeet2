@@ -574,22 +574,27 @@ begin
   end;
 
 
+  if CORE.qrySwimClub.IsEmpty then
+  begin
+    Self.Visible := false; // hide everthing - move on.
+    exit;
+  end;
+
   LockDrawing;
 
   try
-    if CORE.qrySwimClub.IsEmpty then
+
+    if not Self.Visible then
     begin
-      Self.Visible := false; // hide everthing - move on.
-      exit;
+      Self.Visible := true; // we have heat(s) - enforce show lanes.
+      Self.Invalidate;  // enforce a repaint?
     end;
 
-    if not Self.Visible then Self.Visible := true;
-
+    pnlBody.Visible := true;
 
     if CORE.qrySession.IsEmpty then
     begin
       // CNTRL panel is displayed but not the grid.
-      pnlBody.Visible := true;
       pnlG.Visible := false;
       pnlDebug.Visible := false;
 
@@ -604,12 +609,13 @@ begin
     end
 
     else
+
     begin
       // Display all controls and grid.
-      pnlBody.Visible := true;
       pnlG.Visible := true;
       if Assigned(Settings) and Settings.ShowDebugInfo then
         pnlDebug.Visible := true else pnlDebug.Visible := false;
+
       // Are we making a Connection or changing SwimClubs?
       if CORE.IsWorkingOnConnection then
       begin

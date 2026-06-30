@@ -358,7 +358,10 @@ begin
 end;
 
 procedure TFrameNavEv.UpdateUI(DoFullUpdate: boolean = false);
+var
+  DoRefresh: boolean;
 begin
+  DoRefresh := false;
 
   if DoFullUpdate then
   begin
@@ -371,6 +374,13 @@ begin
     end;
   end;
 
+  if CORE.qryEvent.IsEmpty then
+  begin
+    // if located within Lock/UnLock-Drawing - doesn't get repainted.
+    Self.Visible := false;
+    exit;
+  end;
+
   LockDrawing;
   try
     if CORE.qrySession.IsEmpty then
@@ -379,8 +389,14 @@ begin
       exit;
     end;
 
-    if not Self.Visible then Self.Visible := true;
+    if not Self.Visible then
+    begin
+      Self.Visible := true; // we have heat(s) - enforce show lanes.
+      DoRefresh := true; // enforce a re-sync?
+      Self.Invalidate;  // enforce a repaint?
+    end;
 
+    {
     if CORE.qryEvent.IsEmpty() then
     begin
       rpnlBody.Visible := false;
@@ -388,10 +404,14 @@ begin
       lblStatusMsg.Visible := true;
     end
     else
+    }
+
     begin
       lblStatusMsg.Visible := false;
       rpnlBody.Visible := true;
       scrBox.Visible := true;
+      if DoRefresh then
+        ; // TODO:
       FillNavEvItems;
     end;
 

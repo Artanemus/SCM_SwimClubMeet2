@@ -165,8 +165,18 @@ begin
     finally
       if doRenumber then
       begin
-        uHeat.RenumberLanes(false); // don't relocate  ... depreciated
-        // ALT method ... call EXEC -- dbo.Renumber
+
+        // RENUMBER HEATS. Use alternative method EXEC.
+        // Originally uHeat.RenumberLanes(false); ... depreciated
+        if not CORE.qryHeat.IsEmpty then
+        begin
+          SCM2.procRenumberHeats.Connection := SCM2.scmConnection;
+          SCM2.procRenumberHeats.StoredProcName := 'SwimClubMeet2.dbo.RenumberHeats';
+          SCM2.procRenumberHeats.ParamByName('@EventID').AsInteger := uEvent.PK;
+          SCM2.procRenumberHeats.Prepare;
+          SCM2.procRenumberHeats.ExecProc;
+        end;
+
       end;
       CORE.qryLane.ApplyMaster;
       CORE.qryLane.EnableControls;
@@ -307,8 +317,6 @@ begin
     CORE.qryWatchTime.DisableControls;
     CORE.qryLane.DisableControls();
     CORE.qryHeat.DisableControls();
-    fld := CORE.qryHeat.FindField('HeatNum');
-    if Assigned(fld) then fld.ReadOnly := false;
     try
       CORE.qryHeat.Insert;
       CORE.qryHeat.FieldByName('EventID').AsInteger := uEvent.PK;
@@ -317,19 +325,28 @@ begin
       CORE.qryHeat.FieldByName('HeatStatusID').AsInteger := 1; // Open.
       CORE.qryHeat.Post;
 
-      // How To Get Last Inserted ID On SQL Server for a specific table.
-      SQL := 'SELECT IDENT_CURRENT(''SwimClubMeet.dbo.Heat'') AS LastID;';
-      // return EventID
-      v := SCM2.scmConnection.ExecSQLScalar(SQL);
-      if not VarIsNull(v) then result := v;
+    // If you're using a TADOQuery or TSQLQuery with the identity field included
+    // and the provider supports it, you can get it like this:
+    if CORE.qryHeat.FindField('HeatID') <> nil then
+      result := CORE.qryHeat.FieldByName('HeatID').AsInteger
+    else
+      // Fallback to SCOPE_IDENTITY()
+      result := SCM2.scmConnection.ExecSQLScalar('SELECT SCOPE_IDENTITY()');
 
+      // How To Get Last Inserted ID On SQL Server for a specific table.
+      // SQL := 'SELECT IDENT_CURRENT(''SwimClubMeet.dbo.Heat'') AS LastID;';
+      // SQL := 'SELECT SCOPE_IDENTITY() AS LastID;';
+      // SQL := 'SELECT @@IDENTITY AS LastID;';
+      // v := SCM2.scmConnection.ExecSQLScalar(SQL);
+      // if not VarIsNull(v) then
+      //  result := v;
 
       uHeat.PadLanes();
+
     except on E: Exception do
         CORE.qryHeat.Cancel;
     end;
   finally
-    if Assigned(fld) then fld.ReadOnly := true;
     CORE.qryHeat.EnableControls();
     CORE.qryLane.ApplyMaster;
     CORE.qryLane.EnableControls();

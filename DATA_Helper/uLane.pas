@@ -54,6 +54,9 @@ begin
   doRenumber := false;
   // Not permitted to DeleteLane events if session is locked.
   if uSession.IsLocked() then exit;
+
+  if CORE.qryLane.IsEmpty then exit;
+
   // Can't delete this lane if it's be raced or closed.
   CORE.qryLane.DisableControls;
   CORE.qryWatchTime.DisableControls;

@@ -14,7 +14,6 @@ type
     qryGender: TFDQuery;
     procDeleteHeats: TFDStoredProc;
     qryUnplacedNominees: TFDQuery;
-    procRenumberHeats: TFDStoredProc;
     procedure DataModuleCreate(Sender: TObject);
 
   private

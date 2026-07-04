@@ -17,7 +17,7 @@ uses
 type
 
   TLaneEntrant = class;  // forward declaration.
-  scmABSortMode = (abNotSorted, abTime, abRandom);
+  scmABSortMode = (abNotSorted, abTTB, abRandom);
 
   TABINDV = class(TComponent)
   private
@@ -33,37 +33,29 @@ type
     fExcludeLaneCount: integer;
     fNumOfPoolLanes: integer;
     fRealNumOfLanes: integer;
-    fVerbose: boolean;
     fSortMode: scmABSortMode;
-    function AryEntrants_AssignEventRankNum: integer;
-
-    function AryEntrants_AssignLaneNum(StartHeatNum, NumOfHeats: Integer): integer;  // not used
-    function AryEntrants_AssignHeatRankNum(StartHeatNum, NumOfHeats: Integer): integer; // not used
-
+    fVerbose: boolean;
+    function AryEntrants_AssignLaneNum(NumOfHeats: Integer): Integer;
     function AryEntrants_AssignNominees: integer;
-    function AryEntrants_HeatNum(StartHeatNum, NumOfHeats: Integer): integer;
+    function AryEntrants_AssignHeatNum(NumOfHeats: Integer): integer;
     function AryExcludedLanes_Build: Integer;
     procedure AryScatterLanes_Build(NumOfPoolLanes: integer);
-
     function Build_EntrantsPerHeat(NumOfHeats: Integer; NumOfNominees: Integer):
         Integer;
-    function Build_Heats(NumOfHeats, StartHeatNum, NumOfNominees: Integer): integer;
-    function Build_FillLanes(HeatID: Integer): Integer;
+    function Build_FillLanes(HeatID, HeatNum: Integer): Integer;
+    function Build_Heats(NumOfHeats, NumOfNominees: Integer): integer;
     function CalcNumberOfHeats(NumOfNominees, RealNumOfLanes: Integer): Integer;
     procedure ClearAryEntrants;
-    function Entrants_AssignLaneNum(StartHeatNum, Count: Integer): Integer;
-
-    { Seeding routine. }
-    function Seeding_Circle(StartHeatNum, NumOfHeats, SeedDepth: Integer): Integer;
-    function Seeding_Default(StartHeatNum, NumOfHeats: Integer): Integer;
-    function Seeding_Random(StartHeatNum, NumOfHeats: Integer): Integer;
-
+    { Seed AryEntrants. }
+    function Seed_Circle(NumOfHeats, SeedDepth: Integer): Integer;
+    function Seed_Default(NumOfHeats: Integer; Offset: Integer = 0): Integer;
+    function Seed_Random(NumOfHeats: Integer): Integer;
+    { Sort AryEntrants.}
     procedure SortAryEntrantsByRandom;
-    procedure SortAryEntrantsByTime;
+    procedure SortAryEntrantsByTTB;
 
-    function IsLaneExcluded(LaneNum: integer): Boolean; // not used
-    function IsHeatFull(HeatNum: integer): boolean; // not used
-    function IsLaneFilled(HeatNum, LaneNum: integer): boolean; // not used
+    { Renumber Heats. Uses uEvent.PK}
+    procedure RenumberHeats;
 
   public
     constructor Create(AOwner: TComponent); reintroduce;
@@ -75,7 +67,6 @@ type
 
   TLaneEntrant = class(TObject)
     NomineeID: integer;
-    EventRankNum: integer;
     HeatRankNum: integer;
     HeatNum: integer;
     LaneNum: integer;
@@ -92,7 +83,6 @@ implementation
 constructor TLaneEntrant.Create;
 begin
   NomineeID := 0;
-  EventRankNum := 0;
   HeatNum := 0;
   LaneNum := 0;
   RandomNum := 0;
@@ -131,93 +121,66 @@ begin
   inherited;
 end;
 
-function TABINDV.AryEntrants_AssignEventRankNum: integer;
+function TABINDV.AryEntrants_AssignLaneNum(NumOfHeats: Integer): Integer;
 var
-  I: integer;
-begin
-  result := 0;
-  if not (fSortMode = scmABSortMode.abTime) then
-    SortAryEntrantsByTime;
-  for I := 0 to Length(AryEntrants) - 1 do
-  begin
-    AryEntrants[I].EventRankNum := I + 1;
-    INC(result);
-  end;
-end;
-
-function TABINDV.AryEntrants_AssignLaneNum(StartHeatNum, NumOfHeats: Integer):
-integer;
-var
-  err, I, J, LaneNum, Rank, offset: integer;
+  I, J, RankOffset, Rank, laneNum, EntrantCount: integer;
+  obj: TLaneEntrant;
   found: boolean;
-  msg: string;
 begin
+  { Acll here after assigning HeatNum, NomineeID and RankNum.
+    How rank works...
+    Rank order of the swimmer. ie. 1st, 2nd, 3rd, etc.
+    Fast swimmers have a lower value.}
   result := 0;
-  err := 0;
-  // Note: AryEntrants sorted by time...
-  for J := StartHeatNum to NumOfHeats - 1 do
+  EntrantCount := 0;
+
+  if fSortMode <> abTTB then
+    SortAryEntrantsByTTB;
+
+  for J := 0 to NumOfHeats-1 do // iterate over heats.
   begin
-    offset := 0; // reset with each heat.
-    for I := 0 to Length(AryEntrants) - 1 do
+    RankOffset := 0; // rankoffest is used to skip user-excluded lanes.
+    EntrantCount := 0; // used to test if heat has been processed.
+
+    for I := 0 to Length(AryEntrants) - 1 do // Fastest swimmer always at head of array.
     begin
+      // Has all the entrants been assigned a lane for the given heat?
+      if (EntrantCount >= AryEntrantsPerHeat[J]) then break;
+
+      obj := AryEntrants[i];
+      if (obj.HeatNum <> (J+1)) then continue;  // wrong heat number.
+
+      Rank := obj.HeatRankNum + RankOffset; // modify to skip lanes.
       found := false;
-      if AryEntrants[I].HeatNum <> J then continue;
-      Rank := AryEntrants[I].HeatRankNum;
-      While not found and ((Rank+Offset) > 0) and ((Rank+Offset) <= fNumOfPoolLanes) do
+
+      { Handle excluded lanes. Skipping lanes by adjusting ranking.}
+      While not found do
       begin
-        LaneNum := AryScatteredLanes[Rank+Offset];
-        if not AryExcludedLanes[LaneNum] then
+        if (Rank < 1) or (Rank >= Length(AryScatteredLanes)) then
+          break;  // out of bounds.
+        laneNum := AryScatteredLanes[Rank-1]; // NOTE: AryScatteredLanes is base 0
+        if AryExcludedLanes[laneNum-1] then // NOTE: AryExcludedLanes is base 0
         begin
-          AryEntrants[I].LaneNum := LaneNum;
-          found := true;
+          INC(Rank);
+          INC(RankOffset); // needed for the next entrant - to skip excluded lanes.
         end
         else
-        begin
-          INC(Offset); // bump up ranking..
-        end;
+          found := true;
       end;
+      { Look-up rank and return with lane number. }
+      if found then
+      begin
+        obj.LaneNum := AryScatteredLanes[Rank-1] ;
+        INC(EntrantCount);
+      end
+      else
+        {TODO -oBSA -cGeneral : ERROR -Entrant never got a lane in chosen heat.}
+        obj.LaneNum := 0;
     end;
   end;
-
-  if err > 0 then
-  begin
-    if (fVerbose) then
-    begin
-      msg := '''
-        Internal error... (AryEntrants_AssignLaneNum)
-        Failed to assign a swimming lane for entrant.
-      ''';
-      MessageDlg(msg, mtError, [mbOK], 0, mbOK);
-    end;
-  end;
-
+  if EntrantCount > 0 then result := EntrantCount;  // number of heats
 end;
 
-function TABINDV.AryEntrants_AssignHeatRankNum(StartHeatNum, NumOfHeats:
-    Integer): integer;
-var
-  count, I, J, HeatRankNum: integer;
-begin
-  result := 0;
-  count := 0;
-  // CHECK: sorted by time.
-  if fSortMode <> abTime then
-    SortAryEntrantsByTime;
-
-  for J := StartHeatNum to NumOfHeats do
-  begin
-    HeatRankNum := 1;
-    for I := 0 to Length(AryEntrants) - 1 do
-    begin
-      if AryEntrants[I].HeatNum <> J then continue;
-      AryEntrants[I].HeatRankNum := HeatRankNum;
-      INC(HeatRankNum);
-      INC(Count);
-    end
-  end;
-  if Count > 0 then
-    result := Count;
-end;
 
 function TABINDV.AryEntrants_AssignNominees: integer;
 var
@@ -242,16 +205,14 @@ begin
   if Count > 0 then result := Count;
 end;
 
-function TABINDV.AryEntrants_HeatNum(StartHeatNum, NumOfHeats: Integer):
-    integer;
+function TABINDV.AryEntrants_AssignHeatNum(NumOfHeats: Integer): integer;
 var
   SeedDepth: integer;
-  HeatNum: integer;
-  NumOfHeatsSeeded: integer;
+  NumOfEntrantsSeeded, count: integer;
 begin
   result := 0;
   SeedDepth := Settings.ab_SeedDepth;
-  NumOfHeatsSeeded := 0;
+  NumOfEntrantsSeeded := 0;
   if SeedDepth = 0 then
     SeedDepth := NumOfHeats;
 
@@ -259,26 +220,26 @@ begin
     0:
       begin
         {  STANDARD SEEDING.}
-        NumOfHeatsSeeded := Seeding_Default(StartHeatNum, NumOfHeats);
+        NumOfEntrantsSeeded := Seed_Default(NumOfHeats);
       end;
     1:
       begin
         {CIRCLE SEEDING.}
-        NumOfHeatsSeeded := Seeding_Circle(StartHeatNum, NumOfHeats, SeedDepth);
+        NumOfEntrantsSeeded := Seed_Circle(NumOfHeats, SeedDepth);
         {DEFAULT SEEDING.}
-        if (NumOfHeatsSeeded < NumOfHeats) then
+        if (NumOfEntrantsSeeded < NumOfHeats) then
         begin
-          HeatNum := StartHeatNum + NumOfHeatsSeeded;
           { do the remaining heats using STANDARD SEEDING.}
-          NumOfHeatsSeeded := Seeding_Default(HeatNum, NumOfHeats);
+          count := Seed_Default(NumOfHeats, NumOfEntrantsSeeded);
+          NumOfEntrantsSeeded := NumOfEntrantsSeeded + count;
         end;
       end;
     2:
       begin
-        NumOfHeatsSeeded := Seeding_Random(StartHeatNum, NumOfHeats);
+        NumOfEntrantsSeeded := Seed_Random(NumOfHeats);
       end;
   end;
-  if NumOfHeatsSeeded > 0 then result := NumOfHeatsSeeded;
+  if NumOfEntrantsSeeded > 0 then result := NumOfEntrantsSeeded;
 end;
 
 function TABINDV.AryExcludedLanes_Build: Integer;
@@ -305,7 +266,6 @@ begin
         LaneNum := StrToIntDef(s, 0);
         if (LaneNum > 0) and (LaneNum <= fNumOfPoolLanes) then
         begin
-//          Insert(LaneNum, AryExcludedLanes, 0);
           AryExcludedLanes[Lanenum-1] := true;
           INC(count);
         end;
@@ -350,7 +310,7 @@ end;
 function TABINDV.AutoBuildExec: Boolean;
 var
   msg: string;
-  StartHeatNum, NomineeCount, NumOfHeats, count: integer;
+  NumOfEntrants, NumOfHeats, count: integer;
 begin
   result := false;
 
@@ -417,14 +377,7 @@ begin
   end;
 
   // RENUMBER HEATS.
-  if not CORE.qryHeat.IsEmpty then
-  begin
-    ABData.procRenumberHeats.Connection := SCM2.scmConnection;
-    ABData.procRenumberHeats.StoredProcName := 'RenumberHeats';
-    ABData.procRenumberHeats.ParamByName('@EventID').AsInteger := uEvent.PK;
-    ABData.procRenumberHeats.Prepare;
-    ABData.procRenumberHeats.ExecProc;
-  end;
+  RenumberHeats;
 
   // There must be a least 2 lanes for the scatter algorithm.
   if ( uSwimClub.NumberOfLanes < 2) then
@@ -518,10 +471,6 @@ begin
     exit;
   end;
 
-  StartHeatNum := uHeat.LastHeatNum + 1;
-
-  if not (fSortMode = scmABSortMode.abTime) then
-    SortAryEntrantsByTime(); // fastest to slowest....
 
   // *********************************************
   // B A S I C   A u t o - B u i l d . (NO GROUPING)
@@ -529,13 +478,14 @@ begin
   // *********************************************
   if (Settings.ab_GroupByIndx <= 0) then
   begin
+    // sort unplaced entrants fastest to slowest - using TTB.
     ABData.qryUnplacedNominees.IndexName := 'indxTTB';
     if ABData.qryUnplacedNominees.Filtered then
       ABData.qryUnplacedNominees.Filtered := false;
 
 
-    NomineeCount := ABData.qryUnplacedNominees.RecordCount;
-    if NomineeCount = 0 then
+    NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+    if NumOfEntrants = 0 then
     begin
       if (fVerbose) then
       begin
@@ -558,8 +508,8 @@ begin
     // GENDER LOOP START ....
     // for each gender - run filter....
     // StartHeatNum := uHeat.LastHeatNum + 1;
-    // NomineeCount := ABData.qryUnplacedNominees.RecordCount;
-    // if NomineeCount = 0 continue
+    // NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+    // if NumOfEntrants = 0 continue
 
     {
         ABData.qryGender.Connection := SCM2.scmConnection;
@@ -576,15 +526,15 @@ begin
           ABData.qryUnplacedNominees.Filtered := true;
         ABData.qryUnplacedNominees.Refresh; // play it safe.
         // after filter is applied - get the number of unplaced nominees.
-        NomineeCount := ABData.qryUnplacedNominees.RecordCount;
-        count := Build_Entrants(NumOfHeats, StartHeatNum, NomineeCount);
+        NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+        count := Build_Entrants(NumOfHeats, StartHeatNum, NumOfEntrants);
         if count <> 0 then
-          Build_Heats(NumOfHeats, StartHeatNum, NomineeCount); // build heats and lanes
+          Build_Heats(NumOfHeats, StartHeatNum, NumOfEntrants); // build heats and lanes
       end;
     }
 
     // CALCULATE the number of heats needed to build.
-    NumOfHeats := CalcNumberOfHeats(NomineeCount, fRealNumOfLanes);
+    NumOfHeats := CalcNumberOfHeats(NumOfEntrants, fRealNumOfLanes);
     if NumOfHeats = 0 then
     begin
       if (fVerbose) then
@@ -605,7 +555,7 @@ begin
     // construct the AryEntrants array with it's TLaneEntrant objects.
     // assign random number.
     count := AryEntrants_AssignNominees();
-    if count <> NomineeCount then
+    if count <> NumOfEntrants then
     begin
       if (fVerbose) then
       begin
@@ -622,8 +572,7 @@ begin
       exit;
     end;
 
-    count := AryEntrants_AssignEventRankNum();
-    if count <> NomineeCount then
+    if count <> NumOfEntrants then
     begin
       if (fVerbose) then
       begin
@@ -642,8 +591,8 @@ begin
 
     // how many entrants per heat with consideration to fRealNumOfLanes.
     // TODO: set weights to first or last heat?
-    count := Build_EntrantsPerHeat(NumOfHeats, NomineeCount);
-    if count <> NomineeCount then
+    count := Build_EntrantsPerHeat(NumOfHeats, NumOfEntrants);
+    if count <> NumOfEntrants then
     begin
       if (fVerbose) then
       begin
@@ -660,8 +609,14 @@ begin
       exit;
     end;
 
+    // SORT entrant array - fastest to slowest....
+    // NOTE: as qryUnplacedNominees is indx on indxTTB: prior to filling
+    // AryEntrants - the entrant array is already correctly sorted.
+    SortAryEntrantsByTTB();
+
     // SEED : Assign each entrant to a heat and assign a HeatRankNum.
-    count := AryEntrants_HeatNum(StartHeatNum, NumOfHeats);
+    // returns the number of entrants seeded (given a heat number).
+    count := AryEntrants_AssignHeatNum(NumOfHeats);
     if count = 0 then
     begin
       if (fVerbose) then
@@ -679,16 +634,18 @@ begin
       exit;
     end;
 
+    // SEEDING BEGINS....
     // Assign a swimming lane to each entrant based on heat ranking,
     // taking into account lane scattering and excluded lanes.
-    count := Entrants_AssignLaneNum(StartHeatNum, NumOfHeats);
+    // returns the number of entrants assigned a lane number.
+    count := AryEntrants_AssignLaneNum(NumOfHeats);
     if count = 0 then
     begin
       if (fVerbose) then
       begin
         msg := '''
           Internal error...
-          Failed to assign a swimming lanes to entrants.
+          Failed to assign swimming lanes to entrants.
           Auto-Build will exit.
           ''';
         MessageDlg(msg, mtError, [mbOK], 0, mbOK);
@@ -699,15 +656,29 @@ begin
       exit;
     end;
 
+    if count <> NumOfEntrants then
+    begin
+      if (fVerbose) then
+      begin
+        msg := '''
+          Internal warning...
+          Failed to provide all entrants with a swimming lane.
+          Auto-Build will continue.
+          ''';
+        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
+      end;
+    end;
+
     // FINALLY : create heats and lanes in the SwimClubMeet2 database.
-    count := Build_Heats(NumOfHeats, StartHeatNum, NomineeCount);
-    if count = 0 then
+    // returns number of entrants assigned to lanes
+    count := Build_Heats(NumOfHeats, NumOfEntrants);
+    if count < NumOfEntrants then
     begin
       if (fVerbose) then
       begin
         msg := '''
           Internal error...
-          Unable to create the heats.
+          Failed to create all heats and lanes. (SCM database error).
           Auto-Build will exit.
           ''';
         MessageDlg(msg, mtError, [mbOK], 0, mbOK);
@@ -717,6 +688,9 @@ begin
       result := false;
       exit;
     end;
+
+    // RENUMBER HEATS.
+    RenumberHeats;
 
     // GENDER LOOP END...
 
@@ -761,48 +735,42 @@ begin
   if Count > 0 then Result := Count;
 end;
 
-function TABINDV.Build_Heats(NumOfHeats, StartHeatNum, NumOfNominees: Integer):
-    integer;
-var
-  Count: Integer;
-  HeatID: Integer;
-  I: Integer;
-begin
-  result := 0;
-  Count := 0;
-  for I := 0 to NumOfHeats-1 do
-  begin
-    HeatID := uHeat.NewHeat;
-    if HeatID > 0 then
-      Count := Build_FillLanes(HeatID);
-  end;
-  if Count > 0 then Result := Count;
-end;
-
-function TABINDV.Build_FillLanes(HeatID: Integer): Integer;
+function TABINDV.Build_FillLanes(HeatID, HeatNum: Integer): Integer;
 var
   Count: integer;
   obj: TLaneEntrant;
   SearchOptions: TLocateOptions;
+  found: boolean;
 begin
   result := 0;
   Count := 0;
   SearchOptions := [];
+  if fSortMode <> abTTB then
+    SortAryEntrantsByTTB;
   try
     CORE.qrySplitTime.DisableControls;
     CORE.qryWatchTime.DisableControls;
     CORE.qryLane.DisableControls();
-    if CORE.qryHeat.Locate('HeatID', HeatID, SearchOptions) then
+    found := CORE.qryHeat.Locate('HeatID', HeatID, SearchOptions);
+    if found then
     begin
       CORE.qryLane.ApplyMaster; // syncro.
       for obj in AryEntrants do
       begin
-        if obj.HeatNum <> Core.qryHeat.FieldByName('HeatNum').AsInteger then continue;
+        if obj.HeatNum <> HeatNum then continue;
         begin
-          if CORE.qryLane.Locate('LaneNum', obj.LaneNum, SearchOptions) then
+          found := CORE.qryLane.Locate('LaneNum', obj.LaneNum, SearchOptions);
+          if found then
           begin
             try
               CORE.qryLane.Edit;
+              {
+              if uEvent.EventType = scmTEAM then
+              begin
+                CORE.qryLane.FieldByName('TeamID').AsInteger := obj.TeamID;
+              end
+              else
+              }
               CORE.qryLane.FieldByName('NomineeID').AsInteger := obj.NomineeID;
               CORE.qryLane.Post;
               INC(Count, 1);
@@ -823,6 +791,26 @@ begin
     CORE.qrySplitTime.EnableControls;
     CORE.qryWatchTime.EnableControls;
   end;
+end;
+
+function TABINDV.Build_Heats(NumOfHeats, NumOfNominees: Integer): integer;
+var
+  LanesFilled: Integer;
+  HeatID: Integer;
+  I: Integer;
+begin
+  result := 0;
+  LanesFilled := 0;
+  // Slowest heat (swimmers) first - fastest heat (swimmers) last.
+  for I := (NumOfHeats) downto 1 do
+  begin
+    HeatID := uHeat.NewHeat;
+    if HeatID > 0 then
+    begin
+      LanesFilled := LanesFilled + Build_FillLanes(HeatID, I);
+    end;
+  end;
+  if LanesFilled > 0 then Result := LanesFilled;
 end;
 
 function TABINDV.CalcNumberOfHeats(NumOfNominees, RealNumOfLanes: Integer):
@@ -854,72 +842,6 @@ begin
   end;
 end;
 
-
-
-function TABINDV.Entrants_AssignLaneNum(StartHeatNum, Count: Integer): Integer;
-var
-  I, J, RankOffset, Rank, laneNum, EntrantCount: integer;
-  obj: TLaneEntrant;
-  found: boolean;
-begin
-  { Acll here after assigning HeatNum, NomineeID and RankNum.
-    How rank works...
-    Rank order of the swimmer. ie. 1st, 2nd, 3rd, etc.
-    Fast swimmers have a lower value.}
-  result := 0;
-  if fSortMode <> abTime then
-    SortAryEntrantsByTime;
-
-  for J := StartHeatNum to Count do // iterate over heats.
-  begin
-    RankOffset := 0; // rankoffest is used to skip user-excluded lanes.
-    EntrantCount := 0; // used to test if heat has been processed.
-
-    for I := 0 to Length(AryEntrants) - 1 do // Fastest swimmer always at head of array.
-    begin
-      // Has all the entrants been assigned a lane for the given heat?
-      if (EntrantCount >= AryEntrantsPerHeat[J-1]) then break;
-
-      obj := AryEntrants[i];
-      if (obj.HeatNum <> J) then continue;  // wrong heat number.
-
-      Rank := obj.HeatRankNum + RankOffset; // modify to skip lanes.
-      found := false;
-
-      { Handle excluded lanes. Skipping lanes by adjusting ranking.}
-      While not found do
-      begin
-        if (Rank < 1) or (Rank >= Length(AryScatteredLanes)) then
-          break;  // out of bounds.
-        laneNum := AryScatteredLanes[Rank-1]; // NOTE: AryScatteredLanes is base 0
-        if AryExcludedLanes[laneNum-1] then // NOTE: AryExcludedLanes is base 0
-        begin
-          INC(Rank);
-          INC(RankOffset); // needed for the next entrant - to skip excluded lanes.
-        end
-        else
-          found := true;
-      end;
-      { Look-up rank and return with lane number. }
-      if found then
-      begin
-        obj.LaneNum := AryScatteredLanes[Rank-1] ;
-      end
-      else
-        {TODO -oBSA -cGeneral : ERROR -Entrant never got a lane in chosen heat.}
-        obj.LaneNum := 0;
-
-      INC(EntrantCount);
-
-    end;
-
-    if I > 0 then result := I;  // number of heats
-
-  end;
-end;
-
-
-
 { TABINDV }
 
 function TABINDV.Prepare(AConnection: TFDConnection; EventID: Integer; Verbose:
@@ -940,8 +862,21 @@ begin
   end;
 end;
 
-function TABINDV.Seeding_Circle(StartHeatNum, NumOfHeats, SeedDepth: Integer):
-    Integer;
+procedure TABINDV.RenumberHeats;
+begin
+  // RENUMBER HEATS.
+  if Assigned(SCM2) and SCM2.scmConnection.connected
+    and not CORE.qryHeat.IsEmpty then
+  begin
+    SCM2.procRenumberHeats.Connection := SCM2.scmConnection;
+//    SCM2.procRenumberHeats.StoredProcName := 'SwimClubMeet2.dbo.RenumberHeats';
+    SCM2.procRenumberHeats.ParamByName('@EventID').AsInteger := uEvent.PK;
+    SCM2.procRenumberHeats.Prepare;
+    SCM2.procRenumberHeats.ExecProc;
+  end;
+end;
+
+function TABINDV.Seed_Circle(NumOfHeats, SeedDepth: Integer): Integer;
 var
   I, J, HeatNum, LaneNum, NumOfEntrants: Integer;
   HeatOffset, TryHeat: Integer;
@@ -967,8 +902,8 @@ begin
     SeedDepth := NumOfHeats;
 
   // Ensure swimmers are sorted fastest to slowest
-  if not (fSortMode = scmABSortMode.abTime) then
-    SortAryEntrantsByTime;
+  if not (fSortMode = scmABSortMode.abTTB) then
+    SortAryEntrantsByTTB;
 
   // Standard circle seeding: Fastest swimmers distributed across heats
   // For example: 3 heats, 8 swimmers , StartHeatNum=12, SeedDepth=3,
@@ -1013,7 +948,7 @@ begin
       TryHeat := (HeatOffset + J) mod SeedDepth;
       if LaneCounts[TryHeat] < AryEntrantsPerHeat[TryHeat] then
       begin
-        HeatNum := StartHeatNum + TryHeat;
+        HeatNum := TryHeat + 1;
         LaneNum := LaneCounts[TryHeat] + 1;
 
         AryEntrants[I].HeatNum := HeatNum;
@@ -1052,10 +987,11 @@ begin
 
 end;
 
-function TABINDV.Seeding_Default(StartHeatNum, NumOfHeats: Integer): Integer;
+function TABINDV.Seed_Default(NumOfHeats: Integer; Offset: Integer = 0):
+    Integer;
 var
   I, J, indx: Integer;
-  LaneCounts: array of Integer;
+  EntrantCountPerHeat: array of Integer;
 
 begin
   Result := 0;
@@ -1065,13 +1001,13 @@ begin
     or (Length(AryEntrantsPerHeat) =  0) then
     Exit;
   // Ensure swimmers are sorted fastest to slowest
-  if not (fSortMode = scmABSortMode.abTime) then
-    SortAryEntrantsByTime;
+  if not (fSortMode = scmABSortMode.abTTB) then
+    SortAryEntrantsByTTB;
 
   // Initialize lane counters for each heat
-  SetLength(LaneCounts, NumOfHeats);
+  SetLength(EntrantCountPerHeat, NumOfHeats);
   for I := 0 to NumOfHeats - 1 do
-    LaneCounts[I] := 0;
+    EntrantCountPerHeat[I] := 0;
 
   for J := 0 to NumOfHeats - 1 do
   begin
@@ -1082,11 +1018,13 @@ begin
       if (AryEntrants[I].HeatNum > 0) then
         continue;
 
-      if LaneCounts[J] < AryEntrantsPerHeat[J] then
+      if EntrantCountPerHeat[J] < AryEntrantsPerHeat[J] then
       begin
-        AryEntrants[I].HeatNum := StartHeatNum + J;
-        AryEntrants[I].HeatRankNum := LaneCounts[J] + 1;
-        Inc(LaneCounts[J]);
+        // if circle seed preceeds this function then offset =
+        //  number of heats already seeded.
+        AryEntrants[I].HeatNum := J + 1 + Offset;
+        AryEntrants[I].HeatRankNum := EntrantCountPerHeat[J] + 1;
+        Inc(EntrantCountPerHeat[J]);
         Inc(Result);
       end
       else
@@ -1099,10 +1037,10 @@ begin
 
 end;
 
-function TABINDV.Seeding_Random(StartHeatNum, NumOfHeats: Integer): Integer;
+function TABINDV.Seed_Random(NumOfHeats: Integer): Integer;
 begin
   SortAryEntrantsByRandom;
-  result := Seeding_Default(StartHeatNum, NumOfHeats);
+  result := Seed_Default(NumOfHeats);
 end;
 
 procedure TABINDV.SortAryEntrantsByRandom;
@@ -1122,7 +1060,7 @@ begin
   fSortMode := abRandom;
 end;
 
-procedure TABINDV.SortAryEntrantsByTime;
+procedure TABINDV.SortAryEntrantsByTTB;
 var
   I, J: Integer;
   Temp: TLaneEntrant;
@@ -1136,37 +1074,7 @@ begin
         AryEntrants[I] := AryEntrants[J];
         AryEntrants[J] := Temp;
       end;
-  fSortMode := abTime;
-end;
-
-function TABINDV.IsLaneExcluded(LaneNum: integer): Boolean;
-begin
-  result := false;
-  if (LaneNum > 0) and (LaneNum <= fNumOfPoolLanes) then
-    result := AryExcludedLanes[LaneNum-1];
-end;
-
-function TABINDV.IsHeatFull(HeatNum: integer): boolean;
-begin
-  {is heatfull}
-  result := true;
-end;
-
-function TABINDV.IsLaneFilled(HeatNum, LaneNum: integer): boolean;
-var
-  I: integer;
-  obj: TLaneEntrant;
-begin
-  result := false;
-  for I := 0 to Length(AryEntrants)-1 do
-  begin
-    obj := AryEntrants[I];
-    if (obj.HeatNum = HeatNum) and (obj.LaneNum = LaneNum) then
-    begin
-      result := true;
-      exit;
-    end;
-  end;
+  fSortMode := abTTB;
 end;
 
 end.

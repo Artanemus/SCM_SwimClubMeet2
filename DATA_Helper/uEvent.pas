@@ -16,10 +16,12 @@ uses
 
 function AllHeatsAreClosed: Boolean;
 function Assert(): boolean;
-function CalcEvent_EntrantCount: integer;
-function CalcEvent_NomineeCount: integer;
-function GetEvent_EntrantCount: integer;
-function GetEvent_NomineeCount: integer;
+
+//function CalcEvent_EntrantCount: integer;
+//function CalcEvent_NomineeCount: integer;
+//function GetEvent_EntrantCount: integer;
+//function GetEvent_NomineeCount: integer;
+
 function GetHeatCount: integer;
 function DeleteEvent(DoExclude: Boolean = true): boolean;
 procedure DeleteHeats(DoExclude: boolean = true);
@@ -39,8 +41,11 @@ function PK(): integer; // NO CHECKS. RTNS: Primary key.
 procedure RenumberHeats;
 
 procedure SetEventStatusID(aEventStatusID: integer);
-procedure SetEvent_EntrantCount; // performs calculation
-procedure SetEvent_NomineeCount; // performs calculation
+
+//procedure SetEvent_EntrantCount; // performs calculation
+//procedure SetEvent_NomineeCount; // performs calculation
+
+
 procedure FNameEllipse(); // todo: move out of uEvent to frame.
 function NewEvent: Integer;
 
@@ -228,6 +233,7 @@ begin
   *)
 end;
 
+{
 function CalcEvent_EntrantCount: integer;
 var
   v: variant;
@@ -329,7 +335,7 @@ function GetEvent_NomineeCount: integer;
 begin
   result := CORE.qryEvent.FieldByName('GetEvent_NomineeCount').AsInteger;
 end;
-
+}
 function GetEventID: integer;
 begin
   result := 0;

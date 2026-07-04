@@ -49,8 +49,8 @@ object ABINDV_Data: TABINDV_Data
       item
         Active = True
         Name = 'indxTTB'
-        Fields = 'PB;NomineeID'
-        DescFields = 'PB'
+        Fields = 'TTB;NomineeID'
+        DescFields = 'TTB'
       end
       item
         Active = True
@@ -134,27 +134,6 @@ object ABINDV_Data: TABINDV_Data
         DataType = ftInteger
         ParamType = ptInput
         Value = 2
-      end>
-  end
-  object procRenumberHeats: TFDStoredProc
-    Connection = SCM2.scmConnection
-    CatalogName = 'SwimClubMeet2'
-    SchemaName = 'dbo'
-    StoredProcName = 'RenumberHeats'
-    Left = 64
-    Top = 136
-    ParamData = <
-      item
-        Position = 1
-        Name = '@RETURN_VALUE'
-        DataType = ftInteger
-        ParamType = ptResult
-      end
-      item
-        Position = 2
-        Name = '@EventID'
-        DataType = ftInteger
-        ParamType = ptInput
       end>
   end
 end

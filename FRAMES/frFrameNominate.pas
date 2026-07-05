@@ -51,10 +51,10 @@ type
   public
     procedure UpdateUI(DoFullUpdate: boolean = false);
     // messages originate in the CORE and are forwarded by main form.
-    procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
-      message SCM_SCROLL_NOMINATE_FILTERMEMBER; // refreshes nominate and qualified icons
+    procedure Msg_SCM_Scroll_Nominate(var Msg: TMessage); message
+        SCM_AFTERSCROLL_NOMINATE; // not in use.
     procedure Msg_SCM_AfterScroll_Session(var Msg: TMessage); message
-        SCM_AFTERSCROLL_SESSION;
+        SCM_AFTERSCROLL_SESSION; // not in use.
     procedure UpdateQryNominate();
   end;
 
@@ -258,7 +258,7 @@ begin
 
 end;
 
-procedure TFrameNominate.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
+procedure TFrameNominate.Msg_SCM_Scroll_Nominate(var Msg: TMessage);
 begin
 //    frNominate.UpdateUI;
 end;

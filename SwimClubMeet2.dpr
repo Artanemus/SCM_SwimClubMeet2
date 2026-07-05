@@ -87,7 +87,8 @@ uses
   dlgABSettings in 'AUTOBUILD\dlgABSettings.pas' {ABSettings},
   uABINDV in 'AUTOBUILD\INDV\uABINDV.pas',
   uMember in 'DATA_Helper\uMember.pas',
-  DlgNom_LookUp in 'NOMINATE\DlgNom_LookUp.pas' {Nom_Lookup};
+  DlgNom_LookUp in 'NOMINATE\DlgNom_LookUp.pas' {Nom_Lookup},
+  dlgABDebug in 'AUTOBUILD\dlgABDebug.pas' {ABDebug};
 
 {$R *.res}
 

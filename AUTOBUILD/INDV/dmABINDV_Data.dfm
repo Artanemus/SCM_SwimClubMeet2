@@ -14,34 +14,7 @@ object ABINDV_Data: TABINDV_Data
       ''
       '')
     Left = 64
-    Top = 192
-  end
-  object procDeleteHeats: TFDStoredProc
-    Connection = SCM2.scmConnection
-    CatalogName = 'SwimClubMeet2'
-    SchemaName = 'dbo'
-    StoredProcName = 'DeleteAllHeats'
-    Left = 64
-    Top = 80
-    ParamData = <
-      item
-        Position = 1
-        Name = '@RETURN_VALUE'
-        DataType = ftInteger
-        ParamType = ptResult
-      end
-      item
-        Position = 2
-        Name = '@EventID'
-        DataType = ftInteger
-        ParamType = ptInput
-      end
-      item
-        Position = 3
-        Name = '@Exclude'
-        DataType = ftBoolean
-        ParamType = ptInput
-      end>
+    Top = 88
   end
   object qryUnplacedNominees: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -50,13 +23,11 @@ object ABINDV_Data: TABINDV_Data
         Active = True
         Name = 'indxTTB'
         Fields = 'TTB;NomineeID'
-        DescFields = 'TTB'
       end
       item
         Active = True
         Name = 'indxTTBGender'
-        Fields = 'TTB;GenderID;MemberID'
-        DescFields = 'TTB'
+        Fields = 'TTB;GenderID;NomineeID'
       end
       item
         Active = True
@@ -66,10 +37,14 @@ object ABINDV_Data: TABINDV_Data
       end>
     IndexName = 'indxPK'
     Connection = SCM2.scmConnection
+    FormatOptions.AssignedValues = [fvFmtDisplayTime]
+    FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Nominee'
+    UpdateOptions.KeyFields = 'NomineeID'
     SQL.Strings = (
       'USE SwimClubMeet2'
       ''
@@ -135,5 +110,10 @@ object ABINDV_Data: TABINDV_Data
         ParamType = ptInput
         Value = 2
       end>
+  end
+  object dsUnplacedNominees: TDataSource
+    DataSet = qryUnplacedNominees
+    Left = 192
+    Top = 24
   end
 end

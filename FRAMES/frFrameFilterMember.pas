@@ -56,6 +56,7 @@ type
     vimgSearch: TVirtualImage;
     spbtnReport: TSpeedButton;
     spbtnSort: TSpeedButton;
+    pnlDebug: TPanel;
     procedure actnNom_ClearFilterExecute(Sender: TObject);
     procedure actnNom_ClearFilterUpdate(Sender: TObject);
     procedure actnNom_MemberDetailsUpdate(Sender: TObject);
@@ -74,6 +75,10 @@ type
   public
     procedure InitFilterMemberDB;
     procedure UpdateUI(DoFullUpdate: boolean = false);
+
+    procedure OnPreferenceChange(); // Tools preferences calls here, via main form.
+    procedure OnAfterScroll(); // handles debug panel.
+
   end;
 
 implementation
@@ -325,7 +330,30 @@ end;
 procedure TFrameFilterMember.Loaded;
 begin
   inherited;
-  // init params
+  pnlDebug.Visible := false; // DEBUG PANEL
+end;
+
+procedure TFrameFilterMember.OnAfterScroll;
+var
+  s: string;
+begin
+  if pnlDebug.Visible then
+  begin
+    s := 'MemberID:' + IntToStr(CORE.qryFiltermember.FieldByName('MemberID').AsInteger);
+    pnlDebug.Caption := s;
+  end;
+end;
+
+
+procedure TFrameFilterMember.OnPreferenceChange;
+begin
+  // Debug mode state...
+  pnlDebug.Visible := false; // default
+  if Assigned(Settings) then
+  begin
+    if Settings.ShowDebugInfo then
+      pnlDebug.Visible := true;
+  end;
 end;
 
 { TFrameMember }
@@ -374,6 +402,7 @@ begin
       pnlList.Visible := false;
       edtSearch.Enabled := false;
       btnClearSearch.Enabled :=false;
+      pnlDebug.Visible := false;
     end
     else
     begin
@@ -381,6 +410,9 @@ begin
       pnlList.Visible := true;
       edtSearch.Enabled := true;
       btnClearSearch.Enabled := true;
+      // conditionals..
+      if Assigned(Settings) and Settings.ShowDebugInfo then
+        pnlDebug.Visible := true else pnlDebug.Visible := false;
     end;
   finally
     UnlockDrawing;

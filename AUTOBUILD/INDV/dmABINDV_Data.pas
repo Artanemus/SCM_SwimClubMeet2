@@ -12,8 +12,8 @@ type
 
   TABINDV_Data = class(TDataModule)
     qryGender: TFDQuery;
-    procDeleteHeats: TFDStoredProc;
     qryUnplacedNominees: TFDQuery;
+    dsUnplacedNominees: TDataSource;
     procedure DataModuleCreate(Sender: TObject);
 
   private

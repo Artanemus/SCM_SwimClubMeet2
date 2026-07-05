@@ -54,9 +54,6 @@ type
     procedure SortAryEntrantsByRandom;
     procedure SortAryEntrantsByTTB;
 
-    { Renumber Heats. Uses uEvent.PK}
-    procedure RenumberHeats;
-
   public
     constructor Create(AOwner: TComponent); reintroduce;
     destructor Destroy; override;
@@ -77,6 +74,9 @@ type
   end;
 
 implementation
+
+uses
+  dlgABDebug;
 
 { TLaneEntrant }
 
@@ -311,6 +311,7 @@ function TABINDV.AutoBuildExec: Boolean;
 var
   msg: string;
   NumOfEntrants, NumOfHeats, count: integer;
+  dlg: TABDebug;
 begin
   result := false;
 
@@ -368,16 +369,20 @@ begin
   // CLEAN UP HEATS - Remove opened heats. Exclude raced or closed heats.
   if not CORE.qryHeat.IsEmpty then
   begin
-    ABData.procDeleteHeats.Connection := SCM2.scmConnection;
-    ABData.procDeleteHeats.StoredProcName := 'DeleteAllHeats';
-    ABData.procDeleteHeats.ParamByName('@EventID').AsInteger := uEvent.PK;
-    ABData.procDeleteHeats.ParamByName('@Exclude').AsBoolean := true;
-    ABData.procDeleteHeats.Prepare;
-    ABData.procDeleteHeats.ExecProc;
+    SCM2.ProcDeleteALLHeats.Connection := SCM2.scmConnection;
+    SCM2.ProcDeleteALLHeats.StoredProcName := 'DeleteAllHeats';
+    SCM2.procDeleteALLHeats.ParamByName('@EventID').AsInteger := uEvent.PK;
+    SCM2.procDeleteALLHeats.ParamByName('@Exclude').AsBoolean := true;
+    SCM2.procDeleteALLHeats.Prepare;
+    SCM2.procDeleteALLHeats.ExecProc;
   end;
 
-  // RENUMBER HEATS.
-  RenumberHeats;
+  if not CORE.qryHeat.IsEmpty then
+  begin
+    // CORE.qryHeat.ApplyMaster;
+    // RENUMBER HEATS: calls stored procedure - SwimClubMeet.dbo.RenumberHeats
+    uEvent.RenumberHeats;
+  end;
 
   // There must be a least 2 lanes for the scatter algorithm.
   if ( uSwimClub.NumberOfLanes < 2) then
@@ -452,6 +457,10 @@ begin
   ABData.qryUnplacedNominees.Filter := '';
   ABData.qryUnplacedNominees.Filtered := false;
 
+//  dlg := TABDebug.Create(Self);
+//  dlg.ShowModal;
+//  dlg.Free;
+
   if (ABData.qryUnplacedNominees.IsEmpty) then
   begin
     if (fVerbose) then
@@ -482,6 +491,11 @@ begin
     ABData.qryUnplacedNominees.IndexName := 'indxTTB';
     if ABData.qryUnplacedNominees.Filtered then
       ABData.qryUnplacedNominees.Filtered := false;
+
+//  dlg := TABDebug.Create(Self);
+//  dlg.ShowModal;
+//  dlg.Free;
+
 
 
     NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
@@ -689,8 +703,13 @@ begin
       exit;
     end;
 
-    // RENUMBER HEATS.
-    RenumberHeats;
+    CORE.qryHeat.ApplyMaster;
+    if not CORE.qryHeat.IsEmpty then
+    begin
+    // RENUMBER HEATS: calls stored procedure - SwimClubMeet.dbo.RenumberHeats
+      uEvent.RenumberHeats;
+      CORE.qryLane.ApplyMaster;
+    end;
 
     // GENDER LOOP END...
 
@@ -862,19 +881,6 @@ begin
   end;
 end;
 
-procedure TABINDV.RenumberHeats;
-begin
-  // RENUMBER HEATS.
-  if Assigned(SCM2) and SCM2.scmConnection.connected
-    and not CORE.qryHeat.IsEmpty then
-  begin
-    SCM2.procRenumberHeats.Connection := SCM2.scmConnection;
-//    SCM2.procRenumberHeats.StoredProcName := 'SwimClubMeet2.dbo.RenumberHeats';
-    SCM2.procRenumberHeats.ParamByName('@EventID').AsInteger := uEvent.PK;
-    SCM2.procRenumberHeats.Prepare;
-    SCM2.procRenumberHeats.ExecProc;
-  end;
-end;
 
 function TABINDV.Seed_Circle(NumOfHeats, SeedDepth: Integer): Integer;
 var

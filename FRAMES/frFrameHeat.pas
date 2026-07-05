@@ -142,7 +142,7 @@ begin
       if Assigned(AB) then AB.free;
       uEvent.DetailTBLs_ApplyMaster;
       uEvent.DetailTBLs_EnableCNTRLs;
-      // CORE.qryHeat.Refresh;
+      CORE.qryHeat.Refresh;
       grid.EndUpdate;
       UnlockDrawing;
       if fVerbose then

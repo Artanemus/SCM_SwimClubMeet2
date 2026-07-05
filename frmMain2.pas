@@ -150,6 +150,8 @@ type
         SCM_AFTERSCROLL_HEAT;
     procedure Msg_SCM_AfterScroll_Lane(var Msg: TMessage); message
         SCM_AFTERSCROLL_LANE;
+    procedure Msg_SCM_AfterScroll_FilterMember(var Msg: TMessage); message
+        SCM_AFTERSCROLL_FILTERMEMBER;
 
     procedure Msg_SCM_AfterPost_Session(var Msg: TMessage); message
         SCM_AFTERPOST_SESSION;
@@ -160,8 +162,6 @@ type
     procedure Msg_SCM_AfterPost_Lane(var Msg: TMessage); message
         SCM_AFTERPOST_LANE;
 
-    procedure Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
-      message SCM_SCROLL_NOMINATE_FILTERMEMBER;
 
     procedure Msg_SCM_Scroll_EventType(var Msg: TMessage);
       message SCM_SCROLL_EVENTTYPE;
@@ -603,9 +603,10 @@ begin
   frLane.OnScroll_EventType(Msg.WParam);
 end;
 
-procedure TMain2.Msg_SCM_Scroll_FilterMember(var Msg: TMessage);
+procedure TMain2.Msg_SCM_AfterScroll_FilterMember(var Msg: TMessage);
 begin
     frNominate.UpdateUI();
+    frFilterMember.OnAfterScroll;
 end;
 
 procedure TMain2.Msg_SCM_AfterPost_Event(var Msg: TMessage);
@@ -637,6 +638,7 @@ begin
   frHeat.UpdateUI;
   frEvent.OnAfterScroll();
 end;
+
 
 procedure TMain2.Msg_SCM_AfterScroll_Heat(var Msg: TMessage);
 begin
@@ -925,11 +927,12 @@ begin
   dlg.ShowModal;
   dlg.Free;
 
-    // enable/disable FINA codes....
-    if Assigned(frlane) then frLane.OnPreferenceChange;
-    if Assigned(frHeat) then frHeat.OnPreferenceChange;
-    if Assigned(frEvent) then frEvent.OnPreferenceChange;
-    if Assigned(frSession) then frSession.OnPreferenceChange;
+  // enable/disable FINA codes....
+  if Assigned(frlane) then frLane.OnPreferenceChange;
+  if Assigned(frHeat) then frHeat.OnPreferenceChange;
+  if Assigned(frEvent) then frEvent.OnPreferenceChange;
+  if Assigned(frSession) then frSession.OnPreferenceChange;
+  if Assigned(frFilterMember) then frFilterMember.OnPreferenceChange;
 
 end;
 

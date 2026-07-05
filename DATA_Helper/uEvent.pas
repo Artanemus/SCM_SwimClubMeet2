@@ -112,11 +112,21 @@ begin
 end;
 
 procedure RenumberHeats;
+var
+  PK: integer;
 begin
-  if CORE.qryHeat.IsEmpty then exit;
-  SCM2.procRenumberHeats.Params[1].Value := uEvent.PK;
-  SCM2.procRenumberHeats.Prepare;
-  SCM2.procRenumberHeats.ExecProc;
+  if Assigned(SCM2) and SCM2.scmConnection.Connected
+    and Assigned(CORE) and not CORE.qryEvent.IsEmpty then
+  begin
+    PK := uEvent.PK;
+    if PK <> 0 then
+    begin
+      SCM2.procRenumberHeats.Connection := SCM2.scmConnection;
+      SCM2.procRenumberHeats.ParamByName('@EventID').AsInteger := PK;
+      SCM2.procRenumberHeats.Prepare;
+      SCM2.procRenumberHeats.ExecProc;
+    end;
+  end;
 end;
 
 procedure DeleteHeats(DoExclude: boolean = true);

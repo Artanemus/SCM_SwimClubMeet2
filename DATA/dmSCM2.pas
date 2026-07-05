@@ -25,6 +25,8 @@ type
     procRenumberEvents: TFDStoredProc;
     procRenumberLanes: TFDStoredProc;
     scmConnection: TFDConnection;
+    procDeleteHeats: TFDStoredProc;
+    ProcDeleteALLHeats: TFDStoredProc;
     procedure DataModuleDestroy(Sender: TObject);
     procedure DataModuleCreate(Sender: TObject);
     procedure scmConnectionAfterConnect(Sender: TObject);

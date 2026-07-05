@@ -506,7 +506,7 @@ begin
         // additional params for sync (ie. manage members, etc)
         WP := qryFilterMember.FieldByName('MemberID').AsInteger;
         LP := qrySession.FieldByName('SessionID').AsInteger;
-        PostMessage(msgHandle, SCM_SCROLL_NOMINATE_FILTERMEMBER, WP, LP);
+        PostMessage(msgHandle, SCM_AFTERSCROLL_FILTERMEMBER, WP, LP);
       end;
     end;
   end;

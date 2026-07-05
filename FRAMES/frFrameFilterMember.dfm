@@ -193,10 +193,11 @@ object FrameFilterMember: TFrameFilterMember
       Left = 0
       Top = 0
       Width = 582
-      Height = 482
+      Height = 447
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
+      ExplicitHeight = 482
       object rpnlSearch: TRelativePanel
         Left = 0
         Top = 0
@@ -292,7 +293,7 @@ object FrameFilterMember: TFrameFilterMember
         Left = 0
         Top = 49
         Width = 582
-        Height = 433
+        Height = 398
         Cursor = crDefault
         Align = alClient
         Color = clWhite
@@ -627,6 +628,7 @@ object FrameFilterMember: TFrameFilterMember
           FFC003FF}
         ShowUnicode = False
         OnGetHTMLTemplate = gridGetHTMLTemplate
+        ExplicitHeight = 433
         ColWidths = (
           0
           300)
@@ -634,6 +636,16 @@ object FrameFilterMember: TFrameFilterMember
           0
           32)
       end
+    end
+    object pnlDebug: TPanel
+      Left = 0
+      Top = 447
+      Width = 582
+      Height = 35
+      Align = alBottom
+      BevelOuter = bvNone
+      TabOrder = 1
+      ExplicitTop = 457
     end
   end
   object actnlistNomMember: TActionList

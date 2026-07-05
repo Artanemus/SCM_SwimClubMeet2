@@ -49,6 +49,7 @@ function DeleteLane: boolean;
 var
   SQL: string;
   doRenumber: boolean;
+  PK: integer;
 begin
   result := false;
   doRenumber := false;
@@ -56,6 +57,11 @@ begin
   if uSession.IsLocked() then exit;
 
   if CORE.qryLane.IsEmpty then exit;
+
+  PK := CORE.qryLane.FieldByName('LaneID').AsInteger;
+
+  if PK = 0 then exit;
+
 
   // Can't delete this lane if it's be raced or closed.
   CORE.qryLane.DisableControls;
@@ -67,7 +73,7 @@ begin
       // Only DeleteLane nominations if no heats exist.
       SQL :=
       'Delete FROM SwimClubMeet2.dbo.WatchTime WHERE WatchTime.LaneID = :ID';
-      SCM2.scmConnection.ExecSQL(SQL, [uLane.PK]);
+      SCM2.scmConnection.ExecSQL(SQL, [PK]);
     finally
     end;
     // D E L E T E   SPLIT-TIMES...............................
@@ -75,7 +81,7 @@ begin
       // Only DeleteLane nominations if no heats exist.
       SQL :=
       'Delete FROM SwimClubMeet2.dbo.SplitTime WHERE SplitTime.LaneID = :ID';
-      SCM2.scmConnection.ExecSQL(SQL, [uLane.PK]);
+      SCM2.scmConnection.ExecSQL(SQL, [PK]);
     finally
     end;
     // F I N A L L Y   D E L E T E   L A N E .

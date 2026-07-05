@@ -411,6 +411,10 @@
             <Form>Nom_Lookup</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="AUTOBUILD\dlgABDebug.pas">
+            <Form>ABDebug</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

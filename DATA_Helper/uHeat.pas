@@ -28,13 +28,20 @@ function Locate(aHeatID: integer): Boolean;
 function NextID(aHeatID: integer): integer; // uses HeatNum
 function PK(): integer; // NO CHECKS. RTNS: Primary key.
 function PrevID(aHeatID: integer): integer; // uses HeatNum
-function RenumberLanes(DoLocate: Boolean = true): integer; deprecated;
-function RenumberLanesAdv(DoLocate: Boolean = true): integer; deprecated
+
+//function RenumberLanes(DoLocate: Boolean = true): integer; deprecated;
+//function RenumberLanesAdv(DoLocate: Boolean = true): integer; deprecated
+
 function PadLanes()	: integer;
 function TrimLanes(DoExclude: Boolean = true): integer;
 //function ClearGutters(DoExclude: Boolean = true): integer;
 function NewHeat: Integer;
 procedure ToggleStatus(); // current heat
+
+procedure DetailTBLs_DisableCNTRLs;
+procedure DetailTBLs_ApplyMaster;
+procedure DetailTBLs_EnableCNTRLs;
+
 
 
 implementation
@@ -163,22 +170,13 @@ begin
         end;
       end
     finally
-      if doRenumber then
-      begin
-
-        // RENUMBER HEATS. Use alternative method EXEC.
-        // Originally uHeat.RenumberLanes(false); ... depreciated
-        if not CORE.qryHeat.IsEmpty then
+      CORE.qryHeat.ApplyMaster;
+      if not CORE.qryHeat.IsEmpty then
         begin
-          SCM2.procRenumberHeats.Connection := SCM2.scmConnection;
-          SCM2.procRenumberHeats.StoredProcName := 'SwimClubMeet2.dbo.RenumberHeats';
-          SCM2.procRenumberHeats.ParamByName('@EventID').AsInteger := uEvent.PK;
-          SCM2.procRenumberHeats.Prepare;
-          SCM2.procRenumberHeats.ExecProc;
-        end;
-
+        if doRenumber then
+            uEvent.RenumberHeats;
+        CORE.qryLane.ApplyMaster;
       end;
-      CORE.qryLane.ApplyMaster;
       CORE.qryLane.EnableControls;
     end;
   end;
@@ -302,12 +300,8 @@ end;
 
 function NewHeat: Integer;
 var
-  fld: TField;
   aHeatNum: integer;
-  SQL: string;
-  v: Variant;
 begin
-  fld := nil;
   result := 0;
   if CORE.qryEvent.IsEmpty then exit;
   try
@@ -357,6 +351,7 @@ begin
   end;
 end;
 
+(*
 function RenumberLanes(DoLocate: Boolean = true): integer; deprecated;
 var
   aLaneID: integer;
@@ -371,11 +366,11 @@ begin
     if DoLocate then
       aLaneID := uHeat.PK;
   // BSA wip .. Move into query uHeat
-  (*
+  {
     SCM2.procRenumberLanes.Params[1].Value := uHeat.PK;
     SCM2.procRenumberLanes.Prepare;
     SCM2.procRenumberLanes.ExecProc;
-  *)
+  }
   finally
     CORE.qryHeat.ApplyMaster;
     if DoLocate then
@@ -384,6 +379,7 @@ begin
     CORE.qryLane.EnableControls;
   end;
 end;
+
 
 function RenumberLanesAdv(DoLocate: Boolean = true): integer;
 var
@@ -485,6 +481,7 @@ begin
   end;
 
 end;
+*)
 
 procedure ToggleStatus;
 var

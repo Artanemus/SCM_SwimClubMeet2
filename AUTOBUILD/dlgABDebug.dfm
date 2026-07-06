@@ -19,9 +19,6 @@ object ABDebug: TABDebug
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitLeft = 112
-    ExplicitTop = 368
-    ExplicitWidth = 185
   end
   object pnlBody: TPanel
     Left = 0
@@ -31,23 +28,49 @@ object ABDebug: TABDebug
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 320
-    ExplicitTop = 272
-    ExplicitWidth = 185
-    ExplicitHeight = 41
-    object grid: TDBGrid
+    object pcntrlBody: TPageControl
       Left = 0
       Top = 0
       Width = 815
       Height = 503
+      ActivePage = tsCOREqryHeat
       Align = alClient
-      DataSource = ABINDV_Data.dsUnplacedNominees
       TabOrder = 0
-      TitleFont.Charset = DEFAULT_CHARSET
-      TitleFont.Color = clWindowText
-      TitleFont.Height = -12
-      TitleFont.Name = 'Segoe UI'
-      TitleFont.Style = []
+      object tsUnPlacedNominees: TTabSheet
+        Caption = 'UnPlaced Nominees'
+        object grid: TDBGrid
+          Left = 0
+          Top = 0
+          Width = 807
+          Height = 473
+          Align = alClient
+          DataSource = ABINDV_Data.dsUnplacedNominees
+          TabOrder = 0
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -12
+          TitleFont.Name = 'Segoe UI'
+          TitleFont.Style = []
+        end
+      end
+      object tsCOREqryHeat: TTabSheet
+        Caption = 'CORE.qryHeat'
+        ImageIndex = 1
+        object grid2: TDBGrid
+          Left = 0
+          Top = 0
+          Width = 807
+          Height = 473
+          Align = alClient
+          DataSource = CORE.dsHeat
+          TabOrder = 0
+          TitleFont.Charset = DEFAULT_CHARSET
+          TitleFont.Color = clWindowText
+          TitleFont.Height = -12
+          TitleFont.Name = 'Segoe UI'
+          TitleFont.Style = []
+        end
+      end
     end
   end
 end

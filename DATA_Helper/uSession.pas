@@ -347,6 +347,10 @@ begin
   SCM2.procRenumberEvents.Params[1].Value := uSession.PK;
   SCM2.procRenumberEvents.Prepare;
   SCM2.procRenumberEvents.ExecProc;
+
+  // IMPORTANT: Resync data to current state.
+  CORE.qryEvent.Refresh;
+
 end;
 
 procedure SetSess_EntrantCount;

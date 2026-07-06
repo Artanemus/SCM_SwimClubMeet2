@@ -123,7 +123,7 @@ end;
 
 function TABINDV.AryEntrants_AssignLaneNum(NumOfHeats: Integer): Integer;
 var
-  I, J, RankOffset, Rank, laneNum, EntrantCount: integer;
+  I, J, RankOffset, Rank, laneNum, EntrantCount, Count: integer;
   obj: TLaneEntrant;
   found: boolean;
 begin
@@ -140,12 +140,12 @@ begin
   for J := 0 to NumOfHeats-1 do // iterate over heats.
   begin
     RankOffset := 0; // rankoffest is used to skip user-excluded lanes.
-    EntrantCount := 0; // used to test if heat has been processed.
+    Count := 0; // used to test if heat has been processed.
 
     for I := 0 to Length(AryEntrants) - 1 do // Fastest swimmer always at head of array.
     begin
       // Has all the entrants been assigned a lane for the given heat?
-      if (EntrantCount >= AryEntrantsPerHeat[J]) then break;
+      if (Count >= AryEntrantsPerHeat[J]) then break;
 
       obj := AryEntrants[i];
       if (obj.HeatNum <> (J+1)) then continue;  // wrong heat number.
@@ -172,6 +172,7 @@ begin
       begin
         obj.LaneNum := AryScatteredLanes[Rank-1] ;
         INC(EntrantCount);
+        INC(Count);
       end
       else
         {TODO -oBSA -cGeneral : ERROR -Entrant never got a lane in chosen heat.}
@@ -375,13 +376,19 @@ begin
     SCM2.procDeleteALLHeats.ParamByName('@Exclude').AsBoolean := true;
     SCM2.procDeleteALLHeats.Prepare;
     SCM2.procDeleteALLHeats.ExecProc;
+
+    // IMPORTANT: Resync data to current state.
+    CORE.qryHeat.Refresh;
   end;
+
+//  dlg := TABDebug.Create(Self);
+//  dlg.ShowModal;
+//  dlg.Free;
 
   if not CORE.qryHeat.IsEmpty then
   begin
-    // CORE.qryHeat.ApplyMaster;
     // RENUMBER HEATS: calls stored procedure - SwimClubMeet.dbo.RenumberHeats
-    uEvent.RenumberHeats;
+    uEvent.RenumberHeats; // performs refresh on qryheat.
   end;
 
   // There must be a least 2 lanes for the scatter algorithm.
@@ -457,16 +464,12 @@ begin
   ABData.qryUnplacedNominees.Filter := '';
   ABData.qryUnplacedNominees.Filtered := false;
 
-//  dlg := TABDebug.Create(Self);
-//  dlg.ShowModal;
-//  dlg.Free;
-
   if (ABData.qryUnplacedNominees.IsEmpty) then
   begin
     if (fVerbose) then
     begin
       msg := '''
-        Unswum heats have been cleared.
+        ''OPEN'' heats have been cleared.
         After excluding entrants in closed and raced heats ...
         all outstanding nominees have been given a lane.
         Auto-Build will exit.
@@ -492,32 +495,7 @@ begin
     if ABData.qryUnplacedNominees.Filtered then
       ABData.qryUnplacedNominees.Filtered := false;
 
-//  dlg := TABDebug.Create(Self);
-//  dlg.ShowModal;
-//  dlg.Free;
-
-
-
     NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
-    if NumOfEntrants = 0 then
-    begin
-      if (fVerbose) then
-      begin
-        msg := '''
-          Unswum heats have been cleared.
-          After excluding entrants in closed and raced heats,
-          and applying the basic auto-build filters...
-          all outstanding nominees have been given a lane.
-          Auto-Build will exit.
-          ''';
-        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
-      end;
-      fError := false;
-      fErrorNum := 0;
-      result := true;
-      exit;
-    end;
-
 
     // GENDER LOOP START ....
     // for each gender - run filter....
@@ -686,6 +664,8 @@ begin
     // FINALLY : create heats and lanes in the SwimClubMeet2 database.
     // returns number of entrants assigned to lanes
     count := Build_Heats(NumOfHeats, NumOfEntrants);
+    CORE.qryLane.Refresh; // REQUIRED: ReSync data state.
+
     if count < NumOfEntrants then
     begin
       if (fVerbose) then
@@ -703,12 +683,11 @@ begin
       exit;
     end;
 
-    CORE.qryHeat.ApplyMaster;
     if not CORE.qryHeat.IsEmpty then
     begin
     // RENUMBER HEATS: calls stored procedure - SwimClubMeet.dbo.RenumberHeats
-      uEvent.RenumberHeats;
-      CORE.qryLane.ApplyMaster;
+      uEvent.RenumberHeats; // Performs refresh on qryheat.
+      // CORE.qryLane.ApplyMaster; // Is this required?
     end;
 
     // GENDER LOOP END...
@@ -773,7 +752,7 @@ begin
     found := CORE.qryHeat.Locate('HeatID', HeatID, SearchOptions);
     if found then
     begin
-      CORE.qryLane.ApplyMaster; // syncro.
+      CORE.qryLane.ApplyMaster; // Required.
       for obj in AryEntrants do
       begin
         if obj.HeatNum <> HeatNum then continue;
@@ -803,10 +782,13 @@ begin
 
   finally
     if Count > 0 then result := Count;
-    CORE.qryLane.ApplyMaster;
+    // CORE.qryLane.ApplyMaster; // Assert: is this required?
     CORE.qryLane.EnableControls();
-    CORE.qrySplitTime.ApplyMaster;
-    CORE.qryWatchTime.ApplyMaster;
+
+    if not CORE.qrySplitTime.IsEmpty then // avoid exception error.
+      CORE.qrySplitTime.ApplyMaster;
+    if not CORE.qryWatchTime.IsEmpty then // avoid exception error.
+      CORE.qryWatchTime.ApplyMaster;
     CORE.qrySplitTime.EnableControls;
     CORE.qryWatchTime.EnableControls;
   end;

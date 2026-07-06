@@ -2867,7 +2867,7 @@ object ABSettings: TABSettings
     end
     object lblCustomDate: TLabel
       Left = 416
-      Top = 199
+      Top = 183
       Width = 85
       Height = 16
       Caption = 'Custom Date...'
@@ -2995,7 +2995,7 @@ object ABSettings: TABSettings
       Left = 416
       Top = 6
       Width = 273
-      Height = 187
+      Height = 171
       Caption = 'Member'#39's AGE as of...'
       Items.Strings = (
         'Start of swimming season.'
@@ -3007,7 +3007,7 @@ object ABSettings: TABSettings
     end
     object datePickerCustom: TDatePicker
       Left = 416
-      Top = 226
+      Top = 210
       Date = 45889.000000000000000000
       DateFormat = 'dd/mm/yyyy'
       Font.Charset = DEFAULT_CHARSET
@@ -3020,7 +3020,7 @@ object ABSettings: TABSettings
     object btnToday: TButton
       Tag = 1
       Left = 572
-      Top = 226
+      Top = 210
       Width = 82
       Height = 32
       Hint = 'Assign todays date to custom.'
@@ -3034,7 +3034,7 @@ object ABSettings: TABSettings
     object btnDate: TButton
       Tag = 1
       Left = 660
-      Top = 226
+      Top = 210
       Width = 82
       Height = 32
       Hint = 'Calendar style date picker.'

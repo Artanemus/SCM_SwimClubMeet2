@@ -125,6 +125,10 @@ begin
       SCM2.procRenumberHeats.ParamByName('@EventID').AsInteger := PK;
       SCM2.procRenumberHeats.Prepare;
       SCM2.procRenumberHeats.ExecProc;
+
+      // IMPORTANT: Resync data to current state.
+      CORE.qryHeat.Refresh;
+
     end;
   end;
 end;

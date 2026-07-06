@@ -5,13 +5,17 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, Vcl.ExtCtrls, Vcl.Grids,
-  Vcl.DBGrids, dmABINDV_Data;
+  Vcl.DBGrids, dmABINDV_Data, Vcl.ComCtrls, dmCORE;
 
 type
   TABDebug = class(TForm)
     grid: TDBGrid;
     pnlFooter: TPanel;
     pnlBody: TPanel;
+    pcntrlBody: TPageControl;
+    tsUnPlacedNominees: TTabSheet;
+    tsCOREqryHeat: TTabSheet;
+    grid2: TDBGrid;
   private
     { Private declarations }
   public

@@ -181,8 +181,12 @@ begin
     end;
     if aTeamID <> 0 then // Deletes dbo.teamlink and removes nominee from dbo.Nominee.
     begin
-      ;
-//      uTeam.StrikeTeam(aTeamID, DoExclude);
+      SQL := '''
+        DELETE FROM SwimClubMeet2.dbo.Nominee
+        WHERE TeamID = :ID1 AND EventID = :ID2';
+        ''';
+      recCount := SCM2.scmConnection.ExecSQL( SQL,[aTeamID, uEvent.PK()] );
+      if recCount > 0 then result := true;
     end;
   end;
 end;

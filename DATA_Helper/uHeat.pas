@@ -170,7 +170,11 @@ begin
         end;
       end
     finally
-      CORE.qryHeat.ApplyMaster;
+      if result then
+      begin
+        // CORE.qryHeat.ApplyMaster;   // not needed?
+        // CORE.qryHeat.Refresh;       // not needed?
+      end;
       if not CORE.qryHeat.IsEmpty then
         begin
         if doRenumber then

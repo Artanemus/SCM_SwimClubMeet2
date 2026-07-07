@@ -2829,7 +2829,7 @@ object Main2: TMain2
     Width = 1131
     Height = 682
     Margins.Top = 10
-    ActivePage = tabSession
+    ActivePage = tabHeats
     Align = alClient
     TabOrder = 3
     OnChange = PageControlChange
@@ -2905,7 +2905,7 @@ object Main2: TMain2
         object pnlHeat: TPanel
           Left = 0
           Top = 0
-          Width = 219
+          Width = 200
           Height = 566
           Align = alLeft
           BevelOuter = bvNone
@@ -2913,14 +2913,16 @@ object Main2: TMain2
           TabOrder = 0
         end
         object pnlLane: TPanel
-          Left = 219
+          Left = 200
           Top = 0
-          Width = 904
+          Width = 923
           Height = 566
           Align = alClient
           BevelOuter = bvNone
           Caption = 'Panel for TFrameLane (frLane)'
           TabOrder = 1
+          ExplicitLeft = 219
+          ExplicitWidth = 904
         end
       end
     end

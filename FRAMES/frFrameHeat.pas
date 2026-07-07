@@ -171,8 +171,11 @@ end;
 
 procedure TFrameHeat.actnHt_DeleteExecute(Sender: TObject);
 begin
-  // delete current selected heat (including lanes);
-  uHeat.DeleteHeat();
+  grid.BeginUpdate;
+  CORE.qryLane.CheckBrowseMode;
+  if (uHeat.DeleteHeat()) then
+    CORE.qryHeat.Refresh;
+  grid.endUpdate;
 end;
 
 procedure TFrameHeat.actnHt_GenericUpdate(Sender: TObject);

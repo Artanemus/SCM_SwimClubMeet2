@@ -52,6 +52,8 @@ type
     actnLn_GridView: TAction;
     actnLn_HeatPicker: TAction;
     pnlDebug: TPanel;
+    procedure actnLn_DeleteExecute(Sender: TObject);
+    procedure actnLn_DeleteForeverExecute(Sender: TObject);
     procedure actnLn_GenericUpdate(Sender: TObject);
     procedure actnLn_RefreshStatExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
@@ -178,6 +180,7 @@ begin
   if not (Assigned(CORE) and CORE.IsActive) then exit;
   LockDrawing;
   grid.BeginUpdate;
+  Core.qryLane.CheckBrowseMode;
   CORE.qryLane.DisableControls;
   try
     uNominee.RefreshStat(CORE.qryLane.FieldByName('NomineeID').AsInteger);
@@ -193,6 +196,24 @@ destructor TFrameLane.Destroy;
 begin
   ;
   inherited;
+end;
+
+procedure TFrameLane.actnLn_DeleteExecute(Sender: TObject);
+begin
+  grid.BeginUpdate;
+  CORE.qryLane.CheckBrowseMode;
+  if (uLane.ClearLane()) then
+    CORE.qryLane.Refresh;
+  grid.endUpdate;
+end;
+
+procedure TFrameLane.actnLn_DeleteForeverExecute(Sender: TObject);
+begin
+  grid.BeginUpdate;
+  Core.qryLane.CheckBrowseMode;
+  if (uLane.StrikeLane()) then
+    CORE.qryLane.Refresh;
+  grid.endUpdate;
 end;
 
 procedure TFrameLane.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var

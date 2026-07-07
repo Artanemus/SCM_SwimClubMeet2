@@ -187,10 +187,9 @@ object FrameLane: TFrameLane
       Top = 256
       Width = 48
       Height = 48
-      Hint = 'Remove entrant from lane. '
+      Action = actnLn_Delete
       Anchors = []
       ImageIndex = 4
-      ImageName = 'delete'
       Images = IMG.imglstLaneCntrl
       Layout = blGlyphTop
       Margin = 0
@@ -1447,6 +1446,7 @@ object FrameLane: TFrameLane
       Hint = 'Remove swimmer from lane. (Swimmer'#39's nomination is maintained.)'
       ImageIndex = 9
       ImageName = 'delete'
+      OnExecute = actnLn_DeleteExecute
       OnUpdate = actnLn_GenericUpdate
     end
     object actnLn_DeleteForever: TAction
@@ -1455,6 +1455,7 @@ object FrameLane: TFrameLane
       Hint = 'Remove swimmer from lane and delete nomination to event.'
       ImageIndex = 10
       ImageName = 'delete-forever'
+      OnExecute = actnLn_DeleteForeverExecute
       OnUpdate = actnLn_GenericUpdate
     end
     object actnln_Report: TAction

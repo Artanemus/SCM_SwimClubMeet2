@@ -1,7 +1,7 @@
 object FrameHeat: TFrameHeat
   Left = 0
   Top = 0
-  Width = 212
+  Width = 195
   Height = 624
   TabOrder = 0
   object rpnlCntrl: TRelativePanel
@@ -329,16 +329,17 @@ object FrameHeat: TFrameHeat
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 154
+    Width = 137
     Height = 624
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitWidth = 154
     object lblMsgEmpty: TLabel
       AlignWithMargins = True
       Left = 8
       Top = 8
-      Width = 138
+      Width = 121
       Height = 573
       Margins.Left = 8
       Margins.Top = 8
@@ -361,15 +362,16 @@ object FrameHeat: TFrameHeat
     object pnlG: TPanel
       Left = 0
       Top = 0
-      Width = 154
+      Width = 137
       Height = 589
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
+      ExplicitWidth = 154
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 154
+        Width = 137
         Height = 589
         Cursor = crDefault
         Align = alClient
@@ -757,6 +759,7 @@ object FrameHeat: TFrameHeat
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
+        ExplicitWidth = 154
         ColWidths = (
           0
           0
@@ -770,11 +773,12 @@ object FrameHeat: TFrameHeat
     object pnlDebug: TPanel
       Left = 0
       Top = 589
-      Width = 154
+      Width = 137
       Height = 35
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
+      ExplicitWidth = 154
     end
   end
   object actnlist: TActionList

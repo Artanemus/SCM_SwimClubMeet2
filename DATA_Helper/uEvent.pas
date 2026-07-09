@@ -126,8 +126,13 @@ begin
       SCM2.procRenumberHeats.Prepare;
       SCM2.procRenumberHeats.ExecProc;
 
-      // IMPORTANT: Resync data to current state.
-      CORE.qryHeat.Refresh;
+      // IMPORTANT: AS this is a SCM2 procedure call,  master/detail tables
+      // need attending too.
+      CORE.qryHeat.Refresh; // reset to first record...
+      CORE.qryLane.ApplyMaster; // re-sync required.
+      // reset to first record, OnScroll event forces paint
+      // and should sync watch and split tables.
+      CORE.qryLane.Refresh;
 
     end;
   end;

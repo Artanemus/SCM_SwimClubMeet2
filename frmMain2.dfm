@@ -2921,8 +2921,6 @@ object Main2: TMain2
           BevelOuter = bvNone
           Caption = 'Panel for TFrameLane (frLane)'
           TabOrder = 1
-          ExplicitLeft = 219
-          ExplicitWidth = 904
         end
       end
     end

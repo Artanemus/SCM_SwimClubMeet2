@@ -334,7 +334,6 @@ object FrameHeat: TFrameHeat
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 154
     object lblMsgEmpty: TLabel
       AlignWithMargins = True
       Left = 8
@@ -367,7 +366,6 @@ object FrameHeat: TFrameHeat
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitWidth = 154
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
@@ -759,7 +757,6 @@ object FrameHeat: TFrameHeat
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitWidth = 154
         ColWidths = (
           0
           0
@@ -778,7 +775,6 @@ object FrameHeat: TFrameHeat
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitWidth = 154
     end
   end
   object actnlist: TActionList
@@ -883,6 +879,8 @@ object FrameHeat: TFrameHeat
       Caption = 'Renumber'
       ImageIndex = 36
       ImageName = 'renumber'
+      OnExecute = actnHt_RenumberExecute
+      OnUpdate = actnHt_GenericUpdate
     end
     object actnHT_RefreshStats: TAction
       Category = 'Heats'

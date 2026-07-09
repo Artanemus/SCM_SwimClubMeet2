@@ -53,6 +53,8 @@ type
     { Sort AryEntrants.}
     procedure SortAryEntrantsByRandom;
     procedure SortAryEntrantsByTTB;
+    function INNER_LOOP(NumOfEntrants: Integer): Integer;
+    function OUTER_LOOP: Integer;
 
   public
     constructor Create(AOwner: TComponent); reintroduce;
@@ -311,8 +313,7 @@ end;
 function TABINDV.AutoBuildExec: Boolean;
 var
   msg: string;
-  NumOfEntrants, NumOfHeats, count: integer;
-  dlg: TABDebug;
+  count: integer;
 begin
   result := false;
 
@@ -377,13 +378,9 @@ begin
     SCM2.procDeleteALLHeats.Prepare;
     SCM2.procDeleteALLHeats.ExecProc;
 
-    // IMPORTANT: Resync data to current state.
+    // IMPORTANT: Resync CORE Master/Detail to DataBase State..
     CORE.qryHeat.Refresh;
   end;
-
-//  dlg := TABDebug.Create(Self);
-//  dlg.ShowModal;
-//  dlg.Free;
 
   if not CORE.qryHeat.IsEmpty then
   begin
@@ -460,10 +457,6 @@ begin
     SCM2.FDGUIxErrorDialog.Execute(E);
   end;
 
-  ABData.qryUnplacedNominees.IndexName := 'indxPK';
-  ABData.qryUnplacedNominees.Filter := '';
-  ABData.qryUnplacedNominees.Filtered := false;
-
   if (ABData.qryUnplacedNominees.IsEmpty) then
   begin
     if (fVerbose) then
@@ -483,6 +476,11 @@ begin
     exit;
   end;
 
+  // Assign FireDAC index name.
+  // sort unplaced entrants fastest to slowest - using TTB.
+  ABData.qryUnplacedNominees.IndexName := 'indxTTB';
+  ABData.qryUnplacedNominees.Filter := '';
+  ABData.qryUnplacedNominees.Filtered := false;
 
   // *********************************************
   // B A S I C   A u t o - B u i l d . (NO GROUPING)
@@ -490,41 +488,81 @@ begin
   // *********************************************
   if (Settings.ab_GroupByIndx <= 0) then
   begin
-    // sort unplaced entrants fastest to slowest - using TTB.
-    ABData.qryUnplacedNominees.IndexName := 'indxTTB';
-    if ABData.qryUnplacedNominees.Filtered then
-      ABData.qryUnplacedNominees.Filtered := false;
+    count := OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
+    if count <> 0 then result := true;
+  end
+  else
+  begin
+    // APPLY GROUP BY filter.....
+    result := true;
+  end;
 
-    NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
 
-    // GENDER LOOP START ....
-    // for each gender - run filter....
-    // StartHeatNum := uHeat.LastHeatNum + 1;
-    // NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
-    // if NumOfEntrants = 0 continue
+end;
 
-    {
-        ABData.qryGender.Connection := SCM2.scmConnection;
-    ABData.qryGender.Open;
-    if ABData.qryGender.Active then
+function TABINDV.OUTER_LOOP: Integer;
+var
+  NumOfEntrants, GenderID, count: integer;
+  msg: string;
+begin
+  result := 0;
+    // OUTER GENDER LOOP...
+    if Settings.ab_SeperateGender then
     begin
-      ABData.qryGender.Last; // reverse order, female then male swimmers.
-      while not ABData.qryGender.EOF do
+      ABData.qryGender.Connection := SCM2.scmConnection;
+      ABData.qryGender.Open;
+      if ABData.qryGender.Active then
       begin
-        var id: integer;
-        id := ABData.qryGender.FieldByName('GenderID').AsInteger;
-        ABData.qryUnplacedNominees.Filter := 'GenderID = ' + IntToStr(id);
-        if not ABData.qryUnplacedNominees.Filtered then
-          ABData.qryUnplacedNominees.Filtered := true;
-        ABData.qryUnplacedNominees.Refresh; // play it safe.
-        // after filter is applied - get the number of unplaced nominees.
-        NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
-        count := Build_Entrants(NumOfHeats, StartHeatNum, NumOfEntrants);
+        count := 0;
+        ABData.qryGender.Last; // reverse order, female then male swimmers.
+        while not ABData.qryGender.EOF do
+        begin
+          GenderID := ABData.qryGender.FieldByName('GenderID').AsInteger;
+          ABData.qryUnplacedNominees.Filter := 'GenderID = ' + IntToStr(GenderID);
+          if not ABData.qryUnplacedNominees.Filtered then
+            ABData.qryUnplacedNominees.Filtered := true;
+          // after filter is applied - get the number of unplaced nominees.
+          NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+          count := count + INNER_LOOP(NumOfEntrants);
+          ABData.qryGender.Prior;
+        end;
         if count <> 0 then
-          Build_Heats(NumOfHeats, StartHeatNum, NumOfEntrants); // build heats and lanes
-      end;
-    }
+          result := count;
+      end
+      else
+      begin
+        if (fVerbose) then
+        begin
+          msg := '''
+            Failed to activate local query - qryGender.
+            Internal error : Unable to seperate genders.
+            Auto-Build will exit.
+            ''';
+          MessageDlg(msg, mtError, [mbOK], 0, mbOK);
+        end;
+        // All the nominees are placed - nothing more to do. OK.
+        fError := true;
+        fErrorNum := 1;
+        result := 0;
+        exit;
+        end;
+    end
+    else
+    begin
+      if ABData.qryUnplacedNominees.Filtered then
+        ABData.qryUnplacedNominees.Filtered := false;
+      NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+      count := INNER_LOOP(NumOfEntrants);
+      if count <> 0 then
+        result := count;
+    end;
+end;
 
+function TABINDV.INNER_LOOP(NumOfEntrants: Integer): Integer;
+var
+  NumOfHeats, count: integer;
+  msg: string;
+begin
     // CALCULATE the number of heats needed to build.
     NumOfHeats := CalcNumberOfHeats(NumOfEntrants, fRealNumOfLanes);
     if NumOfHeats = 0 then
@@ -540,7 +578,7 @@ begin
       end;
       fError := true;
       fErrorNum := 1;
-      result := false;
+      result := 0;
       exit;
     end;
 
@@ -560,7 +598,7 @@ begin
       end;
       fError := true;
       fErrorNum := 1;
-      result := false;
+      result := 0;
       exit;
     end;
 
@@ -577,7 +615,7 @@ begin
       end;
       fError := true;
       fErrorNum := 1;
-      result := false;
+      result := 0;
       exit;
     end;
 
@@ -597,7 +635,7 @@ begin
       end;
       fError := true;
       fErrorNum := 1;
-      result := false;
+      result := 0;
       exit;
     end;
 
@@ -606,7 +644,7 @@ begin
     // AryEntrants - the entrant array is already correctly sorted.
     SortAryEntrantsByTTB();
 
-    // SEED : Assign each entrant to a heat and assign a HeatRankNum.
+    // Assign each entrant to a heat and assign a HeatRankNum.
     // returns the number of entrants seeded (given a heat number).
     count := AryEntrants_AssignHeatNum(NumOfHeats);
     if count = 0 then
@@ -622,7 +660,7 @@ begin
       end;
       fError := true;
       fErrorNum := 1;
-      result := false;
+      result := 0;
       exit;
     end;
 
@@ -644,7 +682,7 @@ begin
       end;
       fError := true;
       fErrorNum := 1;
-      result := false;
+      result := 0;
       exit;
     end;
 
@@ -679,29 +717,19 @@ begin
       end;
       fError := true;
       fErrorNum := 1;
-      result := false;
+      result := 0;
       exit;
     end;
 
     if not CORE.qryHeat.IsEmpty then
     begin
-    // RENUMBER HEATS: calls stored procedure - SwimClubMeet.dbo.RenumberHeats
-      uEvent.RenumberHeats; // Performs refresh on qryheat.
-      // CORE.qryLane.ApplyMaster; // Is this required?
+      // RENUMBER HEATS: calls stored procedure - SwimClubMeet.dbo.RenumberHeats
+      // Will performs refresh on qryheat, ApplyMaster and FreFresh on qryLane.
+      uEvent.RenumberHeats;
+      // NOTE: if IsEmpty - call UpdateUI at frFrameHeat....
     end;
 
-    // GENDER LOOP END...
-
-    // **** S U C C E S S *****
-    result := true;
-    // ************************
-    exit;
-  end;
-
-
-  // *******************************************************
-  result := true;
-  // *******************************************************
+    result := count;
 
 end;
 
@@ -979,8 +1007,7 @@ function TABINDV.Seed_Default(NumOfHeats: Integer; Offset: Integer = 0):
     Integer;
 var
   I, J, indx: Integer;
-  EntrantCountPerHeat: array of Integer;
-
+  EntrantsCountPerHeat: array of Integer;
 begin
   Result := 0;
   indx := 0;
@@ -988,14 +1015,15 @@ begin
   if (NumOfHeats <= 0) or (Length(AryEntrants) = 0)
     or (Length(AryEntrantsPerHeat) =  0) then
     Exit;
+
   // Ensure swimmers are sorted fastest to slowest
   if not (fSortMode = scmABSortMode.abTTB) then
     SortAryEntrantsByTTB;
 
   // Initialize lane counters for each heat
-  SetLength(EntrantCountPerHeat, NumOfHeats);
+  SetLength(EntrantsCountPerHeat, NumOfHeats);
   for I := 0 to NumOfHeats - 1 do
-    EntrantCountPerHeat[I] := 0;
+    EntrantsCountPerHeat[I] := 0;
 
   for J := 0 to NumOfHeats - 1 do
   begin
@@ -1006,13 +1034,13 @@ begin
       if (AryEntrants[I].HeatNum > 0) then
         continue;
 
-      if EntrantCountPerHeat[J] < AryEntrantsPerHeat[J] then
+      if EntrantsCountPerHeat[J] < AryEntrantsPerHeat[J] then
       begin
         // if circle seed preceeds this function then offset =
         //  number of heats already seeded.
         AryEntrants[I].HeatNum := J + 1 + Offset;
-        AryEntrants[I].HeatRankNum := EntrantCountPerHeat[J] + 1;
-        Inc(EntrantCountPerHeat[J]);
+        AryEntrants[I].HeatRankNum := EntrantsCountPerHeat[J] + 1;
+        Inc(EntrantsCountPerHeat[J]);
         Inc(Result);
       end
       else
@@ -1026,9 +1054,46 @@ begin
 end;
 
 function TABINDV.Seed_Random(NumOfHeats: Integer): Integer;
+var
+  I, J, indx: integer;
+  EntrantsCountPerHeat: array of Integer;
 begin
-  SortAryEntrantsByRandom;
-  result := Seed_Default(NumOfHeats);
+  Result := 0;
+  indx := 0;
+  // Validation
+  if (NumOfHeats <= 0) or (Length(AryEntrants) = 0)
+    or (Length(AryEntrantsPerHeat) =  0) then
+    Exit;
+
+  // Ensure swimmers are sorted RANDOM.
+  if not (fSortMode = scmABSortMode.abRandom) then
+    SortAryEntrantsByRandom;
+
+  // Initialize lane counters for each heat
+  SetLength(EntrantsCountPerHeat, NumOfHeats);
+
+  for I := 0 to NumOfHeats - 1 do
+    EntrantsCountPerHeat[I] := 0;
+
+  for J := 0 to NumOfHeats - 1 do
+  begin
+    for I := indx to Length(AryEntrants) - 1 do
+    begin
+      if EntrantsCountPerHeat[J] < AryEntrantsPerHeat[J] then
+      begin
+        AryEntrants[I].HeatNum := J + 1;
+        AryEntrants[I].HeatRankNum := EntrantsCountPerHeat[J] + 1;
+        Inc(EntrantsCountPerHeat[J]);
+        Inc(Result);
+      end
+      else
+      begin
+        indx := I;  // inti offset into lane entrants.
+        break;   // move to next heat
+      end;
+    end;
+  end;
+
 end;
 
 procedure TABINDV.SortAryEntrantsByRandom;

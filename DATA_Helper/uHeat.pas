@@ -143,45 +143,39 @@ begin
 end;
 
 function DeleteHeat(DoExclude: Boolean = true): boolean;
-var
-  doRenumber: boolean;
 begin
   result := false;
-  doRenumber := false;
   // Not permitted to DeleteHeat events if session is locked.
   if uSession.IsLocked() then exit;
   // Can't delete heat if 'raced' or 'closed', UNLESS DoExclude = false.
   if (uHeat.HeatStatusID() = 1) or (DoExclude = false) then
-  begin
-    //if (uHeat.HeatStatusID() = 1) or (DoExclude = false) then
-    CORE.qryLane.DisableControls;
-    try
-      doRenumber := uHeat.DeleteLanes();
-      // ASSERT that all heats have been removed within Master-Detail relationship.
-      // Can't delete remaining dependants if heats are retained.
-      if (CORE.qryLane.IsEmpty) then
-      begin
-        try
-          CORE.qryHeat.Delete; // Finally.. delete heat.
-          doRenumber := true;
-          result := true;
-        except on E: Exception do
-          // If the dataset is inactive, Delete raises an exception.
-        end;
-      end
-    finally
-      if result then
-      begin
-        // CORE.qryHeat.ApplyMaster;   // not needed?
-        // CORE.qryHeat.Refresh;       // not needed?
-      end;
-      if not CORE.qryHeat.IsEmpty then
+    begin
+      CORE.qryLane.DisableControls;
+      try
+        uHeat.DeleteLanes();
+        // ASSERT that all heats have been removed within Master-Detail relationship.
+        // Can't delete remaining dependants if heats are retained.
+        if (CORE.qryLane.IsEmpty) then
         begin
-        if doRenumber then
-            uEvent.RenumberHeats;
-        CORE.qryLane.ApplyMaster;
-      end;
-      CORE.qryLane.EnableControls;
+          try
+            CORE.qryHeat.Delete; // Finally.. delete heat.
+            result := true;
+          except on E: Exception do
+            // If the dataset is inactive, Delete raises an exception.
+          end;
+        end
+      finally
+      BEGIN
+        if result and not CORE.qryHeat.IsEmpty then
+        begin
+          // note : This is a SCM2.PROCEDURE call.
+          // routine includes re-sync of Master/Detail tables.
+          uEvent.RenumberHeats;
+        end;
+
+        CORE.qryLane.EnableControls;
+      END;
+
     end;
   end;
 end;
@@ -318,7 +312,7 @@ begin
     try
       CORE.qryHeat.Insert;
       CORE.qryHeat.FieldByName('EventID').AsInteger := uEvent.PK;
-      CORE.qryHeat.FieldByName('HeatNum').AsInteger := aHeatNum+1;
+      CORE.qryHeat.FieldByName('HeatNum').AsInteger := aHeatNum;
       CORE.qryHeat.FieldByName('HeatTypeID').AsInteger := 1; // Preliminary.
       CORE.qryHeat.FieldByName('HeatStatusID').AsInteger := 1; // Open.
       CORE.qryHeat.Post;

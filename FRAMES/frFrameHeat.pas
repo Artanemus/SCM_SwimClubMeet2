@@ -84,6 +84,7 @@ type
     procedure actnHt_GenericUpdate(Sender: TObject);
     procedure actnHt_NewExecute(Sender: TObject);
     procedure actnHT_RefreshStatsExecute(Sender: TObject);
+    procedure actnHt_RenumberExecute(Sender: TObject);
     procedure actnHt_ToggleStatusExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
@@ -171,11 +172,26 @@ end;
 
 procedure TFrameHeat.actnHt_DeleteExecute(Sender: TObject);
 begin
+  LockDrawing;
   grid.BeginUpdate;
-  CORE.qryLane.CheckBrowseMode;
-  if (uHeat.DeleteHeat()) then
-    CORE.qryHeat.Refresh;
-  grid.endUpdate;
+  try
+    CORE.qryLane.CheckBrowseMode;
+    if (uHeat.DeleteHeat()) then
+    begin
+      if CORE.qryHeat.IsEmpty then
+      begin
+        UpdateUI;
+      end
+      else
+      begin
+        CORE.qryLane.ApplyMaster;
+        CORE.qryLane.Refresh;
+      end;
+    end;
+  finally
+    grid.endUpdate;
+    UnlockDrawing;
+  end;
 end;
 
 procedure TFrameHeat.actnHt_GenericUpdate(Sender: TObject);
@@ -194,9 +210,27 @@ begin
 end;
 
 procedure TFrameHeat.actnHt_NewExecute(Sender: TObject);
+var
+  DoUpdateUI: boolean;
+  HeatID: integer;
 begin
-  // create a new heat (including lanes);
-  uHeat.NewHeat;
+  DoUpdateUI := false;
+  LockDrawing;
+  grid.BeginUpdate;
+  try
+    if CORE.qryHeat.IsEmpty then
+      DoUpdateUI := true;
+    HeatID := uHeat.NewHeat;
+    if HeatID <> 0 then
+    begin
+      CORE.qryHeat.Refresh; // forces repaint in TMS grid.
+    end;
+  finally
+    if DoUpdateUI then
+      UpdateUI;
+    grid.EndUpdate;
+    UnlockDrawing;
+  end;
 end;
 
 procedure TFrameHeat.actnHT_RefreshStatsExecute(Sender: TObject);
@@ -212,13 +246,18 @@ begin
         uNominee.RefreshStat(CORE.qryLane.FieldByName('NomineeID').AsInteger);
         CORE.qryLane.next;
       end;
-      CORE.qryLane.Refresh; // refresh the lane's stats
+      CORE.qryLane.Refresh; // forces repaint in TMS grid.
       CORE.qryLane.First;
   finally
     CORE.qryLane.EnableControls;
     grid.EndUpdate;
     UnLockDrawing;
   end;
+end;
+
+procedure TFrameHeat.actnHt_RenumberExecute(Sender: TObject);
+begin
+  uEvent.RenumberHeats;
 end;
 
 procedure TFrameHeat.actnHt_ToggleStatusExecute(Sender: TObject);

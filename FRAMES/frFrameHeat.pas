@@ -119,6 +119,7 @@ var
   success: boolean;
   rtn: TModalResult;
   dlg: TABSettings;
+  count: integer;
 begin
   AB := nil;
   success := false;
@@ -136,16 +137,21 @@ begin
     grid.BeginUpdate;
     uEvent.DetailTBLs_DisableCNTRLs;
     try
+
       AB := TABINDV.Create(Self);
       AB.Prepare(SCM2.scmConnection, uEvent.PK, fVerbose);
       success := AB.AutoBuildExec;
     finally
-      if Assigned(AB) then AB.free;
+      if Assigned(AB) then
+        AB.free;
       uEvent.DetailTBLs_ApplyMaster;
       uEvent.DetailTBLs_EnableCNTRLs;
-      CORE.qryHeat.Refresh;
+      if success then
+        UpdateUI();
+
       grid.EndUpdate;
       UnlockDrawing;
+
       if fVerbose then
       begin
         if success then

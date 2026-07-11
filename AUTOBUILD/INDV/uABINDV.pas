@@ -483,8 +483,7 @@ begin
   ABData.qryUnplacedNominees.Filtered := false;
 
   // *********************************************
-  // B A S I C   A u t o - B u i l d . (NO GROUPING)
-  // Seperate gender setting - managed.
+  // NO GROUPING
   // *********************************************
   if (Settings.ab_GroupByIndx <= 0) then
   begin
@@ -506,55 +505,58 @@ var
   msg: string;
 begin
   result := 0;
-    // OUTER GENDER LOOP...
-    if Settings.ab_SeperateGender then
+  // OUTER GENDER LOOP... S e p e r a t e   g e nd e r .
+  if Settings.ab_SeperateGender then
+  begin
+    ABData.qryGender.Connection := SCM2.scmConnection;
+    ABData.qryGender.Open;
+    if ABData.qryGender.Active then
     begin
-      ABData.qryGender.Connection := SCM2.scmConnection;
-      ABData.qryGender.Open;
-      if ABData.qryGender.Active then
+      count := 0;
+      ABData.qryGender.Last; // reverse order, female then male swimmers.
+      while not ABData.qryGender.BOF do
       begin
-        count := 0;
-        ABData.qryGender.Last; // reverse order, female then male swimmers.
-        while not ABData.qryGender.EOF do
-        begin
-          GenderID := ABData.qryGender.FieldByName('GenderID').AsInteger;
-          ABData.qryUnplacedNominees.Filter := 'GenderID = ' + IntToStr(GenderID);
-          if not ABData.qryUnplacedNominees.Filtered then
-            ABData.qryUnplacedNominees.Filtered := true;
-          // after filter is applied - get the number of unplaced nominees.
-          NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+        GenderID := ABData.qryGender.FieldByName('GenderID').AsInteger;
+        ABData.qryUnplacedNominees.Filter := 'GenderID = ' + IntToStr(GenderID);
+        if not ABData.qryUnplacedNominees.Filtered then
+          ABData.qryUnplacedNominees.Filtered := true;
+        // after filter is applied - get the number of unplaced nominees.
+        NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+        if NumOfEntrants <> 0 then
           count := count + INNER_LOOP(NumOfEntrants);
-          ABData.qryGender.Prior;
-        end;
-        if count <> 0 then
-          result := count;
-      end
-      else
-      begin
-        if (fVerbose) then
-        begin
-          msg := '''
-            Failed to activate local query - qryGender.
-            Internal error : Unable to seperate genders.
-            Auto-Build will exit.
-            ''';
-          MessageDlg(msg, mtError, [mbOK], 0, mbOK);
-        end;
-        // All the nominees are placed - nothing more to do. OK.
-        fError := true;
-        fErrorNum := 1;
-        result := 0;
-        exit;
-        end;
+        ABData.qryGender.Prior;
+      end;
+      if count <> 0 then
+        result := count;
     end
     else
     begin
-      if ABData.qryUnplacedNominees.Filtered then
-        ABData.qryUnplacedNominees.Filtered := false;
-      NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
-      count := INNER_LOOP(NumOfEntrants);
-      if count <> 0 then
-        result := count;
+      // unable to open qryGender...
+      if (fVerbose) then
+      begin
+        msg := '''
+          Failed to activate local query - qryGender.
+          Internal error : Unable to seperate genders.
+          Auto-Build will exit.
+          ''';
+        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
+      end;
+      // All the nominees are placed - nothing more to do. OK.
+      fError := true;
+      fErrorNum := 1;
+      result := 0;
+      exit;
+      end;
+  end
+  else
+  // OUTER GENDER LOOP... Default.
+  begin
+    if ABData.qryUnplacedNominees.Filtered then
+      ABData.qryUnplacedNominees.Filtered := false;
+    NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+    count := INNER_LOOP(NumOfEntrants);
+    if count <> 0 then
+      result := count;
     end;
 end;
 
@@ -563,173 +565,148 @@ var
   NumOfHeats, count: integer;
   msg: string;
 begin
-    // CALCULATE the number of heats needed to build.
-    NumOfHeats := CalcNumberOfHeats(NumOfEntrants, fRealNumOfLanes);
-    if NumOfHeats = 0 then
+  result := 0;
+  // CALCULATE the number of heats needed to build.
+  NumOfHeats := CalcNumberOfHeats(NumOfEntrants, fRealNumOfLanes);
+  if NumOfHeats = 0 then
+  begin
+    // This isn't flagged as an error.
+    // For example is seperate gender is true and none found
+    // OR
+    // Group by index and none found,,,
+    fError := false;
+    fErrorNum := 0;
+    result := 0;
+    exit;
+  end;
+
+  // construct the AryEntrants array with it's TLaneEntrant objects.
+  // assign random number.
+  count := AryEntrants_AssignNominees();
+  if count <> NumOfEntrants then
+  begin
+    if (fVerbose) then
     begin
-      if (fVerbose) then
-      begin
-        msg := '''
-          Internal error...
-          Calculate number of heats returned zero.
-          Auto-Build will exit.
-          ''';
-        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
-      end;
-      fError := true;
-      fErrorNum := 1;
-      result := 0;
-      exit;
+      msg := '''
+        Internal error...
+        Failed to assign all Entrants to AryEntrants.
+        Auto-Build will exit.
+        ''';
+      MessageDlg(msg, mtError, [mbOK], 0, mbOK);
     end;
+    fError := true;
+    fErrorNum := 1;
+    result := 0;
+    exit;
+  end;
 
-    // construct the AryEntrants array with it's TLaneEntrant objects.
-    // assign random number.
-    count := AryEntrants_AssignNominees();
-    if count <> NumOfEntrants then
+  // how many entrants per heat with consideration to fRealNumOfLanes.
+  // TODO: set weights to first or last heat?
+  count := Build_EntrantsPerHeat(NumOfHeats, NumOfEntrants);
+  if count <> NumOfEntrants then
+  begin
+    if (fVerbose) then
     begin
-      if (fVerbose) then
-      begin
-        msg := '''
-          Internal error...
-          Failed to assign all Entrants to AryEntrants.
-          Auto-Build will exit.
-          ''';
-        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
-      end;
-      fError := true;
-      fErrorNum := 1;
-      result := 0;
-      exit;
+      msg := '''
+        Internal error...
+        Failed to distrubute all entrants across heats.
+        Auto-Build will exit.
+        ''';
+      MessageDlg(msg, mtError, [mbOK], 0, mbOK);
     end;
+    fError := true;
+    fErrorNum := 1;
+    result := 0;
+    exit;
+  end;
 
-    if count <> NumOfEntrants then
+  // SEEDING BEGINS....
+  // Each Seeding Method sets array entrants sort order..
+  // Assign each entrant to a heat and assign a HeatRankNum.
+  // returns the number of entrants seeded (given a heat number).
+  count := AryEntrants_AssignHeatNum(NumOfHeats);
+  if count = 0 then
+  begin
+    if (fVerbose) then
     begin
-      if (fVerbose) then
-      begin
-        msg := '''
-          Internal error...
-          Failed to assign all entrants with Event Ranking.
-          Auto-Build will exit.
-          ''';
-        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
-      end;
-      fError := true;
-      fErrorNum := 1;
-      result := 0;
-      exit;
+      msg := '''
+        Internal error...
+        Failed to assign a ranking to each entrant.
+        Auto-Build will exit.
+        ''';
+      MessageDlg(msg, mtError, [mbOK], 0, mbOK);
     end;
+    fError := true;
+    fErrorNum := 1;
+    result := 0;
+    exit;
+  end;
 
-    // how many entrants per heat with consideration to fRealNumOfLanes.
-    // TODO: set weights to first or last heat?
-    count := Build_EntrantsPerHeat(NumOfHeats, NumOfEntrants);
-    if count <> NumOfEntrants then
+  // Assign a swimming lane to each entrant based on heat ranking,
+  // taking into account lane scattering and excluded lanes.
+  // returns the number of entrants assigned a lane number.
+  count := AryEntrants_AssignLaneNum(NumOfHeats);
+  if count = 0 then
+  begin
+    if (fVerbose) then
     begin
-      if (fVerbose) then
-      begin
-        msg := '''
-          Internal error...
-          Failed to distrubute all entrants across heats.
-          Auto-Build will exit.
-          ''';
-        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
-      end;
-      fError := true;
-      fErrorNum := 1;
-      result := 0;
-      exit;
+      msg := '''
+        Internal error...
+        Failed to assign swimming lanes to entrants.
+        Auto-Build will exit.
+        ''';
+      MessageDlg(msg, mtError, [mbOK], 0, mbOK);
     end;
+    fError := true;
+    fErrorNum := 1;
+    result := 0;
+    exit;
+  end;
 
-    // SORT entrant array - fastest to slowest....
-    // NOTE: as qryUnplacedNominees is indx on indxTTB: prior to filling
-    // AryEntrants - the entrant array is already correctly sorted.
-    SortAryEntrantsByTTB();
-
-    // Assign each entrant to a heat and assign a HeatRankNum.
-    // returns the number of entrants seeded (given a heat number).
-    count := AryEntrants_AssignHeatNum(NumOfHeats);
-    if count = 0 then
+  if count <> NumOfEntrants then
+  begin
+    if (fVerbose) then
     begin
-      if (fVerbose) then
-      begin
-        msg := '''
-          Internal error...
-          Failed to assign a ranking to each entrant.
-          Auto-Build will exit.
-          ''';
-        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
-      end;
-      fError := true;
-      fErrorNum := 1;
-      result := 0;
-      exit;
+      msg := '''
+        Internal warning...
+        Failed to provide all entrants with a swimming lane.
+        Auto-Build will continue.
+        ''';
+      MessageDlg(msg, mtError, [mbOK], 0, mbOK);
     end;
+  end;
 
-    // SEEDING BEGINS....
-    // Assign a swimming lane to each entrant based on heat ranking,
-    // taking into account lane scattering and excluded lanes.
-    // returns the number of entrants assigned a lane number.
-    count := AryEntrants_AssignLaneNum(NumOfHeats);
-    if count = 0 then
+  // FINALLY : create heats and lanes in the SwimClubMeet2 database.
+  // returns number of entrants assigned to lanes
+  count := Build_Heats(NumOfHeats, NumOfEntrants);
+  CORE.qryLane.Refresh; // REQUIRED: ReSync data state.
+
+  if count < NumOfEntrants then
+  begin
+    if (fVerbose) then
     begin
-      if (fVerbose) then
-      begin
-        msg := '''
-          Internal error...
-          Failed to assign swimming lanes to entrants.
-          Auto-Build will exit.
-          ''';
-        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
-      end;
-      fError := true;
-      fErrorNum := 1;
-      result := 0;
-      exit;
+      msg := '''
+        Internal error...
+        Failed to create all heats and lanes. (SCM database error).
+        Auto-Build will exit.
+        ''';
+      MessageDlg(msg, mtError, [mbOK], 0, mbOK);
     end;
+    fError := true;
+    fErrorNum := 1;
+    result := 0;
+    exit;
+  end;
 
-    if count <> NumOfEntrants then
-    begin
-      if (fVerbose) then
-      begin
-        msg := '''
-          Internal warning...
-          Failed to provide all entrants with a swimming lane.
-          Auto-Build will continue.
-          ''';
-        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
-      end;
-    end;
+  if not CORE.qryHeat.IsEmpty then
+  begin
+    // RENUMBER HEATS: calls stored procedure - SwimClubMeet.dbo.RenumberHeats
+    // Will performs refresh on qryheat, ApplyMaster and FreFresh on qryLane.
+    uEvent.RenumberHeats;
+    // NOTE: if IsEmpty - call UpdateUI at frFrameHeat....
+  end;
 
-    // FINALLY : create heats and lanes in the SwimClubMeet2 database.
-    // returns number of entrants assigned to lanes
-    count := Build_Heats(NumOfHeats, NumOfEntrants);
-    CORE.qryLane.Refresh; // REQUIRED: ReSync data state.
-
-    if count < NumOfEntrants then
-    begin
-      if (fVerbose) then
-      begin
-        msg := '''
-          Internal error...
-          Failed to create all heats and lanes. (SCM database error).
-          Auto-Build will exit.
-          ''';
-        MessageDlg(msg, mtError, [mbOK], 0, mbOK);
-      end;
-      fError := true;
-      fErrorNum := 1;
-      result := 0;
-      exit;
-    end;
-
-    if not CORE.qryHeat.IsEmpty then
-    begin
-      // RENUMBER HEATS: calls stored procedure - SwimClubMeet.dbo.RenumberHeats
-      // Will performs refresh on qryheat, ApplyMaster and FreFresh on qryLane.
-      uEvent.RenumberHeats;
-      // NOTE: if IsEmpty - call UpdateUI at frFrameHeat....
-    end;
-
-    result := count;
+  result := count;
 
 end;
 

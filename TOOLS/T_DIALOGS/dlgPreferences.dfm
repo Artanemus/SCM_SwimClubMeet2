@@ -45,7 +45,7 @@ object Preferences: TPreferences
     Top = 0
     Width = 695
     Height = 453
-    ActivePage = TabSheet6
+    ActivePage = tab1
     Align = alClient
     TabOrder = 1
     object TabSheet2: TTabSheet
@@ -231,26 +231,28 @@ object Preferences: TPreferences
         OnMouseLeave = infoBugAutoBuildMouseLeave
       end
       object lblSeedDepth2: TLabel
-        Left = 441
+        Left = 513
         Top = 322
         Width = 73
         Height = 21
         Caption = '(Default 3)'
       end
       object lblSeedDepth1: TLabel
-        Left = 304
+        Left = 376
         Top = 322
         Width = 81
         Height = 21
         Caption = 'Seed depth:'
       end
       object lblSeedingDepthAll: TLabel
-        Left = 304
+        Left = 376
         Top = 356
-        Width = 277
-        Height = 21
+        Width = 185
+        Height = 45
+        AutoSize = False
         Caption = 'Use seed depth 0 to circle seed all heats.'
         Enabled = False
+        WordWrap = True
       end
       object lblListOfLanes: TLabel
         Left = 123
@@ -259,6 +261,16 @@ object Preferences: TPreferences
         Height = 21
         Caption = '(Use comma seperated values.)'
         Enabled = False
+      end
+      object lblBracketMsg: TLabel
+        Left = 27
+        Top = 349
+        Width = 208
+        Height = 65
+        AutoSize = False
+        Caption = 'System divisions...'#13#10'0-6, 7-8, 9-10, 11-12, 13-14, 15-16, Open'
+        Enabled = False
+        WordWrap = True
       end
       object prefSeperateGender: TCheckBox
         Left = 9
@@ -270,34 +282,35 @@ object Preferences: TPreferences
         TabOrder = 0
       end
       object prefGroupBy: TRadioGroup
-        Left = 9
+        Left = 3
         Top = 171
-        Width = 254
-        Height = 131
+        Width = 232
+        Height = 172
         Hint = 'Broad categories that gather together entants.'
         Caption = 'Group entrants by ...'
         Items.Strings = (
           'Don'#39't group.'
           'Entrant'#39's age.'
-          'Divisions (age range).')
+          'Custom user divisions.'
+          'System divisions.')
         TabOrder = 1
       end
       object prefSeedMethod: TRadioGroup
-        Left = 304
+        Left = 344
         Top = 171
         Width = 264
         Height = 131
         Hint = 'Decides what lane an entrant is given.'
-        Caption = 'Seed Method.'
+        Caption = 'Seed Method ...'
         ItemIndex = 0
         Items.Strings = (
           'Standard (default) seeding.'
-          'Circle Seeding to depth.'
-          'Random seeding.')
+          'Random seeding.'
+          'Circle Seeding to depth.')
         TabOrder = 2
       end
       object prefSeedDepth: TSpinEdit
-        Left = 394
+        Left = 466
         Top = 319
         Width = 41
         Height = 31
@@ -325,7 +338,7 @@ object Preferences: TPreferences
         ParentShowHint = False
         ShowHint = True
         TabOrder = 5
-        TextHint = '1,4,5'
+        TextHint = '1,8'
       end
     end
     object TabSheet7: TTabSheet
@@ -356,7 +369,7 @@ object Preferences: TPreferences
         Enabled = False
       end
       object spbtnMembersAge: TSpeedButton
-        Left = 303
+        Left = 319
         Top = 51
         Width = 33
         Height = 33
@@ -456,11 +469,11 @@ object Preferences: TPreferences
       object rgrpMembersAge: TRadioGroup
         Left = 24
         Top = 43
-        Width = 273
+        Width = 289
         Height = 187
         Caption = 'Age as of...'
         Items.Strings = (
-          'Start of swimming season.'
+          '31st December (swim season).'
           'The meet date.'
           'The session date.'
           'Use current date (Today).'
@@ -519,8 +532,8 @@ object Preferences: TPreferences
         Width = 649
         Height = 54
         Caption = 
-          'Enable FINA disqualification codes. '#13#10'(Else use the simplified m' +
-          'ethod of disqualification.)'
+          'Enable World Aquatics disqualification codes. '#13#10'(Else use the si' +
+          'mplified method of disqualification.)'
         TabOrder = 0
         OnClick = prefEnableDQcodesClick
       end
@@ -536,8 +549,8 @@ object Preferences: TPreferences
         WordWrap = True
       end
       object CheckBox1: TCheckBox
-        Left = 448
-        Top = 352
+        Left = 32
+        Top = 272
         Width = 97
         Height = 17
         Caption = 'CheckBox1'

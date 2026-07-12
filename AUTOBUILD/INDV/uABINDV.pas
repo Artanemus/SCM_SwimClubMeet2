@@ -17,12 +17,15 @@ uses
 type
 
   TLaneEntrant = class;  // forward declaration.
+  TDivision = class; // forward declaration.
+
   scmABSortMode = (abNotSorted, abTTB, abRandom);
 
   TABINDV = class(TComponent)
   private
     ABData: TABINDV_Data;
     AryEntrants: Array of TLaneEntrant;
+    AryDivisions: Array of TDivision;
     AryEntrantsPerHeat: Array of Integer;
     AryExcludedLanes: Array of boolean;
     AryScatteredLanes: Array of Integer;
@@ -38,6 +41,8 @@ type
     function AryEntrants_AssignLaneNum(NumOfHeats: Integer): Integer;
     function AryEntrants_AssignNominees: integer;
     function AryEntrants_AssignHeatNum(NumOfHeats: Integer): integer;
+    function AryDivision_Build(DoSysDivision: boolean = true): integer;
+
     function AryExcludedLanes_Build: Integer;
     procedure AryScatterLanes_Build(NumOfPoolLanes: integer);
     function Build_EntrantsPerHeat(NumOfHeats: Integer; NumOfNominees: Integer):
@@ -71,6 +76,14 @@ type
     LaneNum: integer;
     RandomNum: integer;
     TTB: TTime;
+    constructor Create();
+    destructor Destroy; override;
+  end;
+
+  TDivision = class(TObject)
+    StartAge: integer;
+    EndAge: integer;
+    GenderID: integer;
     constructor Create();
     destructor Destroy; override;
   end;
@@ -208,6 +221,22 @@ begin
   if Count > 0 then result := Count;
 end;
 
+function TABINDV.AryDivision_Build(DoSysDivision: boolean): integer;
+var
+  obj: TDivision;
+begin
+  result := 0;
+  if DoSysDivision then
+  begin
+    obj := TDivision.Create;
+    obj.StartAge := 0;
+    obj.EndAge := 6;
+    obj.GenderID := 0;
+
+  end;
+
+end;
+
 function TABINDV.AryEntrants_AssignHeatNum(NumOfHeats: Integer): integer;
 var
   SeedDepth: integer;
@@ -225,7 +254,7 @@ begin
         {  STANDARD SEEDING.}
         NumOfEntrantsSeeded := Seed_Default(NumOfHeats);
       end;
-    1:
+    2:
       begin
         {CIRCLE SEEDING.}
         NumOfEntrantsSeeded := Seed_Circle(NumOfHeats, SeedDepth);
@@ -237,7 +266,7 @@ begin
           NumOfEntrantsSeeded := NumOfEntrantsSeeded + count;
         end;
       end;
-    2:
+    3:
       begin
         NumOfEntrantsSeeded := Seed_Random(NumOfHeats);
       end;
@@ -1105,6 +1134,21 @@ begin
         AryEntrants[J] := Temp;
       end;
   fSortMode := abTTB;
+end;
+
+{ TDivision }
+
+constructor TDivision.Create;
+begin
+  StartAge := 0;
+  EndAge := 0;
+  GenderID := 0;
+end;
+
+destructor TDivision.Destroy;
+begin
+  ; // cleanup?
+  inherited;
 end;
 
 end.

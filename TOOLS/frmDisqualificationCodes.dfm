@@ -1,7 +1,7 @@
 object DisqualificationCodes: TDisqualificationCodes
   Left = 0
   Top = 0
-  Caption = 'FINA Disqualification Codes'
+  Caption = 'World Aquatics Disqualification Codes'
   ClientHeight = 801
   ClientWidth = 838
   Color = clBtnFace
@@ -142,7 +142,7 @@ object DisqualificationCodes: TDisqualificationCodes
           Font.Style = [fsBold]
           Frame.Typ = []
           Memo.UTF8W = (
-            'FINA Swimming Disqualification Codes')
+            'World Aquatics Swimming Disqualification Codes')
           ParentFont = False
         end
       end

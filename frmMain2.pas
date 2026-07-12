@@ -927,7 +927,7 @@ begin
   dlg.ShowModal;
   dlg.Free;
 
-  // enable/disable FINA codes....
+  // enable/disable World Aquatics codes....
   if Assigned(frlane) then frLane.OnPreferenceChange;
   if Assigned(frHeat) then frHeat.OnPreferenceChange;
   if Assigned(frEvent) then frEvent.OnPreferenceChange;
@@ -959,7 +959,7 @@ var
 begin
   if not (Assigned(SCM2) and SCM2.scmConnection.Connected) then
   begin
-    ShowMessage('Cannot open FINA disqualification codes: no database connection.');
+    ShowMessage('Cannot open World Aquatics disqualification codes: no database connection.');
     Exit;
   end;
   dlg := TDisqualificationCodes.Create(self);

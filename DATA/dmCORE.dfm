@@ -1,8 +1,8 @@
 object CORE: TCORE
   OnCreate = DataModuleCreate
   OnDestroy = DataModuleDestroy
-  Height = 953
-  Width = 975
+  Height = 942
+  Width = 1076
   object dsSwimClub: TDataSource
     DataSet = qrySwimClub
     OnDataChange = dsSwimClubDataChange
@@ -896,7 +896,7 @@ object CORE: TCORE
       Visible = False
     end
     object qryLaneDisqualifyCodeID: TIntegerField
-      DisplayLabel = 'FINA Disqualify Code'
+      DisplayLabel = 'World Aquatics Disqualify Code'
       FieldName = 'DisqualifyCodeID'
       Origin = 'DisqualifyCodeID'
     end

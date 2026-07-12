@@ -2920,8 +2920,8 @@ object ABSettings: TABSettings
       ItemIndex = 0
       Items.Strings = (
         'Standard (default) seeding.'
-        'Circle Seeding to depth.'
-        'Random seeding.')
+        'Random seeding.'
+        'Circle Seeding to depth.')
       TabOrder = 5
     end
     object prefAlgorithm: TRadioGroup
@@ -2971,14 +2971,15 @@ object ABSettings: TABSettings
     end
     object prefGroupBy: TRadioGroup
       Left = 22
-      Top = 333
+      Top = 315
       Width = 227
-      Height = 111
+      Height = 129
       Caption = 'Group by ...'
       Items.Strings = (
         'Don'#39't group.'
         'Entrant'#39's age.'
-        'Divisions (age range).')
+        'Custom user divisions.'
+        'System divisions. ')
       TabOrder = 4
     end
     object prefSeedDepth: TSpinEdit
@@ -2998,7 +2999,7 @@ object ABSettings: TABSettings
       Height = 171
       Caption = 'Member'#39's AGE as of...'
       Items.Strings = (
-        'Start of swimming season.'
+        '31st December (swim season).'
         'The meet date.'
         'The session date.'
         'Use current date (Today).'

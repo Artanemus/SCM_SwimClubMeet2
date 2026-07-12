@@ -68,6 +68,7 @@ type
     lblListOfLanes: TLabel;
     CheckBox1: TCheckBox;
     prefVerbose: TCheckBox;
+    lblBracketMsg: TLabel;
     procedure infoBugAutoBuildMouseLeave(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure btnDateClick(Sender: TObject);
@@ -185,7 +186,7 @@ begin
   case scmSeedDateAuto(Settings.SeedDateAuto) of
     sdaTodaysDate: indx := 3;
     sdaSessionDate: indx := 2;
-    sdaStartOfSeason: indx := 0;
+    sdaStartOfSeason: indx := 0; // 31 December of season (Year).
     sdaCustomDate: indx := 4;
     sdaMeetDate: indx := 1;
   else
@@ -225,6 +226,7 @@ begin
   begin
     case rgrpMembersAge.ItemIndex of
     0:
+      // 31 December of season (Year).
       Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaStartOfSeason);
     1:
       Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaMeetDate);

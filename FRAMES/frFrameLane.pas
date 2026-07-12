@@ -562,7 +562,7 @@ begin
   CORE.qryLane.FieldByName('SplitCount').Visible := false;
 
   { Set: COLLAPSED Simplified (Scratched, Disqualified)
-      or FINA (DQ) disqualification codes. }
+      or World Aquatics (DQ) disqualification codes. }
   OnPreferenceChange;
 
   { Set: grid visiblity for COLLAPSED (extended features) grid columns .}

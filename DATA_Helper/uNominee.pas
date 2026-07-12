@@ -392,6 +392,7 @@ end;
 function GetSeedDate(): TDate;
 var
   SeedDateAuto: scmSeedDateAuto;
+  dt: TDateTime;
 begin
   result := Date;
   SeedDateAuto := scmSeeddateAuto.sdaTodaysDate; // DEFAULT Assignment.
@@ -405,8 +406,14 @@ begin
       result := Date();
     sdaSessionDate: // current session date.
       result := uSession.SessionDT;
-    sdaStartOfSeason: // start of the swimming season date.
-      result := uSwimClub.StartOfSwimSeason;
+    sdaStartOfSeason:
+    begin
+      // World Aquatics and Swim Australia default.
+      // Age as of 31 December. Year is start of the swimming season.
+      dt := uSwimClub.StartOfSwimSeason;
+      dt.Encode(dt.GetYear, 12, 31, 0, 0, 0, 0);
+      result := dt;
+    end;
     sdaCustomDate: // custom date assigned in preferences.
     begin
       if Assigned(Settings) then

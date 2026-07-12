@@ -61,7 +61,7 @@ type
     ab_SeedMethodIndx: integer;  // originally - SeedMethod.
     ab_SeedDepth: integer;
 
-    EnableDQcodes: boolean; // switch to FINA disqualification codes.
+    EnableDQcodes: boolean; // switch to World Aquatics disqualification codes.
 
     Ln_ColumnStatesStringExpanded: string; // Line expanded grid.column state.
     Ev_ColumnStatesStringExpanded: string; // Event expanded grid.column state.
@@ -151,7 +151,7 @@ begin
   Ln_ColumnStatesStringSystem := '';
   Ev_ColumnStatesStringSystem := '';
 
-  EnableDQcodes := false; // use simple DQ method. (not FINA Codes).
+  EnableDQcodes := false; // use simple DQ method. (not World Aquatics Codes).
 
   ForceDirectories(GetDefPath());
   if not FileExists(GetDefPathFileName()) then

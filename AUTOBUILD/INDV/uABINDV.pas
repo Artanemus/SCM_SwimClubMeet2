@@ -41,7 +41,7 @@ type
     function AryEntrants_AssignLaneNum(NumOfHeats: Integer): Integer;
     function AryEntrants_AssignNominees: integer;
     function AryEntrants_AssignHeatNum(NumOfHeats: Integer): integer;
-    function AryDivision_Build(DoSysDivision: boolean = true): integer;
+    function AryDivisions_Build(DoSysDivision: boolean = true): integer;
 
     function AryExcludedLanes_Build: Integer;
     procedure AryScatterLanes_Build(NumOfPoolLanes: integer);
@@ -51,6 +51,7 @@ type
     function Build_Heats(NumOfHeats, NumOfNominees: Integer): integer;
     function CalcNumberOfHeats(NumOfNominees, RealNumOfLanes: Integer): Integer;
     procedure ClearAryEntrants;
+    procedure ClearAryDivisions;
     { Seed AryEntrants. }
     function Seed_Circle(NumOfHeats, SeedDepth: Integer): Integer;
     function Seed_Default(NumOfHeats: Integer; Offset: Integer = 0): Integer;
@@ -133,6 +134,7 @@ begin
   ABData.DeActivateData;
   ABData.Free;
   ClearAryEntrants;
+  ClearAryDivisions;
   inherited;
 end;
 
@@ -214,24 +216,85 @@ begin
     obj.NomineeID :=
       ABData.qryUnplacedNominees.FieldByName('NomineeID').AsInteger;
     obj.RandomNum := Random(SizeOf(Int16)); // assign randomNum
-    AryEntrants := AryEntrants + [obj]; // append to array.
+    AryEntrants := AryEntrants + [obj]; // append to end of array.
     INC(Count, 1);
     ABData.qryUnplacedNominees.Next;
   end;
   if Count > 0 then result := Count;
 end;
 
-function TABINDV.AryDivision_Build(DoSysDivision: boolean): integer;
+function TABINDV.AryDivisions_Build(DoSysDivision: boolean = true): integer;
 var
   obj: TDivision;
+  count: integer;
 begin
   result := 0;
+  count := 0;
+  ClearAryDivisions; // clear divisions array.
   if DoSysDivision then
   begin
     obj := TDivision.Create;
     obj.StartAge := 0;
     obj.EndAge := 6;
+    obj.GenderID := 0; // zero assignment indicates - ignore gender.
+    AryDivisions := AryDivisions + [obj]; // append to array.
+    INC(Count);
+    obj := TDivision.Create;
+    obj.StartAge := 7;
+    obj.EndAge := 8;
     obj.GenderID := 0;
+    AryDivisions := AryDivisions + [obj]; // append to array.
+    INC(Count);
+    obj := TDivision.Create;
+    obj.StartAge := 9;
+    obj.EndAge := 10;
+    obj.GenderID := 0;
+    AryDivisions := AryDivisions + [obj]; // append to array.
+    INC(Count);
+    obj := TDivision.Create;
+    obj.StartAge :=11;
+    obj.EndAge := 12;
+    obj.GenderID := 0;
+    AryDivisions := AryDivisions + [obj]; // append to array.
+    INC(Count);
+    obj := TDivision.Create;
+    obj.StartAge := 13;
+    obj.EndAge := 14;
+    obj.GenderID := 0;
+    AryDivisions := AryDivisions + [obj]; // append to array.
+    INC(Count);
+    obj := TDivision.Create;
+    obj.StartAge := 15;
+    obj.EndAge := 16;
+    obj.GenderID := 0;
+    AryDivisions := AryDivisions + [obj]; // append to array.
+    INC(Count);
+    obj := TDivision.Create;
+    obj.StartAge := 17; // OPEN division
+    obj.EndAge := 999;
+    obj.GenderID := 0;
+    AryDivisions := AryDivisions + [obj]; // append to array.
+    INC(Count);
+  end
+  else
+  begin
+    // user custom division
+    ABData.qryDivision.Connection := SCM2.scmConnection;
+    ABData.qryDivision.IndexName := 'idxGenderAge';
+    ABData.qryDivision.Open;
+    if ABData.qryDivision.Active then
+    begin
+      While not ABData.qryDivision.EOF do
+      begin
+        obj := TDivision.Create;
+        obj.StartAge := ABData.qryDivision.FieldByName('AgeFrom').AsInteger;
+        obj.EndAge := ABData.qryDivision.FieldByName('AgeTo').AsInteger;;
+        obj.GenderID := ABData.qryDivision.FieldByName('GenderID').AsInteger;;
+        AryDivisions := AryDivisions + [obj]; // append to array.
+        INC(Count);
+        ABData.qryDivision.Next;
+      end;
+    end;
 
   end;
 
@@ -862,6 +925,18 @@ begin
     NumOfHeats :=
       Ceil(double(numOfNominees) / double(RealNumOfLanes));
     Result := NumOfHeats;
+  end;
+end;
+
+procedure TABINDV.ClearAryDivisions;
+var
+  I: integer;
+begin
+  if Length(AryDivisions) > 0 then
+  begin
+    for I := LOW(AryDivisions) to HIGH(AryDivisions) do
+      AryDivisions[I].Free;
+    SetLength(AryDivisions, 0);
   end;
 end;
 

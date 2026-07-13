@@ -14,6 +14,7 @@ type
     qryGender: TFDQuery;
     qryUnplacedNominees: TFDQuery;
     dsUnplacedNominees: TDataSource;
+    qryDivision: TFDQuery;
     procedure DataModuleCreate(Sender: TObject);
 
   private

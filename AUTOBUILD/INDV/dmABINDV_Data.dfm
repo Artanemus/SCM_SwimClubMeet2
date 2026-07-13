@@ -116,4 +116,33 @@ object ABINDV_Data: TABINDV_Data
     Left = 192
     Top = 24
   end
+  object qryDivision: TFDQuery
+    Indexes = <
+      item
+        Active = True
+        Selected = True
+        Name = 'idxGenderAge'
+        Fields = 'GenderID;AgeFrom;DivisionID'
+      end>
+    IndexName = 'idxGenderAge'
+    Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Division'
+    SQL.Strings = (
+      'USE SwimClubMeet2'
+      ';'
+      ''
+      'SELECT [DivisionID]'
+      '      ,[Caption]'
+      '      ,[AgeFrom]'
+      '      ,[AgeTo]'
+      '      ,[GenderID]'
+      '  FROM [SwimClubMeet2].[dbo].[Division]'
+      '  ORDER BY GenderID ASC;')
+    Left = 64
+    Top = 152
+  end
 end

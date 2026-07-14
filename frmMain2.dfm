@@ -2727,6 +2727,9 @@ object Main2: TMain2
         OnPaint = pnlTitleBarCustomButtons1Paint
         OnClick = pnlTitleBarCustomButtons1Click
       end>
+    DesignSize = (
+      1137
+      37)
     object DBTextClubName: TDBText
       Left = 6
       Top = 0
@@ -3120,7 +3123,6 @@ object Main2: TMain2
               end
               item
                 Action = Tools_Divisions
-                Caption = '&Divisions...'
               end
               item
                 Action = Tools_LeaderBoard
@@ -3228,7 +3230,8 @@ object Main2: TMain2
     end
     object Tools_Divisions: TAction
       Category = 'Tools'
-      Caption = 'Divisions...'
+      Caption = 'Custom Divisions...'
+      OnExecute = Tools_DivisionsExecute
     end
     object Tools_LeaderBoard: TAction
       Category = 'Tools'

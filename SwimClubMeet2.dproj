@@ -415,6 +415,10 @@
             <Form>ABDebug</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="TOOLS\T_DIALOGS\dlgDivisions.pas">
+            <Form>Divisions</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

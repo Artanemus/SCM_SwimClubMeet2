@@ -118,6 +118,7 @@ type
     procedure Tools_PreferencesExecute(Sender: TObject);
     procedure Tools_QualifyTimesExecute(Sender: TObject);
     procedure Tools_DisqualifyCodesExecute(Sender: TObject);
+    procedure Tools_DivisionsExecute(Sender: TObject);
     procedure Tools_SwimmercategoryExecute(Sender: TObject);
 
   private
@@ -178,7 +179,7 @@ implementation
 uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
   frmManageMember, frmSwimClub_Reports, frmMM_Stats, uEvent, dlgQualifyTimes,
-  dlgPoolTypes, frmDisqualificationCodes, frmSwimClubType;
+  dlgPoolTypes, frmDisqualificationCodes, frmSwimClubType, dlgDivisions;
 
 {
   // Event handler:
@@ -965,6 +966,21 @@ begin
   dlg := TDisqualificationCodes.Create(self);
   dlg.Connection := SCM2.scmConnection;
   dlg.ShowModal;
+  dlg.Free;
+end;
+
+procedure TMain2.Tools_DivisionsExecute(Sender: TObject);
+var
+  dlg: TDivisions;
+begin
+  if not (Assigned(SCM2) and SCM2.scmConnection.Connected) then
+  begin
+    ShowMessage('Cannot open Divisions: no database connection.');
+    Exit;
+  end;
+  dlg := TDivisions.Create(Self);
+  dlg.ShowModal;
+  {TODO -oBSA -cGeneral : Perform any UI updates..}
   dlg.Free;
 end;
 

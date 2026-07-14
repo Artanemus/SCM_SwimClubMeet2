@@ -120,9 +120,21 @@ object ABINDV_Data: TABINDV_Data
     Indexes = <
       item
         Active = True
-        Selected = True
-        Name = 'idxGenderAge'
+        Name = 'idxGender1'
         Fields = 'GenderID;AgeFrom;DivisionID'
+        Filter = 'GenderID = 1;'
+      end
+      item
+        Active = True
+        Name = 'idxGender2'
+        Fields = 'GenderID;AgeFrom;DivisionID'
+        Filter = 'GenderID = 2'
+      end
+      item
+        Active = True
+        Name = 'idxGender3'
+        Fields = 'GenderID;AgeFrom;DivisionID'
+        Filter = 'GenderID = 3'
       end>
     IndexName = 'idxGenderAge'
     Connection = SCM2.scmConnection

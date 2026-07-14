@@ -41,7 +41,7 @@ type
     function AryEntrants_AssignLaneNum(NumOfHeats: Integer): Integer;
     function AryEntrants_AssignNominees: integer;
     function AryEntrants_AssignHeatNum(NumOfHeats: Integer): integer;
-    function AryDivisions_Build(DoSysDivision: boolean = true): integer;
+    function AryDivisions_Build(GenderID: Integer): integer;
 
     function AryExcludedLanes_Build: Integer;
     procedure AryScatterLanes_Build(NumOfPoolLanes: integer);
@@ -223,7 +223,7 @@ begin
   if Count > 0 then result := Count;
 end;
 
-function TABINDV.AryDivisions_Build(DoSysDivision: boolean = true): integer;
+function TABINDV.AryDivisions_Build(GenderID: Integer): integer;
 var
   obj: TDivision;
   count: integer;
@@ -231,56 +231,70 @@ begin
   result := 0;
   count := 0;
   ClearAryDivisions; // clear divisions array.
-  if DoSysDivision then
+
+  case GenderID of
+    0: // SCM Divisions
+    begin
+      obj := TDivision.Create;
+      obj.StartAge := 0;
+      obj.EndAge := 6;
+      obj.GenderID := 0; // zero assignment indicates - ignore gender.
+      AryDivisions := AryDivisions + [obj]; // append to array.
+      INC(Count);
+      obj := TDivision.Create;
+      obj.StartAge := 7;
+      obj.EndAge := 8;
+      obj.GenderID := 0;
+      AryDivisions := AryDivisions + [obj]; // append to array.
+      INC(Count);
+      obj := TDivision.Create;
+      obj.StartAge := 9;
+      obj.EndAge := 10;
+      obj.GenderID := 0;
+      AryDivisions := AryDivisions + [obj]; // append to array.
+      INC(Count);
+      obj := TDivision.Create;
+      obj.StartAge :=11;
+      obj.EndAge := 12;
+      obj.GenderID := 0;
+      AryDivisions := AryDivisions + [obj]; // append to array.
+      INC(Count);
+      obj := TDivision.Create;
+      obj.StartAge := 13;
+      obj.EndAge := 14;
+      obj.GenderID := 0;
+      AryDivisions := AryDivisions + [obj]; // append to array.
+      INC(Count);
+      obj := TDivision.Create;
+      obj.StartAge := 15;
+      obj.EndAge := 16;
+      obj.GenderID := 0;
+      AryDivisions := AryDivisions + [obj]; // append to array.
+      INC(Count);
+      obj := TDivision.Create;
+      obj.StartAge := 17; // OPEN division
+      obj.EndAge := 999;
+      obj.GenderID := 0;
+      AryDivisions := AryDivisions + [obj]; // append to array.
+      INC(Count);
+    end;
+    1: // Custom Division - MALE
+    begin
+      ABData.qryDivision.IndexName := 'idxGender1';
+    end;
+    2:  // Custom Division - FEMALE
+    begin
+      ABData.qryDivision.IndexName := 'idxGender2';
+    end;
+    3: // Custom Division - MIXED
+    begin
+      ABData.qryDivision.IndexName := 'idxGender3';
+    end;
+  end;
+
+  if GenderID in [1,2,3] then
   begin
-    obj := TDivision.Create;
-    obj.StartAge := 0;
-    obj.EndAge := 6;
-    obj.GenderID := 0; // zero assignment indicates - ignore gender.
-    AryDivisions := AryDivisions + [obj]; // append to array.
-    INC(Count);
-    obj := TDivision.Create;
-    obj.StartAge := 7;
-    obj.EndAge := 8;
-    obj.GenderID := 0;
-    AryDivisions := AryDivisions + [obj]; // append to array.
-    INC(Count);
-    obj := TDivision.Create;
-    obj.StartAge := 9;
-    obj.EndAge := 10;
-    obj.GenderID := 0;
-    AryDivisions := AryDivisions + [obj]; // append to array.
-    INC(Count);
-    obj := TDivision.Create;
-    obj.StartAge :=11;
-    obj.EndAge := 12;
-    obj.GenderID := 0;
-    AryDivisions := AryDivisions + [obj]; // append to array.
-    INC(Count);
-    obj := TDivision.Create;
-    obj.StartAge := 13;
-    obj.EndAge := 14;
-    obj.GenderID := 0;
-    AryDivisions := AryDivisions + [obj]; // append to array.
-    INC(Count);
-    obj := TDivision.Create;
-    obj.StartAge := 15;
-    obj.EndAge := 16;
-    obj.GenderID := 0;
-    AryDivisions := AryDivisions + [obj]; // append to array.
-    INC(Count);
-    obj := TDivision.Create;
-    obj.StartAge := 17; // OPEN division
-    obj.EndAge := 999;
-    obj.GenderID := 0;
-    AryDivisions := AryDivisions + [obj]; // append to array.
-    INC(Count);
-  end
-  else
-  begin
-    // user custom division
     ABData.qryDivision.Connection := SCM2.scmConnection;
-    ABData.qryDivision.IndexName := 'idxGenderAge';
     ABData.qryDivision.Open;
     if ABData.qryDivision.Active then
     begin
@@ -295,9 +309,9 @@ begin
         ABData.qryDivision.Next;
       end;
     end;
-
   end;
-
+  if Count <> 0 then
+    result := Count;
 end;
 
 function TABINDV.AryEntrants_AssignHeatNum(NumOfHeats: Integer): integer;

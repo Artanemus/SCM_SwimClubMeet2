@@ -232,44 +232,62 @@ object Preferences: TPreferences
       end
       object lblSeedDepth2: TLabel
         Left = 513
-        Top = 322
+        Top = 298
         Width = 73
         Height = 21
         Caption = '(Default 3)'
       end
       object lblSeedDepth1: TLabel
         Left = 376
-        Top = 322
+        Top = 298
         Width = 81
         Height = 21
         Caption = 'Seed depth:'
       end
       object lblSeedingDepthAll: TLabel
         Left = 376
-        Top = 356
+        Top = 332
         Width = 185
         Height = 45
         AutoSize = False
         Caption = 'Use seed depth 0 to circle seed all heats.'
         Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
         WordWrap = True
       end
       object lblListOfLanes: TLabel
-        Left = 123
-        Top = 120
-        Width = 215
-        Height = 21
+        Left = 234
+        Top = 100
+        Width = 183
+        Height = 19
         Caption = '(Use comma seperated values.)'
         Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
       end
       object lblBracketMsg: TLabel
-        Left = 27
-        Top = 349
-        Width = 208
-        Height = 65
+        Left = 40
+        Top = 284
+        Width = 201
+        Height = 39
         AutoSize = False
-        Caption = 'System divisions...'#13#10'0-6, 7-8, 9-10, 11-12, 13-14, 15-16, Open'
+        Caption = 'SCM Divisions: 0-6, 7-8, 9-10, 11-12, 13-14, 15-16, Open'
         Enabled = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -13
+        Font.Name = 'Segoe UI'
+        Font.Style = []
+        ParentFont = False
         WordWrap = True
       end
       object prefSeperateGender: TCheckBox
@@ -282,22 +300,22 @@ object Preferences: TPreferences
         TabOrder = 0
       end
       object prefGroupBy: TRadioGroup
-        Left = 3
-        Top = 171
+        Left = 9
+        Top = 147
         Width = 232
-        Height = 172
+        Height = 131
         Hint = 'Broad categories that gather together entants.'
         Caption = 'Group entrants by ...'
+        ItemIndex = 0
         Items.Strings = (
           'Don'#39't group.'
-          'Entrant'#39's age.'
-          'Custom user divisions.'
-          'System divisions.')
+          'Custom divisions.'
+          'SCM divisions.')
         TabOrder = 1
       end
       object prefSeedMethod: TRadioGroup
         Left = 344
-        Top = 171
+        Top = 147
         Width = 264
         Height = 131
         Hint = 'Decides what lane an entrant is given.'
@@ -311,7 +329,7 @@ object Preferences: TPreferences
       end
       object prefSeedDepth: TSpinEdit
         Left = 466
-        Top = 319
+        Top = 295
         Width = 41
         Height = 31
         MaxValue = 10
@@ -362,7 +380,7 @@ object Preferences: TPreferences
       end
       object lblCustomDate: TLabel
         Left = 24
-        Top = 236
+        Top = 199
         Width = 99
         Height = 21
         Caption = 'Custom Date...'
@@ -470,19 +488,18 @@ object Preferences: TPreferences
         Left = 24
         Top = 43
         Width = 289
-        Height = 187
+        Height = 150
         Caption = 'Age as of...'
         Items.Strings = (
           '31st December (swim season).'
           'The meet date.'
           'The session date.'
-          'Use current date (Today).'
           'Use custom date...')
         TabOrder = 0
       end
       object datePickerCustom: TDatePicker
         Left = 24
-        Top = 263
+        Top = 226
         Date = 45889.000000000000000000
         DateFormat = 'dd/mm/yyyy'
         Font.Charset = DEFAULT_CHARSET
@@ -495,7 +512,7 @@ object Preferences: TPreferences
       object btnToday: TButton
         Tag = 1
         Left = 180
-        Top = 263
+        Top = 226
         Width = 93
         Height = 32
         Hint = 'Assign todays date to custom.'
@@ -510,7 +527,7 @@ object Preferences: TPreferences
       object btnDate: TButton
         Tag = 1
         Left = 279
-        Top = 263
+        Top = 226
         Width = 121
         Height = 32
         Hint = 'Calendar style date picker.'

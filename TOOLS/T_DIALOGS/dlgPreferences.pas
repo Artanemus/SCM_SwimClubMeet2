@@ -184,10 +184,10 @@ begin
 
   // scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate);
   case scmSeedDateAuto(Settings.SeedDateAuto) of
-    sdaTodaysDate: indx := 3;
+//    sdaTodaysDate: indx := 3;
     sdaSessionDate: indx := 2;
     sdaStartOfSeason: indx := 0; // 31 December of season (Year).
-    sdaCustomDate: indx := 4;
+    sdaCustomDate: indx := 3;
     sdaMeetDate: indx := 1;
   else
     indx := -1;
@@ -232,9 +232,9 @@ begin
       Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaMeetDate);
     2:
       Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaSessionDate);
+//    3:
+//      Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaTodaysDate);
     3:
-      Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaTodaysDate);
-    4:
       Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaCustomDate);
 
     end;

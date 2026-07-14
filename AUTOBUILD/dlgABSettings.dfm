@@ -3,7 +3,7 @@ object ABSettings: TABSettings
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Auto Build Heats'
-  ClientHeight = 570
+  ClientHeight = 597
   ClientWidth = 754
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -2799,7 +2799,7 @@ object ABSettings: TABSettings
   end
   object Panel2: TPanel
     Left = 0
-    Top = 524
+    Top = 551
     Width = 754
     Height = 46
     Align = alBottom
@@ -2807,6 +2807,7 @@ object ABSettings: TABSettings
     BevelKind = bkFlat
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitTop = 524
     object btnCancel: TButton
       Left = 380
       Top = 8
@@ -2834,10 +2835,11 @@ object ABSettings: TABSettings
     Left = 0
     Top = 61
     Width = 754
-    Height = 463
+    Height = 490
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitTop = 60
     object Label7: TLabel
       Left = 22
       Top = 130
@@ -2867,7 +2869,7 @@ object ABSettings: TABSettings
     end
     object lblCustomDate: TLabel
       Left = 416
-      Top = 183
+      Top = 149
       Width = 85
       Height = 16
       Caption = 'Custom Date...'
@@ -2909,6 +2911,16 @@ object ABSettings: TABSettings
       Height = 16
       Caption = 'Use seed depth 0 to circle seed all heats.'
       Enabled = False
+    end
+    object lblBracketMsg: TLabel
+      Left = 47
+      Top = 430
+      Width = 200
+      Height = 37
+      AutoSize = False
+      Caption = 'SCM Divisions: 0-6, 7-8, 9-10, 11-12, 13-14, 15-16, Open'
+      Enabled = False
+      WordWrap = True
     end
     object prefSeedMethod: TRadioGroup
       Left = 416
@@ -2973,13 +2985,13 @@ object ABSettings: TABSettings
       Left = 22
       Top = 315
       Width = 227
-      Height = 129
+      Height = 111
       Caption = 'Group by ...'
+      ItemIndex = 0
       Items.Strings = (
         'Don'#39't group.'
-        'Entrant'#39's age.'
-        'Custom user divisions.'
-        'System divisions. ')
+        'Custom divisions.'
+        'SCM divisions. ')
       TabOrder = 4
     end
     object prefSeedDepth: TSpinEdit
@@ -2996,19 +3008,18 @@ object ABSettings: TABSettings
       Left = 416
       Top = 6
       Width = 273
-      Height = 171
+      Height = 137
       Caption = 'Member'#39's AGE as of...'
       Items.Strings = (
         '31st December (swim season).'
         'The meet date.'
         'The session date.'
-        'Use current date (Today).'
         'Use custom date...')
       TabOrder = 7
     end
     object datePickerCustom: TDatePicker
       Left = 416
-      Top = 210
+      Top = 176
       Date = 45889.000000000000000000
       DateFormat = 'dd/mm/yyyy'
       Font.Charset = DEFAULT_CHARSET
@@ -3021,7 +3032,7 @@ object ABSettings: TABSettings
     object btnToday: TButton
       Tag = 1
       Left = 572
-      Top = 210
+      Top = 176
       Width = 82
       Height = 32
       Hint = 'Assign todays date to custom.'
@@ -3035,7 +3046,7 @@ object ABSettings: TABSettings
     object btnDate: TButton
       Tag = 1
       Left = 660
-      Top = 210
+      Top = 176
       Width = 82
       Height = 32
       Hint = 'Calendar style date picker.'

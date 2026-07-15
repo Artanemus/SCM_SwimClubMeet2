@@ -419,6 +419,7 @@
             <Form>Divisions</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="TOOLS\uAgeOfSwimmer.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

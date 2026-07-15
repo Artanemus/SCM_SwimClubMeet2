@@ -46,7 +46,7 @@ const
  scmRptType = (rptSession, rptEvent, rptHeat, rptLane, rptNominee,
    rptMarshall, rptTimeKeeper, rptTeam, rptWatchTime, rptSplitTime);
 
- scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate);
+ scmSeedDateAuto = (sda31stDECDate, sdaMeetSessionDate, sdaCustomDate);
  scmSortState = (stUnsorted, stAscend, stDescend);
 
    TSCMSwimmerMetrics = record

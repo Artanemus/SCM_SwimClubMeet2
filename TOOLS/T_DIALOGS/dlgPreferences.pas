@@ -182,13 +182,11 @@ begin
 
   prefVerbose.Checked := Settings.Verbose;
 
-  // scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate);
+  //  scmSeedDateAuto = (sda31stDECDate, sdaMeetSessionDate, sdaCustomDate);
   case scmSeedDateAuto(Settings.SeedDateAuto) of
-//    sdaTodaysDate: indx := 3;
-    sdaSessionDate: indx := 2;
-    sdaStartOfSeason: indx := 0; // 31 December of season (Year).
-    sdaCustomDate: indx := 3;
-    sdaMeetDate: indx := 1;
+    sda31stDECDate: indx := 0; // 31 December of season (Year).
+    sdaMeetSessionDate: indx := 1;
+    sdaCustomDate: indx := 2;
   else
     indx := -1;
   end;
@@ -220,24 +218,17 @@ begin
   Settings.ShowDebugInfo := prefShowDebugInfo.Checked;
   Settings.Verbose := prefVerbose.Checked;
 
-  // scmSeedDateAuto = (sdaTodaysDate, sdaSessionDate, sdaStartOfSeason, sdaCustomDate, sdaMeetDate);
-
-  if rgrpMembersAge.ItemIndex > -1 then
-  begin
-    case rgrpMembersAge.ItemIndex of
-    0:
-      // 31 December of season (Year).
-      Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaStartOfSeason);
-    1:
-      Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaMeetDate);
-    2:
-      Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaSessionDate);
-//    3:
-//      Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaTodaysDate);
-    3:
-      Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaCustomDate);
-
-    end;
+  // scmSeedDateAuto = (sda31stDECDate, sdaMeetSessionDate, sdaCustomDate);
+  case rgrpMembersAge.ItemIndex of
+  0:
+    // 31 December rule. Used by clubs in the southern hemisphere.
+    Settings.SeedDateAuto := ORD(scmSeedDateAuto.sda31stDECDate);
+  1:
+    Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaMeetSessionDate);
+  2:
+    Settings.SeedDateAuto := ORD(scmSeedDateAuto.sdaCustomDate);
+  else
+    Settings.SeedDateAuto := -1;
   end;
 
   try

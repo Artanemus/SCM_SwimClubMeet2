@@ -2807,7 +2807,6 @@ object ABSettings: TABSettings
     BevelKind = bkFlat
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 524
     object btnCancel: TButton
       Left = 380
       Top = 8
@@ -2839,7 +2838,6 @@ object ABSettings: TABSettings
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = 60
     object Label7: TLabel
       Left = 22
       Top = 130
@@ -2869,7 +2867,7 @@ object ABSettings: TABSettings
     end
     object lblCustomDate: TLabel
       Left = 416
-      Top = 149
+      Top = 119
       Width = 85
       Height = 16
       Caption = 'Custom Date...'
@@ -2951,7 +2949,7 @@ object ABSettings: TABSettings
     end
     object prefcalcDefRT: TCheckBox
       Left = 22
-      Top = 149
+      Top = 152
       Width = 442
       Height = 21
       Caption = 'Calculate a race time based on the mean average of '
@@ -3008,18 +3006,17 @@ object ABSettings: TABSettings
       Left = 416
       Top = 6
       Width = 273
-      Height = 137
+      Height = 107
       Caption = 'Member'#39's AGE as of...'
       Items.Strings = (
-        '31st December (swim season).'
-        'The meet date.'
-        'The session date.'
-        'Use custom date...')
+        '31st December rule.'
+        'The meet/session date.'
+        'Custom date...')
       TabOrder = 7
     end
     object datePickerCustom: TDatePicker
       Left = 416
-      Top = 176
+      Top = 146
       Date = 45889.000000000000000000
       DateFormat = 'dd/mm/yyyy'
       Font.Charset = DEFAULT_CHARSET
@@ -3032,7 +3029,7 @@ object ABSettings: TABSettings
     object btnToday: TButton
       Tag = 1
       Left = 572
-      Top = 176
+      Top = 146
       Width = 82
       Height = 32
       Hint = 'Assign todays date to custom.'
@@ -3046,7 +3043,7 @@ object ABSettings: TABSettings
     object btnDate: TButton
       Tag = 1
       Left = 660
-      Top = 176
+      Top = 146
       Width = 82
       Height = 32
       Hint = 'Calendar style date picker.'

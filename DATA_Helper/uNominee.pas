@@ -35,7 +35,7 @@ implementation
 
 uses
 
-dmCORE, dmSCM2, uSettings, uSwimClub, uSession, uEvent ;
+dmCORE, dmSCM2, uSettings, uSwimClub, uSession, uEvent, uAgeOfSwimmer ;
 
 function DeleteNominee(aMemberID, aEventID: integer): boolean;
 var
@@ -392,42 +392,54 @@ end;
 function GetSeedDate(): TDate;
 var
   SeedDateAuto: scmSeedDateAuto;
-  dt: TDateTime;
+  dt: TDate;
 begin
   result := Date;
-  SeedDateAuto := scmSeeddateAuto.sdaTodaysDate; // DEFAULT Assignment.
+  dt := 0;
+  // DEFAULT Assignment - keeps the northern hemisphere happy.
+  SeedDateAuto := scmSeeddateAuto.sdaMeetSessionDate;
 
   if Assigned(Settings) then  // use USER PREFERENCES if available.
     if Settings.SeedDateAuto in [1..5] then
       SeedDateAuto := scmSeedDateAuto(Settings.SeedDateAuto);
 
   case SeedDateAuto of
-    sdaTodaysDate:  // today's date.
-      result := Date();
-    sdaSessionDate: // current session date.
-      result := uSession.SessionDT;
-    sdaStartOfSeason:
+
+    sda31stDECDate:
     begin
       // World Aquatics and Swim Australia default.
-      // Age as of 31 December. Year is start of the swimming season.
-      dt := uSwimClub.StartOfSwimSeason;
-      dt.Encode(dt.GetYear, 12, 31, 0, 0, 0, 0);
-      result := dt;
+      // Age as of 31 December rule.
+      dt := uAgeOfSwimmer.Get31stDECDate;
     end;
+
+    sdaMeetSessionDate:
+    begin
+      (*
+       // Meet overrides Session.
+      CORE.Meet.Connection := SCM2.ScmConnection;
+      CORE.Meet.ParamByName('SESSIONID').AsInteger := uSession.PK;
+      CORE.Meet.Prepare;
+      CORE.Meet.Open;
+      if CORE.Meet.Active then
+      begin
+        if not (CORE.Meet.IsEmpty OR CORE.Meet.FieldByName('StartDT').IsEmpty) then
+          result := CORE.Meet.FieldByName('StartDT').AsDateTime;
+      end.
+      else
+      *)
+      dt := uSession.SessionDT;
+    end;
+
     sdaCustomDate: // custom date assigned in preferences.
     begin
       if Assigned(Settings) then
        If (Settings.CustomSeedDate <> 0) then
-        result := Settings.CustomSeedDate;
+        dt := Settings.CustomSeedDate;
     end;
-    sdaMeetDate: // date of the meet (or carnival)
-    begin
-    // PK := uMeet.GetMeetID_WithSession(SessionID)
-//      if (PK <> 0) then
-//        result := uMeet.GetStartDT(PK);
-      ;
-    end;
+
   end;
+  if dt <> 0 then result := dt;
+
 end;
 
 procedure ToogleNomination();

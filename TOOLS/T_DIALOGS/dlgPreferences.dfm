@@ -45,7 +45,7 @@ object Preferences: TPreferences
     Top = 0
     Width = 695
     Height = 453
-    ActivePage = tab1
+    ActivePage = TabSheet7
     Align = alClient
     TabOrder = 1
     object TabSheet2: TTabSheet
@@ -264,7 +264,7 @@ object Preferences: TPreferences
         Left = 234
         Top = 100
         Width = 183
-        Height = 19
+        Height = 17
         Caption = '(Use comma seperated values.)'
         Enabled = False
         Font.Charset = DEFAULT_CHARSET
@@ -488,13 +488,12 @@ object Preferences: TPreferences
         Left = 24
         Top = 43
         Width = 289
-        Height = 150
+        Height = 126
         Caption = 'Age as of...'
         Items.Strings = (
-          '31st December (swim season).'
-          'The meet date.'
-          'The session date.'
-          'Use custom date...')
+          '31st December rule.'
+          'The meet/session date.'
+          'Custom date...')
         TabOrder = 0
       end
       object datePickerCustom: TDatePicker

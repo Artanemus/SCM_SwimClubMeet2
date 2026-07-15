@@ -599,8 +599,66 @@ begin
   else
   begin
     // APPLY GROUP BY filter.....
+    case Settings.ab_GroupByIndx of
+    1:  // Custom Divisions...
+      begin
+        var J: integer;
+        var I: integer;
+        var obj: TDivision;
+        var tot: integer;
+
+        // todo: routine needs to move to OUTER_LOOP...
+        for J := 3 downto 1 do
+        begin
+          AryDivisions_Build(I);
+            obj := AryDivisions[I];
+            ABData.qryUnplacedNominees.Filter := 'Age >= ' + IntToStr(obj.StartAge)
+              + ' Age <= ' + IntToStr(obj.EndAge) ;
+            ABData.qryUnplacedNominees.Filtered := true;
+
+            if not ABData.qryUnplacedNominees.IsEmpty then
+            begin
+              count := OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
+              tot := tot + count;
+            end;
+        end;
+        if tot > 0 then result := true;
+      end;
+
+
+    2: // SCM Divisions...
+      begin
+        // build Array
+        var I: integer;
+        var obj: TDivision;
+        var tot: integer;
+        if Settings.ab_SeperateGender = false then
+        begin
+          // SCM Division...
+          AryDivisions_Build(0); // use SCM hard coded divisions.
+          tot := 0;
+          for I := Low(AryDivisions) to High(AryDivisions) do
+          begin
+            obj := AryDivisions[I];
+            ABData.qryUnplacedNominees.Filter := 'Age >= ' + IntToStr(obj.StartAge)
+              + ' Age <= ' + IntToStr(obj.EndAge) ;
+            ABData.qryUnplacedNominees.Filtered := true;
+
+            if not ABData.qryUnplacedNominees.IsEmpty then
+            begin
+              count := OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
+              tot := tot + count;
+            end;
+          end;
+        end;
+
+        if tot > 0 then result := true;
+
+      end;
+    end;
     result := true;
   end;
+
 
 
 end;
@@ -623,9 +681,23 @@ begin
       while not ABData.qryGender.BOF do
       begin
         GenderID := ABData.qryGender.FieldByName('GenderID').AsInteger;
-        ABData.qryUnplacedNominees.Filter := 'GenderID = ' + IntToStr(GenderID);
+        case Settings.ab_GroupByIndx of
+          0: // no grouping .. no divisions.
+            ABData.qryUnplacedNominees.Filter := 'GenderID = ' + IntToStr(GenderID);
+          1: // CUSTOM DIVISIONS
+            begin
+              // rebuild the Array based on
+              // set filter...
+            end;
+          2: // SCM DIVISIONs
+            ABData.qryUnplacedNominees.Filter := ABData.qryUnplacedNominees.Filter
+            + 'AND GenderID = ' + IntToStr(GenderID);
+        end;
+
+
         if not ABData.qryUnplacedNominees.Filtered then
           ABData.qryUnplacedNominees.Filtered := true;
+
         // after filter is applied - get the number of unplaced nominees.
         NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
         if NumOfEntrants <> 0 then
@@ -657,8 +729,21 @@ begin
   else
   // OUTER GENDER LOOP... Default.
   begin
-    if ABData.qryUnplacedNominees.Filtered then
-      ABData.qryUnplacedNominees.Filtered := false;
+      case Settings.ab_GroupByIndx of
+        0: // no grouping on divisions...
+          ABData.qryUnplacedNominees.Filtered := false;
+        1: // CUSTOM DIVISIONS
+          begin
+            // filter already set to mixed...
+            ABData.qryUnplacedNominees.Filtered := true;
+          end;
+        2: // SCM DIVISIONs
+          begin
+            // filter already set...
+            ABData.qryUnplacedNominees.Filtered := true;
+          end;
+      end;
+
     NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
     count := INNER_LOOP(NumOfEntrants);
     if count <> 0 then

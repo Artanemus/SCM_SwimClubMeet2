@@ -119,7 +119,6 @@ var
   success: boolean;
   rtn: TModalResult;
   dlg: TABSettings;
-  count: integer;
 begin
   AB := nil;
   success := false;

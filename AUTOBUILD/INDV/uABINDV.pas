@@ -25,7 +25,10 @@ type
   private
     ABData: TABINDV_Data;
     AryEntrants: Array of TLaneEntrant;
-    AryDivisions: Array of TDivision;
+    AryDivisionsSCM: Array of TDivision;
+    AryDivisionsMixed: Array of TDivision;
+    AryDivisionsFemale: Array of TDivision;
+    AryDivisionsMale: Array of TDivision;
     AryEntrantsPerHeat: Array of Integer;
     AryExcludedLanes: Array of boolean;
     AryScatteredLanes: Array of Integer;
@@ -38,6 +41,12 @@ type
     fRealNumOfLanes: integer;
     fSortMode: scmABSortMode;
     fVerbose: boolean;
+
+    findxDivisionMixed: integer;
+    findxDivisionMale: integer;
+    findxDivisionFemale: integer;
+    findxDivisionSCM: integer;
+
     function AryEntrants_AssignLaneNum(NumOfHeats: Integer): Integer;
     function AryEntrants_AssignNominees: integer;
     function AryEntrants_AssignHeatNum(NumOfHeats: Integer): integer;
@@ -51,7 +60,7 @@ type
     function Build_Heats(NumOfHeats, NumOfNominees: Integer): integer;
     function CalcNumberOfHeats(NumOfNominees, RealNumOfLanes: Integer): Integer;
     procedure ClearAryEntrants;
-    procedure ClearAryDivisions;
+    procedure ClearAllAryDivisions;
     { Seed AryEntrants. }
     function Seed_Circle(NumOfHeats, SeedDepth: Integer): Integer;
     function Seed_Default(NumOfHeats: Integer; Offset: Integer = 0): Integer;
@@ -61,6 +70,7 @@ type
     procedure SortAryEntrantsByTTB;
     function INNER_LOOP(NumOfEntrants: Integer): Integer;
     function OUTER_LOOP: Integer;
+    function GetDivisionFilterString(GenderID: integer): string;
 
   public
     constructor Create(AOwner: TComponent); reintroduce;
@@ -134,7 +144,7 @@ begin
   ABData.DeActivateData;
   ABData.Free;
   ClearAryEntrants;
-  ClearAryDivisions;
+  ClearAllAryDivisions;
   inherited;
 end;
 
@@ -230,7 +240,7 @@ var
 begin
   result := 0;
   count := 0;
-  ClearAryDivisions; // clear divisions array.
+  ClearAllAryDivisions; // clear divisions array.
 
   case GenderID of
     0: // SCM Divisions
@@ -239,43 +249,43 @@ begin
       obj.StartAge := 0;
       obj.EndAge := 6;
       obj.GenderID := 0; // zero assignment indicates - ignore gender.
-      AryDivisions := AryDivisions + [obj]; // append to array.
+      AryDivisionsSCM := AryDivisionsSCM + [obj]; // append to array.
       INC(Count);
       obj := TDivision.Create;
       obj.StartAge := 7;
       obj.EndAge := 8;
       obj.GenderID := 0;
-      AryDivisions := AryDivisions + [obj]; // append to array.
+      AryDivisionsSCM := AryDivisionsSCM + [obj]; // append to array.
       INC(Count);
       obj := TDivision.Create;
       obj.StartAge := 9;
       obj.EndAge := 10;
       obj.GenderID := 0;
-      AryDivisions := AryDivisions + [obj]; // append to array.
+      AryDivisionsSCM := AryDivisionsSCM + [obj]; // append to array.
       INC(Count);
       obj := TDivision.Create;
       obj.StartAge :=11;
       obj.EndAge := 12;
       obj.GenderID := 0;
-      AryDivisions := AryDivisions + [obj]; // append to array.
+      AryDivisionsSCM := AryDivisionsSCM + [obj]; // append to array.
       INC(Count);
       obj := TDivision.Create;
       obj.StartAge := 13;
       obj.EndAge := 14;
       obj.GenderID := 0;
-      AryDivisions := AryDivisions + [obj]; // append to array.
+      AryDivisionsSCM := AryDivisionsSCM + [obj]; // append to array.
       INC(Count);
       obj := TDivision.Create;
       obj.StartAge := 15;
       obj.EndAge := 16;
       obj.GenderID := 0;
-      AryDivisions := AryDivisions + [obj]; // append to array.
+      AryDivisionsSCM := AryDivisionsSCM + [obj]; // append to array.
       INC(Count);
       obj := TDivision.Create;
       obj.StartAge := 17; // OPEN division
       obj.EndAge := 999;
       obj.GenderID := 0;
-      AryDivisions := AryDivisions + [obj]; // append to array.
+      AryDivisionsSCM := AryDivisionsSCM + [obj]; // append to array.
       INC(Count);
     end;
     1: // Custom Division - MALE
@@ -302,9 +312,16 @@ begin
       begin
         obj := TDivision.Create;
         obj.StartAge := ABData.qryDivision.FieldByName('AgeFrom').AsInteger;
-        obj.EndAge := ABData.qryDivision.FieldByName('AgeTo').AsInteger;;
-        obj.GenderID := ABData.qryDivision.FieldByName('GenderID').AsInteger;;
-        AryDivisions := AryDivisions + [obj]; // append to array.
+        obj.EndAge := ABData.qryDivision.FieldByName('AgeTo').AsInteger;
+        obj.GenderID := ABData.qryDivision.FieldByName('GenderID').AsInteger;
+        case GenderID of
+        1:
+          AryDivisionsMale := AryDivisionsMale + [obj]; // append to array.
+        2:
+          AryDivisionsFemale := AryDivisionsFemale + [obj]; // append to array.
+        3:
+          AryDivisionsMixed := AryDivisionsMixed + [obj]; // append to array.
+        end;
         INC(Count);
         ABData.qryDivision.Next;
       end;
@@ -419,7 +436,8 @@ end;
 function TABINDV.AutoBuildExec: Boolean;
 var
   msg: string;
-  count: integer;
+  count, tot, I: integer;
+  obj: TDivision;
 begin
   result := false;
 
@@ -588,122 +606,130 @@ begin
   ABData.qryUnplacedNominees.Filter := '';
   ABData.qryUnplacedNominees.Filtered := false;
 
-  // *********************************************
-  // NO GROUPING
-  // *********************************************
-  if (Settings.ab_GroupByIndx <= 0) then
+  // Build ALL division arrays ...
+  if (Settings.ab_GroupByIndx > 0) then
   begin
-    count := OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
-    if count <> 0 then result := true;
-  end
-  else
-  begin
-    // APPLY GROUP BY filter.....
-    case Settings.ab_GroupByIndx of
-    1:  // Custom Divisions...
-      begin
-        var J: integer;
-        var I: integer;
-        var obj: TDivision;
-        var tot: integer;
-
-        // todo: routine needs to move to OUTER_LOOP...
-        for J := 3 downto 1 do
-        begin
-          AryDivisions_Build(I);
-            obj := AryDivisions[I];
-            ABData.qryUnplacedNominees.Filter := 'Age >= ' + IntToStr(obj.StartAge)
-              + ' Age <= ' + IntToStr(obj.EndAge) ;
-            ABData.qryUnplacedNominees.Filtered := true;
-
-            if not ABData.qryUnplacedNominees.IsEmpty then
-            begin
-              count := OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
-              tot := tot + count;
-            end;
-        end;
-        if tot > 0 then result := true;
-      end;
-
-
-    2: // SCM Divisions...
-      begin
-        // build Array
-        var I: integer;
-        var obj: TDivision;
-        var tot: integer;
-        if Settings.ab_SeperateGender = false then
-        begin
-          // SCM Division...
-          AryDivisions_Build(0); // use SCM hard coded divisions.
-          tot := 0;
-          for I := Low(AryDivisions) to High(AryDivisions) do
-          begin
-            obj := AryDivisions[I];
-            ABData.qryUnplacedNominees.Filter := 'Age >= ' + IntToStr(obj.StartAge)
-              + ' Age <= ' + IntToStr(obj.EndAge) ;
-            ABData.qryUnplacedNominees.Filtered := true;
-
-            if not ABData.qryUnplacedNominees.IsEmpty then
-            begin
-              count := OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
-              tot := tot + count;
-            end;
-          end;
-        end;
-
-        if tot > 0 then result := true;
-
-      end;
-    end;
-    result := true;
+    AryDivisions_Build(0); //SCM
+    AryDivisions_Build(1); //MALE
+    AryDivisions_Build(2); //FEMALE
+    AryDivisions_Build(3); //MIXED
   end;
 
+  findxDivisionMixed := 0;
+  findxDivisionMale := 0;
+  findxDivisionFemale := 0;
+  findxDivisionSCM := 0;
 
+  count := OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
+  if count > 0 then result := true;
 
+end;
+
+function TABINDV.GetDivisionFilterString(GenderID: integer): string;
+var
+  obj: TDivision;
+  divisionFilter: string;
+begin
+  // DIVISIONS FILTER STRING .
+  result := '';
+  divisionFilter := '';
+  obj := nil;
+  // Extract a filter for age range.
+  case Settings.ab_GroupByIndx of
+    0: // no grouping .. no divisions.
+      divisionFilter := '';
+    1: // CUSTOM DIVISIONS
+    begin
+      case GenderID of
+        1:
+        begin
+          if findxDivisionMale <= high(AryDivisionsMale) then
+            obj := AryDivisionsMale[findxDivisionMale];
+        end;
+        2:
+        begin
+          if findxDivisionFemale <= high(AryDivisionsFemale) then
+          begin
+            obj := AryDivisionsFemale[findxDivisionFemale];
+          end;
+        end;
+        3:
+        begin
+          if findxDivisionMixed <= high(AryDivisionsMixed) then
+          begin
+            obj := AryDivisionsMixed[findxDivisionMixed];
+          end;
+        end;
+      end;
+
+      if obj <> nil then
+        divisionFilter := 'Age >= ' + IntToStr(obj.StartAge)
+          + ' Age <= ' + IntToStr(obj.EndAge) ;
+    end;
+
+    2: // SCM DIVISIONs
+    begin
+      if findxDivisionSCM<= high(findxDivisionSCM) then
+        obj := AryDivisionsMale[findxDivisionSCM];
+
+      if obj <> nil then
+        divisionFilter := 'Age >= ' + IntToStr(obj.StartAge)
+          + ' Age <= ' + IntToStr(obj.EndAge) ;
+    end;
+  end;
+  if Length(divisionFilter) > 0 then
+    result := divisionFilter;
 end;
 
 function TABINDV.OUTER_LOOP: Integer;
 var
   NumOfEntrants, GenderID, count: integer;
-  msg: string;
+  msg, divisionFilter, filterStr: string;
 begin
   result := 0;
-  // OUTER GENDER LOOP... S e p e r a t e   g e nd e r .
+
+  ABData.qryUnplacedNominees.Filter := '';
+  ABData.qryUnplacedNominees.Filtered := false;
+
+  // -----------------------------------------------------
+  // ENABLED ... SEPERATE BY GENDER ...ENABLED.
+  // -----------------------------------------------------
   if Settings.ab_SeperateGender then
   begin
     ABData.qryGender.Connection := SCM2.scmConnection;
     ABData.qryGender.Open;
+
     if ABData.qryGender.Active then
     begin
       count := 0;
+
+      // do
+
       ABData.qryGender.Last; // reverse order, female then male swimmers.
+      // iterate across Mixed, Female, Male (in that order)...
       while not ABData.qryGender.BOF do
       begin
         GenderID := ABData.qryGender.FieldByName('GenderID').AsInteger;
-        case Settings.ab_GroupByIndx of
-          0: // no grouping .. no divisions.
-            ABData.qryUnplacedNominees.Filter := 'GenderID = ' + IntToStr(GenderID);
-          1: // CUSTOM DIVISIONS
-            begin
-              // rebuild the Array based on
-              // set filter...
-            end;
-          2: // SCM DIVISIONs
-            ABData.qryUnplacedNominees.Filter := ABData.qryUnplacedNominees.Filter
-            + 'AND GenderID = ' + IntToStr(GenderID);
-        end;
 
+        divisionFilter := GetDivisionFilterString(GenderID);
+        FilterStr := 'GenderID = ' + IntToStr(GenderID);
+        if Length(divisionFilter) <> 0 then
+          FilterStr := FilterStr + ' AND ' + DivisionFilter;
 
+        ABData.qryUnplacedNominees.Filter := FilterStr;
         if not ABData.qryUnplacedNominees.Filtered then
           ABData.qryUnplacedNominees.Filtered := true;
 
-        // after filter is applied - get the number of unplaced nominees.
+        // after all filters are applied - get the number of unplaced nominees.
         NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
         if NumOfEntrants <> 0 then
           count := count + INNER_LOOP(NumOfEntrants);
+
         ABData.qryGender.Prior;
       end;
+
+      // until not divisionstoDO
+
       if count <> 0 then
         result := count;
     end
@@ -726,26 +752,28 @@ begin
       exit;
       end;
   end
+
   else
-  // OUTER GENDER LOOP... Default.
+
+  // -----------------------------------------------------
+  // SEPERATE BY GENDER DISABLED
+  // -----------------------------------------------------
   begin
-      case Settings.ab_GroupByIndx of
-        0: // no grouping on divisions...
-          ABData.qryUnplacedNominees.Filtered := false;
-        1: // CUSTOM DIVISIONS
-          begin
-            // filter already set to mixed...
-            ABData.qryUnplacedNominees.Filtered := true;
-          end;
-        2: // SCM DIVISIONs
-          begin
-            // filter already set...
-            ABData.qryUnplacedNominees.Filtered := true;
-          end;
-      end;
+    // do
+
+    divisionFilter := GetDivisionFilterString(GenderID);
+    if Length(divisionFilter) <> 0 then
+    begin
+      ABData.qryUnplacedNominees.Filter :=  DivisionFilter;
+      if not ABData.qryUnplacedNominees.Filtered then
+        ABData.qryUnplacedNominees.Filtered := true;
+    end;
 
     NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
     count := INNER_LOOP(NumOfEntrants);
+
+    // until MoreDivisionsToDo .
+
     if count <> 0 then
       result := count;
     end;
@@ -1027,15 +1055,33 @@ begin
   end;
 end;
 
-procedure TABINDV.ClearAryDivisions;
+procedure TABINDV.ClearAllAryDivisions;
 var
   I: integer;
 begin
-  if Length(AryDivisions) > 0 then
+  if Length(AryDivisionsSCM) > 0 then
   begin
-    for I := LOW(AryDivisions) to HIGH(AryDivisions) do
-      AryDivisions[I].Free;
-    SetLength(AryDivisions, 0);
+    for I := LOW(AryDivisionsSCM) to HIGH(AryDivisionsSCM) do
+      AryDivisionsSCM[I].Free;
+    SetLength(AryDivisionsSCM, 0);
+  end;
+  if Length(AryDivisionsMixed) > 0 then
+  begin
+    for I := LOW(AryDivisionsMixed) to HIGH(AryDivisionsMixed) do
+      AryDivisionsMixed[I].Free;
+    SetLength(AryDivisionsMixed, 0);
+  end;
+  if Length(AryDivisionsFemale) > 0 then
+  begin
+    for I := LOW(AryDivisionsFemale) to HIGH(AryDivisionsFemale) do
+      AryDivisionsFemale[I].Free;
+    SetLength(AryDivisionsFemale, 0);
+  end;
+  if Length(AryDivisionsMale) > 0 then
+  begin
+    for I := LOW(AryDivisionsMale) to HIGH(AryDivisionsMale) do
+      AryDivisionsMale[I].Free;
+    SetLength(AryDivisionsMale, 0);
   end;
 end;
 

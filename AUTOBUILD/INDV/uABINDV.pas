@@ -669,7 +669,7 @@ begin
 
     2: // SCM DIVISIONs
     begin
-      if findxDivisionSCM<= high(findxDivisionSCM) then
+      if findxDivisionSCM <= high(findxDivisionSCM) then
         obj := AryDivisionsMale[findxDivisionSCM];
 
       if obj <> nil then

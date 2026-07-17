@@ -4,7 +4,7 @@ object ABSettings: TABSettings
   BorderStyle = bsDialog
   Caption = 'Auto Build Heats'
   ClientHeight = 597
-  ClientWidth = 754
+  ClientWidth = 785
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -2685,11 +2685,12 @@ object ABSettings: TABSettings
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 754
+    Width = 785
     Height = 61
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 754
     object Label1: TLabel
       Left = 86
       Top = 20
@@ -2800,13 +2801,14 @@ object ABSettings: TABSettings
   object Panel2: TPanel
     Left = 0
     Top = 551
-    Width = 754
+    Width = 785
     Height = 46
     Align = alBottom
     BevelEdges = [beTop]
     BevelKind = bkFlat
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitWidth = 754
     object btnCancel: TButton
       Left = 380
       Top = 8
@@ -2833,11 +2835,12 @@ object ABSettings: TABSettings
   object Panel3: TPanel
     Left = 0
     Top = 61
-    Width = 754
+    Width = 785
     Height = 490
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitWidth = 754
     object Label7: TLabel
       Left = 22
       Top = 130
@@ -3009,7 +3012,7 @@ object ABSettings: TABSettings
       Height = 107
       Caption = 'Member'#39's AGE as of...'
       Items.Strings = (
-        '31st December rule.'
+        '31st of December rule.'
         'The meet/session date.'
         'Custom date...')
       TabOrder = 7
@@ -3036,23 +3039,27 @@ object ABSettings: TABSettings
       Caption = 'Today'
       ImageIndex = 4
       ImageName = 'today'
+      Images = IMG.imglstMiscButtons
       ParentShowHint = False
       ShowHint = True
       TabOrder = 9
+      OnClick = btnTodayClick
     end
     object btnDate: TButton
       Tag = 1
       Left = 660
       Top = 146
-      Width = 82
+      Width = 117
       Height = 32
       Hint = 'Calendar style date picker.'
       Caption = 'Date Picker '
       ImageIndex = 1
       ImageName = 'pick-date'
+      Images = IMG.imglstMiscButtons
       ParentShowHint = False
       ShowHint = True
       TabOrder = 10
+      OnClick = btnDateClick
     end
     object prefExcludeLanes: TCheckBox
       Left = 22

@@ -2711,7 +2711,7 @@ object SwimClubManage: TSwimClubManage
       DefaultRowHeight = 60
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 4
+      RowCount = 2
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -3170,8 +3170,6 @@ object SwimClubManage: TSwimClubManage
         0)
       RowHeights = (
         30
-        60
-        60
         60)
     end
   end
@@ -3227,7 +3225,7 @@ object SwimClubManage: TSwimClubManage
       Top = 0
       Width = 630
       Height = 575
-      ActivePage = ts_LinkedClubs
+      ActivePage = tsMain
       Align = alClient
       ParentShowHint = False
       ShowHint = True

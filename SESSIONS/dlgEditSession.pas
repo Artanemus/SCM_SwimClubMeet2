@@ -23,7 +23,7 @@ uses
 
   dmCORE, dmIMG, dmSCM2,
 
-  uDefines, uSwimClub, uSession, SVGIconImage;
+  uDefines, uSwimClub, uSession, SVGIconImage, uUtility;
 
 type
   scmSessionMode = (smEditSession, smNewSession, swNotGiven);
@@ -209,7 +209,7 @@ var
   WeeksBetween: integer;
 begin
   // number of weeks since start of the swimmging season.
-  WeeksBetween := uSession.WeeksSinceSeasonStart(datePickerSess.Date);
+  WeeksBetween := uUtility.WeeksSinceSeasonStart(datePickerSess.Date);
   lblWeekNum.Caption :=  IntToStr(WeeksBetween); // render to UI.
 end;
 

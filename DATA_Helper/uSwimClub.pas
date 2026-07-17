@@ -18,7 +18,6 @@ function NickName: string;
 function NumberOfLanes(): integer;
 function SessionCount(): integer; overload;
 function SessionCount(SDate, EDate: TDateTime): integer; overload;
-function StartOfSwimSeason(): TDateTime; overload;
 function HasLockedSession(): boolean;
 function HasRaceData(): Boolean;
 function Delete_SwimClub(DoExclude: boolean = true): boolean;
@@ -325,10 +324,6 @@ begin
   end;
 end;
 
-function StartOfSwimSeason: TDateTime;
-begin
-  result := CORE.dsSwimClub.DataSet.FieldByName('StartOfSwimSeason').AsDateTime;
-end;
 
 function TestForSwimClubID(SwimCLubID: integer): boolean;
 var

@@ -64,7 +64,7 @@ object ManageMember_Stats: TManageMember_Stats
       Top = 0
       Width = 1102
       Height = 696
-      ActivePage = tsMemberStats
+      ActivePage = tsDash
       Align = alClient
       TabOrder = 0
       object tsDash: TTabSheet

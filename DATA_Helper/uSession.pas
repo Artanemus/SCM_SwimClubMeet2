@@ -21,13 +21,11 @@ function IsEmptyOrLocked: Boolean;
 function SessionDT: TDateTime;
 //procedure SortSession();
 procedure NewSession();
+
+
 //procedure EditSession();
 //procedure ReSyncSession();
 
-
-// LISTED BELOW ARE ROUTINES WIP.
-function WeeksSinceSeasonStart(const ANow: TDateTime): Integer; overload;
-function WeeksSinceSeasonStart: Integer; overload;
 
 function Locate(SessionID: integer): Boolean;
 function CalcSess_EventCount: integer;
@@ -522,38 +520,6 @@ begin // NO CHECKS. quick and dirty - primary key result.
   result := CORE.qrySession.FieldByName('SessionID').AsInteger;
 end;
 
-function WeeksSinceSeasonStart(const ANow: TDateTime): Integer;
-var
-AThen: TDateTime;
-begin
-  result := 0;
-
-  // get the number of weeks since the start of the swimming season.
-  if not CORE.qrySwimClub.FieldByName('StartOfSwimSeason').IsNull then
-  begin
-    aThen := CORE.qrySwimClub.FieldByName('StartOfSwimSeason').AsDateTime;
-    if AThen > ANow then
-    begin
-      result := -1;
-      exit;
-    end;
-    // Calculates the number of whole weeks between ANow and AThen, counting
-    // incomplete weeks as week=0.
-    result := aNow.WeeksBetween(aThen) + 1; // set base to 1.
-  end;
-end;
-
-function WeeksSinceSeasonStart: Integer;
-var
-aNow: TDateTime;
-begin
-  result := 0;
-  if not CORE.qrySwimClub.FieldByName('StartOfSwimSeason').IsNull then
-  begin
-    aNow := CORE.qrySession.FieldByName('SessionDT').AsDateTime;
-    result := WeeksSinceSeasonStart(aNow);
-  end;
-end;
 
 end.
 

@@ -491,7 +491,7 @@ object Preferences: TPreferences
         Height = 126
         Caption = 'Age as of...'
         Items.Strings = (
-          '31st December rule.'
+          '31st of December rule.'
           'The meet/session date.'
           'Custom date...')
         TabOrder = 0
@@ -518,6 +518,7 @@ object Preferences: TPreferences
         Caption = 'Today'
         ImageIndex = 4
         ImageName = 'today'
+        Images = IMG.imglstMiscButtons
         ParentShowHint = False
         ShowHint = True
         TabOrder = 2
@@ -533,6 +534,7 @@ object Preferences: TPreferences
         Caption = 'Date Picker '
         ImageIndex = 1
         ImageName = 'pick-date'
+        Images = IMG.imglstMiscButtons
         ParentShowHint = False
         ShowHint = True
         TabOrder = 3

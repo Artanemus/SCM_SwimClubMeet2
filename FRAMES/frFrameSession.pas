@@ -17,7 +17,7 @@ uses
 
   AdvUtil, AdvObj, AdvGrid, DBAdvGrid,
 
-  dmSCM2, dmIMG, dmCORE, uSettings, uDefines
+  dmSCM2, dmIMG, dmCORE, uSettings, uDefines, uUtility
 
   ;
 
@@ -396,7 +396,7 @@ begin
     Locked := true else Locked := false;
 
   // as typical swimming season is 6 months .. 25 weeks...
-  weeks := uSession.WeeksSinceSeasonStart;
+  weeks := uUtility.WeeksSinceSeasonStart(Now);
   if (weeks < 26) and (weeks >= 0) then ShowSeasonIcon := true;
 
   if (ACol = 1) then     // and (ARow >= grid.FixedRows)

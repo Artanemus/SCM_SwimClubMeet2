@@ -3123,6 +3123,7 @@ object Main2: TMain2
               end
               item
                 Action = Tools_Divisions
+                Caption = 'C&ustom Divisions...'
               end
               item
                 Action = Tools_LeaderBoard

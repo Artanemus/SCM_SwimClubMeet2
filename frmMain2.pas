@@ -669,7 +669,7 @@ begin
       StatusBar.Panels[1].Text := IntToStr(uSession.CalcSess_NomineeCount);
       StatusBar.Panels[2].Text := IntToStr(uSession.CalcSess_EntrantCount);
     end;
-    i := uSession.WeeksSinceSeasonStart;
+    i := uUtility.WeeksSinceSeasonStart(Now);
     if (i < 28) and (i > 0) then
       StatusBar.Panels[3].Text := IntToStr(i)
     else

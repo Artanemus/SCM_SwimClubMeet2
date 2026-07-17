@@ -855,7 +855,6 @@ begin
   Dataset.FieldByName('NumOfLanes').AsInteger := 10;
   Dataset.FieldByName('LenOfPool').AsInteger := 50;
   Dataset.FieldByName('DefTeamSize').AsInteger := 4;
-  Dataset.FieldByName('StartOfSwimSeason').AsDateTime := Now;
   Dataset.FieldByName('CreatedOn').AsDateTime := Now;
   Dataset.FieldByName('Caption').AsString := '';
   Dataset.FieldByName('NickName').AsString := '';

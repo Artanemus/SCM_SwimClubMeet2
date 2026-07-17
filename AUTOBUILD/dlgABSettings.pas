@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Samples.Spin,
-  Vcl.ExtCtrls, Vcl.Imaging.jpeg, Vcl.WinXPickers, Vcl.Buttons, uDefines;
+  Vcl.ExtCtrls, Vcl.Imaging.jpeg, Vcl.WinXPickers, Vcl.Buttons, uDefines,
+  System.DateUtils, System.UITypes;
 
 type
   TABSettings = class(TForm)
@@ -40,7 +41,9 @@ type
     lblSeedingDepthAll: TLabel;
     lblBracketMsg: TLabel;
     procedure btnCancelClick(Sender: TObject);
+    procedure btnDateClick(Sender: TObject);
     procedure btnOkClick(Sender: TObject);
+    procedure btnTodayClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -61,16 +64,39 @@ implementation
 
 {$R *.dfm}
 
-uses uUtility, uSettings;
+uses uUtility, uSettings, dlgscmDatePicker;
 
 procedure TABSettings.btnCancelClick(Sender: TObject);
 begin
   ModalResult := mrCancel;
 end;
 
+procedure TABSettings.btnDateClick(Sender: TObject);
+var
+  dlg: TscmDatePicker;
+  Rect: TRect;
+  rtn: TModalResult;
+begin
+  dlg := TscmDatePicker.Create(Self);
+  dlg.Position := poDesigned;
+  Rect := btnDate.ClientToScreen(btnDate.ClientRect);
+  dlg.Left := Rect.Left;
+  dlg.Top := Rect.Bottom + 1;
+  dlg.CalendarView1.Date := datePickerCustom.Date;
+  rtn := dlg.ShowModal;
+  if IsPositiveResult(rtn) then
+    datePickerCustom.Date := dlg.CalendarView1.Date;
+  dlg.Free;
+end;
+
 procedure TABSettings.btnOkClick(Sender: TObject);
 begin
   ModalResult := mrYes;
+end;
+
+procedure TABSettings.btnTodayClick(Sender: TObject);
+begin
+  datePickerCustom.Date := Date.Today;
 end;
 
 {

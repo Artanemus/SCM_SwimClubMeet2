@@ -10,7 +10,7 @@ uses
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, dmSCM2, Vcl.Grids, Vcl.DBGrids,
   VclTee.TeeGDIPlus, VCLTee.TeEngine, VCLTee.Series, VCLTee.TeeProcs,
-  VCLTee.Chart, VCLTee.DBChart, uSwimClub, uSettings, uDefines;
+  VCLTee.Chart, VCLTee.DBChart, uSwimClub, uSettings, uDefines, uUtility;
 
 type
   TManageMember_Stats = class(TForm)
@@ -308,6 +308,7 @@ var
   docurrseason: Boolean;
   str: string;
   fs: TFormatSettings;
+  ADate: TDate;
 begin
   fs := TFormatSettings.Create; // default locale values assigned by OS.
   // Gather UI state
@@ -331,8 +332,13 @@ begin
   DBChart.Title.Text.Clear;
   str := qryMember.FieldByName('FName').AsString;
   str := str + ' ' + cmboDistance.Text + ' ' + cmboStroke.Text;
+
   if docurrseason then
-    str := str + ' - Start of season' + DateToStr(uSwimClub.StartOfSwimSeason, fs);
+  begin
+    ADate := uUtility.StartOfSwimmingSeason(Now);
+    if ADate <> 0 then
+      str := str + ' - Start of season' + DateToStr(ADate, fs);
+  end;
 
   str := str + ' - (Max ' + IntToStr(fMemberChartDataPoints) + ' events)';
   DBChart.Title.Text.Add(str);

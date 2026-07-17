@@ -15,7 +15,7 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Data.DB,
+  System.Classes, System.DateUtils, Data.DB,
 {$IFDEF MSWINDOWS}
   System.Win.Registry,
 {$IFEND}
@@ -47,6 +47,11 @@ function ScatterLanes(index, NumOfPoolLanes: integer): integer;
 function CheckInternetA: boolean;
 function CheckInternetB: boolean;
 
+function WeeksSinceSeasonStart(const ANow: TDateTime): Integer;
+function StartOfSwimmingSeason(const ANow: TDateTime): TDateTime;
+
+
+
 {function GetStyleTabSheetElementColor: TColor;}
 function GetStyledPanelColor: TColor;
 function GetStyledPanelElementColor: TColor;
@@ -75,6 +80,50 @@ uses
   WinInet, // for interenet
   IdTCPClient // for checkinternet
 ;
+
+
+function StartOfSwimmingSeason(const ANow: TDateTime): TDateTime;
+var
+StartOfSwimSeasonDT: TDate;
+AYear, AMonth, ADay: WORD;
+begin
+  result := 0;
+  StartOfSwimSeasonDT := 0;
+  // determine the start of the current swimming season based on the current date.
+  DecodeDate(ANow, AYear, AMonth, ADay);
+  // Summer season months October-March [10, 11, 12, 1, 2, 3]
+  // Winter season April-Sept [4, 5, 6, 7, 8, 9]
+  if AYear <> 0 then
+  begin
+    // Determine season start: Winter (Apr-Sep) or Summer (Oct-Mar)
+    if AMonth in [10, 11, 12] then
+      StartOfSwimSeasonDT := EncodeDate(AYear, 10, 1)      // Summer season starts Oct 1
+    else if AMonth in [1, 2, 3] then
+      StartOfSwimSeasonDT := EncodeDate(AYear - 1, 10, 1)  // Summer season started previous year
+    else // Apr-Sep
+      StartOfSwimSeasonDT := EncodeDate(AYear, 4, 1);      // Winter season starts Apr 1
+  end;
+
+  if StartOfSwimSeasonDT > 0 then
+    result := StartOfSwimSeasonDT;
+
+end;
+
+function WeeksSinceSeasonStart(const ANow: TDateTime): Integer;
+var
+AThen: TDateTime;
+begin
+  result := 0;
+  AThen := StartOfSwimmingSeason(ANow);
+
+  // get the number of weeks since the start of the swimming season.
+  if (AThen = 0) OR (AThen > ANow) then
+    result := -1
+  else
+    // Calculates the number of whole weeks between ANow and AThen, counting
+    // incomplete weeks as week=0.
+    result := WeeksBetween(aNow, aThen); // base 0.
+end;
 
 
 

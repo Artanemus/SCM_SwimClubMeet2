@@ -541,7 +541,6 @@ object CORE: TCORE
       '      ,[NumOfLanes]'
       '      ,[DefTeamSize]'
       '      ,[LenOfPool]'
-      '      ,[StartOfSwimSeason]'
       '      ,[CreatedOn]'
       '      ,[LogoImg]'
       '      ,[SwimClub].[PoolTypeID]'
@@ -617,10 +616,6 @@ object CORE: TCORE
     object qrySwimClubLenOfPool: TFloatField
       FieldName = 'LenOfPool'
       Origin = 'LenOfPool'
-    end
-    object qrySwimClubStartOfSwimSeason: TSQLTimeStampField
-      FieldName = 'StartOfSwimSeason'
-      Origin = 'StartOfSwimSeason'
     end
     object qrySwimClubCreatedOn: TSQLTimeStampField
       FieldName = 'CreatedOn'

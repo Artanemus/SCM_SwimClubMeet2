@@ -468,13 +468,14 @@ object ManageMember_Stats: TManageMember_Stats
       '        AND Lane.RaceTime IS NOT NULL'
       #9#9'-- playing it extra careful'
       #9#9'AND CONVERT(time(0), Lane.RaceTime) > '#39'00:00:00'#39
-      '        AND ('
+      '    '
+      '--        AND ('
       
-        '           (@DoCurrSeason = 1 AND Session.SessionDT >= SwimClub.' +
-        'StartOfSwimSeason)'
-      '           OR'
-      '           (@DoCurrSeason = 0)'
-      #9#9' )'
+        '--           (@DoCurrSeason = 1 AND Session.SessionDT >= dbo.Sta' +
+        'rtOfSwimSeason(GetDate())'
+      '--          OR'
+      '--           (@DoCurrSeason = 0)'
+      '--'#9#9' )'
       '        '
       'ORDER BY SessionDT DESC;'
       ''

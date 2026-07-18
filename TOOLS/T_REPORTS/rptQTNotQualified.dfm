@@ -394,13 +394,12 @@ object QTNotQualified: TQTNotQualified
   end
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'DistanceID;StrokeID'
-    Connection = SCM.scmConnection
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss:zzz'
     SQL.Strings = (
-      'USE SwimClubMeet;'
+      'USE SwimClubMeet2;'
       ''
       'DECLARE @SessionID AS INTEGER;'
       'SET @SessionID = :SESSIONID;'
@@ -429,12 +428,12 @@ object QTNotQualified: TQTNotQualified
       'FROM [SwimClubMeet].[dbo].[Session]'
       '    INNER JOIN [Event]'
       '        ON [Session].SessionID = [Event].SessionID'
-      '    INNER JOIN [HeatIndividual]'
-      '        ON [Event].[EventID] = [HeatIndividual].[EventID]'
-      '    INNER JOIN [Entrant]'
-      '        ON [HeatIndividual].HeatID = [Entrant].HeatID'
+      '    INNER JOIN [Heat]'
+      '        ON [Event].[EventID] = [Heat].[EventID]'
+      '    INNER JOIN [Nominee]'
+      '        ON [Heat].HeatID = [Nominee].HeatID'
       '    INNER JOIN [Member]'
-      '        ON [Entrant].MemberID = [Member].MemberID'
+      '        ON [Nominee].MemberID = [Member].MemberID'
       '    INNER JOIN [Qualify]'
       '        ON [Event].DistanceID = [Qualify].[QualifyDistID]'
       '           AND [Event].StrokeID = [Qualify].StrokeID'
@@ -588,7 +587,7 @@ object QTNotQualified: TQTNotQualified
     ActiveStoredUsage = [auDesignTime]
     Active = True
     IndexFieldNames = 'SwimClubID'
-    Connection = SCM.scmConnection
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss:zzz'
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
@@ -596,7 +595,7 @@ object QTNotQualified: TQTNotQualified
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
     SQL.Strings = (
-      'USE SwimClubMeet;'
+      'USE SwimClubMeet2;'
       ''
       'DECLARE @SwimClubID AS INTEGER;'
       'SET @SwimClubID = :SWIMCLUBID;'
@@ -610,7 +609,6 @@ object QTNotQualified: TQTNotQualified
       #9#9',[WebSite]'
       #9#9',[NumOfLanes]'
       #9#9',[LenOfPool]'
-      #9#9',[StartOfSwimSeason]'
       #9#9',[PoolTypeID]'
       #9#9',[SwimClubTypeID]'
       '    '

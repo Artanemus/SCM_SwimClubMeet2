@@ -130,6 +130,8 @@ begin
   rtn := dlg.ShowModal();
   dlg.Free;
 
+  // Save settings modified in dialogue
+
   if rtn = mrYes then
   begin
     LockDrawing;

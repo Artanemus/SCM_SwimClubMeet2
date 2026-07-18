@@ -2690,7 +2690,6 @@ object ABSettings: TABSettings
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 754
     object Label1: TLabel
       Left = 86
       Top = 20
@@ -2808,7 +2807,6 @@ object ABSettings: TABSettings
     BevelKind = bkFlat
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 754
     object btnCancel: TButton
       Left = 380
       Top = 8
@@ -2840,7 +2838,6 @@ object ABSettings: TABSettings
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitWidth = 754
     object Label7: TLabel
       Left = 22
       Top = 130

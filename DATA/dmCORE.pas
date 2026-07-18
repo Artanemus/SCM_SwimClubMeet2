@@ -166,7 +166,6 @@ type
     qrySwimClubNumOfLanes: TIntegerField;
     qrySwimClubDefTeamSize: TIntegerField;
     qrySwimClubLenOfPool: TFloatField;
-    qrySwimClubStartOfSwimSeason: TSQLTimeStampField;
     qrySwimClubCreatedOn: TSQLTimeStampField;
     qrySwimClubLogoImg: TBlobField;
     qrySwimClubPoolTypeID: TIntegerField;

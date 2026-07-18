@@ -117,35 +117,25 @@ object ABINDV_Data: TABINDV_Data
     Top = 24
   end
   object qryDivision: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
     Indexes = <
       item
         Active = True
-        Name = 'idxGender1'
-        Fields = 'GenderID;AgeFrom;DivisionID'
-        Filter = 'GenderID = 1;'
-      end
-      item
-        Active = True
-        Name = 'idxGender2'
-        Fields = 'GenderID;AgeFrom;DivisionID'
-        Filter = 'GenderID = 2'
-      end
-      item
-        Active = True
-        Name = 'idxGender3'
-        Fields = 'GenderID;AgeFrom;DivisionID'
-        Filter = 'GenderID = 3'
+        Selected = True
+        Name = 'indxDiv'
+        Fields = 'AgeTo;GenderID;DivisionID'
+        DescFields = 'GenderID'
       end>
-    IndexName = 'idxGenderAge'
+    IndexName = 'indxDiv'
     Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Division'
+    UpdateOptions.KeyFields = 'DivisionID'
     SQL.Strings = (
-      'USE SwimClubMeet2'
-      ';'
+      'USE SwimClubMeet2;'
       ''
       'SELECT [DivisionID]'
       '      ,[Caption]'

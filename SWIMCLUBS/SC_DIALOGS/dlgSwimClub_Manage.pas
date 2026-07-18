@@ -54,7 +54,6 @@ type
     lblWebSite: TLabel;
     lblNumOfLanes: TLabel;
     lblPoolLength: TLabel;
-    lblSeasonStart: TLabel;
     DBClubName: TDBEdit;
     DBNickName: TDBEdit;
     DBEmail: TDBEdit;
@@ -66,7 +65,6 @@ type
     imgIndxArchive: TSVGIconImage;
     actnClose: TAction;
     DBTextPrimaryKey: TDBText;
-    AdvDBDTPicker: TAdvDBDateTimePicker;
     ts_LinkedClubs: TTabSheet;
     imgindxGroup: TSVGIconImage;
     actnNewGroup: TAction;
@@ -91,8 +89,6 @@ type
     DBTextCourseType: TDBText;
     DBTextLengthOfPool: TDBText;
     DBTextUnitType: TDBText;
-    btnClearDOB: TButton;
-    btnDOBPicker: TButton;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure actnArchiveExecute(Sender: TObject);

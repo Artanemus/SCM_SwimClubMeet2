@@ -497,7 +497,6 @@ object MM_CORE: TMM_CORE
   end
   object qrySwimClub: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'SwimClubID'
     MasterSource = dsMemberLink
     MasterFields = 'SwimClubID'
@@ -524,7 +523,6 @@ object MM_CORE: TMM_CORE
       '      ,[NumOfLanes]'
       '      ,[LenOfPool]'
       '      ,[DefTeamSize]'
-      '      ,[StartOfSwimSeason]'
       '      ,[CreatedOn]'
       '      ,[LogoImg]'
       '      ,[IsArchived]'

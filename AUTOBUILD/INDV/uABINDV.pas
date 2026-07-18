@@ -42,10 +42,10 @@ type
     fSortMode: scmABSortMode;
     fVerbose: boolean;
 
-    findxDivisionMixed: integer;
-    findxDivisionMale: integer;
-    findxDivisionFemale: integer;
-    findxDivisionSCM: integer;
+    indxX: integer;
+    indxM: integer;
+    indxF: integer;
+    indxSCM: integer;
 
     function AryEntrants_AssignLaneNum(NumOfHeats: Integer): Integer;
     function AryEntrants_AssignNominees: integer;
@@ -288,45 +288,34 @@ begin
       AryDivisionsSCM := AryDivisionsSCM + [obj]; // append to array.
       INC(Count);
     end;
-    1: // Custom Division - MALE
+    1, 2, 3:
     begin
-      ABData.qryDivision.IndexName := 'idxGender1';
-    end;
-    2:  // Custom Division - FEMALE
-    begin
-      ABData.qryDivision.IndexName := 'idxGender2';
-    end;
-    3: // Custom Division - MIXED
-    begin
-      ABData.qryDivision.IndexName := 'idxGender3';
-    end;
-  end;
-
-  if GenderID in [1,2,3] then
-  begin
-    ABData.qryDivision.Connection := SCM2.scmConnection;
-    ABData.qryDivision.Open;
-    if ABData.qryDivision.Active then
-    begin
-      While not ABData.qryDivision.EOF do
+      ABData.qryDivision.Connection := SCM2.scmConnection;
+      ABData.qryDivision.IndexName := 'indxDiv';
+      ABData.qryDivision.Open;
+      if ABData.qryDivision.Active then
       begin
-        obj := TDivision.Create;
-        obj.StartAge := ABData.qryDivision.FieldByName('AgeFrom').AsInteger;
-        obj.EndAge := ABData.qryDivision.FieldByName('AgeTo').AsInteger;
-        obj.GenderID := ABData.qryDivision.FieldByName('GenderID').AsInteger;
-        case GenderID of
-        1:
-          AryDivisionsMale := AryDivisionsMale + [obj]; // append to array.
-        2:
-          AryDivisionsFemale := AryDivisionsFemale + [obj]; // append to array.
-        3:
-          AryDivisionsMixed := AryDivisionsMixed + [obj]; // append to array.
+        While not ABData.qryDivision.EOF do
+        begin
+          obj := TDivision.Create;
+          obj.StartAge := ABData.qryDivision.FieldByName('AgeFrom').AsInteger;
+          obj.EndAge := ABData.qryDivision.FieldByName('AgeTo').AsInteger;
+          obj.GenderID := ABData.qryDivision.FieldByName('GenderID').AsInteger;
+          case GenderID of
+          1:
+            AryDivisionsMale := AryDivisionsMale + [obj]; // append to array.
+          2:
+            AryDivisionsFemale := AryDivisionsFemale + [obj]; // append to array.
+          3:
+            AryDivisionsMixed := AryDivisionsMixed + [obj]; // append to array.
+          end;
+          INC(Count);
+          ABData.qryDivision.Next;
         end;
-        INC(Count);
-        ABData.qryDivision.Next;
       end;
     end;
   end;
+
   if Count <> 0 then
     result := Count;
 end;
@@ -436,10 +425,11 @@ end;
 function TABINDV.AutoBuildExec: Boolean;
 var
   msg: string;
-  count, tot, I: integer;
-  obj: TDivision;
+  count, I, DBNumOfNominees: integer;
 begin
   result := false;
+  count := 0;
+  DBNumOfNominees := 0;
 
   if fEventID = 0 then
   begin
@@ -569,6 +559,7 @@ begin
       { Rebuild the metric data for all unplaced nominees in the event.}
       if ABData.qryUnplacedNominees.Active then
       begin
+        DBNumOfNominees := ABData.qryUnplacedNominees.RecordCount;
         While not ABData.qryUnplacedNominees.Eof do
         begin
           uNominee.RefreshStat(
@@ -607,20 +598,53 @@ begin
   ABData.qryUnplacedNominees.Filtered := false;
 
   // Build ALL division arrays ...
+  AryDivisions_Build(0); //SCM
+  AryDivisions_Build(1); //MALE
+  AryDivisions_Build(2); //FEMALE
+  AryDivisions_Build(3); //MIXED
+
+  indxX := 0;
+  indxM := 0;
+  indxF := 0;
+  indxSCM := 0;
+
   if (Settings.ab_GroupByIndx > 0) then
   begin
-    AryDivisions_Build(0); //SCM
-    AryDivisions_Build(1); //MALE
-    AryDivisions_Build(2); //FEMALE
-    AryDivisions_Build(3); //MIXED
+    case Settings.ab_GroupByIndx of
+      1: // Custom grouping
+      begin
+        while true do
+        begin
+          // OUTER_LOOP handles bounds checks on division arrays.
+          count := count + OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
+          INC(indxM);
+          INC(indxF);
+          INC(indxX);
+
+          // escape loop  1
+          if (indxM > Length(AryDivisionsMale))
+            and (indxM > Length(AryDivisionsFemale))
+              and (indxM > Length(AryDivisionsMixed)) then
+          break;
+          // escape loop 2
+          if count >= DBNumOfNominees then break;
+
+        end;
+      end;
+
+      2: // SCM grouping.
+      begin
+        for I := Low(AryDivisionsSCM) to High(AryDivisionsSCM) do
+          indxSCM := I;
+          count := count + OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
+        end;
+    end;
+  end
+  else
+  begin
+    count := OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
   end;
 
-  findxDivisionMixed := 0;
-  findxDivisionMale := 0;
-  findxDivisionFemale := 0;
-  findxDivisionSCM := 0;
-
-  count := OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
   if count > 0 then result := true;
 
 end;
@@ -643,21 +667,21 @@ begin
       case GenderID of
         1:
         begin
-          if findxDivisionMale <= high(AryDivisionsMale) then
-            obj := AryDivisionsMale[findxDivisionMale];
+          if indxM <= high(AryDivisionsMale) then
+            obj := AryDivisionsMale[indxM];
         end;
         2:
         begin
-          if findxDivisionFemale <= high(AryDivisionsFemale) then
+          if indxF <= high(AryDivisionsFemale) then
           begin
-            obj := AryDivisionsFemale[findxDivisionFemale];
+            obj := AryDivisionsFemale[indxF];
           end;
         end;
         3:
         begin
-          if findxDivisionMixed <= high(AryDivisionsMixed) then
+          if indxX <= high(AryDivisionsMixed) then
           begin
-            obj := AryDivisionsMixed[findxDivisionMixed];
+            obj := AryDivisionsMixed[indxX];
           end;
         end;
       end;
@@ -669,8 +693,8 @@ begin
 
     2: // SCM DIVISIONs
     begin
-      if findxDivisionSCM <= high(findxDivisionSCM) then
-        obj := AryDivisionsMale[findxDivisionSCM];
+      if indxSCM < Length(AryDivisionsSCM) then
+        obj := AryDivisionsMale[indxSCM];
 
       if obj <> nil then
         divisionFilter := 'Age >= ' + IntToStr(obj.StartAge)
@@ -702,9 +726,6 @@ begin
     if ABData.qryGender.Active then
     begin
       count := 0;
-
-      // do
-
       ABData.qryGender.Last; // reverse order, female then male swimmers.
       // iterate across Mixed, Female, Male (in that order)...
       while not ABData.qryGender.BOF do
@@ -727,9 +748,6 @@ begin
 
         ABData.qryGender.Prior;
       end;
-
-      // until not divisionstoDO
-
       if count <> 0 then
         result := count;
     end
@@ -756,12 +774,13 @@ begin
   else
 
   // -----------------------------------------------------
-  // SEPERATE BY GENDER DISABLED
+  // DO NOT SEPERATE GENDER - HEATS ARE MIXED...
   // -----------------------------------------------------
   begin
-    // do
-
-    divisionFilter := GetDivisionFilterString(GenderID);
+    // DEPENDANT on 'Group by ...' setting...
+    // use Mixed genders if Custom grouping has been request by user
+    // or use SCM grouping or no grouping...
+    divisionFilter := GetDivisionFilterString(3);
     if Length(divisionFilter) <> 0 then
     begin
       ABData.qryUnplacedNominees.Filter :=  DivisionFilter;
@@ -772,7 +791,6 @@ begin
     NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
     count := INNER_LOOP(NumOfEntrants);
 
-    // until MoreDivisionsToDo .
 
     if count <> 0 then
       result := count;
@@ -925,7 +943,8 @@ begin
     // NOTE: if IsEmpty - call UpdateUI at frFrameHeat....
   end;
 
-  result := count;
+  if count <> 0 then
+    result := count;
 
 end;
 

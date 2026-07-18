@@ -111,18 +111,20 @@ end;
 
 function WeeksSinceSeasonStart(const ANow: TDateTime): Integer;
 var
-AThen: TDateTime;
+  AThen: TDateTime;
 begin
-  result := 0;
-  AThen := StartOfSwimmingSeason(ANow);
-
-  // get the number of weeks since the start of the swimming season.
-  if (AThen = 0) OR (AThen > ANow) then
-    result := -1
-  else
-    // Calculates the number of whole weeks between ANow and AThen, counting
-    // incomplete weeks as week=0.
-    result := WeeksBetween(aNow, aThen); // base 0.
+  try
+    AThen := StartOfSwimmingSeason(ANow);
+    // get the number of weeks since the start of the swimming season.
+    if (AThen = 0) or (AThen > ANow) then
+      result := -1
+    else
+      // Calculates the number of whole weeks between ANow and AThen, counting
+      // incomplete weeks as week=0.
+      result := WeeksBetween(aNow, aThen); // base 0.
+  except
+    result := -1;
+  end;
 end;
 
 

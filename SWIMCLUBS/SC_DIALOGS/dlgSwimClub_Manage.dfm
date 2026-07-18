@@ -3273,14 +3273,6 @@ object SwimClubManage: TSwimClubManage
           Caption = 'Length of Pool'
           Enabled = False
         end
-        object lblSeasonStart: TLabel
-          Left = 34
-          Top = 185
-          Width = 100
-          Height = 21
-          Alignment = taRightJustify
-          Caption = 'Season Starts*'
-        end
         object imgIndxArchive: TSVGIconImage
           Left = 74
           Top = 12
@@ -3421,34 +3413,6 @@ object SwimClubManage: TSwimClubManage
           DataSource = CORE.dsSwimClub
           TabOrder = 2
         end
-        object AdvDBDTPicker: TAdvDBDateTimePicker
-          Left = 140
-          Top = 182
-          Width = 166
-          Height = 29
-          Hint = 'Uses the locale short time format.'
-          ParentCustomHint = False
-          Date = 45581.000000000000000000
-          Format = ''
-          Time = 45581.000000000000000000
-          DoubleBuffered = True
-          Kind = dkDate
-          ParentDoubleBuffered = False
-          ParentShowHint = False
-          ShowHint = True
-          TabOrder = 3
-          BorderStyle = bsSingle
-          Ctl3D = True
-          DateTime = 45581.000000000000000000
-          Version = '1.3.6.0'
-          LabelFont.Charset = DEFAULT_CHARSET
-          LabelFont.Color = clWindowText
-          LabelFont.Height = -12
-          LabelFont.Name = 'Segoe UI'
-          LabelFont.Style = []
-          DataField = 'StartOfSwimSeason'
-          DataSource = CORE.dsSwimClub
-        end
         object DBLookupComboBox1: TDBLookupComboBox
           Left = 140
           Top = 318
@@ -3460,7 +3424,7 @@ object SwimClubManage: TSwimClubManage
           ListField = 'Caption'
           ListSource = CORE.luSwimClubType
           NullValueKey = 32776
-          TabOrder = 5
+          TabOrder = 4
         end
         object dbcboxArchive: TDBCheckBox
           Left = 74
@@ -3471,7 +3435,7 @@ object SwimClubManage: TSwimClubManage
           Caption = 'Archive*'
           DataField = 'IsArchived'
           DataSource = CORE.dsSwimClub
-          TabOrder = 4
+          TabOrder = 3
         end
         object DBLookupComboBox2: TDBLookupComboBox
           Left = 140
@@ -3484,7 +3448,7 @@ object SwimClubManage: TSwimClubManage
           ListField = 'Caption'
           ListSource = CORE.luPoolType
           NullValueKey = 32776
-          TabOrder = 6
+          TabOrder = 5
         end
         object btnClearClubType: TButton
           Tag = 1
@@ -3497,7 +3461,7 @@ object SwimClubManage: TSwimClubManage
           ImageIndex = 0
           ImageName = 'clear'
           Images = IMG.imglstMiscButtons
-          TabOrder = 7
+          TabOrder = 6
           TabStop = False
           OnClick = btnClearClubTypeClick
         end
@@ -3512,40 +3476,10 @@ object SwimClubManage: TSwimClubManage
           ImageIndex = 0
           ImageName = 'clear'
           Images = IMG.imglstMiscButtons
-          TabOrder = 8
+          TabOrder = 7
           TabStop = False
           Visible = False
           OnClick = btnClearPoolTypeClick
-        end
-        object btnClearDOB: TButton
-          Tag = 1
-          Left = 312
-          Top = 181
-          Width = 92
-          Height = 32
-          Hint = 'Clear the house name.'
-          Caption = 'Clear'
-          ImageIndex = 0
-          ImageName = 'clear'
-          Images = IMG.imglstMiscButtons
-          TabOrder = 9
-          TabStop = False
-          Visible = False
-        end
-        object btnDOBPicker: TButton
-          Tag = 1
-          Left = 410
-          Top = 181
-          Width = 127
-          Height = 32
-          Hint = 'Clear the house name.'
-          Caption = 'Date Picker'
-          ImageIndex = 1
-          ImageName = 'pick-date'
-          Images = IMG.imglstMiscButtons
-          TabOrder = 10
-          TabStop = False
-          Visible = False
         end
       end
       object tsOptions2: TTabSheet
@@ -3735,6 +3669,9 @@ object SwimClubManage: TSwimClubManage
                 RightOf = CGFrame.lbxL
               end>
             ExplicitHeight = 459
+            DesignSize = (
+              612
+              459)
             inherited lbxL: TListBox
               Height = 459
               ExplicitHeight = 459

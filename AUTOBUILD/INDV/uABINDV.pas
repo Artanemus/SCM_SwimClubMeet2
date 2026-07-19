@@ -70,7 +70,8 @@ type
     procedure SortAryEntrantsByTTB;
     function INNER_LOOP(NumOfEntrants: Integer): Integer;
     function OUTER_LOOP: Integer;
-    function GetDivisionFilterString(GenderID: integer): string;
+    function GetDivisionFilterString(GroupByEnum: scmAgeGrouping; GenderID: Integer
+        = 0): string;
 
   public
     constructor Create(AOwner: TComponent); reintroduce;
@@ -240,7 +241,6 @@ var
 begin
   result := 0;
   count := 0;
-  ClearAllAryDivisions; // clear divisions array.
 
   case GenderID of
     0: // SCM Divisions
@@ -316,7 +316,7 @@ begin
     end;
   end;
 
-  if Count <> 0 then
+  if (Count > 0) then
     result := Count;
 end;
 
@@ -597,6 +597,8 @@ begin
   ABData.qryUnplacedNominees.Filter := '';
   ABData.qryUnplacedNominees.Filtered := false;
 
+  ClearAllAryDivisions; // clear divisions array.
+
   // Build ALL division arrays ...
   AryDivisions_Build(0); //SCM
   AryDivisions_Build(1); //MALE
@@ -616,14 +618,14 @@ begin
         while true do
         begin
           // OUTER_LOOP handles bounds checks on division arrays.
-          count := count + OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
+          count := count + OUTER_LOOP;  // OUTER loop seperates gender
           INC(indxM);
           INC(indxF);
           INC(indxX);
 
           // escape loop  1
           if (indxM > Length(AryDivisionsMale))
-            and (indxM > Length(AryDivisionsFemale))
+            and (indxF > Length(AryDivisionsFemale))
               and (indxM > Length(AryDivisionsMixed)) then
           break;
           // escape loop 2
@@ -631,25 +633,30 @@ begin
 
         end;
       end;
-
       2: // SCM grouping.
       begin
-        for I := Low(AryDivisionsSCM) to High(AryDivisionsSCM) do
-          indxSCM := I;
-          count := count + OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
+        if Length(AryDivisionsSCM) > 0 then
+        begin
+          for I := Low(AryDivisionsSCM) to High(AryDivisionsSCM) do
+          begin
+            indxSCM := I;
+            count := count + OUTER_LOOP;  // OUTER loop seperates gender
+          end;
         end;
+      end;
     end;
   end
   else
   begin
-    count := OUTER_LOOP;  // Seperate gender :: INNER_LOOP Array Init, etc.
+    count := OUTER_LOOP;  // OUTER loop seperates gender
   end;
 
   if count > 0 then result := true;
 
 end;
 
-function TABINDV.GetDivisionFilterString(GenderID: integer): string;
+function TABINDV.GetDivisionFilterString(GroupByEnum: scmAgeGrouping; GenderID:
+    Integer = 0): string;
 var
   obj: TDivision;
   divisionFilter: string;
@@ -659,27 +666,29 @@ begin
   divisionFilter := '';
   obj := nil;
   // Extract a filter for age range.
-  case Settings.ab_GroupByIndx of
-    0: // no grouping .. no divisions.
+  case GroupByEnum of
+    scmAgeGrouping.agNone: // no grouping .. no divisions.
       divisionFilter := '';
-    1: // CUSTOM DIVISIONS
+    scmAgeGrouping.agCustom: // CUSTOM DIVISIONS
     begin
       case GenderID of
         1:
         begin
-          if indxM <= high(AryDivisionsMale) then
+          if indxM < length(AryDivisionsMale) then // range check....
+          begin
             obj := AryDivisionsMale[indxM];
+          end;
         end;
         2:
         begin
-          if indxF <= high(AryDivisionsFemale) then
+          if indxF < length(AryDivisionsFemale) then
           begin
             obj := AryDivisionsFemale[indxF];
           end;
         end;
         3:
         begin
-          if indxX <= high(AryDivisionsMixed) then
+          if indxX < length(AryDivisionsMixed) then
           begin
             obj := AryDivisionsMixed[indxX];
           end;
@@ -687,18 +696,21 @@ begin
       end;
 
       if obj <> nil then
-        divisionFilter := 'Age >= ' + IntToStr(obj.StartAge)
-          + ' Age <= ' + IntToStr(obj.EndAge) ;
+        divisionFilter := '(Age >= ' + IntToStr(obj.StartAge)
+          + ') AND (Age <= ' + IntToStr(obj.EndAge) + ')';
     end;
 
-    2: // SCM DIVISIONs
+    scmAgeGrouping.agSCM: // SCM DIVISIONs
     begin
-      if indxSCM < Length(AryDivisionsSCM) then
-        obj := AryDivisionsMale[indxSCM];
+      if Length(AryDivisionsSCM) > 0 then
+      begin
+        if indxSCM < Length(AryDivisionsSCM) then
+          obj := AryDivisionsMale[indxSCM];
 
-      if obj <> nil then
-        divisionFilter := 'Age >= ' + IntToStr(obj.StartAge)
-          + ' Age <= ' + IntToStr(obj.EndAge) ;
+        if Assigned(obj) then
+          divisionFilter := '(Age >= ' + IntToStr(obj.StartAge)
+            + ') AND (Age <= ' + IntToStr(obj.EndAge) + ')' ;
+      end;
     end;
   end;
   if Length(divisionFilter) > 0 then
@@ -709,9 +721,10 @@ function TABINDV.OUTER_LOOP: Integer;
 var
   NumOfEntrants, GenderID, count: integer;
   msg, divisionFilter, filterStr: string;
+  GroupByEnum: uDefines.scmAgeGrouping;
 begin
   result := 0;
-
+  GroupByEnum := scmAgeGrouping(Settings.ab_GroupByIndx);
   ABData.qryUnplacedNominees.Filter := '';
   ABData.qryUnplacedNominees.Filtered := false;
 
@@ -727,26 +740,41 @@ begin
     begin
       count := 0;
       ABData.qryGender.Last; // reverse order, female then male swimmers.
-      // iterate across Mixed, Female, Male (in that order)...
+
       while not ABData.qryGender.BOF do
+      // iterate across Mixed, Female, Male (in that order)...
       begin
         GenderID := ABData.qryGender.FieldByName('GenderID').AsInteger;
-
-        divisionFilter := GetDivisionFilterString(GenderID);
         FilterStr := 'GenderID = ' + IntToStr(GenderID);
-        if Length(divisionFilter) <> 0 then
-          FilterStr := FilterStr + ' AND ' + DivisionFilter;
 
+        case GroupByEnum of
+        scmAgeGrouping.agNone: // no grouping.
+          ; // nothing to do.
+        scmAgeGrouping.agCustom: // Custom grouping
+          begin
+            divisionFilter := GetDivisionFilterString(GroupByEnum, GenderID);
+            if Length(divisionFilter) <> 0 then
+              FilterStr := FilterStr + ' AND ' + DivisionFilter;
+          end;
+        scmAgeGrouping.agSCM: // SCM grouping
+          begin
+            divisionFilter := GetDivisionFilterString(GroupByEnum);
+            if Length(divisionFilter) <> 0 then
+              FilterStr := FilterStr + ' AND ' + DivisionFilter;
+          end;
+        end;
+
+        // SET and TURN FILTERING ON....
         ABData.qryUnplacedNominees.Filter := FilterStr;
         if not ABData.qryUnplacedNominees.Filtered then
           ABData.qryUnplacedNominees.Filtered := true;
 
         // after all filters are applied - get the number of unplaced nominees.
         NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
-        if NumOfEntrants <> 0 then
+        if NumOfEntrants > 0 then
           count := count + INNER_LOOP(NumOfEntrants);
 
-        ABData.qryGender.Prior;
+        ABData.qryGender.Prior; // next gender...
       end;
       if count <> 0 then
         result := count;
@@ -777,22 +805,47 @@ begin
   // DO NOT SEPERATE GENDER - HEATS ARE MIXED...
   // -----------------------------------------------------
   begin
+    FilterStr := '';
+    divisionFilter := '';
+    count := 0;
     // DEPENDANT on 'Group by ...' setting...
     // use Mixed genders if Custom grouping has been request by user
     // or use SCM grouping or no grouping...
-    divisionFilter := GetDivisionFilterString(3);
-    if Length(divisionFilter) <> 0 then
-    begin
-      ABData.qryUnplacedNominees.Filter :=  DivisionFilter;
-      if not ABData.qryUnplacedNominees.Filtered then
-        ABData.qryUnplacedNominees.Filtered := true;
+    case GroupByEnum of
+    agNone:
+      ; // nothing to do.
+    agCustom:
+      begin
+        // group on mixed gender.
+        divisionFilter := GetDivisionFilterString(GroupByEnum, 3);
+      end;
+    agSCM:
+      begin
+        // SCM grouping.
+        divisionFilter := GetDivisionFilterString(GroupByEnum);
+      end;
     end;
 
+    if Length(divisionFilter) > 0 then
+    begin
+      // filter must be on
+      ABData.qryUnplacedNominees.Filter := DivisionFilter;
+      if not ABData.qryUnplacedNominees.Filtered then
+        ABData.qryUnplacedNominees.Filtered := true;
+    end
+    else
+    begin
+      if ABData.qryUnplacedNominees.Filtered then
+        ABData.qryUnplacedNominees.Filtered := false;
+    end;
+
+    ABData.qryUnplacedNominees.Refresh;
     NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
-    count := INNER_LOOP(NumOfEntrants);
+    // Zero - no nominees in the given age range... skip.
+    if (NumOfEntrants > 0) then
+      count := INNER_LOOP(NumOfEntrants);
 
-
-    if count <> 0 then
+    if (count > 0) then
       result := count;
     end;
 end;
@@ -861,6 +914,7 @@ begin
   // Each Seeding Method sets array entrants sort order..
   // Assign each entrant to a heat and assign a HeatRankNum.
   // returns the number of entrants seeded (given a heat number).
+
   count := AryEntrants_AssignHeatNum(NumOfHeats);
   if count = 0 then
   begin
@@ -878,6 +932,7 @@ begin
     result := 0;
     exit;
   end;
+
 
   // Assign a swimming lane to each entrant based on heat ranking,
   // taking into account lane scattering and excluded lanes.

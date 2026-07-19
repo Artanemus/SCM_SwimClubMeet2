@@ -83,6 +83,7 @@ const
  scmHRType = (hrCoach = 1 , hrContact = 2, hrSwimmer = 3, hrParent = 4);
  scmEventType = (etUnknown = 0, etINDV = 1, etTEAM = 2);
  scmMoveDirection = (mdUp = 1, mdDown = 2);
+ scmAgeGrouping = (agNone, agCustom, agSCM);
 
  var
  scmSendToFileTypes: scmSendToFileType;

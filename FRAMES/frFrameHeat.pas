@@ -317,6 +317,30 @@ begin
       G.Canvas.TextOut(tx, ty, htStr);
   end;
 
+  if (ARow > G.HeaderRow) and (ACol = 3) then
+  begin
+    htStr := G.AllCells[4, ARow];
+    if Length(htStr) > 0  then
+    begin
+      W := Rect.Width;
+      H := Rect.Height;
+      // calculate and scale font to fit inside icon
+      G.Canvas.Font.Style := [fsBold];
+      G.Canvas.Font.Size := 16;
+      while (G.Canvas.TextWidth(htStr) > (W - 4))
+          and (G.Canvas.Font.Size > 6) do
+        G.Canvas.Font.Size := G.Canvas.Font.Size - 1;
+      txtW := G.Canvas.TextWidth(htStr);
+      txtH := G.Canvas.TextHeight(htStr);
+      tx := Rect.Left + 1 + ((W - txtW) div 2);
+      ty := Rect.Top + 1 + ((H - txtH) div 2);
+      // draw text directly on canvas
+      G.Canvas.Font.Color := clWebSeashell;
+      G.Canvas.Brush.Style := bsClear;
+      G.Canvas.TextOut(tx, ty, htStr);
+    end;
+  end;
+
 end;
 
 procedure TFrameHeat.gridGetCellColor(Sender: TObject; ARow, ACol: Integer;

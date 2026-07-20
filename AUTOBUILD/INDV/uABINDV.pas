@@ -57,7 +57,8 @@ type
     function Build_EntrantsPerHeat(NumOfHeats: Integer; NumOfNominees: Integer):
         Integer;
     function Build_FillLanes(HeatID, HeatNum: Integer): Integer;
-    function Build_Heats(NumOfHeats, NumOfNominees: Integer): integer;
+    function Build_Heats(NumOfHeats, NumOfNominees: Integer; HeatCaption: string):
+        integer;
     function CalcNumberOfHeats(NumOfNominees, RealNumOfLanes: Integer): Integer;
     procedure ClearAryEntrants;
     procedure ClearAllAryDivisions;
@@ -68,10 +69,10 @@ type
     { Sort AryEntrants.}
     procedure SortAryEntrantsByRandom;
     procedure SortAryEntrantsByTTB;
-    function INNER_LOOP(NumOfEntrants: Integer): Integer;
+    function INNER_LOOP(NumOfEntrants: Integer; HeatCaption: String): Integer;
     function OUTER_LOOP: Integer;
-    function GetDivisionFilterString(GroupByEnum: scmAgeGrouping; GenderID: Integer
-        = 0): string;
+    function GetDivisionFilterString(GroupByEnum: scmAgeGrouping; out Caption:
+        string; GenderID: Integer = 0): string;
 
   public
     constructor Create(AOwner: TComponent); reintroduce;
@@ -238,9 +239,11 @@ function TABINDV.AryDivisions_Build(GenderID: Integer): integer;
 var
   obj: TDivision;
   count: integer;
+  indxStr: string;
 begin
   result := 0;
   count := 0;
+  indxStr := '';
 
   case GenderID of
     0: // SCM Divisions
@@ -289,31 +292,40 @@ begin
       INC(Count);
     end;
     1, 2, 3:
-    begin
-      ABData.qryDivision.Connection := SCM2.scmConnection;
-      ABData.qryDivision.IndexName := 'indxDiv';
-      ABData.qryDivision.Open;
-      if ABData.qryDivision.Active then
       begin
-        While not ABData.qryDivision.EOF do
+        ABData.qryDivision.Connection := SCM2.scmConnection;
+        ABData.qryDivision.Open;
+        if ABData.qryDivision.Active then
         begin
-          obj := TDivision.Create;
-          obj.StartAge := ABData.qryDivision.FieldByName('AgeFrom').AsInteger;
-          obj.EndAge := ABData.qryDivision.FieldByName('AgeTo').AsInteger;
-          obj.GenderID := ABData.qryDivision.FieldByName('GenderID').AsInteger;
           case GenderID of
-          1:
-            AryDivisionsMale := AryDivisionsMale + [obj]; // append to array.
-          2:
-            AryDivisionsFemale := AryDivisionsFemale + [obj]; // append to array.
-          3:
-            AryDivisionsMixed := AryDivisionsMixed + [obj]; // append to array.
+            1: indxStr := 'indxDivMale';
+            2: indxStr := 'indxDivFemale';
+            3: indxStr := 'indxDivMixed';
           end;
-          INC(Count);
-          ABData.qryDivision.Next;
+          ABData.qryDivision.IndexName := indxStr;
+          while not ABData.qryDivision.EOF do
+          begin
+            obj := TDivision.Create;
+            obj.StartAge := ABData.qryDivision.FieldByName('AgeFrom').AsInteger;
+            obj.EndAge := ABData.qryDivision.FieldByName('AgeTo').AsInteger;
+            obj.GenderID :=
+              ABData.qryDivision.FieldByName('GenderID').AsInteger;
+
+            case GenderID of
+              1:
+                AryDivisionsMale := AryDivisionsMale + [obj]; // append to array.
+              2:
+                AryDivisionsFemale := AryDivisionsFemale + [obj];
+                  // append to array.
+              3:
+                AryDivisionsMixed := AryDivisionsMixed + [obj];
+                  // append to array.
+            end;
+            INC(Count);
+            ABData.qryDivision.Next;
+          end;
         end;
       end;
-    end;
   end;
 
   if (Count > 0) then
@@ -655,49 +667,51 @@ begin
 
 end;
 
-function TABINDV.GetDivisionFilterString(GroupByEnum: scmAgeGrouping; GenderID:
-    Integer = 0): string;
+function TABINDV.GetDivisionFilterString(GroupByEnum: scmAgeGrouping; out
+    Caption: string; GenderID: Integer = 0): string;
 var
   obj: TDivision;
   divisionFilter: string;
 begin
   // DIVISIONS FILTER STRING .
   result := '';
-  divisionFilter := '';
   obj := nil;
+  Caption := '';
   // Extract a filter for age range.
   case GroupByEnum of
-    scmAgeGrouping.agNone: // no grouping .. no divisions.
-      divisionFilter := '';
+
+    scmAgeGrouping.agNone:
+      ; // no grouping .. no divisions. returns empty string.
+
     scmAgeGrouping.agCustom: // CUSTOM DIVISIONS
     begin
       case GenderID of
         1:
         begin
-          if indxM < length(AryDivisionsMale) then // range check....
+          if Length(AryDivisionsMale) > 0 then
           begin
-            obj := AryDivisionsMale[indxM];
+            if indxM < length(AryDivisionsMale) then // range check....
+              obj := AryDivisionsMale[indxM];
           end;
         end;
         2:
         begin
-          if indxF < length(AryDivisionsFemale) then
+          if Length(AryDivisionsFemale) > 0 then
           begin
+          if indxF < length(AryDivisionsFemale) then
             obj := AryDivisionsFemale[indxF];
           end;
         end;
         3:
         begin
-          if indxX < length(AryDivisionsMixed) then
+          if Length(AryDivisionsMixed) > 0 then
           begin
-            obj := AryDivisionsMixed[indxX];
+            if indxX < length(AryDivisionsMixed) then
+              obj := AryDivisionsMixed[indxX];
           end;
         end;
       end;
 
-      if obj <> nil then
-        divisionFilter := '(Age >= ' + IntToStr(obj.StartAge)
-          + ') AND (Age <= ' + IntToStr(obj.EndAge) + ')';
     end;
 
     scmAgeGrouping.agSCM: // SCM DIVISIONs
@@ -705,25 +719,29 @@ begin
       if Length(AryDivisionsSCM) > 0 then
       begin
         if indxSCM < Length(AryDivisionsSCM) then
-          obj := AryDivisionsMale[indxSCM];
-
-        if Assigned(obj) then
-          divisionFilter := '(Age >= ' + IntToStr(obj.StartAge)
-            + ') AND (Age <= ' + IntToStr(obj.EndAge) + ')' ;
+          obj := AryDivisionsSCM[indxSCM];
       end;
     end;
   end;
-  if Length(divisionFilter) > 0 then
+
+  if Assigned(obj) then
+  begin
+    divisionFilter := '(Age >= ' + IntToStr(obj.StartAge)
+      + ') AND (Age <= ' + IntToStr(obj.EndAge) + ')' ;
+    Caption := IntToStr(obj.StartAge) + '-' +  IntToStr(obj.EndAge);
     result := divisionFilter;
+  end;
+
 end;
 
 function TABINDV.OUTER_LOOP: Integer;
 var
   NumOfEntrants, GenderID, count: integer;
-  msg, divisionFilter, filterStr: string;
+  msg, divisionFilter, filterStr, HeatCaption, GroupStr: string;
   GroupByEnum: uDefines.scmAgeGrouping;
 begin
   result := 0;
+  HeatCaption := '';
   GroupByEnum := scmAgeGrouping(Settings.ab_GroupByIndx);
   ABData.qryUnplacedNominees.Filter := '';
   ABData.qryUnplacedNominees.Filtered := false;
@@ -746,21 +764,28 @@ begin
       begin
         GenderID := ABData.qryGender.FieldByName('GenderID').AsInteger;
         FilterStr := 'GenderID = ' + IntToStr(GenderID);
+        HeatCaption := ABData.qryGender.FieldByName('ABREV').AsString;
 
         case GroupByEnum of
         scmAgeGrouping.agNone: // no grouping.
           ; // nothing to do.
         scmAgeGrouping.agCustom: // Custom grouping
           begin
-            divisionFilter := GetDivisionFilterString(GroupByEnum, GenderID);
+            divisionFilter := GetDivisionFilterString(GroupByEnum, GroupStr, GenderID);
             if Length(divisionFilter) <> 0 then
+            begin
               FilterStr := FilterStr + ' AND ' + DivisionFilter;
+              HeatCaption := HeatCaption + ' ' + GroupStr;
+            end;
           end;
         scmAgeGrouping.agSCM: // SCM grouping
           begin
-            divisionFilter := GetDivisionFilterString(GroupByEnum);
+            divisionFilter := GetDivisionFilterString(GroupByEnum, GroupStr);
             if Length(divisionFilter) <> 0 then
+            begin
               FilterStr := FilterStr + ' AND ' + DivisionFilter;
+              HeatCaption := HeatCaption + ' ' + GroupStr;
+            end;
           end;
         end;
 
@@ -772,7 +797,7 @@ begin
         // after all filters are applied - get the number of unplaced nominees.
         NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
         if NumOfEntrants > 0 then
-          count := count + INNER_LOOP(NumOfEntrants);
+          count := count + INNER_LOOP(NumOfEntrants, Heatcaption);
 
         ABData.qryGender.Prior; // next gender...
       end;
@@ -817,12 +842,12 @@ begin
     agCustom:
       begin
         // group on mixed gender.
-        divisionFilter := GetDivisionFilterString(GroupByEnum, 3);
+        divisionFilter := GetDivisionFilterString(GroupByEnum, GroupStr, 3);
       end;
     agSCM:
       begin
         // SCM grouping.
-        divisionFilter := GetDivisionFilterString(GroupByEnum);
+        divisionFilter := GetDivisionFilterString(GroupByEnum, GroupStr);
       end;
     end;
 
@@ -832,25 +857,28 @@ begin
       ABData.qryUnplacedNominees.Filter := DivisionFilter;
       if not ABData.qryUnplacedNominees.Filtered then
         ABData.qryUnplacedNominees.Filtered := true;
+      HeatCaption := GroupStr;
     end
     else
     begin
       if ABData.qryUnplacedNominees.Filtered then
         ABData.qryUnplacedNominees.Filtered := false;
+
     end;
 
     ABData.qryUnplacedNominees.Refresh;
     NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
     // Zero - no nominees in the given age range... skip.
     if (NumOfEntrants > 0) then
-      count := INNER_LOOP(NumOfEntrants);
+      count := INNER_LOOP(NumOfEntrants, HeatCaption);
 
     if (count > 0) then
       result := count;
     end;
 end;
 
-function TABINDV.INNER_LOOP(NumOfEntrants: Integer): Integer;
+function TABINDV.INNER_LOOP(NumOfEntrants: Integer; HeatCaption: String):
+    Integer;
 var
   NumOfHeats, count: integer;
   msg: string;
@@ -970,7 +998,7 @@ begin
 
   // FINALLY : create heats and lanes in the SwimClubMeet2 database.
   // returns number of entrants assigned to lanes
-  count := Build_Heats(NumOfHeats, NumOfEntrants);
+  count := Build_Heats(NumOfHeats, NumOfEntrants, HeatCaption);
   CORE.qryLane.Refresh; // REQUIRED: ReSync data state.
 
   if count < NumOfEntrants then
@@ -1092,7 +1120,8 @@ begin
   end;
 end;
 
-function TABINDV.Build_Heats(NumOfHeats, NumOfNominees: Integer): integer;
+function TABINDV.Build_Heats(NumOfHeats, NumOfNominees: Integer; HeatCaption:
+    string): integer;
 var
   LanesFilled: Integer;
   HeatID: Integer;
@@ -1106,6 +1135,15 @@ begin
     HeatID := uHeat.NewHeat;
     if HeatID > 0 then
     begin
+
+      if (Length(HeatCaption) > 0) and
+        (CORE.qryHeat.FieldByName('HeatID').AsInteger = HeatID) then
+      begin
+        CORE.qryHeat.Edit;
+        CORE.qryHeat.FieldByName('Caption').AsString := HeatCaption;
+        CORE.qryHeat.Post;
+      end;
+
       LanesFilled := LanesFilled + Build_FillLanes(HeatID, I);
     end;
   end;

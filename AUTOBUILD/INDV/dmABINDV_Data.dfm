@@ -3,6 +3,15 @@ object ABINDV_Data: TABINDV_Data
   Height = 439
   Width = 321
   object qryGender: TFDQuery
+    Indexes = <
+      item
+        Active = True
+        Selected = True
+        Name = 'indxDESC'
+        Fields = 'GenderID'
+        DescFields = 'GenderID'
+      end>
+    IndexName = 'indxDESC'
     Connection = SCM2.scmConnection
     SQL.Strings = (
       'USE [SwimClubMeet2];'
@@ -10,7 +19,8 @@ object ABINDV_Data: TABINDV_Data
       'SELECT [GenderID]'
       '      ,[Caption]'
       '      ,[ABREV]'
-      '  FROM [dbo].[Gender];'
+      '  FROM [dbo].[Gender]'
+      '  ORDEr BY GenderID DESC;'
       ''
       '')
     Left = 64
@@ -123,26 +133,32 @@ object ABINDV_Data: TABINDV_Data
         Active = True
         Selected = True
         Name = 'indxDiv'
-        Fields = 'AgeTo;GenderID;DivisionID'
+        Fields = 'AgeTo;GenderID;DivisionTypeID;DivisionID'
         DescFields = 'GenderID'
       end
       item
         Active = True
-        Name = 'indxDivMale'
-        Fields = 'GenderID;AgeFrom;DivisionID'
-        Filter = 'GenderID = 1'
+        Name = 'indxCustMale'
+        Fields = 'AgeFrom;DivisionID'
+        Filter = '(DivisionTypeID = 1) and (GenderID = 1)'
       end
       item
         Active = True
-        Name = 'indxDivFemale'
-        Fields = 'GenderID;AgeFrom;DivisionID'
-        Filter = 'GenderID = 2'
+        Name = 'indxCustFemale'
+        Fields = 'AgeFrom;DivisionID'
+        Filter = '(DivisionTypeID) and (GenderID = 2)'
       end
       item
         Active = True
-        Name = 'indxDivMixed'
-        Fields = 'GenderID;AgeFrom;DivisionID'
-        Filter = 'GenderID = 3'
+        Name = 'indxCustMixed'
+        Fields = 'AgeFrom;DivisionID'
+        Filter = '(DivisionTypeID) and (GenderID = 3)'
+      end
+      item
+        Active = True
+        Name = 'indxSCM'
+        Fields = 'AgeFrom;DivisionID'
+        Filter = 'DivisionTypeID = 2'
       end>
     IndexName = 'indxDiv'
     Connection = SCM2.scmConnection
@@ -156,12 +172,13 @@ object ABINDV_Data: TABINDV_Data
       'USE SwimClubMeet2;'
       ''
       'SELECT [DivisionID]'
+      '      , DivisionTypeID'
       '      ,[Caption]'
       '      ,[AgeFrom]'
       '      ,[AgeTo]'
       '      ,[GenderID]'
       '  FROM [SwimClubMeet2].[dbo].[Division]'
-      '  ORDER BY GenderID ASC;')
+      '  ORDER BY DivisionTypeId, GenderID, AgeFrom ASC;')
     Left = 64
     Top = 152
   end

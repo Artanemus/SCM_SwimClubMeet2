@@ -191,6 +191,11 @@ type
     qryLaneluHouse: TStringField;
     qryLaneSplitCount: TIntegerField;
     qryFilterMemberFName: TWideStringField;
+    qryHeatRangeCaption: TWideStringField;
+    qryHeatAgeFrom: TIntegerField;
+    qryHeatAgeTo: TIntegerField;
+    qryHeatGenderID: TIntegerField;
+    qryHeatGenderABREV: TWideStringField;
 		procedure DataModuleCreate(Sender: TObject);
 		procedure DataModuleDestroy(Sender: TObject);
     procedure dsSwimClubDataChange(Sender: TObject; Field: TField);

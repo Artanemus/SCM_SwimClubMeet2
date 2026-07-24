@@ -428,6 +428,7 @@ object CORE: TCORE
     MasterSource = dsEvent
     MasterFields = 'EventID'
     DetailFields = 'EventID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'hh.nn'
     UpdateOptions.AssignedValues = [uvCheckRequired]
@@ -444,9 +445,14 @@ object CORE: TCORE
       '      ,[Heat].[EventID]'
       '      ,[Heat].[HeatTypeID]'
       '      ,[Heat].[HeatStatusID]'
+      '      ,[Heat].[RangeCaption]'
+      '      ,[Heat].AgeFrom'
+      '      ,[Heat].AgeTo'
+      '      ,[Heat].GenderID '
       
-        '  ,[Event].[StrokeID] -- needed to paint coloured circle in grid' +
-        'Heat.'
+        '      ,[Event].[StrokeID] -- needed to paint coloured circle in ' +
+        'gridHeat.'
+      '      ,[Gender].ABREV As GenderABREV'
       ''
       'FROM'
       '  [SwimClubMeet2].[dbo].[Heat]'
@@ -456,7 +462,7 @@ object CORE: TCORE
       
         '  INNER JOIN [dbo].[Event] ON [Heat].[EventID] = [Event].[EventI' +
         'D]'
-      '  -- WHERE [Heat].[EventID] = 1672'
+      '  LEFT JOIN Gender ON Heat.GenderID = Gender.GenderID'
       '  '
       'ORDER BY'
       '  Heat.HeatNum;'
@@ -504,6 +510,28 @@ object CORE: TCORE
     object qryHeatStartTime: TTimeField
       FieldName = 'StartTime'
       Origin = 'StartTime'
+    end
+    object qryHeatRangeCaption: TWideStringField
+      FieldName = 'RangeCaption'
+      Origin = 'RangeCaption'
+      Size = 16
+    end
+    object qryHeatAgeFrom: TIntegerField
+      FieldName = 'AgeFrom'
+      Origin = 'AgeFrom'
+    end
+    object qryHeatAgeTo: TIntegerField
+      FieldName = 'AgeTo'
+      Origin = 'AgeTo'
+    end
+    object qryHeatGenderID: TIntegerField
+      FieldName = 'GenderID'
+      Origin = 'GenderID'
+    end
+    object qryHeatGenderABREV: TWideStringField
+      FieldName = 'GenderABREV'
+      Origin = 'GenderABREV'
+      Size = 16
     end
   end
   object qrySwimClub: TFDQuery

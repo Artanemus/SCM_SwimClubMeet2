@@ -17,7 +17,6 @@ uses
 type
 
   TLaneEntrant = class;  // forward declaration.
-  TDivision = class; // forward declaration.
 
   scmABSortMode = (abNotSorted, abTTB, abRandom);
 
@@ -37,11 +36,6 @@ type
     fRealNumOfLanes: integer;
     fSortMode: scmABSortMode;
     fVerbose: boolean;
-
-    indxX: integer;
-    indxM: integer;
-    indxF: integer;
-    indxSCM: integer;
 
     function AryEntrants_AssignLaneNum(NumOfHeats: Integer): Integer;
     function AryEntrants_AssignNominees: integer;
@@ -67,8 +61,8 @@ type
 
     function LOOP_Divisions(): integer;
     function LOOP_Entrants(NumOfEntrants: Integer): Integer;
-    function LOOP_Gender(DivisionFilter: string; PK: Integer = 0): Integer;
-    function GetDivisionFilter(GenderID: Integer = 0): string;
+    function LOOP_Gender(DivisionFilter: string): Integer;
+    function LOOP_GenderEx(MaleFilter, FemaleFilter: string): Integer;
 
   public
     constructor Create(AOwner: TComponent); reintroduce;
@@ -89,15 +83,6 @@ type
     destructor Destroy; override;
   end;
 
-  TDivision = class(TObject)
-    AgeFrom: integer;
-    AgeTo: integer;
-    GenderID: integer;
-    Caption: string;
-    RangeCaption: string;
-    constructor Create();
-    destructor Destroy; override;
-  end;
 
 implementation
 
@@ -145,6 +130,18 @@ begin
   ABData.Free;
   ClearAryEntrants;
   inherited;
+end;
+
+procedure TABINDV.ClearAryEntrants;
+var
+  I: integer;
+begin
+  if Length(AryEntrants) > 0 then
+  begin
+    for I := LOW(AryEntrants) to HIGH(AryEntrants) do
+      AryEntrants[I].Free;
+    SetLength(AryEntrants, 0);
+  end;
 end;
 
 function TABINDV.AryEntrants_AssignLaneNum(NumOfHeats: Integer): Integer;
@@ -337,11 +334,9 @@ end;
 function TABINDV.AutoBuildExec: Boolean;
 var
   msg: string;
-  count, I, DBNumOfNominees: integer;
+  count: integer;
 begin
   result := false;
-  count := 0;
-  DBNumOfNominees := 0;
 
   if fEventID = 0 then
   begin
@@ -471,7 +466,7 @@ begin
       { Rebuild the metric data for all unplaced nominees in the event.}
       if ABData.qryUnplacedNominees.Active then
       begin
-        DBNumOfNominees := ABData.qryUnplacedNominees.RecordCount;
+        ABData.qryUnplacedNominees.First;
         While not ABData.qryUnplacedNominees.Eof do
         begin
           uNominee.RefreshStat(
@@ -557,7 +552,9 @@ function TABINDV.LOOP_Divisions(): integer;
 var
   GroupBy: scmGroupByType;
   NumOfEntrants: integer;
-  DivisionFilter: string;
+  DivisionFilter, MaleFilter, FemaleFilter: string;
+  I, RecordCount: Integer;
+  PKM, PKF: Integer;
 begin
   result := 0;
   NumOfEntrants := 0;
@@ -587,7 +584,79 @@ begin
       end
       else
       begin
-        // special case  ....
+        // SPECIAL CASE : enabled - Seperate Gender and Custom Divisions.
+        PKM := 0;
+        PKF := 0;
+        // find the MAX record count for division tables;
+        // and init the PKM, PKM for each filter;
+        if not abData.qryDivision.Filtered then
+            abData.qryDivision.Filtered := true;
+        abData.qryDivision.IndexName := 'indxMaleMixed';
+        if not abData.qryDivision.IsEmpty then
+        begin
+          abData.qryDivision.First;
+          PKM := abData.qryDivision.FieldByName('DivisionID').AsInteger;
+        end;
+        RecordCount := abData.qryDivision.RecordCount;
+
+        abData.qryDivision.IndexName := 'indxFemaleMixed';
+        if not abData.qryDivision.IsEmpty then
+        begin
+          abData.qryDivision.First;
+          PKF := abData.qryDivision.FieldByName('DivisionID').AsInteger;
+        end;
+        if RecordCount < abData.qryDivision.RecordCount then
+          RecordCount := abData.qryDivision.RecordCount;
+
+        for I := 0 to RecordCount do
+        begin
+          MaleFilter := '';
+          FemaleFilter := '';
+
+          abData.qryDivision.IndexName := 'indxMaleMixed';
+
+          if (not abData.qryDivision.IsEmpty) and (PKM > 0) then
+          begin
+            if abData.qryDivision.Locate('DivisionID', PKM) then
+            begin
+              MaleFilter := '(Age >= '
+              + IntToStr(abData.qryDivision.FieldByName('AgeFrom').AsInteger)
+              + ') AND (Age <= '
+              + IntToStr(abData.qryDivision.FieldByName('.AgeTo').AsInteger)
+              + ')' ;
+              abData.qryDivision.Next;
+              if not abData.qryDivision.EOF then
+                PKM := abData.qryDivision.FieldByName('DivisionID').AsInteger
+              else
+                PKM := 0;
+            end
+            else PKM := 0;
+          end;
+
+          abData.qryDivision.IndexName := 'indxFemaleMixed';
+
+          if (not abData.qryDivision.IsEmpty) and (PKF > 0) then
+          begin
+            if abData.qryDivision.Locate('DivisionID', PKF) then
+            begin
+              FemaleFilter := '(Age >= '
+              + IntToStr(abData.qryDivision.FieldByName('AgeFrom').AsInteger)
+              + ') AND (Age <= '
+              + IntToStr(abData.qryDivision.FieldByName('.AgeTo').AsInteger)
+              + ')' ;
+              abData.qryDivision.Next;
+              if not abData.qryDivision.EOF then
+                PKF := abData.qryDivision.FieldByName('DivisionID').AsInteger
+              else
+                PKF := 0;
+            end;
+          end;
+
+          if MaleFilter.IsEmpty and FemaleFilter.IsEmpty then
+            Continue;
+          NumOfEntrants := LOOP_GenderEx(MaleFilter, FemaleFilter);
+
+        end;
       end;
     end;
     agSCM:
@@ -607,27 +676,81 @@ begin
         end;
       end;
   end;
+  if NumOfEntrants > 0 then
+    Result := NumOfEntrants;
 
 end;
 
-function TABINDV.LOOP_Gender(DivisionFilter: string; PK: Integer = 0): Integer;
+function TABINDV.LOOP_GenderEx(MaleFilter, FemaleFilter: string): Integer;
+var
+  Count: Integer;
+  FilterStr, GenderStr: string;
+  GenderID: Integer;
+  NumOfEntrants: Integer;
+begin
+  // SPECIAL CASE.... CUSTOM DIVISIONS MALE/FEMALE...
+  result := 0;
+  Count := 0;
+    // NOTE active index sorts reverse order, (X, F, M).
+  ABData.qryGender.first;
+
+  while not ABData.qryGender.BOF do
+    // iterate across Mixed, Female, Male (in that order)...
+  begin
+    GenderID := ABData.qryGender.FieldByName('GenderID').AsInteger;
+    GenderStr := 'GenderID = ' + IntToStr(GenderID) ;
+    FilterStr := '';
+    case GenderID of
+      1:
+        begin
+          if Length(MaleFilter) > 0 then
+          begin
+            FilterStr := GenderStr + ' AND ' + MaleFilter;
+          end;
+        end;
+      2:
+        begin
+          if Length(FemaleFilter) > 0 then
+            FilterStr := GenderStr + ' AND ' + FemaleFilter;
+        end;
+    end;
+
+    if Length(FilterStr) > 0 then // skip if filter empty...
+    begin
+      // ASSIGN and TURN FILTERING ON....
+      ABData.qryUnplacedNominees.Filter := FilterStr;
+      if not ABData.qryUnplacedNominees.Filtered then
+        ABData.qryUnplacedNominees.Filtered := true;
+
+      // after all filters are applied - get the number of unplaced nominees.
+      NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+
+      if NumOfEntrants > 0 then
+        count := count + LOOP_Entrants(NumOfEntrants);
+
+    end;
+    ABData.qryGender.Next; // next gender...
+
+  end;
+  if Count > 0 then
+    Result := Count;
+
+end;
+
+function TABINDV.LOOP_Gender(DivisionFilter: string): Integer;
 var
   count: Integer;
   FilterStr: string;
   GenderID: Integer;
-  GroupByType: scmGroupByType;
-  msg: string;
   NumOfEntrants: Integer;
 begin
   result := 0;
-  GroupByType := scmGroupByType(Settings.ab_GroupByIndx);
-
+  count := 0;
   // -----------------------------------------------------
   // ENABLED ... SEPERATE BY GENDER ...ENABLED.
   // -----------------------------------------------------
   if Settings.ab_SeperateGender then
   begin
-    count := 0;
     // NOTE active index sorts reverse order, (X, F, M).
     ABData.qryGender.first;
 
@@ -636,34 +759,6 @@ begin
     begin
       GenderID := ABData.qryGender.FieldByName('GenderID').AsInteger;
       FilterStr := 'GenderID = ' + IntToStr(GenderID);
-
-      // SPECIAL CASE.... CUSTOM DIVISIONS MALE/FEMALE
-      if (Settings.ab_GroupByIndx = ORD(agCustom)) and (PK > 0) then
-      begin
-        case GenderID of
-          1: //MALE
-          begin
-            abData.qryDivision.IndexName := 'indxCustMale';
-            if not abData.qryDivision.Filtered then
-              abData.qryDivision.Filtered := true;
-          end;
-          2: // FEMALE
-          begin
-            abData.qryDivision.IndexName := 'indxCustFemale';
-            if not abData.qryDivision.Filtered then
-              abData.qryDivision.Filtered := true;
-          end;
-        end;
-        if abData.qryDivision.Locate(IntToStr(PK), 'DivisionID') then
-        begin
-          divisionFilter := '(Age >= '
-          + IntToStr(abData.qryDivision.FieldByName('AgeFrom').AsInteger)
-          + ') AND (Age <= '
-          + IntToStr(abData.qryDivision.FieldByName('.AgeTo').AsInteger)
-          + ')' ;
-        end;
-      end;
-
       if Length(DivisionFilter) > 0 then
         FilterStr := FilterStr + ' AND ' + DivisionFilter;
 
@@ -706,9 +801,9 @@ begin
     if (NumOfEntrants > 0) then
       count := LOOP_Entrants(NumOfEntrants);
 
+    end;
     if (count > 0) then
       result := count;
-    end;
 end;
 
 function TABINDV.LOOP_Entrants(NumOfEntrants: Integer): Integer;
@@ -919,21 +1014,21 @@ begin
           found := CORE.qryLane.Locate('LaneNum', obj.LaneNum, SearchOptions);
           if found then
           begin
-            try
-              CORE.qryLane.Edit;
-              {
-              if uEvent.EventType = scmTEAM then
-              begin
-                CORE.qryLane.FieldByName('TeamID').AsInteger := obj.TeamID;
-              end
-              else
-              }
-              CORE.qryLane.FieldByName('NomineeID').AsInteger := obj.NomineeID;
-              CORE.qryLane.Post;
-              INC(Count, 1);
-            except on E: Exception do
-                CORE.qryLane.Cancel;
-            end;
+              try
+                CORE.qryLane.Edit;
+                {
+                if uEvent.EventType = scmTEAM then
+                begin
+                  CORE.qryLane.FieldByName('TeamID').AsInteger := obj.TeamID;
+                end
+                else
+                }
+                CORE.qryLane.FieldByName('NomineeID').AsInteger := obj.NomineeID;
+                CORE.qryLane.Post;
+                INC(Count, 1);
+              except on E: Exception do
+                  CORE.qryLane.Cancel;
+              end;
           end;
         end;
       end;
@@ -1282,19 +1377,6 @@ begin
   fSortMode := abTTB;
 end;
 
-{ TDivision }
 
-constructor TDivision.Create;
-begin
-  AgeFrom := 0;
-  AgeTo := 0;
-  GenderID := 0;
-end;
-
-destructor TDivision.Destroy;
-begin
-  ; // cleanup?
-  inherited;
-end;
 
 end.

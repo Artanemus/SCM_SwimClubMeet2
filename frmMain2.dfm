@@ -2831,7 +2831,7 @@ object Main2: TMain2
     Margins.Top = 10
     ActivePage = tabHeats
     Align = alClient
-    TabOrder = 3
+    TabOrder = 2
     OnChange = PageControlChange
     object tabSession: TTabSheet
       Caption = 'Session'

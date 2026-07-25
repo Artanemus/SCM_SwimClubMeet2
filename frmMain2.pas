@@ -657,7 +657,8 @@ var
   i: integer;
 begin
   // UI elements specific to MAIN.
-  if CORE.IsWorkingOnConnection then exit;
+  if CORE.IsWorkingOnConnection then
+    exit;
   try // update the status bar with nominee and entrant counts.
     if (uSession.IsLocked) then
     begin // Fast.. gets the pre-calculated params from table.
@@ -674,7 +675,8 @@ begin
       StatusBar.Panels[3].Text := IntToStr(i)
     else
       StatusBar.Panels[3].Text := '';
-  except on E: Exception do
+  except
+    on E: Exception do
     begin
       StatusBar.Panels[1].Text := 'ERR';
       StatusBar.Panels[2].Text := 'ERR';

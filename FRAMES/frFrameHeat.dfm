@@ -374,7 +374,7 @@ object FrameHeat: TFrameHeat
         Cursor = crDefault
         Align = alClient
         Color = 4800817
-        ColCount = 5
+        ColCount = 7
         DefaultRowHeight = 64
         DrawingStyle = gdsClassic
         FixedColor = 4800817
@@ -644,6 +644,58 @@ object FrameHeat: TFrameHeat
             PrintFont.Name = 'Segoe UI'
             PrintFont.Style = []
             Width = 0
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = 4800817
+            FieldName = 'RangeCaption'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -12
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clWindowText
+            HeaderFont.Height = -12
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clWindowText
+            PrintFont.Height = -12
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 0
+          end
+          item
+            Borders = []
+            BorderPen.Color = clSilver
+            ButtonHeight = 18
+            CheckFalse = 'N'
+            CheckTrue = 'Y'
+            Color = 4800817
+            FieldName = 'GenderABREV'
+            Font.Charset = DEFAULT_CHARSET
+            Font.Color = clWindowText
+            Font.Height = -12
+            Font.Name = 'Segoe UI'
+            Font.Style = []
+            HeaderFont.Charset = DEFAULT_CHARSET
+            HeaderFont.Color = clWindowText
+            HeaderFont.Height = -12
+            HeaderFont.Name = 'Segoe UI'
+            HeaderFont.Style = []
+            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+            PrintFont.Charset = DEFAULT_CHARSET
+            PrintFont.Color = clWindowText
+            PrintFont.Height = -12
+            PrintFont.Name = 'Segoe UI'
+            PrintFont.Style = []
+            Width = 0
           end>
         DataSource = CORE.dsHeat
         InvalidPicture.Data = {
@@ -788,6 +840,8 @@ object FrameHeat: TFrameHeat
           0
           64
           64
+          0
+          0
           0)
         RowHeights = (
           0

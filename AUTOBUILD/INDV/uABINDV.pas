@@ -205,7 +205,6 @@ begin
   if EntrantCount > 0 then result := EntrantCount;  // number of heats
 end;
 
-
 function TABINDV.AryEntrants_AssignNominees: integer;
 var
   obj: TLaneEntrant;
@@ -576,7 +575,7 @@ begin
           divisionFilter := '(Age >= '
           + IntToStr(abData.qryDivision.FieldByName('AgeFrom').AsInteger)
           + ') AND (Age <= '
-          + IntToStr(abData.qryDivision.FieldByName('.AgeTo').AsInteger)
+          + IntToStr(abData.qryDivision.FieldByName('AgeTo').AsInteger)
           + ')' ;
           NumOfEntrants := LOOP_Gender(DivisionFilter);
           abData.qryDivision.NEXT;
@@ -669,7 +668,7 @@ begin
           divisionFilter := '(Age >= '
           + IntToStr(abData.qryDivision.FieldByName('AgeFrom').AsInteger)
           + ') AND (Age <= '
-          + IntToStr(abData.qryDivision.FieldByName('.AgeTo').AsInteger)
+          + IntToStr(abData.qryDivision.FieldByName('AgeTo').AsInteger)
           + ')' ;
           NumOfEntrants := LOOP_Gender(DivisionFilter);
           abData.qryDivision.NEXT;
@@ -679,6 +678,75 @@ begin
   if NumOfEntrants > 0 then
     Result := NumOfEntrants;
 
+end;
+
+function TABINDV.LOOP_Gender(DivisionFilter: string): Integer;
+var
+  count: Integer;
+  FilterStr: string;
+  GenderID: Integer;
+  NumOfEntrants: Integer;
+begin
+  result := 0;
+  count := 0;
+  // -----------------------------------------------------
+  // ENABLED ... SEPERATE BY GENDER ...ENABLED.
+  // -----------------------------------------------------
+  if Settings.ab_SeperateGender then
+  begin
+    // NOTE active index performs a reverse sort order, (X, F, M).
+    ABData.qryGender.first;
+
+    while not ABData.qryGender.EOF do
+    // iterate across Mixed, Female, Male (in that order)...
+    begin
+      GenderID := ABData.qryGender.FieldByName('GenderID').AsInteger;
+      FilterStr := 'GenderID = ' + IntToStr(GenderID);
+      if Length(DivisionFilter) > 0 then
+        FilterStr := FilterStr + ' AND ' + DivisionFilter;
+
+      // ASSIGN and TURN FILTERING ON....
+      ABData.qryUnplacedNominees.Filter := FilterStr;
+      if not ABData.qryUnplacedNominees.Filtered then
+        ABData.qryUnplacedNominees.Filtered := true;
+
+      // after all filters are applied - get the number of unplaced nominees.
+      NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+
+      if NumOfEntrants > 0 then
+        count := count + LOOP_Entrants(NumOfEntrants);
+
+      ABData.qryGender.Next; // next gender...
+    end;
+  end
+
+  else
+
+  // -----------------------------------------------------
+  // DO NOT SEPERATE GENDER - HEATS ARE MIXED...
+  // -----------------------------------------------------
+  begin
+    if Length(DivisionFilter) > 0 then
+    begin
+      // ASSIGN and TURN FILTERING ON....
+      ABData.qryUnplacedNominees.Filter := DivisionFilter;
+      if not ABData.qryUnplacedNominees.Filtered then
+        ABData.qryUnplacedNominees.Filtered := true;
+    end
+    else
+      ABData.qryUnplacedNominees.Filtered := false;
+
+    // ABData.qryUnplacedNominees.Refresh;
+
+    // after all filters are applied - get the number of unplaced nominees.
+    NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+
+    if (NumOfEntrants > 0) then
+      count := LOOP_Entrants(NumOfEntrants);
+
+    end;
+    if (count > 0) then
+      result := count;
 end;
 
 function TABINDV.LOOP_GenderEx(MaleFilter, FemaleFilter: string): Integer;
@@ -735,75 +803,6 @@ begin
   if Count > 0 then
     Result := Count;
 
-end;
-
-function TABINDV.LOOP_Gender(DivisionFilter: string): Integer;
-var
-  count: Integer;
-  FilterStr: string;
-  GenderID: Integer;
-  NumOfEntrants: Integer;
-begin
-  result := 0;
-  count := 0;
-  // -----------------------------------------------------
-  // ENABLED ... SEPERATE BY GENDER ...ENABLED.
-  // -----------------------------------------------------
-  if Settings.ab_SeperateGender then
-  begin
-    // NOTE active index sorts reverse order, (X, F, M).
-    ABData.qryGender.first;
-
-    while not ABData.qryGender.BOF do
-    // iterate across Mixed, Female, Male (in that order)...
-    begin
-      GenderID := ABData.qryGender.FieldByName('GenderID').AsInteger;
-      FilterStr := 'GenderID = ' + IntToStr(GenderID);
-      if Length(DivisionFilter) > 0 then
-        FilterStr := FilterStr + ' AND ' + DivisionFilter;
-
-      // ASSIGN and TURN FILTERING ON....
-      ABData.qryUnplacedNominees.Filter := FilterStr;
-      if not ABData.qryUnplacedNominees.Filtered then
-        ABData.qryUnplacedNominees.Filtered := true;
-
-      // after all filters are applied - get the number of unplaced nominees.
-      NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
-
-      if NumOfEntrants > 0 then
-        count := count + LOOP_Entrants(NumOfEntrants);
-
-      ABData.qryGender.Next; // next gender...
-    end;
-  end
-
-  else
-
-  // -----------------------------------------------------
-  // DO NOT SEPERATE GENDER - HEATS ARE MIXED...
-  // -----------------------------------------------------
-  begin
-    if Length(DivisionFilter) > 0 then
-    begin
-      // ASSIGN and TURN FILTERING ON....
-      ABData.qryUnplacedNominees.Filter := DivisionFilter;
-      if not ABData.qryUnplacedNominees.Filtered then
-        ABData.qryUnplacedNominees.Filtered := true;
-    end
-    else
-      ABData.qryUnplacedNominees.Filtered := false;
-
-    // ABData.qryUnplacedNominees.Refresh;
-
-    // after all filters are applied - get the number of unplaced nominees.
-    NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
-
-    if (NumOfEntrants > 0) then
-      count := LOOP_Entrants(NumOfEntrants);
-
-    end;
-    if (count > 0) then
-      result := count;
 end;
 
 function TABINDV.LOOP_Entrants(NumOfEntrants: Integer): Integer;
@@ -927,6 +926,7 @@ begin
   // FINALLY : create heats and lanes in the SwimClubMeet2 database.
   // returns number of entrants assigned to lanes
   count := Build_Heats(NumOfHeats, NumOfEntrants);
+
   CORE.qryLane.Refresh; // REQUIRED: ReSync data state.
 
   if count < NumOfEntrants then
@@ -959,32 +959,60 @@ begin
 
 end;
 
-function TABINDV.Build_EntrantsPerHeat(NumOfHeats: Integer; NumOfNominees:
-  Integer): Integer;
+function TABINDV.Build_Heats(NumOfHeats, NumOfNominees: Integer): integer;
 var
-  I, Count, HeatIndex: Integer;
+  LanesFilled: Integer;
+  HeatID: Integer;
+  I, AgeFrom, AgeTo: Integer;
 begin
-  Result := 0;
-  Count := 0;
-  // Input validation
-  if NumOfHeats <= 0 then
+  result := 0;
+  LanesFilled := 0;
+
+  // Slowest heat (swimmers) first - fastest heat (swimmers) last.
+  for I := (NumOfHeats) downto 1 do
   begin
-    SetLength(AryEntrantsPerHeat, 0);
-    Exit;
+    HeatID := uHeat.NewHeat;
+    if HeatID > 0 then
+    begin
+      // Groupby Division is enabled....
+      if (Settings.ab_GroupByIndx <> 0)  then
+      begin
+        CORE.qryHeat.Edit;
+        AgeFrom := abData.qryDivision.FieldByName('AgeFrom').AsInteger;
+        AgeTo := abData.qryDivision.FieldByName('AgeTo').AsInteger;
+        CORE.qryHeat.FieldByName('Caption').AsString :=
+          abData.qryDivision.FieldByName('Caption').AsString;
+        CORE.qryHeat.FieldByName('AgeFrom').AsInteger :=
+          abData.qryDivision.FieldByName('AgeFrom').AsInteger;
+        CORE.qryHeat.FieldByName('AgeTo').AsInteger :=
+          abData.qryDivision.FieldByName('AgeTo').AsInteger;
+
+        if (AgeFrom = 0) and (AgeTo <> 0) then
+          CORE.qryHeat.FieldByName('RangeCaption').AsString :=
+          IntToStr(AgeFrom) + '& Under'
+        else if AgeTo = 999 then
+          CORE.qryHeat.FieldByName('RangeCaption').AsString := 'Open'
+        else
+        CORE.qryHeat.FieldByName('RangeCaption').AsString :=
+          IntToStr(AgeFrom) + '-' + IntToStr(AgeTo);
+
+        CORE.qryHeat.Post;
+      end;
+
+      if Settings.ab_SeperateGender then
+      begin
+        CORE.qryHeat.Edit;
+        CORE.qryHeat.FieldByName('GenderID').AsInteger :=
+          abData.qryGender.FieldByName('GenderID').AsInteger;
+//        CORE.qryHeat.FieldByName('GenderABREV').AsString :=
+//          abData.qryGender.FieldByName('ABREV').AsString;
+        CORE.qryHeat.Post;
+      end;
+
+      LanesFilled := LanesFilled + Build_FillLanes(HeatID, I);
+    end;
   end;
-  // Initialize array with zeros
-  SetLength(AryEntrantsPerHeat, NumOfHeats);
-  for I := 0 to NumOfHeats - 1 do
-    AryEntrantsPerHeat[I] := 0;
-  // Distribute one swimmer at a time in round-robin fashion
-  HeatIndex := 0;
-  for I := 1 to NumOfNominees do
-  begin
-    INC(AryEntrantsPerHeat[HeatIndex]);
-    INC(Count);
-    HeatIndex := (HeatIndex + 1) mod NumOfHeats;
-  end;
-  if Count > 0 then Result := Count;
+  if LanesFilled > 0 then Result := LanesFilled;
 end;
 
 function TABINDV.Build_FillLanes(HeatID, HeatNum: Integer): Integer;
@@ -1048,55 +1076,32 @@ begin
   end;
 end;
 
-function TABINDV.Build_Heats(NumOfHeats, NumOfNominees: Integer): integer;
+function TABINDV.Build_EntrantsPerHeat(NumOfHeats: Integer; NumOfNominees:
+  Integer): Integer;
 var
-  LanesFilled: Integer;
-  HeatID: Integer;
-  I, AgeFrom, AgeTo: Integer;
+  I, Count, HeatIndex: Integer;
 begin
-  result := 0;
-  LanesFilled := 0;
-
-  // Slowest heat (swimmers) first - fastest heat (swimmers) last.
-  for I := (NumOfHeats) downto 1 do
+  Result := 0;
+  Count := 0;
+  // Input validation
+  if NumOfHeats <= 0 then
   begin
-    HeatID := uHeat.NewHeat;
-    if HeatID > 0 then
-    begin
-      // Groupby Division is enabled....
-      if (Settings.ab_GroupByIndx <> 0)  then
-      begin
-        CORE.qryHeat.Edit;
-        AgeFrom := abData.qryDivision.FieldByName('AgeFrom').AsInteger;
-        AgeTo := abData.qryDivision.FieldByName('AgeTo').AsInteger;
-        CORE.qryHeat.FieldByName('Caption').AsString :=
-          abData.qryDivision.FieldByName('Caption').AsString;
-        CORE.qryHeat.FieldByName('AgeFrom').AsInteger :=
-          abData.qryDivision.FieldByName('AgeFrom').AsInteger;
-        CORE.qryHeat.FieldByName('AgeTo').AsInteger :=
-          abData.qryDivision.FieldByName('AgeTo').AsInteger;
-
-        if (AgeFrom = 0) and (AgeTo <> 0) then
-          CORE.qryHeat.FieldByName('RangeCaption').AsString :=
-          IntToStr(AgeFrom) + '& Under'
-        else if AgeTo = 999 then
-          CORE.qryHeat.FieldByName('RangeCaption').AsString := 'Open'
-        else
-        CORE.qryHeat.FieldByName('RangeCaption').AsString :=
-        '(' + IntToStr(AgeFrom) + '-' + IntToStr(AgeTo) + ')';
-
-        if Settings.ab_SeperateGender then
-          CORE.qryHeat.FieldByName('Gender').AsInteger :=
-            abData.qryGender.FieldByName('GenderID').AsInteger;
-
-
-        CORE.qryHeat.Post;
-      end;
-
-      LanesFilled := LanesFilled + Build_FillLanes(HeatID, I);
-    end;
+    SetLength(AryEntrantsPerHeat, 0);
+    Exit;
   end;
-  if LanesFilled > 0 then Result := LanesFilled;
+  // Initialize array with zeros
+  SetLength(AryEntrantsPerHeat, NumOfHeats);
+  for I := 0 to NumOfHeats - 1 do
+    AryEntrantsPerHeat[I] := 0;
+  // Distribute one swimmer at a time in round-robin fashion
+  HeatIndex := 0;
+  for I := 1 to NumOfNominees do
+  begin
+    INC(AryEntrantsPerHeat[HeatIndex]);
+    INC(Count);
+    HeatIndex := (HeatIndex + 1) mod NumOfHeats;
+  end;
+  if Count > 0 then Result := Count;
 end;
 
 function TABINDV.CalcNumberOfHeats(NumOfNominees, RealNumOfLanes: Integer):
@@ -1115,8 +1120,6 @@ begin
     Result := NumOfHeats;
   end;
 end;
-
-
 
 { TABINDV }
 
@@ -1137,7 +1140,6 @@ begin
     end;
   end;
 end;
-
 
 function TABINDV.Seed_Circle(NumOfHeats, SeedDepth: Integer): Integer;
 var
@@ -1376,6 +1378,8 @@ begin
       end;
   fSortMode := abTTB;
 end;
+
+
 
 
 

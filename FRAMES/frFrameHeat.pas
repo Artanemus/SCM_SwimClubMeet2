@@ -284,7 +284,7 @@ procedure TFrameHeat.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
 var
   G: TDBAdvGrid;
   htNum, W, H, txtW, txtH, tx, ty: integer;
-  htStr: string;
+  htStr, RangeStr, GenderStr: string;
 begin
   G := TDBAdvGrid(Sender);
 
@@ -317,11 +317,37 @@ begin
       G.Canvas.TextOut(tx, ty, htStr);
   end;
 
+  // GENDER ABREV AND RANGE CAPTION.
   if (ARow > G.HeaderRow) and (ACol = 3) then
   begin
-    htStr := G.AllCells[4, ARow];
-    if Length(htStr) > 0  then
+    RangeStr := G.AllCells[5, ARow]; // RangeCaption.
+    GenderStr := G.AllCells[6, ARow]; // GenderABREV
+
+    if (Length(GenderStr) > 0) and (RangeStr.IsEmpty) then
     begin
+      // PLACE LARGE GENDER ABREV STRING IN CENTER CELL
+      htStr := GenderStr;
+      W := Rect.Width;
+      H := Rect.Height;
+      // calculate and scale font to fit inside icon
+      G.Canvas.Font.Style := [fsBold];
+      G.Canvas.Font.Size := 20;
+      while (G.Canvas.TextWidth(htStr) > (W - 4))
+          and (G.Canvas.Font.Size > 6) do
+        G.Canvas.Font.Size := G.Canvas.Font.Size - 1;
+      txtW := G.Canvas.TextWidth(htStr);
+      txtH := G.Canvas.TextHeight(htStr);
+      tx := Rect.Left + 1 + ((W - txtW) div 2);
+      ty := Rect.Top + 1 + ((H - txtH) div 2);
+      // draw text directly on canvas
+      G.Canvas.Font.Color := clWebSeashell;
+      G.Canvas.Brush.Style := bsClear;
+      G.Canvas.TextOut(tx, ty, htStr);
+    end
+    else if (GenderStr.IsEmpty) and (Length(RangeStr) > 0) then
+    begin
+      // PLACE DIVISION RANGE TEXT
+      htStr := RangeStr;
       W := Rect.Width;
       H := Rect.Height;
       // calculate and scale font to fit inside icon
@@ -338,7 +364,48 @@ begin
       G.Canvas.Font.Color := clWebSeashell;
       G.Canvas.Brush.Style := bsClear;
       G.Canvas.TextOut(tx, ty, htStr);
+    end
+    else if (Length(GenderStr) > 0) and (Length(RangeStr) > 0) then
+    begin
+      htStr := GenderStr;
+      // CREATE TWO LINES....PLACE GENDER and DIVISION RANGE TEXT.
+      W := Rect.Width;
+      H := Rect.Height DIV 2;
+
+      // Gender ABREV Text
+      G.Canvas.Font.Style := [fsBold];
+      G.Canvas.Font.Size := 16;
+      while (G.Canvas.TextWidth(htStr) > (W - 4))
+          and (G.Canvas.Font.Size > 6) do
+        G.Canvas.Font.Size := G.Canvas.Font.Size - 1;
+      txtW := G.Canvas.TextWidth(htStr);
+      txtH := G.Canvas.TextHeight(htStr);
+      tx := Rect.Left + 1 + ((W - txtW) div 2);
+      ty := Rect.Top + 1 + ((H - txtH) div 2);
+      // draw text directly on canvas
+      G.Canvas.Font.Color := clWebSeashell;
+      G.Canvas.Brush.Style := bsClear;
+      G.Canvas.TextOut(tx, ty, htStr);
+
+      // Division Range TEXT
+      htStr := RangeStr;
+      G.Canvas.Font.Style := [fsBold];
+      G.Canvas.Font.Size := 16;
+      while (G.Canvas.TextWidth(htStr) > (W - 4))
+          and (G.Canvas.Font.Size > 6) do
+        G.Canvas.Font.Size := G.Canvas.Font.Size - 1;
+      txtW := G.Canvas.TextWidth(htStr);
+      txtH := G.Canvas.TextHeight(htStr);
+      tx := Rect.Left + 1 + ((W - txtW) div 2);
+      // Shift down to next line....
+      ty := Rect.Top + 1 + ((H - txtH) div 2) + (H DIV 2);
+      // draw text directly on canvas
+      G.Canvas.Font.Color := clWebSeashell;
+      G.Canvas.Brush.Style := bsClear;
+      G.Canvas.TextOut(tx, ty, htStr);
     end;
+
+
   end;
 
 end;

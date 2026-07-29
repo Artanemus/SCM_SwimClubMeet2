@@ -64,6 +64,10 @@ type
     function LOOP_Gender(DivisionFilter: string): Integer;
     function LOOP_GenderEx(MaleFilter, FemaleFilter: string): Integer;
 
+    function GetNextFilter(Query: TFDQuery; IndexName: string; var PK: Integer):
+        string;
+
+
   public
     constructor Create(AOwner: TComponent); reintroduce;
     destructor Destroy; override;
@@ -547,13 +551,35 @@ begin
 
 end;
 
+
+function TABINDV.GetNextFilter(Query: TFDQuery; IndexName: string; var PK: Integer): string;
+begin
+  Result := '';
+  Query.IndexName := IndexName;
+  if Query.IsEmpty or (PK <= 0) then
+    Exit;
+
+  if Query.Locate('DivisionID', PK) then
+  begin
+    Result := Format('(Age >= %d) AND (Age <= %d)', [
+      Query.FieldByName('AgeFrom').AsInteger,
+      Query.FieldByName('AgeTo').AsInteger
+    ]);
+
+    Query.Next;
+    PK := IfThen(Query.EOF, 0, Query.FieldByName('DivisionID').AsInteger);
+  end
+  else
+    PK := 0;
+end;
+
 function TABINDV.LOOP_Divisions(): integer;
 var
   GroupBy: scmGroupByType;
   NumOfEntrants: integer;
   DivisionFilter, MaleFilter, FemaleFilter: string;
   I, RecordCount: Integer;
-  PKM, PKF: Integer;
+  PKMale, PKFemale: Integer;
 begin
   result := 0;
   NumOfEntrants := 0;
@@ -568,8 +594,8 @@ begin
       if Settings.ab_SeperateGender = false then
       begin
         abData.qryDivision.IndexName := 'indxCustMixed';
-        if not abData.qryDivision.Filtered then
-          abData.qryDivision.Filtered := true;
+        abData.qryDivision.Filtered := true;
+
         while not abData.qryDivision.EOF do
         begin
           divisionFilter := '(Age >= '
@@ -584,77 +610,28 @@ begin
       else
       begin
         // SPECIAL CASE : enabled - Seperate Gender and Custom Divisions.
-        PKM := 0;
-        PKF := 0;
-        // find the MAX record count for division tables;
-        // and init the PKM, PKM for each filter;
+        // TWO 'views' of the dbo.Division table are iterated in sync.
+        // Initialize
         if not abData.qryDivision.Filtered then
-            abData.qryDivision.Filtered := true;
-        abData.qryDivision.IndexName := 'indxMaleMixed';
-        if not abData.qryDivision.IsEmpty then
+          abData.qryDivision.Filtered := True;
+
+        // Set up male iterator
+        abData.qryDivision.IndexName := 'indxCustMale';
+        PKMale := IfThen(not abData.qryDivision.IsEmpty,
+          abData.qryDivision.FieldByName('DivisionID').AsInteger, 0);
+
+        // Set up female iterator
+        abData.qryDivision.IndexName := 'indxCustFemale';
+        PKFemale := IfThen(not abData.qryDivision.IsEmpty,
+          abData.qryDivision.FieldByName('DivisionID').AsInteger, 0);
+
+        while (PKMale > 0) or (PKFemale > 0) do
         begin
-          abData.qryDivision.First;
-          PKM := abData.qryDivision.FieldByName('DivisionID').AsInteger;
-        end;
-        RecordCount := abData.qryDivision.RecordCount;
+          MaleFilter := GetNextFilter(abData.qryDivision, 'indxCustMale', PKMale);
+          FemaleFilter := GetNextFilter(abData.qryDivision, 'indxCustFemale', PKFemale);
 
-        abData.qryDivision.IndexName := 'indxFemaleMixed';
-        if not abData.qryDivision.IsEmpty then
-        begin
-          abData.qryDivision.First;
-          PKF := abData.qryDivision.FieldByName('DivisionID').AsInteger;
-        end;
-        if RecordCount < abData.qryDivision.RecordCount then
-          RecordCount := abData.qryDivision.RecordCount;
-
-        for I := 0 to RecordCount do
-        begin
-          MaleFilter := '';
-          FemaleFilter := '';
-
-          abData.qryDivision.IndexName := 'indxMaleMixed';
-
-          if (not abData.qryDivision.IsEmpty) and (PKM > 0) then
-          begin
-            if abData.qryDivision.Locate('DivisionID', PKM) then
-            begin
-              MaleFilter := '(Age >= '
-              + IntToStr(abData.qryDivision.FieldByName('AgeFrom').AsInteger)
-              + ') AND (Age <= '
-              + IntToStr(abData.qryDivision.FieldByName('.AgeTo').AsInteger)
-              + ')' ;
-              abData.qryDivision.Next;
-              if not abData.qryDivision.EOF then
-                PKM := abData.qryDivision.FieldByName('DivisionID').AsInteger
-              else
-                PKM := 0;
-            end
-            else PKM := 0;
-          end;
-
-          abData.qryDivision.IndexName := 'indxFemaleMixed';
-
-          if (not abData.qryDivision.IsEmpty) and (PKF > 0) then
-          begin
-            if abData.qryDivision.Locate('DivisionID', PKF) then
-            begin
-              FemaleFilter := '(Age >= '
-              + IntToStr(abData.qryDivision.FieldByName('AgeFrom').AsInteger)
-              + ') AND (Age <= '
-              + IntToStr(abData.qryDivision.FieldByName('.AgeTo').AsInteger)
-              + ')' ;
-              abData.qryDivision.Next;
-              if not abData.qryDivision.EOF then
-                PKF := abData.qryDivision.FieldByName('DivisionID').AsInteger
-              else
-                PKF := 0;
-            end;
-          end;
-
-          if MaleFilter.IsEmpty and FemaleFilter.IsEmpty then
-            Continue;
-          NumOfEntrants := LOOP_GenderEx(MaleFilter, FemaleFilter);
-
+          if not (MaleFilter.IsEmpty and FemaleFilter.IsEmpty) then
+            NumOfEntrants := LOOP_GenderEx(MaleFilter, FemaleFilter);
         end;
       end;
     end;

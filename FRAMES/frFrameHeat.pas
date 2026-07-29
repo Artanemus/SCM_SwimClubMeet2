@@ -283,8 +283,15 @@ procedure TFrameHeat.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
     TRect; State: TGridDrawState);
 var
   G: TDBAdvGrid;
+  genderH: Integer;
+  genderW: Integer;
   htNum, W, H, txtW, txtH, tx, ty: integer;
   htStr, RangeStr, GenderStr: string;
+  lineSpacing: Integer;
+  rangeH: Integer;
+  rangeW: Integer;
+  startY: Integer;
+  totalTextHeight: Integer;
 begin
   G := TDBAdvGrid(Sender);
 
@@ -367,42 +374,49 @@ begin
     end
     else if (Length(GenderStr) > 0) and (Length(RangeStr) > 0) then
     begin
-      htStr := GenderStr;
-      // CREATE TWO LINES....PLACE GENDER and DIVISION RANGE TEXT.
       W := Rect.Width;
-      H := Rect.Height DIV 2;
-
-      // Gender ABREV Text
+      // First, determine the appropriate font size for BOTH lines
+      // We'll use the larger of the two strings to determine sizing
       G.Canvas.Font.Style := [fsBold];
       G.Canvas.Font.Size := 16;
-      while (G.Canvas.TextWidth(htStr) > (W - 4))
-          and (G.Canvas.Font.Size > 6) do
-        G.Canvas.Font.Size := G.Canvas.Font.Size - 1;
-      txtW := G.Canvas.TextWidth(htStr);
-      txtH := G.Canvas.TextHeight(htStr);
-      tx := Rect.Left + 1 + ((W - txtW) div 2);
-      ty := Rect.Top + 1 + ((H - txtH) div 2);
-      // draw text directly on canvas
-      G.Canvas.Font.Color := clWebSeashell;
-      G.Canvas.Brush.Style := bsClear;
-      G.Canvas.TextOut(tx, ty, htStr);
 
-      // Division Range TEXT
-      htStr := RangeStr;
-      G.Canvas.Font.Style := [fsBold];
-      G.Canvas.Font.Size := 16;
-      while (G.Canvas.TextWidth(htStr) > (W - 4))
-          and (G.Canvas.Font.Size > 6) do
+      // Check width for both strings and reduce font size if needed
+      while ((G.Canvas.TextWidth(GenderStr) > (W - 4)) or
+             (G.Canvas.TextWidth(RangeStr) > (W - 4))) and
+             (G.Canvas.Font.Size > 6) do
         G.Canvas.Font.Size := G.Canvas.Font.Size - 1;
-      txtW := G.Canvas.TextWidth(htStr);
-      txtH := G.Canvas.TextHeight(htStr);
-      tx := Rect.Left + 1 + ((W - txtW) div 2);
-      // Shift down to next line....
-      ty := Rect.Top + 1 + ((H - txtH) div 2) + (H DIV 2);
-      // draw text directly on canvas
+
+      // Now calculate dimensions with the final font size
+      G.Canvas.Font.Style := [fsBold];
+      genderW := G.Canvas.TextWidth(GenderStr);
+      genderH := G.Canvas.TextHeight(GenderStr);
+
+      rangeW := G.Canvas.TextWidth(RangeStr);
+      rangeH := G.Canvas.TextHeight(RangeStr);
+
+      // Calculate spacing between lines (1/4 of the line height)
+      lineSpacing := - (rangeH div 4);
+
+      // Calculate total height of the combined text block,
+      // less a 2 pixel margin top and bottom.
+      totalTextHeight := genderH + lineSpacing + rangeH;
+
+      // Calculate vertical starting position to center the entire block
+      startY := Rect.Top + ((Rect.Height - totalTextHeight) div 2);
+
+      // Draw Gender text (line 1)
+      tx := Rect.Left + 1 + ((W - genderW) div 2);
+      ty := startY;
       G.Canvas.Font.Color := clWebSeashell;
       G.Canvas.Brush.Style := bsClear;
-      G.Canvas.TextOut(tx, ty, htStr);
+      G.Canvas.TextOut(tx, ty, GenderStr);
+
+      // Draw Range text (line 2)
+      tx := Rect.Left + 1 + ((W - rangeW) div 2);
+      ty := startY + genderH + lineSpacing;
+      G.Canvas.Font.Color := clWebSeashell;
+      G.Canvas.Brush.Style := bsClear;
+      G.Canvas.TextOut(tx, ty, RangeStr);
     end;
 
 

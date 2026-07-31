@@ -8,7 +8,7 @@ uses
 
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.WinXCtrls, Vcl.Grids, Vcl.ImgList,
-  Vcl.ActnMan,
+  Vcl.ActnMan, vcl.ComCtrls,
 
   Data.DB,
 
@@ -95,16 +95,19 @@ type
 
   private
     fVerbose: boolean;
+    fProgressBar: TProgressBar;
+    procedure UpdateProgress(Progress, MAX: Integer);
+
   protected
     procedure Loaded; override;
-
-
   public
     procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
     procedure UpdateUI(DoFullUpdate: boolean = false);
 
     procedure OnPreferenceChange(); // Tools preferences calls here, via main form.
     procedure OnAfterScroll(); // handles debug panel.
+
+    procedure AssignProgressBar(aProgressBar: TProgressBar);
   end;
 
 implementation
@@ -138,8 +141,12 @@ begin
     grid.BeginUpdate;
     uEvent.DetailTBLs_DisableCNTRLs;
     try
-
       AB := TABINDV.Create(Self);
+
+      // assign the procedure to display progress in the main form's pgBar.
+      if Assigned(fProgressBar) then
+        AB.OnProgressUpdate := UpdateProgress;
+
       AB.Prepare(SCM2.scmConnection, uEvent.PK, fVerbose);
       success := AB.AutoBuildExec;
     finally
@@ -147,6 +154,11 @@ begin
         AB.free;
       uEvent.DetailTBLs_ApplyMaster;
       uEvent.DetailTBLs_EnableCNTRLs;
+
+      // Clear possition of the progress bar
+      if Assigned(fProgressBar) then
+        fProgressBar.Position := 0;
+
       if success then
         UpdateUI();
 
@@ -270,6 +282,11 @@ end;
 procedure TFrameHeat.actnHt_ToggleStatusExecute(Sender: TObject);
 begin
   uHeat.ToggleStatus;
+end;
+
+procedure TFrameHeat.AssignProgressBar(aProgressBar: TProgressBar);
+begin
+  fProgressBar := aProgressBar;
 end;
 
 procedure TFrameHeat.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var
@@ -457,6 +474,7 @@ begin
   inherited;
   pnlDebug.Visible := false; // DEBUG PANEL
   fVerbose := true; // default...
+  fProgressBar := nil;
   if Assigned(Settings) then
     fVerbose := Settings.Verbose;
 
@@ -483,6 +501,15 @@ begin
     if Settings.ShowDebugInfo then
       pnlDebug.Visible := true;
   end;
+end;
+
+procedure TFrameHeat.UpdateProgress(Progress, MAX: Integer);
+begin
+  TThread.Queue(nil, procedure
+  begin
+    fProgressBar.Position := Round((Progress / Max) * fProgressBar.Max);
+    fProgressBar.Update;
+  end);
 end;
 
 procedure TFrameHeat.UpdateUI(DoFullUpdate: boolean = false);

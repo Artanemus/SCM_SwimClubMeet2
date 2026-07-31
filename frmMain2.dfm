@@ -2788,6 +2788,7 @@ object Main2: TMain2
     Top = 777
     Width = 1131
     Height = 39
+    Margins.Top = 0
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clBtnText
     Font.Height = -16
@@ -2827,34 +2828,37 @@ object Main2: TMain2
     Left = 3
     Top = 89
     Width = 1131
-    Height = 682
+    Height = 681
     Margins.Top = 10
     ActivePage = tabHeats
     Align = alClient
     TabOrder = 2
     OnChange = PageControlChange
+    ExplicitHeight = 682
     object tabSession: TTabSheet
       Caption = 'Session'
       object pnlSession: TPanel
         Left = 0
         Top = 0
         Width = 417
-        Height = 646
+        Height = 645
         Margins.Top = 10
         Align = alLeft
         BevelOuter = bvNone
         Caption = 'Panel for TFrameSession (frSession)'
         TabOrder = 0
+        ExplicitHeight = 646
       end
       object pnlEvent: TPanel
         Left = 417
         Top = 0
         Width = 706
-        Height = 646
+        Height = 645
         Align = alClient
         BevelOuter = bvNone
         Caption = 'Panel for TFrameEvent (frEvent)'
         TabOrder = 1
+        ExplicitHeight = 646
       end
     end
     object tabNominate: TTabSheet
@@ -2864,21 +2868,23 @@ object Main2: TMain2
         Left = 0
         Top = 0
         Width = 433
-        Height = 646
+        Height = 645
         Align = alLeft
         BevelOuter = bvNone
         Caption = 'Panel for TFrameFilterMember (frFilterMember)'
         TabOrder = 0
+        ExplicitHeight = 646
       end
       object pnlNominate: TPanel
         Left = 433
         Top = 0
         Width = 690
-        Height = 646
+        Height = 645
         Align = alClient
         BevelOuter = bvNone
         Caption = 'Panel for TFrameNominate (frNominate)'
         TabOrder = 1
+        ExplicitHeight = 646
       end
     end
     object tabHeats: TTabSheet
@@ -2898,32 +2904,45 @@ object Main2: TMain2
         Left = 0
         Top = 80
         Width = 1123
-        Height = 566
+        Height = 565
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
+        ExplicitHeight = 566
         object pnlHeat: TPanel
           Left = 0
           Top = 0
           Width = 200
-          Height = 566
+          Height = 565
           Align = alLeft
           BevelOuter = bvNone
           Caption = 'Panel for TFrameHeat (frHeat)'
           TabOrder = 0
+          ExplicitHeight = 566
         end
         object pnlLane: TPanel
           Left = 200
           Top = 0
           Width = 923
-          Height = 566
+          Height = 565
           Align = alClient
           BevelOuter = bvNone
           Caption = 'Panel for TFrameLane (frLane)'
           TabOrder = 1
+          ExplicitHeight = 566
         end
       end
     end
+  end
+  object pgbar: TProgressBar
+    Left = 0
+    Top = 773
+    Width = 1137
+    Height = 4
+    Align = alBottom
+    BarColor = clDarkgreen
+    TabOrder = 4
+    ExplicitTop = 768
   end
   object actnManager: TActionManager
     ActionBars = <

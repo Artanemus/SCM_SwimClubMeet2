@@ -7,7 +7,7 @@ uses
   System.StrUtils, System.Types,  System.Variants,
   Data.DB,
 
-  VCL.Dialogs,
+  VCL.Dialogs, vcl.Graphics,
   FireDAC.Comp.Client, FireDAC.Stan.Error,  FireDAC.Stan.Param,
   dmSCM2, dmCORE, uSettings,
   dmABINDV_Data,
@@ -18,11 +18,15 @@ type
 
   TLaneEntrant = class;  // forward declaration.
 
+  TProgressUpdateEvent = procedure(Progress: Integer; Max: Integer) of object;
+
   scmABSortMode = (abNotSorted, abTTB, abRandom);
 
   TABINDV = class(TComponent)
+
   private
     ABData: TABINDV_Data;
+    FOnProgressUpdate: TProgressUpdateEvent;
     AryEntrants: Array of TLaneEntrant;
     AryEntrantsPerHeat: Array of Integer;
     AryExcludedLanes: Array of boolean;
@@ -32,6 +36,8 @@ type
     fErrorNum: integer;
     fEventID: Integer;
     fExcludeLaneCount: integer;
+    fNumOfUnplacedNominees: integer; // progress bar
+    fNumOfPlacedNominees: Integer; // progress bar
     fNumOfPoolLanes: integer;
     fRealNumOfLanes: integer;
     fSortMode: scmABSortMode;
@@ -69,11 +75,17 @@ type
 
 
   public
+    ProgressEvent:  TProgressEvent;
+
     constructor Create(AOwner: TComponent); reintroduce;
     destructor Destroy; override;
     function AutoBuildExec: Boolean;
     function Prepare(AConnection: TFDConnection; EventID: Integer; Verbose: boolean
         = false): Boolean;
+
+    property OnProgressUpdate: TProgressUpdateEvent
+      read FOnProgressUpdate write FOnProgressUpdate;
+
   end;
 
   TLaneEntrant = class(TObject)
@@ -114,6 +126,7 @@ begin
   inherited Create(AOwner);
 
   fConnection := nil;
+  FOnProgressUpdate := nil;
   fError := false;
   fErrorNum := 0;
   fEventID := 0;
@@ -122,6 +135,8 @@ begin
   fRealNumOfLanes := 0;
   fVerbose := true;
   fSortMode := abNotSorted;
+  fNumOfUnplacedNominees := 0;
+  fNumOfPlacedNominees := 0;
 
   Randomize; // initialize RAND seed.
   ABData := TABINDV_Data.Create(Self);
@@ -249,6 +264,11 @@ begin
         {  STANDARD SEEDING.}
         NumOfEntrantsSeeded := Seed_Default(NumOfHeats);
       end;
+    1:
+      begin
+        { RANDOM SEEDING.}
+        NumOfEntrantsSeeded := Seed_Random(NumOfHeats);
+      end;
     2:
       begin
         {CIRCLE SEEDING.}
@@ -260,10 +280,6 @@ begin
           count := Seed_Default(NumOfHeats, NumOfEntrantsSeeded);
           NumOfEntrantsSeeded := NumOfEntrantsSeeded + count;
         end;
-      end;
-    3:
-      begin
-        NumOfEntrantsSeeded := Seed_Random(NumOfHeats);
       end;
   end;
   if NumOfEntrantsSeeded > 0 then result := NumOfEntrantsSeeded;
@@ -501,10 +517,14 @@ begin
     exit;
   end;
 
+  // total number of nominees. Used by progress bar.
+  fNumOfUnplacedNominees := ABData.qryUnplacedNominees.RecordCount;
+
   // Default filtering... sort on TTB.
   ABData.qryUnplacedNominees.IndexName := 'indxTTB';
   ABData.qryUnplacedNominees.Filter := '';
   ABData.qryUnplacedNominees.Filtered := false;
+
 
 
   ABData.qryDivision.Connection := SCM2.scmConnection;
@@ -545,9 +565,7 @@ begin
     end;
   end;
 
-  count := LOOP_Divisions();
-
-  if count > 0 then result := true;
+  if fNumOfPlacedNominees > 0 then result := true;
 
 end;
 
@@ -576,19 +594,16 @@ end;
 function TABINDV.LOOP_Divisions(): integer;
 var
   GroupBy: scmGroupByType;
-  NumOfEntrants: integer;
   DivisionFilter, MaleFilter, FemaleFilter: string;
-  I, RecordCount: Integer;
   PKMale, PKFemale: Integer;
 begin
   result := 0;
-  NumOfEntrants := 0;
   DivisionFilter := '';
   GroupBy := scmGroupByType(Settings.ab_GroupByIndx);
 
   case GroupBy of
     agNone:
-      NumOfEntrants := LOOP_Gender(DivisionFilter);
+      LOOP_Gender(DivisionFilter);
     agCustom:
     begin
       if Settings.ab_SeperateGender = false then
@@ -603,7 +618,7 @@ begin
           + ') AND (Age <= '
           + IntToStr(abData.qryDivision.FieldByName('AgeTo').AsInteger)
           + ')' ;
-          NumOfEntrants := LOOP_Gender(DivisionFilter);
+          LOOP_Gender(DivisionFilter);
           abData.qryDivision.NEXT;
         end;
       end
@@ -631,7 +646,7 @@ begin
           FemaleFilter := GetNextFilter(abData.qryDivision, 'indxCustFemale', PKFemale);
 
           if not (MaleFilter.IsEmpty and FemaleFilter.IsEmpty) then
-            NumOfEntrants := LOOP_GenderEx(MaleFilter, FemaleFilter);
+            LOOP_GenderEx(MaleFilter, FemaleFilter);
         end;
       end;
     end;
@@ -647,25 +662,23 @@ begin
           + ') AND (Age <= '
           + IntToStr(abData.qryDivision.FieldByName('AgeTo').AsInteger)
           + ')' ;
-          NumOfEntrants := LOOP_Gender(DivisionFilter);
+          LOOP_Gender(DivisionFilter);
           abData.qryDivision.NEXT;
         end;
       end;
   end;
-  if NumOfEntrants > 0 then
-    Result := NumOfEntrants;
+  if fNumOfPlacedNominees > 0 then
+    Result := fNumOfPlacedNominees;
 
 end;
 
 function TABINDV.LOOP_Gender(DivisionFilter: string): Integer;
 var
-  count: Integer;
   FilterStr: string;
   GenderID: Integer;
   NumOfEntrants: Integer;
 begin
   result := 0;
-  count := 0;
   // -----------------------------------------------------
   // ENABLED ... SEPERATE BY GENDER ...ENABLED.
   // -----------------------------------------------------
@@ -691,7 +704,7 @@ begin
       NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
 
       if NumOfEntrants > 0 then
-        count := count + LOOP_Entrants(NumOfEntrants);
+        LOOP_Entrants(NumOfEntrants);
 
       ABData.qryGender.Next; // next gender...
     end;
@@ -719,23 +732,21 @@ begin
     NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
 
     if (NumOfEntrants > 0) then
-      count := LOOP_Entrants(NumOfEntrants);
+      LOOP_Entrants(NumOfEntrants);
 
     end;
-    if (count > 0) then
-      result := count;
+    if (fNumOfPlacedNominees > 0) then
+      result := fNumOfPlacedNominees;
 end;
 
 function TABINDV.LOOP_GenderEx(MaleFilter, FemaleFilter: string): Integer;
 var
-  Count: Integer;
   FilterStr, GenderStr: string;
   GenderID: Integer;
   NumOfEntrants: Integer;
 begin
   // SPECIAL CASE.... CUSTOM DIVISIONS MALE/FEMALE...
   result := 0;
-  Count := 0;
     // NOTE active index sorts reverse order, (X, F, M).
   ABData.qryGender.first;
 
@@ -771,14 +782,14 @@ begin
       NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
 
       if NumOfEntrants > 0 then
-        count := count + LOOP_Entrants(NumOfEntrants);
+        LOOP_Entrants(NumOfEntrants);
 
     end;
     ABData.qryGender.Next; // next gender...
 
   end;
-  if Count > 0 then
-    Result := Count;
+  if fNumOfPlacedNominees > 0 then
+    Result := fNumOfPlacedNominees;
 
 end;
 
@@ -903,6 +914,8 @@ begin
   // FINALLY : create heats and lanes in the SwimClubMeet2 database.
   // returns number of entrants assigned to lanes
   count := Build_Heats(NumOfHeats, NumOfEntrants);
+
+
 
   CORE.qryLane.Refresh; // REQUIRED: ReSync data state.
 
@@ -1031,6 +1044,13 @@ begin
                 CORE.qryLane.FieldByName('NomineeID').AsInteger := obj.NomineeID;
                 CORE.qryLane.Post;
                 INC(Count, 1);
+
+                if Assigned(FOnProgressUpdate) then
+                begin
+                  fNumOfPlacedNominees := fNumOfPlacedNominees + count;
+                  FOnProgressUpdate(fNumOfPlacedNominees, fNumOfUnplacedNominees);
+                end;
+
               except on E: Exception do
                   CORE.qryLane.Cancel;
               end;

@@ -92,6 +92,7 @@ type
     Member_Reports: TAction;
     Tools_PoolType: TAction;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
+    pgbar: TProgressBar;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -409,6 +410,7 @@ begin
   frHeat.Align := alClient;
   pnlHeat.Caption := '';
   frHeat.LinkActionsToMenu(TActionClientItem(actnManager.ActionBars[0].Items[4]));
+  frHeat.AssignProgressBar(pgBar); // used in AutoBuild to show progress.
 
   frLane := TFrameLane.Create(Self);
   frLane.Parent := pnlLane;

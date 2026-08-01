@@ -484,6 +484,16 @@ procedure TFrameHeat.OnAfterScroll;
 var
   s: string;
 begin
+  {TODO -oBSA -cUI :
+    A refresh here results in frFrameLane.grid positioning to
+    first record. frFrameHeat.grid doesn't need this refresh. It's used here
+    to get frFrameLane.grid to display correctly.
+    The refresh event needs to focus on frFrameLane.grid. Unfortunately
+    TFrameHeat has no reference to TFrameLane - unless a hook is coded.}
+
+  // if Assigned(refFrameLane) then refFrameLane.Refresh else
+
+  grid.Refresh; // forces a refresh on frFrameLane.grid.
 
   if pnlDebug.Visible then
   begin

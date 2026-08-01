@@ -3,6 +3,8 @@ object FrameHeat: TFrameHeat
   Top = 0
   Width = 195
   Height = 624
+  ParentShowHint = False
+  ShowHint = True
   TabOrder = 0
   object rpnlCntrl: TRelativePanel
     Left = 0
@@ -865,6 +867,7 @@ object FrameHeat: TFrameHeat
     object actnHt_MoveUp: TAction
       Category = 'Heats'
       Caption = 'Move Up'
+      Hint = 'Move selected heat up the stack.'
       ImageIndex = 6
       ImageName = 'up'
       ShortCut = 16422
@@ -873,6 +876,7 @@ object FrameHeat: TFrameHeat
     object actnHt_MoveDown: TAction
       Category = 'Heats'
       Caption = 'Move Down'
+      Hint = 'Move selected heat down the stack.'
       ImageIndex = 7
       ImageName = 'down'
       ShortCut = 16424
@@ -881,6 +885,7 @@ object FrameHeat: TFrameHeat
     object actnHt_ToggleStatus: TAction
       Category = 'Heats'
       Caption = 'Toggle Status'
+      Hint = 'Toogle status. Open, raced, closed.'
       ImageIndex = 39
       ImageName = 'ToggleStatus'
       ShortCut = 16468
@@ -890,6 +895,7 @@ object FrameHeat: TFrameHeat
     object actnHt_New: TAction
       Category = 'Heats'
       Caption = 'New'
+      Hint = 'Create a new heat.'
       ImageIndex = 8
       ImageName = 'new'
       ShortCut = 16429
@@ -899,6 +905,7 @@ object FrameHeat: TFrameHeat
     object actnHt_Delete: TAction
       Category = 'Heats'
       Caption = 'Delete'
+      Hint = 'Delete the selected heat. (No undo)'
       ImageIndex = 9
       ImageName = 'delete'
       ShortCut = 16430
@@ -908,6 +915,7 @@ object FrameHeat: TFrameHeat
     object actnHt_AutoBuild: TAction
       Category = 'Heats'
       Caption = 'Auto-Build'
+      Hint = 'AutoBuild heats.'
       ImageIndex = 11
       ImageName = 'build'
       OnExecute = actnHt_AutoBuildExecute
@@ -916,24 +924,28 @@ object FrameHeat: TFrameHeat
     object actnHt_MarshallSheet: TAction
       Category = 'Heats'
       Caption = 'Marshall Sheet'
+      Hint = 'Build a marshall sheet for the heats.'
       ImageIndex = 12
       ImageName = 'marshall'
     end
     object actnHt_TimeKeeperSheets: TAction
       Category = 'Heats'
       Caption = 'Timekeeper Sheets'
+      Hint = 'Build timekeeper sheets for the selected heat.'
       ImageIndex = 13
       ImageName = 'stopwatch'
     end
     object actnHt_SheetSet: TAction
       Category = 'Heats'
       Caption = 'Sheet Set'
+      Hint = 'Print the full set of marshall and timekeeper sheets.'
       ImageIndex = 14
       ImageName = 'print'
     end
     object actnHt_Report: TAction
       Category = 'Heats'
       Caption = 'Heat Report'
+      Hint = 'Create a detailed report for all of this event'#39's heats.'
       ImageIndex = 15
       ImageName = 'report'
     end

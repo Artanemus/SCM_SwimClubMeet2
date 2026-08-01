@@ -38,6 +38,7 @@ type
     fExcludeLaneCount: integer;
     fNumOfUnplacedNominees: integer; // progress bar
     fNumOfPlacedNominees: Integer; // progress bar
+    fNumOfNomineesInLoop: Integer; // qryUnplacedNominees. RecordCount + indexName and filterStr
     fNumOfPoolLanes: integer;
     fRealNumOfLanes: integer;
     fSortMode: scmABSortMode;
@@ -232,7 +233,13 @@ begin
   result := 0;
   count := 0;
   ClearAryEntrants; // clears TLaneEntrant objects and SetLength = 0.
-  // NOTE: qryUnplacedNominees sorted fastest to slowest.
+
+  // ---------------------------------------------------
+  // IMPORTANT: qryUnplacedNominees sorted fastest to slowest.
+  // ---------------------------------------------------
+  if ABData.qryUnplacedNominees.IndexName <> 'indxTTB' then
+    ABData.qryUnplacedNominees.IndexName := 'indxTTB';
+
   ABData.qryUnplacedNominees.First;
   while not ABData.qryUnplacedNominees.EOF do
   begin // populate the AryEntrants...
@@ -353,7 +360,6 @@ end;
 function TABINDV.AutoBuildExec: Boolean;
 var
   msg: string;
-  count: integer;
 begin
   result := false;
 
@@ -408,24 +414,31 @@ begin
     exit;
   end;
 
-  // CLEAN UP HEATS - Remove opened heats. Exclude raced or closed heats.
-  if not CORE.qryHeat.IsEmpty then
-  begin
-    SCM2.ProcDeleteALLHeats.Connection := SCM2.scmConnection;
-    SCM2.ProcDeleteALLHeats.StoredProcName := 'DeleteAllHeats';
-    SCM2.procDeleteALLHeats.ParamByName('@EventID').AsInteger := uEvent.PK;
-    SCM2.procDeleteALLHeats.ParamByName('@Exclude').AsBoolean := true;
-    SCM2.procDeleteALLHeats.Prepare;
-    SCM2.procDeleteALLHeats.ExecProc;
+  CORE.qryHeat.DisableControls;
+  CORE.qryEvent.DisableControls;
+  try
+    // CLEAN UP HEATS - Remove opened heats. Exclude raced or closed heats.
+    if not CORE.qryHeat.IsEmpty then
+    begin
+      SCM2.ProcDeleteALLHeats.Connection := SCM2.scmConnection;
+      SCM2.ProcDeleteALLHeats.StoredProcName := 'DeleteAllHeats';
+      SCM2.procDeleteALLHeats.ParamByName('@EventID').AsInteger := uEvent.PK;
+      SCM2.procDeleteALLHeats.ParamByName('@Exclude').AsBoolean := true;
+      SCM2.procDeleteALLHeats.Prepare;
+      SCM2.procDeleteALLHeats.ExecProc;
 
-    // IMPORTANT: Resync CORE Master/Detail to DataBase State..
-    CORE.qryHeat.Refresh;
-  end;
+      // IMPORTANT: Resync CORE Master/Detail to DataBase State..
+      CORE.qryHeat.Refresh;
+    end;
 
-  if not CORE.qryHeat.IsEmpty then
-  begin
-    // RENUMBER HEATS: calls stored procedure - SwimClubMeet.dbo.RenumberHeats
-    uEvent.RenumberHeats; // performs refresh on qryheat.
+    if not CORE.qryHeat.IsEmpty then
+    begin
+      // RENUMBER HEATS: calls stored procedure - SwimClubMeet.dbo.RenumberHeats
+      uEvent.RenumberHeats; // performs refresh on qryheat.
+    end;
+  finally
+    CORE.qryEvent.EnableControls;
+    CORE.qryHeat.EnableControls;
   end;
 
   // There must be a least 2 lanes for the scatter algorithm.
@@ -521,11 +534,9 @@ begin
   fNumOfUnplacedNominees := ABData.qryUnplacedNominees.RecordCount;
 
   // Default filtering... sort on TTB.
-  ABData.qryUnplacedNominees.IndexName := 'indxTTB';
+  ABData.qryUnplacedNominees.IndexName := 'indxPK';
   ABData.qryUnplacedNominees.Filter := '';
   ABData.qryUnplacedNominees.Filtered := false;
-
-
 
   ABData.qryDivision.Connection := SCM2.scmConnection;
   try
@@ -564,6 +575,8 @@ begin
       exit;
     end;
   end;
+
+  LOOP_Divisions();
 
   if fNumOfPlacedNominees > 0 then result := true;
 
@@ -667,6 +680,7 @@ begin
         end;
       end;
   end;
+
   if fNumOfPlacedNominees > 0 then
     Result := fNumOfPlacedNominees;
 
@@ -676,9 +690,9 @@ function TABINDV.LOOP_Gender(DivisionFilter: string): Integer;
 var
   FilterStr: string;
   GenderID: Integer;
-  NumOfEntrants: Integer;
 begin
   result := 0;
+
   // -----------------------------------------------------
   // ENABLED ... SEPERATE BY GENDER ...ENABLED.
   // -----------------------------------------------------
@@ -701,10 +715,10 @@ begin
         ABData.qryUnplacedNominees.Filtered := true;
 
       // after all filters are applied - get the number of unplaced nominees.
-      NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+      fNumOfNomineesInLoop := ABData.qryUnplacedNominees.RecordCount;
 
-      if NumOfEntrants > 0 then
-        LOOP_Entrants(NumOfEntrants);
+      if fNumOfNomineesInLoop > 0 then
+        LOOP_Entrants(fNumOfNomineesInLoop);
 
       ABData.qryGender.Next; // next gender...
     end;
@@ -729,21 +743,21 @@ begin
     // ABData.qryUnplacedNominees.Refresh;
 
     // after all filters are applied - get the number of unplaced nominees.
-    NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+    fNumOfNomineesInLoop := ABData.qryUnplacedNominees.RecordCount;
 
-    if (NumOfEntrants > 0) then
-      LOOP_Entrants(NumOfEntrants);
+    if (fNumOfNomineesInLoop > 0) then
+      LOOP_Entrants(fNumOfNomineesInLoop);
 
     end;
-    if (fNumOfPlacedNominees > 0) then
-      result := fNumOfPlacedNominees;
+
+  if (fNumOfPlacedNominees > 0) then
+    result := fNumOfPlacedNominees;
 end;
 
 function TABINDV.LOOP_GenderEx(MaleFilter, FemaleFilter: string): Integer;
 var
   FilterStr, GenderStr: string;
   GenderID: Integer;
-  NumOfEntrants: Integer;
 begin
   // SPECIAL CASE.... CUSTOM DIVISIONS MALE/FEMALE...
   result := 0;
@@ -779,15 +793,16 @@ begin
         ABData.qryUnplacedNominees.Filtered := true;
 
       // after all filters are applied - get the number of unplaced nominees.
-      NumOfEntrants := ABData.qryUnplacedNominees.RecordCount;
+      fNumOfNomineesInLoop := ABData.qryUnplacedNominees.RecordCount;
 
-      if NumOfEntrants > 0 then
-        LOOP_Entrants(NumOfEntrants);
+      if fNumOfNomineesInLoop > 0 then
+        LOOP_Entrants(fNumOfNomineesInLoop);
 
     end;
     ABData.qryGender.Next; // next gender...
 
   end;
+
   if fNumOfPlacedNominees > 0 then
     Result := fNumOfPlacedNominees;
 
@@ -915,8 +930,6 @@ begin
   // returns number of entrants assigned to lanes
   count := Build_Heats(NumOfHeats, NumOfEntrants);
 
-
-
   CORE.qryLane.Refresh; // REQUIRED: ReSync data state.
 
   if count < NumOfEntrants then
@@ -994,8 +1007,6 @@ begin
         CORE.qryHeat.Edit;
         CORE.qryHeat.FieldByName('GenderID').AsInteger :=
           abData.qryGender.FieldByName('GenderID').AsInteger;
-//        CORE.qryHeat.FieldByName('GenderABREV').AsString :=
-//          abData.qryGender.FieldByName('ABREV').AsString;
         CORE.qryHeat.Post;
       end;
 

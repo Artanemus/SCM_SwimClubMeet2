@@ -420,6 +420,7 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="TOOLS\uAgeOfSwimmer.pas"/>
+        <DCCReference Include="TOOLS\uExportDivisionToJSON.pas"/>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

@@ -20,7 +20,10 @@ uses
   AdvObj, BaseGrid, AdvGrid, DBAdvGrid,
 
   dmCORE,
-  dmIMG, dmSCM2;
+  dmIMG, dmSCM2, Vcl.WinXCtrls, Vcl.Buttons, System.ImageList, Vcl.ImgList,
+  Vcl.VirtualImageList, SVGIconVirtualImageList,
+
+  uExportDivisionToJSON;
 
 type
   TDivisions = class(TForm)
@@ -38,10 +41,21 @@ type
     qryDivisionGenderID: TIntegerField;
     dsDivision: TDataSource;
     btnOk: TButton;
+    rpnlCntrl: TRelativePanel;
+    imglstDivision: TSVGIconVirtualImageList;
+    spbtnDelete: TSpeedButton;
+    spbtnNew: TSpeedButton;
+    spbtnOut: TSpeedButton;
+    spbtnIn: TSpeedButton;
+    spbtnReport: TSpeedButton;
+    qryDivisionDivisionTypeID: TIntegerField;
     procedure btnOkClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure qryDivisionNewRecord(DataSet: TDataSet);
+    procedure spbtnDeleteClick(Sender: TObject);
+    procedure spbtnNewClick(Sender: TObject);
+    procedure spbtnOutClick(Sender: TObject);
     procedure tcDivisionChange(Sender: TObject);
   private
     { Private declarations }
@@ -103,6 +117,93 @@ begin
   end;
   finally
     ;
+  end;
+
+end;
+
+procedure TDivisions.spbtnDeleteClick(Sender: TObject);
+begin
+  if (tcDivision.TabIndex <> -1) and not qryDivision.IsEmpty then
+  begin
+    LockDrawing;
+    grid.BeginUpdate;
+    qryDivision.DisableControls;
+    try
+      qryDivision.CheckBrowseMode;
+      try
+        qryDivision.Delete;
+      except
+        on E: EFDDBEngineException do
+        begin
+          qryDivision.Cancel;
+          SCM2.FDGUIxErrorDialog.Execute(E);
+        end;
+      end;
+    finally
+      qryDivision.EnableControls;
+      grid.endUpdate;
+      UnlockDrawing;
+    end;
+  end;
+end;
+
+procedure TDivisions.spbtnNewClick(Sender: TObject);
+begin
+  if tcDivision.TabIndex <> -1 then
+  begin
+    LockDrawing;
+    grid.BeginUpdate;
+    qryDivision.DisableControls;
+    try
+      qryDivision.CheckBrowseMode;
+      try
+        qryDivision.Insert;
+        qryDivision.Edit;
+        qryDivision.FieldByName('DivisionTypeID').AsInteger := 1;
+        case tcDivision.TabIndex of
+          0:
+            qryDivision.FieldByName('GenderID').AsInteger := 1;
+          1:
+            qryDivision.FieldByName('GenderID').AsInteger := 2;
+          2:
+            qryDivision.FieldByName('GenderID').AsInteger := 3;
+        end;
+        qryDivision.FieldByName('Caption').AsString := 'New Division : All ages.';
+        qryDivision.FieldByName('AgeFrom').AsInteger := 0;
+        qryDivision.FieldByName('AgeTo').AsInteger := 999;
+        qryDivision.Post;
+      except
+        on E: EFDDBEngineException do
+        begin
+          qryDivision.Cancel;
+          SCM2.FDGUIxErrorDialog.Execute(E);
+        end;
+      end;
+    finally
+      qryDivision.EnableControls;
+      grid.EndUpdate;
+      UnlockDrawing;
+    end;
+  end;
+
+end;
+
+procedure TDivisions.spbtnOutClick(Sender: TObject);
+var
+  ex: TDivisionExporter;
+  sl: TStringList;
+begin
+  qryDivision.DisableControls;
+  try
+    // switch index
+    qryDivision.IndexName := 'indxJSON';
+    ex := TDivisionExporter.Create(qryDivision);
+    sl := TStringList.Create();
+    sl := ex.ExportToJSONStringList;
+  finally
+    ex.Free;
+    sl.Free;
+    qryDivision.EnableControls;
   end;
 
 end;

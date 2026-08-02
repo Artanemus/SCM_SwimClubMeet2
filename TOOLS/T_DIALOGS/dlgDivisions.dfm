@@ -2,8 +2,8 @@ object Divisions: TDivisions
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Divisions'
-  ClientHeight = 490
+  Caption = 'SCM Divisions'
+  ClientHeight = 569
   ClientWidth = 517
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -37,17 +37,20 @@ object Divisions: TDivisions
     end
   end
   object pnlBody: TPanel
-    Left = 0
+    Left = 58
     Top = 41
-    Width = 517
-    Height = 408
+    Width = 459
+    Height = 487
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitLeft = 0
+    ExplicitWidth = 517
+    ExplicitHeight = 408
     object tcDivision: TTabControl
       Left = 0
       Top = 0
-      Width = 517
+      Width = 459
       Height = 41
       Align = alTop
       TabOrder = 0
@@ -57,12 +60,13 @@ object Divisions: TDivisions
         'Mixed')
       TabIndex = 0
       OnChange = tcDivisionChange
+      ExplicitWidth = 517
     end
     object Grid: TDBAdvGrid
       Left = 0
       Top = 41
-      Width = 517
-      Height = 367
+      Width = 459
+      Height = 446
       Cursor = crDefault
       Align = alClient
       Color = clWhite
@@ -445,6 +449,8 @@ object Divisions: TDivisions
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
+      ExplicitWidth = 517
+      ExplicitHeight = 367
       ColWidths = (
         20
         250
@@ -457,24 +463,164 @@ object Divisions: TDivisions
   end
   object pnlFooter: TPanel
     Left = 0
-    Top = 449
+    Top = 528
     Width = 517
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
-    DesignSize = (
-      517
-      41)
+    ExplicitTop = 449
     object btnOk: TButton
-      Left = 442
+      Left = 212
       Top = 6
-      Width = 75
-      Height = 28
-      Anchors = [akTop, akRight]
+      Width = 93
+      Height = 32
       Caption = 'Close'
       TabOrder = 0
       OnClick = btnOkClick
+    end
+  end
+  object rpnlCntrl: TRelativePanel
+    Left = 0
+    Top = 41
+    Width = 58
+    Height = 487
+    ControlCollection = <
+      item
+        Control = spbtnDelete
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnNew
+      end
+      item
+        Control = spbtnNew
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = True
+        AlignVerticalCenterWithPanel = False
+      end
+      item
+        Control = spbtnOut
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnDelete
+      end
+      item
+        Control = spbtnIn
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnOut
+      end
+      item
+        Control = spbtnReport
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnIn
+      end>
+    Align = alLeft
+    BevelOuter = bvNone
+    TabOrder = 3
+    ExplicitLeft = -6
+    ExplicitTop = 47
+    ExplicitHeight = 408
+    DesignSize = (
+      58
+      487)
+    object spbtnDelete: TSpeedButton
+      Tag = 4
+      Left = 5
+      Top = 48
+      Width = 48
+      Height = 48
+      Hint = 'Delete selected division.'
+      Anchors = []
+      ImageIndex = 1
+      ImageName = 'delete'
+      Images = imglstDivision
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+      OnClick = spbtnDeleteClick
+    end
+    object spbtnNew: TSpeedButton
+      Tag = 3
+      Left = 5
+      Top = 0
+      Width = 48
+      Height = 48
+      Hint = 'Create a new division.'
+      Anchors = []
+      ImageIndex = 0
+      ImageName = 'new'
+      Images = imglstDivision
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+      OnClick = spbtnNewClick
+    end
+    object spbtnOut: TSpeedButton
+      Tag = 4
+      Left = 5
+      Top = 96
+      Width = 48
+      Height = 48
+      Hint = 'Export Division data to JSON.'
+      Anchors = []
+      ImageIndex = 4
+      ImageName = 'out'
+      Images = imglstDivision
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+      OnClick = spbtnOutClick
+    end
+    object spbtnIn: TSpeedButton
+      Tag = 4
+      Left = 5
+      Top = 144
+      Width = 48
+      Height = 48
+      Hint = 'Import JSON division data.'
+      Anchors = []
+      ImageIndex = 3
+      ImageName = 'in'
+      Images = imglstDivision
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
+    object spbtnReport: TSpeedButton
+      Tag = 4
+      Left = 5
+      Top = 192
+      Width = 48
+      Height = 48
+      Hint = 'Prepare a division report'
+      Anchors = []
+      ImageIndex = 5
+      ImageName = 'report'
+      Images = imglstDivision
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
     end
   end
   object qryDivision: TFDQuery
@@ -498,19 +644,29 @@ object Divisions: TDivisions
         Name = 'indxMixed'
         Fields = 'GenderID;DivisionID'
         Filter = 'GenderID = 3'
+      end
+      item
+        Active = True
+        Name = 'indxJSON'
+        Fields = 'AgeFrom;GenderID;DivisionTypeID'
       end>
     IndexName = 'indxMale'
     Connection = SCM2.scmConnection
     UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Division'
     UpdateOptions.KeyFields = 'DivisionID'
     SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
       'SELECT [DivisionID]'
+      '      ,[DivisionTypeID]'
       '      ,[Caption]'
       '      ,[AgeFrom]'
       '      ,[AgeTo]'
       '      ,[GenderID]'
       '  FROM [SwimClubMeet2].[dbo].[Division]'
-      '  Order by GenderID ASC, DivisionID ASC')
+      '  Order by GenderID ASC, DivisionID ASC'
+      '  '
+      '')
     Left = 192
     Top = 208
     object qryDivisionDivisionID: TFDAutoIncField
@@ -541,10 +697,58 @@ object Divisions: TDivisions
       Origin = 'GenderID'
       Visible = False
     end
+    object qryDivisionDivisionTypeID: TIntegerField
+      FieldName = 'DivisionTypeID'
+      Origin = 'DivisionTypeID'
+    end
   end
   object dsDivision: TDataSource
     DataSet = qryDivision
     Left = 288
     Top = 208
+  end
+  object imglstDivision: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 29
+        CollectionName = 'new'
+        Name = 'new'
+      end
+      item
+        CollectionIndex = 30
+        CollectionName = 'delete'
+        Name = 'delete'
+      end
+      item
+        CollectionIndex = 76
+        CollectionName = 'archive'
+        Name = 'archive'
+      end
+      item
+        CollectionIndex = 49
+        CollectionName = 'in'
+        Name = 'in'
+      end
+      item
+        CollectionIndex = 50
+        CollectionName = 'out'
+        Name = 'out'
+      end
+      item
+        CollectionIndex = 36
+        CollectionName = 'report'
+        Name = 'report'
+      end
+      item
+        CollectionIndex = 0
+        CollectionName = 'EmptyFrame'
+        Name = 'EmptyFrame'
+      end>
+    ImageCollection = IMG.CollectionCore
+    Width = 48
+    Height = 48
+    Size = 48
+    Left = 105
+    Top = 304
   end
 end

@@ -90,7 +90,8 @@ uses
   DlgNom_LookUp in 'NOMINATE\DlgNom_LookUp.pas' {Nom_Lookup},
   dlgABDebug in 'AUTOBUILD\dlgABDebug.pas' {ABDebug},
   dlgDivisions in 'TOOLS\T_DIALOGS\dlgDivisions.pas' {Divisions},
-  uAgeOfSwimmer in 'TOOLS\uAgeOfSwimmer.pas';
+  uAgeOfSwimmer in 'TOOLS\uAgeOfSwimmer.pas',
+  uExportDivisionToJSON in 'TOOLS\uExportDivisionToJSON.pas';
 
 {$R *.res}
 

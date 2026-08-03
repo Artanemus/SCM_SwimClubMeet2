@@ -2811,6 +2811,20 @@ object IMG: TIMG
           '4-1.4l-1.6 1.55V9h-2v4.15L9.4 11.6L8 13zm-6 5q-.825 0-1.412-.587' +
           'T4 20V8l6-6h8q.825 0 1.413.588T20 4v16q0 .825-.587 1.413T18 22zm' +
           '0-2h12V4h-7.15L6 8.85zm0 0h12z"/></svg>'
+      end
+      item
+        IconName = 'order-approve'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="m17.275 20.25l' +
+          '3.475-3.45l-1.05-1.05l-2.425 2.375l-.975-.975l-1.05 1.075zM6 9h1' +
+          '2V7H6zm12 14q-2.075 0-3.537-1.463T13 18t1.463-3.537T18 13t3.538 ' +
+          '1.463T23 18t-1.463 3.538T18 23M3 22V5q0-.825.588-1.412T5 3h14q.8' +
+          '25 0 1.413.588T21 5v6.675q-.7-.35-1.463-.513T18 11H6v2h7.1q-.425' +
+          '.425-.787.925T11.675 15H6v2h5.075q-.05.25-.062.488T11 18q0 1.05.' +
+          '288 2.013t.862 1.837L12 22l-1.5-1.5L9 22l-1.5-1.5L6 22l-1.5-1.5z' +
+          '"/></svg>'
+        FixedColor = clDarkgoldenrod
       end>
     Left = 496
     Top = 16
@@ -13802,6 +13816,11 @@ object IMG: TIMG
         CollectionIndex = 16
         CollectionName = 'EvBlue'
         Name = 'EvBlue'
+      end
+      item
+        CollectionIndex = 122
+        CollectionName = 'order-approve'
+        Name = 'order-approve'
       end>
     ImageCollection = CollectionCore
     Width = 48

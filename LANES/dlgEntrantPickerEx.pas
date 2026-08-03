@@ -1,4 +1,4 @@
-unit dlgEntrantPicker;
+unit dlgEntrantPickerEx;
 
 interface
 
@@ -26,7 +26,7 @@ uses
   
 type
 
-  TEntrantPicker = class(TForm)
+  TEntrantPickerEx = class(TForm)
     btnCancel: TButton;
     btnPost: TButton;
     btnToggleName: TButton;
@@ -48,6 +48,19 @@ type
     qryQuickPickPB: TTimeField;
     qryQuickPickTTB: TTimeField;
     VirtualImage2: TVirtualImage;
+    pnlLane: TPanel;
+    lanegrid: TDBAdvGrid;
+    qryLane: TFDQuery;
+    dsLane: TDataSource;
+    btnClearLane: TButton;
+    qryLaneLaneID: TFDAutoIncField;
+    qryLaneLaneNum: TIntegerField;
+    qryLaneHeatID: TIntegerField;
+    qryLaneNomineeID: TIntegerField;
+    qryLaneFName: TWideStringField;
+    btnSortLanes: TButton;
+    qryLaneTTB: TTimeField;
+    btnInject: TButton;
     procedure btnCancelClick(Sender: TObject);
     procedure btnPostClick(Sender: TObject);
     procedure btnToggleNameClick(Sender: TObject);
@@ -62,6 +75,8 @@ type
     procedure GridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
     procedure edtSearchChange(Sender: TObject);
+    procedure qryLaneTTBGetText(Sender: TField; var Text: string; DisplayText:
+        Boolean);
     procedure qryQuickPickPBGetText(Sender: TField; var Text: string; DisplayText:
         Boolean);
     procedure qryQuickPickTTBGetText(Sender: TField; var Text: string; DisplayText:
@@ -78,7 +93,7 @@ type
   end;
 
 var
-  EntrantPicker: TEntrantPicker;
+  EntrantPickerEx: TEntrantPickerEx;
 
 implementation
 
@@ -86,12 +101,12 @@ implementation
 
 uses uUtility, uEvent, uNominee, uLane, IniFiles, System.Math;
 
-procedure TEntrantPicker.btnCancelClick(Sender: TObject);
+procedure TEntrantPickerEx.btnCancelClick(Sender: TObject);
 begin
   ModalResult := mrCancel;
 end;
 
-procedure TEntrantPicker.btnPostClick(Sender: TObject);
+procedure TEntrantPickerEx.btnPostClick(Sender: TObject);
 var
   aNomineeID: integer;
 begin
@@ -124,7 +139,7 @@ begin
   end;
 end;
 
-procedure TEntrantPicker.btnToggleNameClick(Sender: TObject);
+procedure TEntrantPickerEx.btnToggleNameClick(Sender: TObject);
 var
   aNomineeID: Integer;
 begin
@@ -149,7 +164,7 @@ begin
   end;
 end;
 
-procedure TEntrantPicker.FormCreate(Sender: TObject);
+procedure TEntrantPickerEx.FormCreate(Sender: TObject);
 begin
   fActiveSortCol := -1;
 
@@ -157,6 +172,7 @@ begin
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
   begin
     qryQuickPick.Connection := SCM2.scmConnection;
+    qryLane.Connection := SCM2.scmConnection;
   end
   else
     Close;
@@ -164,25 +180,25 @@ begin
   grid.Options := grid.Options + [goRowSelect];
 end;
 
-procedure TEntrantPicker.FormKeyDown(Sender: TObject; var Key: Word;
+procedure TEntrantPickerEx.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key = VK_ESCAPE) then ModalResult := mrCancel;
 end;
 
-procedure TEntrantPicker.GridCanEditCell(Sender: TObject; ARow, ACol:
+procedure TEntrantPickerEx.GridCanEditCell(Sender: TObject; ARow, ACol:
     Integer; var CanEdit: Boolean);
 begin
   CanEdit := false; // grid is read-only...
 end;
 
-procedure TEntrantPicker.GridDblClickCell(Sender: TObject; ARow, ACol: Integer);
+procedure TEntrantPickerEx.GridDblClickCell(Sender: TObject; ARow, ACol: Integer);
 begin
   // GO assign the 'Quick-Picked' Nominee.
   if ARow >= TDBAdvGrid(Sender).FixedRows then btnPost.Click;
 end;
 
-procedure TEntrantPicker.GridDrawCell(Sender: TObject; ACol, ARow: LongInt;
+procedure TEntrantPickerEx.GridDrawCell(Sender: TObject; ACol, ARow: LongInt;
     Rect: TRect; State: TGridDrawState);
 var
   G: TDBAdvGrid;
@@ -220,7 +236,7 @@ begin
   end;
 end;
 
-procedure TEntrantPicker.GridFixedCellClick(Sender: TObject; ACol, ARow:
+procedure TEntrantPickerEx.GridFixedCellClick(Sender: TObject; ACol, ARow:
     LongInt);
 begin
   if fActiveSortCol <> ACol  then
@@ -236,7 +252,7 @@ begin
   SortGrid(ACol);
 end;
 
-procedure TEntrantPicker.GridGetCellColor(Sender: TObject; ARow, ACol: Integer;
+procedure TEntrantPickerEx.GridGetCellColor(Sender: TObject; ARow, ACol: Integer;
     AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
 begin
   if ARow = 0 then
@@ -246,7 +262,7 @@ begin
   end;
 end;
 
-procedure TEntrantPicker.edtSearchChange(Sender: TObject);
+procedure TEntrantPickerEx.edtSearchChange(Sender: TObject);
 var
   fs: string;
 begin
@@ -277,13 +293,15 @@ begin
   end;
 end;
 
-function TEntrantPicker.Prepare(LaneID: Integer): boolean;
+function TEntrantPickerEx.Prepare(LaneID: Integer): boolean;
 begin
   result := false;
   fActiveSortCol := -1; // no sorting...
   LockDrawing;
   Grid.BeginUpdate;
+  lanegrid.BeginUpdate;
   qryQuickPick.DisableControls;
+  qryLane.DisableControls;
   try
     qryQuickPick.Close();
     qryQuickPick.ParamByName('EVENTID').AsInteger := uEvent.PK;
@@ -299,14 +317,42 @@ begin
       // Grid.InitSortXRef;
       result := true;
     end;
+    qryLane.ParamByName('HEATID').AsInteger :=
+      CORE.qryHeat.FieldByName('HeatID').AsInteger;
+    qryLane.Prepare;
+    qryLane.Open;
+
   finally
+    qryLane.EnableControls;
     qryQuickPick.EnableControls;
+    lanegrid.EndUpdate;
     Grid.EndUpdate;
     UnlockDrawing;
   end;
 end;
 
-procedure TEntrantPicker.qryQuickPickPBGetText(Sender: TField; var Text:
+procedure TEntrantPickerEx.qryLaneTTBGetText(Sender: TField; var Text: string;
+    DisplayText: Boolean);
+var
+  Hour, Min, Sec, MSec: word;
+begin
+  DecodeTime(Sender.AsDateTime, Hour, Min, Sec, MSec);
+  // DisplayText is true if the field's value is to be used for display only;
+  // false if the string is to be used for editing the field's value.
+  // "%" [index ":"] ["-"] [width] ["." prec] type
+  if DisplayText then
+  begin
+    if (Min > 0) then Text := Format('%0:2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec])
+    else if ((Min = 0) and (Sec > 0)) then
+        Text := Format('%1:2u.%2:3.3u', [Min, Sec, MSec])
+
+    else if ((Min = 0) and (Sec = 0)) then Text := '';
+  end
+  else Text := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
+end;
+
+
+procedure TEntrantPickerEx.qryQuickPickPBGetText(Sender: TField; var Text:
     string; DisplayText: Boolean);
 var
   Hour, Min, Sec, MSec: word;
@@ -329,7 +375,7 @@ begin
 
 end;
 
-procedure TEntrantPicker.qryQuickPickTTBGetText(Sender: TField; var Text:
+procedure TEntrantPickerEx.qryQuickPickTTBGetText(Sender: TField; var Text:
     string; DisplayText: Boolean);
 var
   Hour, Min, Sec, MSec: word;
@@ -352,7 +398,7 @@ begin
 
 end;
 
-procedure TEntrantPicker.SortGrid(aActiveSortCol: Integer);
+procedure TEntrantPickerEx.SortGrid(aActiveSortCol: Integer);
 var
   idx: Integer;
 begin
@@ -401,7 +447,7 @@ begin
   qryQuickPick.Indexes[idx].Selected := true;
 end;
 
-procedure TEntrantPicker.ToogleSortState(indx: integer);
+procedure TEntrantPickerEx.ToogleSortState(indx: integer);
 begin
   TSortState[indx] := stUnsorted;
   // check bounds

@@ -2,7 +2,7 @@ object FrameLane: TFrameLane
   Left = 0
   Top = 0
   Width = 1452
-  Height = 526
+  Height = 593
   ParentShowHint = False
   ShowHint = True
   TabOrder = 0
@@ -10,7 +10,7 @@ object FrameLane: TFrameLane
     Left = 0
     Top = 0
     Width = 58
-    Height = 526
+    Height = 593
     ControlCollection = <
       item
         Control = spbtnMoveUp
@@ -130,13 +130,23 @@ object FrameLane: TFrameLane
         AlignTopWithPanel = False
         AlignVerticalCenterWithPanel = False
         Below = spbtnHeatPicker
+      end
+      item
+        Control = spbtnMulti
+        AlignBottomWithPanel = False
+        AlignHorizontalCenterWithPanel = True
+        AlignLeftWithPanel = False
+        AlignRightWithPanel = False
+        AlignTopWithPanel = False
+        AlignVerticalCenterWithPanel = False
+        Below = spbtnSplitTime
       end>
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 0
     DesignSize = (
       58
-      526)
+      593)
     object spbtnMoveUp: TSpeedButton
       Left = 5
       Top = 112
@@ -316,12 +326,28 @@ object FrameLane: TFrameLane
       Margins.Bottom = 6
       Brush.Color = 8421631
     end
+    object spbtnMulti: TSpeedButton
+      Tag = 8
+      Left = 5
+      Top = 512
+      Width = 48
+      Height = 48
+      Hint = 'Mutli inject nominees into lanes'
+      Anchors = []
+      Caption = 'Multi'
+      ImageIndex = 15
+      ImageName = 'order-approve'
+      Images = IMG.imglstLaneCntrl
+      Layout = blGlyphTop
+      Margin = 0
+      Spacing = 5
+    end
   end
   object pnlBody: TPanel
     Left = 58
     Top = 0
     Width = 1394
-    Height = 526
+    Height = 593
     Align = alClient
     BevelOuter = bvNone
     Caption = 'Use NEW to start building events.'
@@ -330,7 +356,7 @@ object FrameLane: TFrameLane
       Left = 0
       Top = 0
       Width = 1394
-      Height = 491
+      Height = 558
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
@@ -338,7 +364,7 @@ object FrameLane: TFrameLane
         Left = 0
         Top = 0
         Width = 1394
-        Height = 491
+        Height = 558
         Cursor = crDefault
         Align = alClient
         Color = clWhite
@@ -1404,7 +1430,7 @@ object FrameLane: TFrameLane
     end
     object pnlDebug: TPanel
       Left = 0
-      Top = 491
+      Top = 558
       Width = 1394
       Height = 35
       Align = alBottom

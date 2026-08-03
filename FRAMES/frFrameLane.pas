@@ -52,6 +52,7 @@ type
     actnLn_GridView: TAction;
     actnLn_HeatPicker: TAction;
     pnlDebug: TPanel;
+    spbtnMulti: TSpeedButton;
     procedure actnLn_DeleteExecute(Sender: TObject);
     procedure actnLn_DeleteForeverExecute(Sender: TObject);
     procedure actnLn_GenericUpdate(Sender: TObject);

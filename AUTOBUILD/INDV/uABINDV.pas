@@ -185,7 +185,7 @@ begin
     RankOffset := 0; // rankoffest is used to skip user-excluded lanes.
     Count := 0; // used to test if heat has been processed.
 
-    for I := 0 to Length(AryEntrants) - 1 do // Fastest swimmer always at head of array.
+    for I := 0 to (Length(AryEntrants) - 1) do // Fastest swimmer always at head of array.
     begin
       // Has all the entrants been assigned a lane for the given heat?
       if (Count >= AryEntrantsPerHeat[J]) then break;
@@ -199,7 +199,7 @@ begin
       { Handle excluded lanes. Skipping lanes by adjusting ranking.}
       While not found do
       begin
-        if (Rank < 1) or (Rank >= Length(AryScatteredLanes)) then
+        if (Rank < 1) or (Rank > Length(AryScatteredLanes)) then
           break;  // out of bounds.
         laneNum := AryScatteredLanes[Rank-1]; // NOTE: AryScatteredLanes is base 0
         if AryExcludedLanes[laneNum-1] then // NOTE: AryExcludedLanes is base 0
@@ -1284,7 +1284,7 @@ begin
 
   for J := 0 to NumOfHeats - 1 do
   begin
-    for I := indx to Length(AryEntrants) - 1 do
+    for I := indx to (Length(AryEntrants) - 1) do
     begin
       // if circle seed preceeds this function then
       // skip lane entrants that have already been processed.

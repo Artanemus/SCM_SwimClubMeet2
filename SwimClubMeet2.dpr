@@ -74,7 +74,6 @@ uses
   frmSwimClubType in 'SWIMCLUBS\frmSwimClubType.pas' {SwimClubType},
   frmSwimClub_Reports in 'SWIMCLUBS\SC_REPORTS\frmSwimClub_Reports.pas' {SwimClub_Reports},
   uStateString in 'DATA_Helper\uStateString.pas',
-  dlgEntrantPicker in 'LANES\dlgEntrantPicker.pas' {EntrantPicker},
   dlgEntrantPickerCTRL in 'LANES\dlgEntrantPickerCTRL.pas' {EntrantPickerCTRL},
   dlgLaneColumnPicker in 'LANES\dlgLaneColumnPicker.pas' {LaneColumnPicker},
   dlgTeamPicker in 'LANES\dlgTeamPicker.pas' {TeamPicker},
@@ -91,7 +90,9 @@ uses
   dlgABDebug in 'AUTOBUILD\dlgABDebug.pas' {ABDebug},
   dlgDivisions in 'TOOLS\T_DIALOGS\dlgDivisions.pas' {Divisions},
   uAgeOfSwimmer in 'TOOLS\uAgeOfSwimmer.pas',
-  uExportDivisionToJSON in 'TOOLS\uExportDivisionToJSON.pas';
+  uExportDivisionToJSON in 'TOOLS\uExportDivisionToJSON.pas',
+  dlgEntrantPickerEx in 'LANES\dlgEntrantPickerEx.pas' {EntrantPickerEx},
+  dlgEntrantPicker in 'LANES\dlgEntrantPicker.pas' {EntrantPicker};
 
 {$R *.res}
 

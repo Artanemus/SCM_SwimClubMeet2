@@ -77,7 +77,7 @@
         <Custom_Styles>&quot;Windows10 SlateGray|VCLSTYLE|$(BDSCOMMONDIR)\Styles\Windows10SlateGray.vsf&quot;</Custom_Styles>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base_Win32)'!=''">
-        <DCC_UsePackage>vclwinx;DataSnapServer;fmx;vclie;DbxCommonDriver;bindengine;VCLRESTComponents;FireDACCommonODBC;DBXMSSQLDriver;IndyIPCommon;emsclient;appanalytics;IndyProtocols;vclx;Skia.Package.RTL;dbxcds;vcledge;fsADO;FmxTeeUI;DBXFirebirdDriver;FireDACSqliteDriver;DbxClientDriver;soapmidas;TeeUI;dbexpress;inet;TMSXls;vcltouch;FireDACDBXDriver;fmxdae;CustomIPTransport;FireDACMSSQLDriver;IndySystem;fsIBX;ibxbindings;frxTee;vclFireDAC;FireDACCommon;DataSnapServerMidas;FireDACODBCDriver;emsserverresource;fsFD;DelphiAIDeveloper;bindcompdbx;rtl;FireDACMySQLDriver;DBXSqliteDriver;frxDBX;DBXSybaseASEDriver;frx;vclimg;DataSnapFireDAC;inetdbxpress;FireDAC;xmlrtl;ibxpress;dsnap;FireDACDb2Driver;DBXOracleDriver;DBXInformixDriver;vclib;fmxobj;bindcompvclsmp;DataSnapNativeClient;DatasnapConnectorsFreePascal;SVGIconImageList;frxIntIO;SVGIconImageListRestClient;FireDACCommonDriver;IndyIPClient;frxFD;bindcompvclwinx;TMSWiz;bindcompfmx;frxADO;inetdb;ibmonitor;FireDACASADriver;Tee;SVGIconImageListFMX;frxIBX;vclactnband;fmxFireDAC;FireDACInfxDriver;DBXMySQLDriver;VclSmp;DataSnapCommon;fmxase;frxcs;frxIntIOIndy;DBXOdbcDriver;dbrtl;FireDACOracleDriver;Skia.Package.FMX;fsTee;TeeDB;FireDACMSAccDriver;AbbreviaVCLD;DataSnapIndy10ServerTransport;DataSnapConnectors;vcldsnap;DBXInterBaseDriver;fsDB;FireDACMongoDBDriver;FireDACTDataDriver;frxOpenFiltersTemp;Skia.Package.VCL;vcldb;IconFontsImageList;TMSEx;bindcomp;inetstn;IndyCore;RESTBackendComponents;FireDACADSDriver;RESTComponents;IndyIPServer;vcl;dsnapxml;adortl;dsnapcon;DataSnapClient;DataSnapProviderClient;TaurusTLS_RT;DBXDb2Driver;frxe;emsclientfiredac;FireDACPgDriver;FireDACDSDriver;tethering;TMS;bindcompvcl;fs;CloudService;DBXSybaseASADriver;IconFontsImageListFMX;FMXTee;frxDB;soaprtl;soapserver;FireDACIBDriver;$(DCC_UsePackage)</DCC_UsePackage>
+        <DCC_UsePackage>vclwinx;DataSnapServer;fmx;vclie;DbxCommonDriver;bindengine;VCLRESTComponents;FireDACCommonODBC;DBXMSSQLDriver;IndyIPCommon;emsclient;appanalytics;IndyProtocols;vclx;Skia.Package.RTL;dbxcds;vcledge;fsADO;FmxTeeUI;DBXFirebirdDriver;FireDACSqliteDriver;DbxClientDriver;soapmidas;TeeUI;dbexpress;inet;TMSXls;vcltouch;FireDACDBXDriver;fmxdae;CustomIPTransport;FireDACMSSQLDriver;IndySystem;fsIBX;ibxbindings;frxTee;vclFireDAC;FireDACCommon;DataSnapServerMidas;FireDACODBCDriver;emsserverresource;fsFD;DelphiAIDeveloper;bindcompdbx;rtl;FireDACMySQLDriver;DBXSqliteDriver;frxDBX;DBXSybaseASEDriver;frx;vclimg;DataSnapFireDAC;inetdbxpress;FireDAC;xmlrtl;ibxpress;dsnap;FireDACDb2Driver;DBXOracleDriver;DBXInformixDriver;vclib;fmxobj;bindcompvclsmp;DataSnapNativeClient;DatasnapConnectorsFreePascal;SVGIconImageList;frxIntIO;SVGIconImageListRestClient;FireDACCommonDriver;IndyIPClient;frxFD;bindcompvclwinx;TMSWiz;bindcompfmx;frxADO;inetdb;ibmonitor;FireDACASADriver;Tee;SVGIconImageListFMX;frxIBX;vclactnband;fmxFireDAC;FireDACInfxDriver;DBXMySQLDriver;VclSmp;DataSnapCommon;fmxase;frxcs;frxIntIOIndy;DBXOdbcDriver;dbrtl;FireDACOracleDriver;Skia.Package.FMX;fsTee;TeeDB;FireDACMSAccDriver;AbbreviaVCLD;DataSnapIndy10ServerTransport;DataSnapConnectors;vcldsnap;DBXInterBaseDriver;fsDB;FireDACMongoDBDriver;FireDACTDataDriver;frxOpenFiltersTemp;Skia.Package.VCL;vcldb;IconFontsImageList;TMSEx;bindcomp;inetstn;IndyCore;RESTBackendComponents;FireDACADSDriver;RESTComponents;IndyIPServer;vcl;dsnapxml;adortl;dsnapcon;DataSnapClient;DataSnapProviderClient;TaurusTLS_RT;DBXDb2Driver;frxe;emsclientfiredac;FireDACPgDriver;FireDACDSDriver;tethering;TMS;bindcompvcl;fs;CloudService;DBXSybaseASADriver;IconFontsImageListFMX;FMXTee;frxDB;soaprtl;soapserver;FireDACIBDriver;CnPack_D120A;$(DCC_UsePackage)</DCC_UsePackage>
         <DCC_Namespace>Winapi;System.Win;Data.Win;Datasnap.Win;Web.Win;Soap.Win;Xml.Win;Bde;$(DCC_Namespace)</DCC_Namespace>
         <BT_BuildType>Debug</BT_BuildType>
         <VerInfo_IncludeVerInfo>true</VerInfo_IncludeVerInfo>
@@ -362,10 +362,6 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="DATA_Helper\uStateString.pas"/>
-        <DCCReference Include="LANES\dlgEntrantPicker.pas">
-            <Form>EntrantPicker</Form>
-            <FormType>dfm</FormType>
-        </DCCReference>
         <DCCReference Include="LANES\dlgEntrantPickerCTRL.pas">
             <Form>EntrantPickerCTRL</Form>
             <FormType>dfm</FormType>
@@ -421,6 +417,14 @@
         </DCCReference>
         <DCCReference Include="TOOLS\uAgeOfSwimmer.pas"/>
         <DCCReference Include="TOOLS\uExportDivisionToJSON.pas"/>
+        <DCCReference Include="LANES\dlgEntrantPickerEx.pas">
+            <Form>EntrantPickerEx</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="LANES\dlgEntrantPicker.pas">
+            <Form>EntrantPicker</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

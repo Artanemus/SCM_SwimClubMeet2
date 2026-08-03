@@ -44,9 +44,6 @@ object Divisions: TDivisions
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 0
-    ExplicitWidth = 517
-    ExplicitHeight = 408
     object tcDivision: TTabControl
       Left = 0
       Top = 0
@@ -60,7 +57,6 @@ object Divisions: TDivisions
         'Mixed')
       TabIndex = 0
       OnChange = tcDivisionChange
-      ExplicitWidth = 517
     end
     object Grid: TDBAdvGrid
       Left = 0
@@ -449,8 +445,6 @@ object Divisions: TDivisions
         80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
         FFC003FF}
       ShowUnicode = False
-      ExplicitWidth = 517
-      ExplicitHeight = 367
       ColWidths = (
         20
         250
@@ -469,7 +463,6 @@ object Divisions: TDivisions
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitTop = 449
     object btnOk: TButton
       Left = 212
       Top = 6
@@ -538,9 +531,6 @@ object Divisions: TDivisions
     Align = alLeft
     BevelOuter = bvNone
     TabOrder = 3
-    ExplicitLeft = -6
-    ExplicitTop = 47
-    ExplicitHeight = 408
     DesignSize = (
       58
       487)
@@ -750,5 +740,13 @@ object Divisions: TDivisions
     Size = 48
     Left = 105
     Top = 304
+  end
+  object SaveJSONFile: TSaveTextFileDialog
+    DefaultExt = '.json'
+    FileName = 'SCM_Divisions'
+    Filter = 'JSON Files|*.json|Simple Text file|*.txt|All files|*.*'
+    Title = 'Export JSON division data.'
+    Left = 216
+    Top = 312
   end
 end

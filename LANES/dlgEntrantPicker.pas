@@ -48,6 +48,19 @@ type
     qryQuickPickPB: TTimeField;
     qryQuickPickTTB: TTimeField;
     VirtualImage2: TVirtualImage;
+    pnlLane: TPanel;
+    lanegrid: TDBAdvGrid;
+    qryLane: TFDQuery;
+    dsLane: TDataSource;
+    btnClearLane: TButton;
+    qryLaneLaneID: TFDAutoIncField;
+    qryLaneLaneNum: TIntegerField;
+    qryLaneHeatID: TIntegerField;
+    qryLaneNomineeID: TIntegerField;
+    qryLaneFName: TWideStringField;
+    btnSortLanes: TButton;
+    qryLaneTTB: TTimeField;
+    btnInject: TButton;
     procedure btnCancelClick(Sender: TObject);
     procedure btnPostClick(Sender: TObject);
     procedure btnToggleNameClick(Sender: TObject);
@@ -62,6 +75,8 @@ type
     procedure GridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
         TGridDrawState; ABrush: TBrush; AFont: TFont);
     procedure edtSearchChange(Sender: TObject);
+    procedure qryLaneTTBGetText(Sender: TField; var Text: string; DisplayText:
+        Boolean);
     procedure qryQuickPickPBGetText(Sender: TField; var Text: string; DisplayText:
         Boolean);
     procedure qryQuickPickTTBGetText(Sender: TField; var Text: string; DisplayText:
@@ -156,8 +171,8 @@ begin
   // assert connection ?
   if Assigned(SCM2) and SCM2.scmConnection.Connected then
   begin
-    if qryQuickPick.Connection <> SCM2.scmConnection then
-      qryQuickPick.Connection := SCM2.scmConnection;
+    qryQuickPick.Connection := SCM2.scmConnection;
+    qryLane.Connection := SCM2.scmConnection;
   end
   else
     Close;
@@ -284,7 +299,9 @@ begin
   fActiveSortCol := -1; // no sorting...
   LockDrawing;
   Grid.BeginUpdate;
+  lanegrid.BeginUpdate;
   qryQuickPick.DisableControls;
+  qryLane.DisableControls;
   try
     qryQuickPick.Close();
     qryQuickPick.ParamByName('EVENTID').AsInteger := uEvent.PK;
@@ -300,12 +317,40 @@ begin
       // Grid.InitSortXRef;
       result := true;
     end;
+    qryLane.ParamByName('HEATID').AsInteger :=
+      CORE.qryHeat.FieldByName('HeatID').AsInteger;
+    qryLane.Prepare;
+    qryLane.Open;
+
   finally
+    qryLane.EnableControls;
     qryQuickPick.EnableControls;
+    lanegrid.EndUpdate;
     Grid.EndUpdate;
     UnlockDrawing;
   end;
 end;
+
+procedure TEntrantPicker.qryLaneTTBGetText(Sender: TField; var Text: string;
+    DisplayText: Boolean);
+var
+  Hour, Min, Sec, MSec: word;
+begin
+  DecodeTime(Sender.AsDateTime, Hour, Min, Sec, MSec);
+  // DisplayText is true if the field's value is to be used for display only;
+  // false if the string is to be used for editing the field's value.
+  // "%" [index ":"] ["-"] [width] ["." prec] type
+  if DisplayText then
+  begin
+    if (Min > 0) then Text := Format('%0:2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec])
+    else if ((Min = 0) and (Sec > 0)) then
+        Text := Format('%1:2u.%2:3.3u', [Min, Sec, MSec])
+
+    else if ((Min = 0) and (Sec = 0)) then Text := '';
+  end
+  else Text := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
+end;
+
 
 procedure TEntrantPicker.qryQuickPickPBGetText(Sender: TField; var Text:
     string; DisplayText: Boolean);

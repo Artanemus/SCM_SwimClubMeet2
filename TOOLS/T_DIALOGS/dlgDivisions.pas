@@ -23,7 +23,7 @@ uses
   dmIMG, dmSCM2, Vcl.WinXCtrls, Vcl.Buttons, System.ImageList, Vcl.ImgList,
   Vcl.VirtualImageList, SVGIconVirtualImageList,
 
-  uExportDivisionToJSON;
+  uExportDivisionToJSON, Vcl.ExtDlgs;
 
 type
   TDivisions = class(TForm)
@@ -49,6 +49,7 @@ type
     spbtnIn: TSpeedButton;
     spbtnReport: TSpeedButton;
     qryDivisionDivisionTypeID: TIntegerField;
+    SaveJSONFile: TSaveTextFileDialog;
     procedure btnOkClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -69,6 +70,9 @@ var
 implementation
 
 {$R *.dfm}
+
+uses
+  System.IOUtils;
 
 procedure TDivisions.btnOkClick(Sender: TObject);
 begin
@@ -193,17 +197,25 @@ var
   ex: TDivisionExporter;
   sl: TStringList;
 begin
+  Grid.BeginUpdate;
   qryDivision.DisableControls;
+  ex := TDivisionExporter.Create(qryDivision);
+  sl := TStringList.Create();
   try
     // switch index
     qryDivision.IndexName := 'indxJSON';
-    ex := TDivisionExporter.Create(qryDivision);
-    sl := TStringList.Create();
     sl := ex.ExportToJSONStringList;
+    SaveJSONFile.InitialDir := TPath.GetDocumentsPath;
+    if SaveJSONFile.Execute then
+    begin
+      sl.SaveToFile(SaveJSONFile.FileName);
+    end;
+    qryDivision.IndexName := 'indxTTB';
   finally
     ex.Free;
     sl.Free;
     qryDivision.EnableControls;
+    grid.EndUpdate;
   end;
 
 end;

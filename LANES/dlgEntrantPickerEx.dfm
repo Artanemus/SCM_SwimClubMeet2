@@ -86,7 +86,7 @@ object EntrantPickerEx: TEntrantPickerEx
       end
       object btnToggleName: TButton
         Left = 10
-        Top = 328
+        Top = 6
         Width = 106
         Height = 35
         Caption = 'Toggle Name'
@@ -95,22 +95,22 @@ object EntrantPickerEx: TEntrantPickerEx
       end
       object btnClearLane: TButton
         Left = 10
-        Top = 170
+        Top = 129
         Width = 106
         Height = 35
         Cancel = True
-        Caption = 'Clear Lanes'
+        Caption = 'Empty'
         ModalResult = 2
         TabOrder = 3
         OnClick = btnCancelClick
       end
       object btnSortLanes: TButton
         Left = 10
-        Top = 211
+        Top = 170
         Width = 106
         Height = 35
         Cancel = True
-        Caption = 'Sort TTB'
+        Caption = 'Quick Sort'
         ModalResult = 2
         TabOrder = 4
         OnClick = btnCancelClick

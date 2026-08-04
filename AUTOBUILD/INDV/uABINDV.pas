@@ -44,6 +44,7 @@ type
     fSortMode: scmABSortMode;
     fVerbose: boolean;
 
+
     function AryEntrants_AssignLaneNum(NumOfHeats: Integer): Integer;
     function AryEntrants_AssignNominees: integer;
     function AryEntrants_AssignHeatNum(NumOfHeats: Integer): integer;
@@ -71,8 +72,9 @@ type
     function LOOP_Gender(DivisionFilter: string): Integer;
     function LOOP_GenderEx(MaleFilter, FemaleFilter: string): Integer;
 
-    function GetNextFilter(Query: TFDQuery; IndexName: string; var PK: Integer):
-        string;
+    procedure GetNextPK(Query: TFDQuery; IndexName: string; var PK: Integer);
+    function GetFilter(Query: TFDQuery; IndexName: string;
+      var PK: Integer): string;
 
 
   public
@@ -582,33 +584,44 @@ begin
 
 end;
 
-
-function TABINDV.GetNextFilter(Query: TFDQuery; IndexName: string; var PK: Integer): string;
+function TABINDV.GetFilter(Query: TFDQuery; IndexName: string; var PK: Integer): string;
 begin
   Result := '';
   Query.IndexName := IndexName;
   if Query.IsEmpty or (PK <= 0) then
     Exit;
-
   if Query.Locate('DivisionID', PK) then
   begin
     Result := Format('(Age >= %d) AND (Age <= %d)', [
       Query.FieldByName('AgeFrom').AsInteger,
       Query.FieldByName('AgeTo').AsInteger
     ]);
-
-    Query.Next;
-    PK := IfThen(Query.EOF, 0, Query.FieldByName('DivisionID').AsInteger);
   end
   else
     PK := 0;
+end;
+
+procedure TABINDV.GetNextPK(Query: TFDQuery; IndexName: string; var PK:
+    Integer);
+begin
+  Query.IndexName := IndexName;
+  if Query.IsEmpty or (PK <= 0) then
+    Exit;
+  if Query.Locate('DivisionID', PK) then
+  begin
+    Query.Next;
+  end
+  else
+    PK := 0;
+
+  PK := IfThen(Query.EOF, 0, Query.FieldByName('DivisionID').AsInteger);
 end;
 
 function TABINDV.LOOP_Divisions(): integer;
 var
   GroupBy: scmGroupByType;
   DivisionFilter, MaleFilter, FemaleFilter: string;
-  PKMale, PKFemale: Integer;
+  PKMale, PKFemale: Integer; // Primary keys 'Custom Divisions'
 begin
   result := 0;
   DivisionFilter := '';
@@ -655,11 +668,14 @@ begin
 
         while (PKMale > 0) or (PKFemale > 0) do
         begin
-          MaleFilter := GetNextFilter(abData.qryDivision, 'indxCustMale', PKMale);
-          FemaleFilter := GetNextFilter(abData.qryDivision, 'indxCustFemale', PKFemale);
-
+          MaleFilter := GetFilter(abData.qryDivision, 'indxCustMale', PKMale);
+          FemaleFilter := GetFilter(abData.qryDivision, 'indxCustFemale', PKFemale);
           if not (MaleFilter.IsEmpty and FemaleFilter.IsEmpty) then
+          begin
             LOOP_GenderEx(MaleFilter, FemaleFilter);
+          end;
+          GetNextPK(abData.qryDivision, 'indxCustMale', PKMale);
+          GetNextPK(abData.qryDivision, 'indxCustFemale', PKFemale);
         end;
       end;
     end;
@@ -699,8 +715,10 @@ begin
   if Settings.ab_SeperateGender then
   begin
     // NOTE active index performs a reverse sort order, (X, F, M).
-    ABData.qryGender.first;
+    if ABData.qryGender.IndexName <> 'IndxDESC' then
+      ABData.qryGender.IndexName := 'IndxDESC';
 
+    ABData.qryGender.first;
     while not ABData.qryGender.EOF do
     // iterate across Mixed, Female, Male (in that order)...
     begin
@@ -761,10 +779,14 @@ var
 begin
   // SPECIAL CASE.... CUSTOM DIVISIONS MALE/FEMALE...
   result := 0;
+
+  if ABData.qryGender.IndexName <> 'indxDESC' then
+    ABData.qryGender.IndexName := 'indxDESC';
+
     // NOTE active index sorts reverse order, (X, F, M).
   ABData.qryGender.first;
 
-  while not ABData.qryGender.BOF do
+  while not ABData.qryGender.EOF do
     // iterate across Mixed, Female, Male (in that order)...
   begin
     GenderID := ABData.qryGender.FieldByName('GenderID').AsInteger;
@@ -977,6 +999,20 @@ begin
     HeatID := uHeat.NewHeat;
     if HeatID > 0 then
     begin
+      if Settings.ab_SeperateGender then
+      begin
+        CORE.qryHeat.Edit;
+        CORE.qryHeat.FieldByName('GenderID').AsInteger :=
+          abData.qryGender.FieldByName('GenderID').AsInteger;
+        CORE.qryHeat.Post;
+      end;
+{
+      if abData.qryDivision.IndexName = 'indxCustMale' then
+              abData.qryDivision.Locate('DivisionID', PKmale);
+                    if abData.qryDivision.IndexName = 'indxCustFemale' then
+                            abData.qryDivision.Locate('DivisionID', PKfemale);
+                            }
+
       // Groupby Division is enabled....
       if (Settings.ab_GroupByIndx <> 0)  then
       begin
@@ -992,21 +1028,16 @@ begin
 
         if (AgeFrom = 0) and (AgeTo <> 0) then
           CORE.qryHeat.FieldByName('RangeCaption').AsString :=
-          IntToStr(AgeFrom) + '& Under'
-        else if AgeTo = 999 then
-          CORE.qryHeat.FieldByName('RangeCaption').AsString := 'Open'
+          IntToStr(AgeTo) + '..Under'
+        else if (AgeFrom = 17) and (AgeTo = 999) then
+          CORE.qryHeat.FieldByName('RangeCaption').AsString := 'OPEN'
+        else if (AgeTo = 999) then
+          CORE.qryHeat.FieldByName('RangeCaption').AsString :=
+          IntToStr(AgeFrom) + '..Over'
         else
         CORE.qryHeat.FieldByName('RangeCaption').AsString :=
           IntToStr(AgeFrom) + '-' + IntToStr(AgeTo);
 
-        CORE.qryHeat.Post;
-      end;
-
-      if Settings.ab_SeperateGender then
-      begin
-        CORE.qryHeat.Edit;
-        CORE.qryHeat.FieldByName('GenderID').AsInteger :=
-          abData.qryGender.FieldByName('GenderID').AsInteger;
         CORE.qryHeat.Post;
       end;
 

@@ -4,7 +4,7 @@ object EntrantPicker: TEntrantPicker
   BorderStyle = bsDialog
   Caption = 'Quick-Pick. Drag and drop enabled. Multi-select. '
   ClientHeight = 633
-  ClientWidth = 777
+  ClientWidth = 772
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,12 +19,12 @@ object EntrantPicker: TEntrantPicker
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 777
+    Width = 772
     Height = 45
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 1183
+    ExplicitWidth = 777
     object VirtualImage2: TVirtualImage
       Left = 8
       Top = 2
@@ -48,12 +48,12 @@ object EntrantPicker: TEntrantPicker
   object pnlBody: TPanel
     Left = 0
     Top = 45
-    Width = 777
+    Width = 772
     Height = 588
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 1183
+    ExplicitWidth = 777
     object pnlCntrl: TPanel
       Left = 657
       Top = 0
@@ -64,7 +64,6 @@ object EntrantPicker: TEntrantPicker
       Color = clDarkslategray
       ParentBackground = False
       TabOrder = 1
-      ExplicitLeft = 655
       object btnCancel: TButton
         Left = 6
         Top = 82
@@ -81,7 +80,7 @@ object EntrantPicker: TEntrantPicker
         Top = 41
         Width = 106
         Height = 35
-        Caption = 'Close'
+        Caption = 'Post'
         ModalResult = 1
         TabOrder = 0
         OnClick = btnPostClick

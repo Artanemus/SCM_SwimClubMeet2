@@ -329,6 +329,8 @@ begin
         ;
       end;
     end;
+    if success then
+      CORE.qryLane.Refresh;
     G.EndUpdate;
   end;
 

@@ -20,7 +20,7 @@ object ABINDV_Data: TABINDV_Data
       '      ,[Caption]'
       '      ,[ABREV]'
       '  FROM [dbo].[Gender]'
-      '  ORDEr BY GenderID DESC;'
+      '  ORDER BY GenderID;'
       ''
       '')
     Left = 64

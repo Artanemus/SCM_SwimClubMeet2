@@ -78,8 +78,10 @@ type
     actnHT_RefreshStats: TAction;
     RefreshStats1: TMenuItem;
     pnlDebug: TPanel;
+    actnHt_DeleteAll: TAction;
     procedure actnHt_AutoBuildExecute(Sender: TObject);
     procedure actnHt_AutoBuildUpdate(Sender: TObject);
+    procedure actnHt_DeleteAllExecute(Sender: TObject);
     procedure actnHt_DeleteExecute(Sender: TObject);
     procedure actnHt_GenericUpdate(Sender: TObject);
     procedure actnHt_NewExecute(Sender: TObject);
@@ -114,7 +116,7 @@ implementation
 
 {$R *.dfm}
 
-uses uNominee, uABINDV, dlgABSettings;
+uses uNominee, uABINDV, dlgABSettings, dlgDeleteConfirm;
 
 procedure TFrameHeat.actnHt_AutoBuildExecute(Sender: TObject);
 var
@@ -187,6 +189,49 @@ begin
       DoEnable := true;
   end;
   TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TFrameHeat.actnHt_DeleteAllExecute(Sender: TObject);
+var
+  dlg: TDeleteConfirm;
+  mr: TModalResult;
+begin
+  dlg := TDeleteConfirm.Create(Self);
+  dlg.btnNo.Default := true;  // assert value.
+  mr := dlg.ShowModal();
+  dlg.Free;
+  if IsPositiveResult(mr) then
+  begin
+    CORE.qryHeat.CheckBrowseMode;
+    CORE.qryHeat.DisableControls;
+    LockDrawing;
+    grid.BeginUpdate;
+    try
+      CORE.qryHeat.First;
+      while not CORE.qryHeat.EOF do
+      begin
+        uHeat.DeleteHeat();
+        //CORE.qryHeat.next;
+      end;
+
+      if CORE.qryHeat.IsEmpty then
+      begin
+//        CORE.qryHeat.ApplyMaster;
+        CORE.qryHeat.Refresh;
+//        UpdateUI(true);
+      end
+      else
+      begin
+        CORE.qryLane.ApplyMaster;
+        CORE.qryLane.Refresh;
+      end;
+
+    finally
+      CORE.qryHeat.EnableControls;
+      grid.EndUpdate;
+      UnLockDrawing;
+    end;
+  end;
 end;
 
 procedure TFrameHeat.actnHt_DeleteExecute(Sender: TObject);

@@ -92,7 +92,8 @@ uses
   uAgeOfSwimmer in 'TOOLS\uAgeOfSwimmer.pas',
   uExportDivisionToJSON in 'TOOLS\uExportDivisionToJSON.pas',
   dlgEntrantPickerEx in 'LANES\dlgEntrantPickerEx.pas' {EntrantPickerEx},
-  dlgEntrantPicker in 'LANES\dlgEntrantPicker.pas' {EntrantPicker};
+  dlgEntrantPicker in 'LANES\dlgEntrantPicker.pas' {EntrantPicker},
+  dlgDeleteConfirm in 'HEATS\dlgDeleteConfirm.pas' {DeleteConfirm};
 
 {$R *.res}
 

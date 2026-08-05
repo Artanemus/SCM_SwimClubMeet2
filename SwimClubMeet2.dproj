@@ -425,6 +425,10 @@
             <Form>EntrantPicker</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="HEATS\dlgDeleteConfirm.pas">
+            <Form>DeleteConfirm</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

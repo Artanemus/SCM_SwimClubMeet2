@@ -243,8 +243,8 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
         SortSettings.HeaderMirrorColor = clWhite
         SortSettings.HeaderMirrorColorTo = clWhite
         Version = '2.5.1.3'
-        AutoCreateColumns = True
-        AutoRemoveColumns = True
+        AutoCreateColumns = False
+        AutoRemoveColumns = False
         Columns = <
           item
             Borders = []
@@ -406,7 +406,6 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
             PrintFont.Style = []
             Width = 64
           end>
-        DataSource = dsQuickPick
         InvalidPicture.Data = {
           055449636F6E0000010001002020200000000000A81000001600000028000000
           2000000040000000010020000000000000100000000000000000000000000000
@@ -544,6 +543,8 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
+        ExplicitLeft = 4
+        ExplicitTop = 2
         ColWidths = (
           20
           265
@@ -559,8 +560,8 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
   end
   object dsQuickPickCtrl: TDataSource
     DataSet = qryQuickPickCtrl
-    Left = 263
-    Top = 280
+    Left = 351
+    Top = 240
   end
   object qryQuickPickCtrl: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -582,41 +583,6 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       end
       item
         Active = True
-        Name = 'idxTTB'
-        Fields = 'TTB'
-      end
-      item
-        Active = True
-        Name = 'idxTTBDESC'
-        Fields = 'TTB'
-        DescFields = 'TTB'
-        Options = [soDescending]
-      end
-      item
-        Active = True
-        Name = 'idxPB'
-        Fields = 'PB'
-      end
-      item
-        Active = True
-        Name = 'idxPBDESC'
-        Fields = 'PB'
-        DescFields = 'PB'
-        Options = [soDescending]
-      end
-      item
-        Active = True
-        Name = 'idxAge'
-        Fields = 'AGE'
-      end
-      item
-        Active = True
-        Name = 'idxAgeDESC'
-        Fields = 'AGE'
-        Options = [soDescNullLast, soDescending]
-      end
-      item
-        Active = True
         Name = 'idxGender'
         Fields = 'GenderID'
       end
@@ -628,55 +594,23 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       end>
     IndexName = 'idxMemberFName'
     DetailFields = 'MemberID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
     UpdateOptions.EnableUpdate = False
-    UpdateOptions.UpdateTableName = 'SwimClubMeet..Member'
+    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Member'
     UpdateOptions.KeyFields = 'MemberID'
     SQL.Strings = (
-      'USE SwimClubMeet'
+      'USE SwimClubMeet2'
       ''
       'DECLARE @EventID INT;'
-      'DECLARE @Algorithm INT;'
-      'DECLARE @DistanceID INT;'
-      'DECLARE @StrokeID INT;'
-      'DECLARE @SessionStart DATETIME;'
       'DECLARE @ToggleName BIT;'
-      'DECLARE @Order INT;'
-      'DECLARE @CalcDefault INT;'
-      'DECLARE @BottomPercent FLOAT;'
-      'DECLARE @EventType INT;'
       ''
       'SET @EventID = :EVENTID;'
-      'SET @Algorithm = :ALGORITHM;'
       'SET @ToggleName = :TOGGLENAME;'
-      'SET @CalcDefault = :CALCDEFAULT;'
-      'SET @BottomPercent = :BOTTOMPERCENT;'
-      'SET @EventType = :EVENTTYPE;'
-      'SET @DistanceID = :DISTANCEID;'
-      ''
-      '/*'
-      'SET @DistanceID ='
-      '('
-      '    SELECT DistanceID FROM Event WHERE Event.EventID = @EventID'
-      ');'
-      '*/'
-      ''
-      'SET @StrokeID ='
-      '('
-      '    SELECT StrokeID FROM Event WHERE Event.EventID = @EventID'
-      ');'
-      'SET @SessionStart ='
-      '('
-      '    SELECT Session.SessionStart'
-      '    FROM Event'
-      '        INNER JOIN Session'
-      '            ON Event.SessionID = Session.SessionID'
-      '    WHERE Event.EventID = @EventID'
-      ');'
       ''
       '-- Drop a temporary table called '#39'#tmpID'#39
       'IF OBJECT_ID('#39'tempDB..#tmpID'#39', '#39'U'#39') IS NOT NULL'
@@ -685,79 +619,53 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       'CREATE TABLE #tmpID'
       '('
       '    MemberID INT'
-      '  --,TeamEntrant.TeamEntrantID AS ID'
-      '  , GenderID INT'
       ')'
       ''
-      'IF @EventType = 1'
-      'BEGIN'
-      '    INSERT INTO #tmpID'
-      '    SELECT Entrant.MemberID'
-      '         , Member.GenderID'
-      '    FROM Entrant'
-      '        INNER JOIN HeatIndividual'
-      '            ON Entrant.HeatID = HeatIndividual.HeatID'
-      '        INNER JOIN Event'
-      '            ON HeatIndividual.EventID = Event.EventID'
-      '        INNER JOIN Session'
-      '            ON Event.SessionID = Session.SessionID'
-      '        INNER JOIN Member'
-      '            ON Entrant.MemberID = Member.MemberID'
-      '    WHERE (HeatIndividual.EventID = @EventID)'
-      '          AND (Entrant.MemberID IS NOT NULL);'
-      'END'
-      'ELSE'
-      'BEGIN'
-      '    INSERT INTO #tmpID'
-      '    SELECT TeamEntrant.MemberID'
-      '         , Member.GenderID'
-      '    FROM TeamEntrant'
-      '        INNER JOIN TEAM'
-      '            ON TeamEntrant.TeamID = Team.TeamID'
-      '        INNER JOIN HeatIndividual'
-      '            ON Team.HeatID = HeatIndividual.HeatID'
-      '        INNER JOIN Event'
-      '            ON HeatIndividual.EventID = Event.EventID'
-      '        INNER JOIN Session'
-      '            ON Event.SessionID = Session.SessionID'
-      '        INNER JOIN Member'
-      '            ON TeamEntrant.MemberID = Member.MemberID'
-      '    WHERE (HeatIndividual.EventID = @EventID)'
-      '          AND (TeamEntrant.MemberID IS NOT NULL);'
-      'END'
+      '-- ************************************************'
+      '-- Members given a swimming lane in the given event '
+      '-- ************************************************'
+      #9'INSERT INTO #tmpID'
+      #9'SELECT Nominee.MemberID'
+      #9'FROM [SwimClubMeet2].[dbo].[Heat]'
+      #9#9'INNER JOIN Lane'
+      #9#9#9'ON Lane.HeatID = Heat.HeatID'
+      #9#9'LEFT JOIN Nominee'
+      #9#9#9'ON Lane.NomineeID = Nominee.NomineeID'
+      #9'WHERE Heat.EventID = @EventID AND Lane.NomineeID IS NOT NULL;'
       ''
+      ''
+      ''
+      '-- ************************************************'
       
         '-- ALL OTHER Members who have not been placed in the current sel' +
         'ected event'
+      '-- ************************************************'
       'SELECT Member.MemberID'
-      '     , Member.GenderID'
-      '     , dbo.SwimmerAge(@SessionStart, Member.DOB) AS AGE'
-      '     , dbo.SwimmerGenderToString(Member.MemberID) AS Gender'
+      #9' , Member.GenderID'
+      #9' , dbo.SwimmerGenderToString(Member.MemberID) AS GenderStr'
+      ''
+      #9' , CASE'
+      #9#9'   WHEN @ToggleName = 0 THEN'
       
-        '     , dbo.TimeToBeat(@Algorithm, @CalcDefault, @BottomPercent, ' +
-        'Member.MemberID, @DistanceID, @StrokeID, @SessionStart) AS TTB'
+        #9#9#9'   SUBSTRING(CONCAT(UPPER([LastName]), '#39', '#39', [FirstName]), 0,' +
+        ' 30)'
+      #9#9'   WHEN @ToggleName = 1 THEN'
       
-        '     , dbo.PersonalBest(Member.MemberID, @DistanceID, @StrokeID,' +
-        ' @SessionStart) AS PB'
-      '     , CASE'
-      '           WHEN @ToggleName = 0 THEN'
-      
-        '               SUBSTRING(CONCAT(UPPER([LastName]), '#39', '#39', [FirstN' +
-        'ame]), 0, 30)'
-      '           WHEN @ToggleName = 1 THEN'
-      
-        '               SUBSTRING(CONCAT([FirstName], '#39', '#39', UPPER([LastNa' +
-        'me])), 0, 48)'
-      '       END AS FName'
+        #9#9#9'   SUBSTRING(CONCAT([FirstName], '#39', '#39', UPPER([LastName])), 0,' +
+        ' 48)'
+      #9'   END AS FName'
+      #9'   '
       'FROM Member'
-      '    LEFT OUTER JOIN #tmpID'
-      '        ON #tmpID.MemberID = Member.MemberID'
+      #9'LEFT OUTER JOIN #tmpID'
+      #9#9'ON #tmpID.MemberID = Member.MemberID'
       'WHERE #tmpID.MemberID IS NULL'
       
-        '      AND Member.IsActive = 1 AND Member.IsSwimmer = 1 AND NOT M' +
-        'ember.IsArchived = 1')
-    Left = 136
-    Top = 272
+        #9'  AND Member.IsActive = 1 AND Member.IsSwimmer = 1 AND NOT Memb' +
+        'er.IsArchived = 1'
+      #9'  '
+      #9'  ')
+    Left = 256
+    Top = 240
     ParamData = <
       item
         Name = 'EVENTID'
@@ -766,84 +674,11 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
         Value = 350
       end
       item
-        Name = 'ALGORITHM'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = 2
-      end
-      item
         Name = 'TOGGLENAME'
         DataType = ftBoolean
         ParamType = ptInput
         Value = True
-      end
-      item
-        Name = 'CALCDEFAULT'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = 1
-      end
-      item
-        Name = 'BOTTOMPERCENT'
-        DataType = ftFloat
-        ParamType = ptInput
-        Value = 50.000000000000000000
-      end
-      item
-        Name = 'EVENTTYPE'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = 1
-      end
-      item
-        Name = 'DISTANCEID'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = Null
       end>
-    object qryQuickPickCtrlFName: TWideStringField
-      DisplayLabel = 'Member'#39's Name'
-      DisplayWidth = 30
-      FieldName = 'FName'
-      Origin = 'FName'
-      ReadOnly = True
-      Size = 48
-    end
-    object qryQuickPickCtrlTTB: TTimeField
-      Alignment = taCenter
-      DisplayLabel = 'TimeToBeat'
-      DisplayWidth = 12
-      FieldName = 'TTB'
-      Origin = 'TTB'
-      ReadOnly = True
-      DisplayFormat = 'nn:ss.zzz'
-    end
-    object qryQuickPickCtrlPB: TTimeField
-      Alignment = taCenter
-      DisplayLabel = 'Personal Best'
-      DisplayWidth = 12
-      FieldName = 'PB'
-      Origin = 'PB'
-      ReadOnly = True
-      DisplayFormat = 'nn:ss.zzz'
-    end
-    object qryQuickPickCtrlAGE: TIntegerField
-      Alignment = taCenter
-      DisplayLabel = '  AGE'
-      DisplayWidth = 5
-      FieldName = 'AGE'
-      Origin = 'AGE'
-      ReadOnly = True
-      DisplayFormat = '##0'
-    end
-    object qryQuickPickCtrlGender: TWideStringField
-      Alignment = taCenter
-      DisplayWidth = 9
-      FieldName = 'Gender'
-      Origin = 'Gender'
-      ReadOnly = True
-      Size = 2
-    end
     object qryQuickPickCtrlMemberID: TFDAutoIncField
       FieldName = 'MemberID'
       Origin = 'MemberID'
@@ -853,70 +688,18 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       FieldName = 'GenderID'
       Origin = 'GenderID'
     end
-  end
-  object FDCommandUpdateEntrant: TFDCommand
-    CommandText.Strings = (
-      'USE [SwimClubMeet2];'
-      ''
-      'DECLARE @MemberID AS Integer;'
-      'DECLARE @ID AS Integer;'
-      'DECLARE @TTB AS DateTime;'
-      'DECLARE @PB AS DateTime;'
-      'DECLARE @EventType AS INT;'
-      ''
-      'SET @MemberID = :MEMBERID;'
-      'SET @ID = :ID;'
-      'SET @TTB = :TTB;'
-      'SET @PB = :PB;'
-      'SET @EventType = :EVENTTYPE;'
-      ''
-      'IF @EventType = 1'
-      'BEGIN'
-      'UPDATE [SwimClubMeet2].[dbo].[Lane]'
-      '   SET [NomineeID] = @NomineeID'
-      '      ,[RaceTime] = NULL'
-      '      ,[TimeToBeat] = @TTB'
-      '      ,[PersonalBest] = @PB'
-      '      ,[IsDisqualified] = 0'
-      '      ,[IsScratched] = 0'
-      '      ,[DisqualifyCodeID] = NULL'
-      ' WHERE EntrantID = @ID;'
-      'END'
-      ''
-      '')
-    ParamData = <
-      item
-        Name = 'MEMBERID'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = Null
-      end
-      item
-        Name = 'ID'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = Null
-      end
-      item
-        Name = 'TTB'
-        DataType = ftTime
-        ParamType = ptInput
-        Value = Null
-      end
-      item
-        Name = 'PB'
-        DataType = ftTime
-        ParamType = ptInput
-        Value = Null
-      end
-      item
-        Name = 'EVENTTYPE'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = 1
-      end>
-    Left = 152
-    Top = 128
+    object qryQuickPickCtrlGenderStr: TWideStringField
+      FieldName = 'GenderStr'
+      Origin = 'GenderStr'
+      ReadOnly = True
+      Size = 2
+    end
+    object qryQuickPickCtrlFName: TWideStringField
+      FieldName = 'FName'
+      Origin = 'FName'
+      ReadOnly = True
+      Size = 48
+    end
   end
   object ImageCollection1: TImageCollection
     Images = <
@@ -951,220 +734,7 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
               454E44AE426082}
           end>
       end>
-    Left = 464
-    Top = 216
-  end
-  object qryQuickPick: TFDQuery
-    ActiveStoredUsage = [auDesignTime]
-    FilterOptions = [foCaseInsensitive]
-    Filter = '[FName] LIKE '#39'%b%'#39
-    Indexes = <
-      item
-        Active = True
-        Selected = True
-        Name = 'idxMemberFName'
-        Fields = 'FName'
-      end
-      item
-        Active = True
-        Name = 'idxMemberFNameDESC'
-        Fields = 'FName'
-        DescFields = 'FName'
-        Options = [soDescNullLast, soDescending]
-      end
-      item
-        Active = True
-        Name = 'idxTTB'
-        Fields = 'TTB'
-      end
-      item
-        Active = True
-        Name = 'idxTTBDESC'
-        Fields = 'TTB'
-        DescFields = 'TTB'
-        Options = [soDescending]
-      end
-      item
-        Active = True
-        Name = 'idxPB'
-        Fields = 'PB'
-      end
-      item
-        Active = True
-        Name = 'idxPBDESC'
-        Fields = 'PB'
-        DescFields = 'PB'
-        Options = [soDescending]
-      end
-      item
-        Active = True
-        Name = 'idxAge'
-        Fields = 'AGE'
-      end
-      item
-        Active = True
-        Name = 'idxAgeDESC'
-        Fields = 'AGE'
-        Options = [soDescNullLast, soDescending]
-      end
-      item
-        Active = True
-        Name = 'idxGender'
-        Fields = 'GenderID'
-      end
-      item
-        Active = True
-        Name = 'idxGenderDESC'
-        Fields = 'GenderID'
-        Options = [soDescNullLast, soDescending]
-      end>
-    IndexName = 'idxMemberFName'
-    DetailFields = 'MemberID'
-    Connection = SCM2.scmConnection
-    FormatOptions.AssignedValues = [fvFmtDisplayTime]
-    FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
-    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate, uvCheckReadOnly]
-    UpdateOptions.EnableDelete = False
-    UpdateOptions.EnableInsert = False
-    UpdateOptions.EnableUpdate = False
-    UpdateOptions.CheckReadOnly = False
-    UpdateOptions.UpdateTableName = 'SwimClubMeet2..Nominee'
-    UpdateOptions.KeyFields = 'NomineeID'
-    SQL.Strings = (
-      'USE SwimClubMeet2;'
-      ''
-      'DECLARE @EventID AS INT;'
-      'DECLARE @ToggleName BIT;'
-      ''
-      'SET @EventID = :EVENTID;'
-      'SET @ToggleName = :TOGGLENAME;'
-      ''
-      '-- Drop a temporary table called '#39'#tmpID'#39
-      'IF OBJECT_ID('#39'tempDB..#tmpID'#39', '#39'U'#39') IS NOT NULL'
-      '    DROP TABLE #tmpID;'
-      ''
-      'CREATE TABLE #tmpID'
-      '('
-      '    MemberID INT'
-      ')'
-      ''
-      '-- Members given a swimming lane in the given event '
-      '    INSERT INTO #tmpID'
-      '    SELECT Nominee.MemberID'
-      '    FROM [SwimClubMeet2].[dbo].[Heat]'
-      '        INNER JOIN Lane'
-      '            ON Lane.HeatID = Heat.HeatID'
-      '        LEFT JOIN Nominee'
-      '            ON Lane.NomineeID = Nominee.NomineeID'
-      
-        '    WHERE Heat.EventID = @EventID AND Lane.NomineeID IS NOT NULL' +
-        ';'
-      ''
-      'SELECT '
-      '       Nominee.NomineeID'
-      '     , Nominee.EventID'
-      '     , Nominee.MemberID'
-      '     , Member.GenderID'
-      '     , Nominee.AGE'
-      '     , dbo.SwimmerGenderToString(Member.MemberID) AS GenderABREV'
-      '     , Nominee.TTB'
-      '     , Nominee.PB'
-      '     , CASE'
-      '           WHEN @ToggleName = 0 THEN'
-      
-        '               SUBSTRING(CONCAT(UPPER([LastName]), '#39', '#39', [FirstN' +
-        'ame]), 0, 48)'
-      '           WHEN @ToggleName = 1 THEN'
-      
-        '               SUBSTRING(CONCAT([FirstName], '#39', '#39', UPPER([LastNa' +
-        'me])), 0, 48)'
-      '       END AS FName'
-      'FROM Nominee'
-      '    LEFT OUTER JOIN #tmpID'
-      '        ON #tmpID.MemberID = Nominee.MemberID'
-      '    LEFT OUTER JOIN Member'
-      '        ON Nominee.MemberID = Member.MemberID'
-      'WHERE Nominee.EventID = @EventID'
-      '      AND #tmpID.MemberID IS NULL ;'
-      '')
-    Left = 144
-    Top = 384
-    ParamData = <
-      item
-        Name = 'EVENTID'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = 65
-      end
-      item
-        Name = 'TOGGLENAME'
-        DataType = ftBoolean
-        ParamType = ptInput
-        Value = True
-      end>
-    object qryQuickPickFName: TWideStringField
-      DisplayLabel = 'Nominees'
-      DisplayWidth = 30
-      FieldName = 'FName'
-      Origin = 'FName'
-      ReadOnly = True
-      Size = 60
-    end
-    object qryQuickPickTTB: TTimeField
-      Alignment = taCenter
-      DisplayLabel = 'TimeToBeat'
-      DisplayWidth = 12
-      FieldName = 'TTB'
-      Origin = 'TTB'
-      ReadOnly = True
-      DisplayFormat = 'nn:ss.zzz'
-    end
-    object qryQuickPickPB: TTimeField
-      Alignment = taCenter
-      DisplayLabel = 'Personal Best'
-      DisplayWidth = 12
-      FieldName = 'PB'
-      Origin = 'PB'
-      ReadOnly = True
-      DisplayFormat = 'nn:ss.zzz'
-    end
-    object qryQuickPickAGE: TIntegerField
-      Alignment = taLeftJustify
-      DisplayLabel = '  AGE'
-      DisplayWidth = 5
-      FieldName = 'AGE'
-      Origin = 'AGE'
-      ReadOnly = True
-      DisplayFormat = '##0'
-    end
-    object qryQuickPickMemberID: TIntegerField
-      FieldName = 'MemberID'
-      Origin = 'MemberID'
-      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
-    end
-    object qryQuickPickEventID: TIntegerField
-      FieldName = 'EventID'
-      Origin = 'EventID'
-    end
-    object qryQuickPickGenderID: TIntegerField
-      FieldName = 'GenderID'
-      Origin = 'GenderID'
-    end
-    object qryQuickPickGenderABREV: TWideStringField
-      DisplayLabel = 'Gender'
-      FieldName = 'GenderABREV'
-      Origin = 'GenderABREV'
-      ReadOnly = True
-      Size = 2
-    end
-    object qryQuickPickNomineeID: TFDAutoIncField
-      FieldName = 'NomineeID'
-      Origin = 'NomineeID'
-    end
-  end
-  object dsQuickPick: TDataSource
-    DataSet = qryQuickPick
-    Left = 232
-    Top = 384
+    Left = 304
+    Top = 160
   end
 end

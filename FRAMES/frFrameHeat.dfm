@@ -1,7 +1,7 @@
 object FrameHeat: TFrameHeat
   Left = 0
   Top = 0
-  Width = 195
+  Width = 222
   Height = 624
   ParentShowHint = False
   ShowHint = True
@@ -331,7 +331,7 @@ object FrameHeat: TFrameHeat
   object pnlBody: TPanel
     Left = 58
     Top = 0
-    Width = 137
+    Width = 164
     Height = 624
     Align = alClient
     BevelOuter = bvNone
@@ -340,7 +340,7 @@ object FrameHeat: TFrameHeat
       AlignWithMargins = True
       Left = 8
       Top = 8
-      Width = 121
+      Width = 148
       Height = 573
       Margins.Left = 8
       Margins.Top = 8
@@ -357,13 +357,13 @@ object FrameHeat: TFrameHeat
       ParentFont = False
       Layout = tlCenter
       WordWrap = True
-      ExplicitWidth = 117
-      ExplicitHeight = 51
+      ExplicitWidth = 147
+      ExplicitHeight = 34
     end
     object pnlG: TPanel
       Left = 0
       Top = 0
-      Width = 137
+      Width = 164
       Height = 589
       Align = alClient
       BevelOuter = bvNone
@@ -371,7 +371,7 @@ object FrameHeat: TFrameHeat
       object grid: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 137
+        Width = 164
         Height = 589
         Cursor = crDefault
         Align = alClient
@@ -837,8 +837,6 @@ object FrameHeat: TFrameHeat
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitLeft = 1
-        ExplicitTop = -6
         ColWidths = (
           0
           0
@@ -855,7 +853,7 @@ object FrameHeat: TFrameHeat
     object pnlDebug: TPanel
       Left = 0
       Top = 589
-      Width = 137
+      Width = 164
       Height = 35
       Align = alBottom
       BevelOuter = bvNone
@@ -912,6 +910,18 @@ object FrameHeat: TFrameHeat
       ImageName = 'delete'
       ShortCut = 16430
       OnExecute = actnHt_DeleteExecute
+      OnUpdate = actnHt_GenericUpdate
+    end
+    object actnHt_DeleteAll: TAction
+      Category = 'Heats'
+      Caption = 'Delete All Heats'
+      Hint = 
+        'Delete all heats for the selected event. (Requires confirmation.' +
+        ')'
+      ImageIndex = 10
+      ImageName = 'delete-forever'
+      ShortCut = 24622
+      OnExecute = actnHt_DeleteAllExecute
       OnUpdate = actnHt_GenericUpdate
     end
     object actnHt_AutoBuild: TAction

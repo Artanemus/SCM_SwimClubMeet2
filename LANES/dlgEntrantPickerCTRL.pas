@@ -23,26 +23,7 @@ type
   TEntrantPickerCTRL = class(TForm)
     dsQuickPickCtrl: TDataSource;
     qryQuickPickCtrl: TFDQuery;
-    qryQuickPickCtrlMemberID: TFDAutoIncField;
-    qryQuickPickCtrlFName: TWideStringField;
-    qryQuickPickCtrlTTB: TTimeField;
-    qryQuickPickCtrlPB: TTimeField;
-    qryQuickPickCtrlAGE: TIntegerField;
-    qryQuickPickCtrlGender: TWideStringField;
-    FDCommandUpdateEntrant: TFDCommand;
-    qryQuickPickCtrlGenderID: TIntegerField;
     ImageCollection1: TImageCollection;
-    qryQuickPick: TFDQuery;
-    qryQuickPickFName: TWideStringField;
-    qryQuickPickTTB: TTimeField;
-    qryQuickPickPB: TTimeField;
-    qryQuickPickAGE: TIntegerField;
-    qryQuickPickMemberID: TIntegerField;
-    qryQuickPickEventID: TIntegerField;
-    qryQuickPickGenderID: TIntegerField;
-    qryQuickPickGenderABREV: TWideStringField;
-    qryQuickPickNomineeID: TFDAutoIncField;
-    dsQuickPick: TDataSource;
     pnlHeader: TPanel;
     VirtualImage2: TVirtualImage;
     Nominate_Edit: TEdit;
@@ -53,6 +34,10 @@ type
     btnToggleName: TButton;
     pnlGrid: TPanel;
     Grid: TDBAdvGrid;
+    qryQuickPickCtrlMemberID: TFDAutoIncField;
+    qryQuickPickCtrlGenderID: TIntegerField;
+    qryQuickPickCtrlGenderStr: TWideStringField;
+    qryQuickPickCtrlFName: TWideStringField;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnPostClick(Sender: TObject);

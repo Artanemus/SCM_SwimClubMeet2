@@ -32,12 +32,12 @@ object ABINDV_Data: TABINDV_Data
       item
         Active = True
         Name = 'indxTTB'
-        Fields = 'TTB;NomineeID'
+        Fields = 'SortNull;TTB;NomineeID'
       end
       item
         Active = True
         Name = 'indxTTBGender'
-        Fields = 'TTB;GenderID;NomineeID'
+        Fields = 'SortNull;TTB;GenderID;NomineeID'
       end
       item
         Active = True
@@ -46,6 +46,7 @@ object ABINDV_Data: TABINDV_Data
         Fields = 'NomineeID'
       end>
     IndexName = 'indxPK'
+    DetailFields = 'NomineeID'
     Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
@@ -102,6 +103,12 @@ object ABINDV_Data: TABINDV_Data
       ',[Nominee].[EventID]'
       ',[Nominee].[MemberID]'
       ',[Member].GenderID'
+      ', CASE'
+      
+        '  WHEN [Nominee].[TTB] IS NULL OR [Nominee].[TTB] = '#39'00:00:00'#39' T' +
+        'HEN 1 ELSE 0  '
+      '  END AS SortNull'
+      ''
       'FROM [SwimClubMeet2].[dbo].[Nominee]'
       
         'LEFT OUTER JOIN #MembersInClosedHeats ON #MembersInClosedHeats.M' +

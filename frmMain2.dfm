@@ -2834,7 +2834,6 @@ object Main2: TMain2
     Align = alClient
     TabOrder = 2
     OnChange = PageControlChange
-    ExplicitHeight = 682
     object tabSession: TTabSheet
       Caption = 'Session'
       object pnlSession: TPanel
@@ -2847,7 +2846,6 @@ object Main2: TMain2
         BevelOuter = bvNone
         Caption = 'Panel for TFrameSession (frSession)'
         TabOrder = 0
-        ExplicitHeight = 646
       end
       object pnlEvent: TPanel
         Left = 417
@@ -2858,7 +2856,6 @@ object Main2: TMain2
         BevelOuter = bvNone
         Caption = 'Panel for TFrameEvent (frEvent)'
         TabOrder = 1
-        ExplicitHeight = 646
       end
     end
     object tabNominate: TTabSheet
@@ -2873,7 +2870,6 @@ object Main2: TMain2
         BevelOuter = bvNone
         Caption = 'Panel for TFrameFilterMember (frFilterMember)'
         TabOrder = 0
-        ExplicitHeight = 646
       end
       object pnlNominate: TPanel
         Left = 433
@@ -2884,7 +2880,6 @@ object Main2: TMain2
         BevelOuter = bvNone
         Caption = 'Panel for TFrameNominate (frNominate)'
         TabOrder = 1
-        ExplicitHeight = 646
       end
     end
     object tabHeats: TTabSheet
@@ -2908,28 +2903,27 @@ object Main2: TMain2
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 1
-        ExplicitHeight = 566
         object pnlHeat: TPanel
           Left = 0
           Top = 0
-          Width = 200
+          Width = 220
           Height = 565
           Align = alLeft
           BevelOuter = bvNone
           Caption = 'Panel for TFrameHeat (frHeat)'
           TabOrder = 0
-          ExplicitHeight = 566
         end
         object pnlLane: TPanel
-          Left = 200
+          Left = 220
           Top = 0
-          Width = 923
+          Width = 903
           Height = 565
           Align = alClient
           BevelOuter = bvNone
           Caption = 'Panel for TFrameLane (frLane)'
           TabOrder = 1
-          ExplicitHeight = 566
+          ExplicitLeft = 200
+          ExplicitWidth = 923
         end
       end
     end
@@ -2942,7 +2936,6 @@ object Main2: TMain2
     Align = alBottom
     BarColor = clDarkgreen
     TabOrder = 4
-    ExplicitTop = 768
   end
   object actnManager: TActionManager
     ActionBars = <

@@ -2,7 +2,7 @@ object EntrantPicker: TEntrantPicker
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Quick-Pick. Drag and drop enabled. Multi-select. '
+  Caption = 'Quick-Pick. Assign an unplaced NOMINEE into the selected lane. '
   ClientHeight = 633
   ClientWidth = 772
   Color = clBtnFace
@@ -24,7 +24,6 @@ object EntrantPicker: TEntrantPicker
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 777
     object VirtualImage2: TVirtualImage
       Left = 8
       Top = 2
@@ -53,7 +52,6 @@ object EntrantPicker: TEntrantPicker
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 777
     object pnlCntrl: TPanel
       Left = 657
       Top = 0

@@ -12,6 +12,7 @@ function Get31stDECDate: TDate;
 
 function GetSwimmingAgeForDate(const DOB, ForDate: TDateTime): Integer;
 
+
 { procedure DemonstrateSwimmingAge;}
 
 implementation
@@ -23,6 +24,8 @@ uses
   Reference uDefines.
     scmSeedDateAuto = (sda31stDECDate, sdaMeetSessionDate, sdaCustomDate);
 }
+
+
 function GetSwimmingAgeForDate(const DOB, ForDate: TDateTime): Integer;
 var
   AYear, AMonth, ADay: Word;

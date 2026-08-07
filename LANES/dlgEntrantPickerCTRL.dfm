@@ -3,8 +3,8 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Quick-Pick from Active Members ,,,'
-  ClientHeight = 701
-  ClientWidth = 818
+  ClientHeight = 783
+  ClientWidth = 699
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,11 +19,12 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 818
+    Width = 699
     Height = 45
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 818
     object VirtualImage2: TVirtualImage
       Left = 8
       Top = 2
@@ -48,21 +49,25 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
   object pnlBody: TPanel
     Left = 0
     Top = 45
-    Width = 818
-    Height = 656
+    Width = 699
+    Height = 738
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitWidth = 818
+    ExplicitHeight = 656
     object pnlCntrl: TPanel
-      Left = 696
+      Left = 577
       Top = 0
       Width = 122
-      Height = 656
+      Height = 738
       Align = alRight
       BevelOuter = bvNone
       Color = clDarkslategray
       ParentBackground = False
       TabOrder = 0
+      ExplicitLeft = 696
+      ExplicitHeight = 656
       object btnCancel: TButton
         Left = 10
         Top = 47
@@ -97,20 +102,22 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
     object pnlGrid: TPanel
       Left = 0
       Top = 0
-      Width = 696
-      Height = 656
+      Width = 577
+      Height = 738
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
+      ExplicitWidth = 696
+      ExplicitHeight = 656
       object Grid: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 696
-        Height = 656
+        Width = 577
+        Height = 738
         Cursor = crDefault
         Align = alClient
         Color = clWhite
-        ColCount = 6
+        ColCount = 5
         DefaultRowHeight = 30
         DrawingStyle = gdsClassic
         FixedColor = clWhite
@@ -285,7 +292,7 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
             Font.Height = -16
             Font.Name = 'Tahoma'
             Font.Style = []
-            Header = 'Nominee'
+            Header = 'Member'#39's Name'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
             HeaderFont.Height = -16
@@ -298,32 +305,6 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
             PrintFont.Name = 'Tahoma'
             PrintFont.Style = []
             Width = 265
-          end
-          item
-            Borders = []
-            BorderPen.Color = clSilver
-            ButtonHeight = 18
-            CheckFalse = 'N'
-            CheckTrue = 'Y'
-            Color = clWindow
-            FieldName = 'TTB'
-            Font.Charset = DEFAULT_CHARSET
-            Font.Color = clWindowText
-            Font.Height = -16
-            Font.Name = 'Tahoma'
-            Font.Style = []
-            HeaderFont.Charset = DEFAULT_CHARSET
-            HeaderFont.Color = 3881787
-            HeaderFont.Height = -16
-            HeaderFont.Name = 'Tahoma'
-            HeaderFont.Style = []
-            PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-            PrintFont.Charset = DEFAULT_CHARSET
-            PrintFont.Color = clWindowText
-            PrintFont.Height = -16
-            PrintFont.Name = 'Tahoma'
-            PrintFont.Style = []
-            Width = 112
           end
           item
             Borders = []
@@ -377,7 +358,7 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
             PrintFont.Height = -16
             PrintFont.Name = 'Tahoma'
             PrintFont.Style = []
-            Width = 55
+            Width = 70
           end
           item
             Borders = []
@@ -404,8 +385,9 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
             PrintFont.Height = -16
             PrintFont.Name = 'Tahoma'
             PrintFont.Style = []
-            Width = 64
+            Width = 55
           end>
+        DataSource = dsQuickPickCtrl
         InvalidPicture.Data = {
           055449636F6E0000010001002020200000000000A81000001600000028000000
           2000000040000000010020000000000000100000000000000000000000000000
@@ -543,15 +525,14 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitLeft = 4
-        ExplicitTop = 2
+        ExplicitWidth = 696
+        ExplicitHeight = 656
         ColWidths = (
           20
           265
           112
-          112
-          55
-          64)
+          70
+          55)
         RowHeights = (
           30
           30)
@@ -560,8 +541,8 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
   end
   object dsQuickPickCtrl: TDataSource
     DataSet = qryQuickPickCtrl
-    Left = 351
-    Top = 240
+    Left = 215
+    Top = 136
   end
   object qryQuickPickCtrl: TFDQuery
     ActiveStoredUsage = [auDesignTime]
@@ -608,9 +589,35 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       ''
       'DECLARE @EventID INT;'
       'DECLARE @ToggleName BIT;'
+      'DECLARE @DistanceID INT;'
+      'DECLARE @StrokeID INT;'
+      'DECLARE @SessionDate DATETIME;'
+      'DECLARE @SeedDate DATETIME;'
+      'DECLARE @SwimClubID INT;'
+      'DECLARE @IsClubGroup BIT;'
       ''
       'SET @EventID = :EVENTID;'
       'SET @ToggleName = :TOGGLENAME;'
+      'SET @SeedDate = :SEEDDATE;'
+      ''
+      'if @SeedDate IS NULL SET @SEEDDATE = GETDATE();'
+      ''
+      '-- Needed to calculate the personal best for the member'
+      'SELECT '
+      '    @DistanceID = [Event].DistanceID,'
+      '    @StrokeID = [Event].StrokeID,'
+      '    @SessionDate = [Session].SessionDT,'
+      '    @SwimClubID = [Session].SwimClubID'
+      'FROM SwimClubMeet2.dbo.[Event]'
+      
+        'INNER JOIN [Session] ON [Event].SessionID = [Session].SessionID ' +
+        ' -- Fixed: SessionID not SessionDT'
+      'WHERE EventID = @EventID;'
+      ''
+      'SELECT '
+      '   @IsClubGroup = [SwimClub].IsClubGroup'
+      'FROM SwimClubMeet2.dbo.[SwimClub]'
+      'WHERE [SwimClub].SwimClubID = @SwimClubID;'
       ''
       '-- Drop a temporary table called '#39'#tmpID'#39
       'IF OBJECT_ID('#39'tempDB..#tmpID'#39', '#39'U'#39') IS NOT NULL'
@@ -624,48 +631,92 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       '-- ************************************************'
       '-- Members given a swimming lane in the given event '
       '-- ************************************************'
-      #9'INSERT INTO #tmpID'
-      #9'SELECT Nominee.MemberID'
-      #9'FROM [SwimClubMeet2].[dbo].[Heat]'
-      #9#9'INNER JOIN Lane'
-      #9#9#9'ON Lane.HeatID = Heat.HeatID'
-      #9#9'LEFT JOIN Nominee'
-      #9#9#9'ON Lane.NomineeID = Nominee.NomineeID'
-      #9'WHERE Heat.EventID = @EventID AND Lane.NomineeID IS NOT NULL;'
+      'INSERT INTO #tmpID'
+      'SELECT Nominee.MemberID'
+      'FROM [SwimClubMeet2].[dbo].[Heat]'
+      '    INNER JOIN Lane'
+      '        ON Lane.HeatID = Heat.HeatID'
+      '    LEFT JOIN Nominee'
+      '        ON Lane.NomineeID = Nominee.NomineeID'
+      'WHERE Heat.EventID = @EventID AND Lane.NomineeID IS NOT NULL;'
+      ' '
+      '-- IF @SwimClubID is a group of swim clubs.'
+      '-- ie. SwimClubMeet2.dbo.SwimClub.IsClubGroup = 1'
+      '-- BUILD a List of SwimClubs...'
+      '-- ELSE just insert a single record into tmpSwimClubs'
       ''
+      '-- Drop a temporary table called '#39'#tmpSwimClubs'#39
+      'IF OBJECT_ID('#39'tempDB..#tmpSwimClubs'#39', '#39'U'#39') IS NOT NULL'
+      '    DROP TABLE #tmpSwimClubs;'
       ''
+      'CREATE TABLE #tmpSwimClubs'
+      '('
+      '    SwimClubID INT'
+      ')'
+      ''
+      '-- Fixed: Changed @IsSwimClub to @IsClubGroup'
+      'IF @IsClubGroup = 1'
+      'BEGIN'
+      '    INSERT INTO #tmpSwimClubs'
+      '    SELECT ChildClubID AS SwimClubID'
+      '    FROM SwimClubMeet2.dbo.SwimClubGroup'
+      '    WHERE SwimClubGroup.ParentClubID = @SwimClubID'
+      'END'
+      'ELSE'
+      'BEGIN'
+      '    INSERT INTO #tmpSwimClubs'
+      
+        '    SELECT @SwimClubID AS SwimClubID  -- Fixed: Added SELECT and' +
+        ' corrected variable name'
+      'END'
       ''
       '-- ************************************************'
       
         '-- ALL OTHER Members who have not been placed in the current sel' +
         'ected event'
+      '-- Currently ANY member from ANY club will be listed... '
+      
+        '-- Now filtered to only members in the swim clubs from #tmpSwimC' +
+        'lubs'
       '-- ************************************************'
       'SELECT Member.MemberID'
-      #9' , Member.GenderID'
-      #9' , dbo.SwimmerGenderToString(Member.MemberID) AS GenderStr'
-      ''
-      #9' , CASE'
-      #9#9'   WHEN @ToggleName = 0 THEN'
+      '     , Member.GenderID'
+      '     , dbo.SwimmerGenderToString(Member.MemberID) AS GenderStr'
       
-        #9#9#9'   SUBSTRING(CONCAT(UPPER([LastName]), '#39', '#39', [FirstName]), 0,' +
-        ' 30)'
-      #9#9'   WHEN @ToggleName = 1 THEN'
+        '     , dbo.PersonalBest(Member.MemberID, @DistanceID, @StrokeID,' +
+        ' @SessionDate) AS PB'
+      '     , dbo.SwimmerAge(@SeedDate, Member.DOB) AS Age'
+      '     , CASE'
+      '           WHEN @ToggleName = 0 THEN'
       
-        #9#9#9'   SUBSTRING(CONCAT([FirstName], '#39', '#39', UPPER([LastName])), 0,' +
-        ' 48)'
-      #9'   END AS FName'
-      #9'   '
+        '               SUBSTRING(CONCAT(UPPER([LastName]), '#39', '#39', [FirstN' +
+        'ame]), 0, 30)'
+      '           WHEN @ToggleName = 1 THEN'
+      
+        '               SUBSTRING(CONCAT([FirstName], '#39', '#39', UPPER([LastNa' +
+        'me])), 0, 48)'
+      '       END AS FName'
       'FROM Member'
-      #9'LEFT OUTER JOIN #tmpID'
-      #9#9'ON #tmpID.MemberID = Member.MemberID'
-      'WHERE #tmpID.MemberID IS NULL'
+      'LEFT OUTER JOIN #tmpID'
+      '    ON #tmpID.MemberID = Member.MemberID'
       
-        #9'  AND Member.IsActive = 1 AND Member.IsSwimmer = 1 AND NOT Memb' +
-        'er.IsArchived = 1'
-      #9'  '
-      #9'  ')
-    Left = 256
-    Top = 240
+        '-- Added JOIN to MemberLink and #tmpSwimClubs to filter by swim ' +
+        'club'
+      'INNER JOIN MemberLink'
+      '    ON Member.MemberID = MemberLink.MemberID'
+      'INNER JOIN #tmpSwimClubs'
+      '    ON MemberLink.SwimClubID = #tmpSwimClubs.SwimClubID'
+      'WHERE #tmpID.MemberID IS NULL'
+      '    AND Member.IsActive = 1 '
+      '    AND Member.IsSwimmer = 1 '
+      
+        '    AND Member.IsArchived = 0  -- Fixed: Changed NOT Member.IsAr' +
+        'chived = 1 to this'
+      
+        '    AND MemberLink.IsArchived = 0  -- Added: Only include active' +
+        ' member-club links')
+    Left = 72
+    Top = 136
     ParamData = <
       item
         Name = 'EVENTID'
@@ -678,15 +729,36 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
         DataType = ftBoolean
         ParamType = ptInput
         Value = True
+      end
+      item
+        Name = 'SEEDDATE'
+        DataType = ftDate
+        ParamType = ptInput
+        Value = Null
       end>
     object qryQuickPickCtrlMemberID: TFDAutoIncField
       FieldName = 'MemberID'
       Origin = 'MemberID'
       ProviderFlags = [pfInWhere, pfInKey]
+      Visible = False
     end
-    object qryQuickPickCtrlGenderID: TIntegerField
-      FieldName = 'GenderID'
-      Origin = 'GenderID'
+    object qryQuickPickCtrlFName: TWideStringField
+      DisplayLabel = 'Member'#39's Name'
+      FieldName = 'FName'
+      Origin = 'FName'
+      ReadOnly = True
+      Size = 48
+    end
+    object qryQuickPickCtrlPB: TTimeField
+      FieldName = 'PB'
+      Origin = 'PB'
+      ReadOnly = True
+      DisplayFormat = 'nn:ss.zzz'
+    end
+    object qryQuickPickCtrlAge: TIntegerField
+      FieldName = 'Age'
+      Origin = 'Age'
+      ReadOnly = True
     end
     object qryQuickPickCtrlGenderStr: TWideStringField
       FieldName = 'GenderStr'
@@ -694,47 +766,10 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       ReadOnly = True
       Size = 2
     end
-    object qryQuickPickCtrlFName: TWideStringField
-      FieldName = 'FName'
-      Origin = 'FName'
-      ReadOnly = True
-      Size = 48
+    object qryQuickPickCtrlGenderID: TIntegerField
+      FieldName = 'GenderID'
+      Origin = 'GenderID'
+      Visible = False
     end
-  end
-  object ImageCollection1: TImageCollection
-    Images = <
-      item
-        Name = 'Search'
-        SourceImages = <
-          item
-            Image.Data = {
-              89504E470D0A1A0A0000000D49484452000000300000003008060000005702F9
-              87000000017352474200AECE1CE9000002A1494441546843ED99E151D6401086
-              5F2AD00EC00A900A900A1C2B502B102A502A102A502B502B502AD00EB403A002
-              9867E696593249EE2E7BE14B66727FC27CDC77B7CFBDEFEE6D604F2B1F7B2B8F
-              5F1BC0AE15DC1458B302AF25BD92F4323D8DE546D25F49BF25FD4C3FCFC639C5
-              426F257D927450181520EF25FD2F9C5F35AD06E0B9A4EF9DD3AED9EC54D265CD
-              174AE6960260932FC92EB6EEADA4AFC9229C2E270DA4598A2736F383F9A8D16C
-              940010D4AF4EF05792DE15D8821CF921E9998B181550A3C928012078026170EA
-              F8FFA262770E8093F76ABC496015CBF44FCD0170CA58C7C65965F07E572AD361
-              FA804AF54212CFD0C801FC73D506DB981253362527C813B3D3795273CA5A0FDF
-              19032058EC63D621806829C4FB9FD39AAC850AA1310680CF3FA4D5BFA5A40D6D
-              96BE7CE716012074286300C87D9C368B78BF0BED7321BCEE18C075AAEB047092
-              FCDB42012A12B739239C0763005EEA5CB2D78051863F3E3540D8AB8EF0C900BC
-              579B5D3CC98A965BB35A8816C06ECFF0464E81A6B935E66D7F0BA3C6518DD107
-              E6D2827339DA08E7D6D802DDCDC2252F5D8C769B37B95B7227E04B1E7D0B2A4C
-              BD787CF2A24093C290034005EC63FD0B971B095DDB84D186FC71D669D652E700
-              D8B3DB91A2002F25C0940C6A3EA76FA35927CA822500CCEBCACF67F44A54A721
-              35FADEE20CA2D99B5929409F12160C8AF4BD5276D5E165C8BF993581A8012020
-              2A081BEF9778C7CDA1E2D04AA39AF541FC3A0C510B6031911704646F58433C04
-              4ED014026F9F661053012C18FF57080F41828F25B92FCF2125A200954E7A34BD
-              09C42E01ECE44376DA3540186209002188A5004C865812C02488A50154432C11
-              A00F62B07B5D2A8087A087A285F1B7F9C385B26400EB78ED7F10BD97E6D201B2
-              37FD06903DA299276C0ACC7CC0D9E557AFC03D711588316245F5CB0000000049
-              454E44AE426082}
-          end>
-      end>
-    Left = 304
-    Top = 160
   end
 end

@@ -16,14 +16,14 @@ uses
 
 
   dmSCM2, dmCORE, dmIMG, uDefines, uEvent, AdvUtil, AdvObj, BaseGrid, AdvGrid,
-  DBAdvGrid;
+  DBAdvGrid,
+  uSettings, uSession, uAgeOfSwimmer, uNominee;
 
 
 type
   TEntrantPickerCTRL = class(TForm)
     dsQuickPickCtrl: TDataSource;
     qryQuickPickCtrl: TFDQuery;
-    ImageCollection1: TImageCollection;
     pnlHeader: TPanel;
     VirtualImage2: TVirtualImage;
     Nominate_Edit: TEdit;
@@ -38,6 +38,8 @@ type
     qryQuickPickCtrlGenderID: TIntegerField;
     qryQuickPickCtrlGenderStr: TWideStringField;
     qryQuickPickCtrlFName: TWideStringField;
+    qryQuickPickCtrlPB: TTimeField;
+    qryQuickPickCtrlAge: TIntegerField;
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnPostClick(Sender: TObject);
@@ -50,21 +52,17 @@ type
     { Private declarations }
     fToggleNameState: boolean;
     fID: Integer; // Either EntrantID or TeamEntrantID
-    fEventID: Integer;
     fEventType: scmEventType;
     fPanelBgColor: TColor;
-    FConnection: TFDConnection;
     prefUseDefRaceTime: boolean;
     prefRaceTimeTopPercent: double;
     prefHeatAlgorithm: Integer;
     ToggleState: Array [0 .. 4] of boolean;
 
-    function AssertConnection(AConnection: TFDConnection): boolean;
     function UpdateEntrantData(): boolean;
     function LocateMemberID(AMemberID: Integer; ADataSet: TDataSet): boolean;
     procedure UpdateGridTitleBar(ColumnID: Integer);
-//    function NormalizeDistanceID(aDistanceID: integer): integer;
-//    function GetEventDistanceID(aEventID: integer): integer;
+    function GetSeedDate: TDateTime;
 
 
   public
@@ -83,13 +81,7 @@ uses uUtility, System.IniFiles;
 
 { TEntrantPickerCTRL }
 
-function TEntrantPickerCTRL.AssertConnection(AConnection
-  : TFDConnection): boolean;
-begin
-  result := false;
-  if Assigned(AConnection) then
-    if AConnection.Connected then result := true;
-end;
+
 
 procedure TEntrantPickerCTRL.btnCancelClick(Sender: TObject);
 begin
@@ -304,58 +296,96 @@ begin
 end;
 }
 
+function TEntrantPickerCTRL.GetSeedDate(): TDateTime;
+var
+  SeedDate: TDateTime;
+begin
+  result := Date;
+  seeddate := 0;
+  if Assigned(Settings) then
+  begin
+    case Settings.ab_SeedMethodIndx of
+    0:
+      SeedDate := uAgeOfSwimmer.Get31stDECDate;
+    1:
+      SeedDate := uSession.SessionDT;
+    2:
+      begin
+         if (Settings.CustomSeedDate <> 0) then
+          SeedDate := Settings.CustomSeedDate;
+      end;
+    end;
+  end;
+  if SeedDate <> 0 then
+  result := SeedDate;
+end;
+
+
 function TEntrantPickerCTRL.Prepare(LaneID: Integer): boolean;
 begin
   result := false;
   LockDrawing;
   // Grid.BeginUpdate
-  qryQuickPick.DisableControls;
+  qryQuickPickCtrl.DisableControls;
   try
-    qryQuickPick.Close();
-    qryQuickPick.ParamByName('EVENTID').AsInteger := uEvent.PK;
-    qryQuickPick.ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
-    qryQuickPick.Prepare();
-    qryQuickPick.Open();
-    if (qryQuickPick.Active) then
+    qryQuickPickCtrl.Close();
+    qryQuickPickCtrl.ParamByName('EVENTID').AsInteger := uEvent.PK;
+    qryQuickPickCtrl.ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
+    qryQuickPickCtrl.ParamByName('SEEDATE').AsDateTime := GetSeedDate();
+    qryQuickPickCtrl.Prepare();
+    qryQuickPickCtrl.Open();
+    if (qryQuickPickCtrl.Active) then
       result := true;
   finally
-    qryQuickPick.EnableControls;
+    qryQuickPickCtrl.EnableControls;
     // Grid.EndUpdate
     UnlockDrawing;
   end;
 end;
 
 function TEntrantPickerCTRL.UpdateEntrantData: boolean;
-//var
-//  nom: TSCMNom;
+var
+  NomineeID: integer;
+  MemberID: integer;
 begin
   result := false;
-  if not AssertConnection(FConnection) then exit;
-  if dsQuickPickCtrl.DataSet.IsEmpty then exit;
-  if (fID = 0) then exit;
-  if (fEventID = 0) then exit;
-  with dsQuickPickCtrl.DataSet do
+  NomineeID := 0;
+  if not qryQuickPickCtrl.Active then
   begin
-    // U P D A T E   N O M I N A T I O N S .
-//    nom := TSCMNom.CreateWithConnection(Self, FConnection);
-//    nom.NominateMember(FieldByName('MemberID').AsInteger, fEventID);
-//    nom.Free;
+    ModalResult := mrCancel;
+    exit;
+  end;
 
-    // U P D A T E   E N T R A N T D A T A .
-    FDCommandUpdateEntrant.Connection := FConnection;
-    FDCommandUpdateEntrant.ParamByName('MEMBERID').AsInteger :=
-      FieldByName('MemberID').AsInteger;
-    FDCommandUpdateEntrant.ParamByName('ID').AsInteger := fID;
-    FDCommandUpdateEntrant.ParamByName('TTB').AsTime := FieldByName('TTB')
-      .AsDateTime;
-    FDCommandUpdateEntrant.ParamByName('PB').AsTime := FieldByName('PB')
-      .AsDateTime;
-    FDCommandUpdateEntrant.ParamByName('EVENTTYPE').AsInteger :=
-      ord(fEventType);
+  CORE.qryLane.DisableControls;
+  CORE.qryNominee.DisableControls;
+  try
+  // U P D A T E   N O M I N A T I O N S .
+    begin
+      MemberID := qryQuickPickCtrl.FieldByName('MemberID').AsInteger;
+      NomineeID := uNominee.NewNominee(MemberID, uEvent.PK);
+    end;
 
-    FDCommandUpdateEntrant.Prepare;
-    FDCommandUpdateEntrant.Execute;
-    result := true;
+  // U P D A T E   L A N E   D A T A .
+    if (NomineeID <> 0) then
+    begin
+      try
+        CORE.qryLane.CheckBrowseMode; // finalize DB operations.
+        CORE.qryLane.Edit;
+        CORE.qryLane.FieldByName('NomineeID').AsInteger := NomineeID;
+        CORE.qryLane.Post;
+        ModalResult := mrOk;
+        result := true;
+      except on E: EFDDBEngineException do
+        begin
+          CORE.qryLane.Cancel;
+          ModalResult := mrCancel;
+        end;
+      end;
+    end;
+
+  finally
+    CORE.qryNominee.EnableControls;
+    CORE.qryLane.EnableControls;
   end;
 end;
 

@@ -5,6 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages,
   System.SysUtils, System.Variants, System.Classes, System.Actions,
+  System.UITypes,
 
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls,
   Vcl.WinXCtrls, Vcl.Grids, Vcl.ImgList, Vcl.ActnList, Vcl.Menus, Vcl.Buttons,
@@ -122,7 +123,8 @@ implementation
 
 uses
   uSwimClub, uSession, uEvent, uHeat, uLane, uNominee,
-  uPickerStage, dlgLaneColumnPicker, ASGEdit, uStateString;
+  dlgLaneColumnPicker, ASGEdit, uStateString,
+  dlgEntrantPicker, dlgEntrantPickerCTRL, dlgEntrantPickerEx;
 
 procedure TFrameLane.actnLn_GenericUpdate(Sender: TObject);
 var
@@ -299,45 +301,78 @@ procedure TFrameLane.gridEllipsClick(Sender: TObject; ACol, ARow: Integer; var
     S: string);
 var
   G: TDBAdvGrid;
-  stage: TPickerStage;
-  success: boolean;
+  mr: TModalResult;
   fld: TField;
+  dlg: TEntrantPicker;
+  dlgCTRL: TEntrantPickerCTRL;
 begin
-  success := false;
+  mr := mrCancel;
   G := TDBAdvGrid(Sender);
   fld := G.FieldAtColumn[ACol];
   if Assigned(fld) then
   begin
+    LockDrawing;
     G.BeginUpdate;
-    if (ARow >= G.FixedRows) then
-    begin
-      if fld.FieldName = 'FullName' then
+    try
+      if uEvent.GetEventType = etINDV then
       begin
-        stage := TPickerStage.Create(Self);
-        if ((GetKeyState(VK_CONTROL) and 128) = 128) then
-          // List members pool for nomination and entrant assignment.
-          success := stage.Stage(uEvent.GetEventType,  uLane.PK, true)
-        else
-          // List nominee pool for entrant assignment
-          success := stage.Stage(uEvent.GetEventType,  uLane.PK, false);
-        stage.free;
-      end;
-      if fld.FieldName = 'RecordTime' then
+        // Entrant Picker...
+        if fld.FieldName = 'FullName' then
+        begin
+          if ((GetKeyState(VK_CONTROL) and 128) = 128) then
+          begin
+            // List members pool for nomination and entrant assignment.
+            dlgCTRL := TEntrantPickerCTRL.Create(Self);
+            dlgCTRL.Prepare(uLane.PK);
+            mr := dlgCTRL.ShowModal;
+            dlgCTRL.Free;
+          end
+          else
+            // List nominee pool for entrant assignment
+            dlg := TEntrantPicker.Create(Self);
+            dlg.Prepare(uLane.PK);
+            mr := dlg.ShowModal;
+            dlg.Free;
+        end;
+
+        // Record Time information.
+        if fld.FieldName = 'RecordTime' then
+        begin
+          // display a balloon hint with details on record,
+          // who swum the time, the date, age, gender, etc
+          ;
+        end;
+      end
+
+      else if uEvent.GetEventType = etTEAM then
       begin
-        // display a balloon hint with details on record
-        // who swum the time, the date, age, gender, etc
-        ;
+        ; {TODO -oBSA -cTEAM : Open the TEAM Picker DLG}
+        {
+          if ((GetKeyState(VK_CONTROL) and 128) = 128) then
+          begin
+            // List archived teams for nomination and assignment.
+            dlgTEAMCTRL := TTeamPickerCTRL.Create(Self);
+            dlgTEAMCTRL.Prepare(uLane.PK);
+            mr := dlgTEAMCTRL.ShowModal;
+            dlgTEAMCTRL.Free;
+          end
+          else
+            // List session teams for assignment
+            dlgTEAM := TteamPicker.Create(Self);
+            dlgTEAM.Prepare(uLane.PK);
+            mr := dlgTEAM.ShowModal;
+            dlgTEAM.Free;
+        }
       end;
+
+    finally
+      if IsPositiveResult(mr) then
+        CORE.qryLane.Refresh;
+      G.EndUpdate;
+      UnlockDrawing;
     end;
-    if success then
-      CORE.qryLane.Refresh;
-    G.EndUpdate;
   end;
 
-  if Success then
-  begin
-    // Update date main for metrics? (post status message, etc... )
-  end;
 end;
 
 

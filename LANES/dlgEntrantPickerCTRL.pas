@@ -5,6 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages,
   System.SysUtils, System.Variants, System.Classes, System.Actions,
+  System.UITypes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ActnList,
   Vcl.StdCtrls, Vcl.Grids, Vcl.DBGrids,
   Vcl.BaseImageCollection, Vcl.ImageCollection, Vcl.VirtualImage,
@@ -26,7 +27,7 @@ type
     qryQuickPickCtrl: TFDQuery;
     pnlHeader: TPanel;
     VirtualImage2: TVirtualImage;
-    Nominate_Edit: TEdit;
+    edtSearch: TEdit;
     pnlBody: TPanel;
     pnlCntrl: TPanel;
     btnCancel: TButton;
@@ -44,24 +45,19 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure btnPostClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
-    procedure DBGrid1DblClick(Sender: TObject);
     procedure btnToggleNameClick(Sender: TObject);
-    procedure DBGrid1TitleClick(Column: TColumn);
-    procedure Nominate_EditChange(Sender: TObject);
+    procedure GridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
+        State: TGridDrawState);
+    procedure edtSearchChange(Sender: TObject);
+    procedure GridClickCell(Sender: TObject; ARow, ACol: Integer);
   private
     { Private declarations }
     fToggleNameState: boolean;
-    fID: Integer; // Either EntrantID or TeamEntrantID
-    fEventType: scmEventType;
-    fPanelBgColor: TColor;
-    prefUseDefRaceTime: boolean;
-    prefRaceTimeTopPercent: double;
-    prefHeatAlgorithm: Integer;
-    ToggleState: Array [0 .. 4] of boolean;
+    fLaneID: Integer;
+    SortState: Array [0 .. 4] of integer;
 
     function UpdateEntrantData(): boolean;
     function LocateMemberID(AMemberID: Integer; ADataSet: TDataSet): boolean;
-    procedure UpdateGridTitleBar(ColumnID: Integer);
     function GetSeedDate: TDateTime;
 
 
@@ -113,79 +109,13 @@ begin
   end;
 end;
 
-procedure TEntrantPickerCTRL.DBGrid1DblClick(Sender: TObject);
-var
-  Pt: TPoint;
-  Coord: TGridCoord;
-begin
-  // if titles are enabled - check that the double click didn't
-  // occur in the title bar.
-  if (dgTitles in TDBGrid(Sender).Options) then
-  begin
-    Pt := TDBGrid(Sender).ScreenToClient(Mouse.CursorPos);
-    Coord := TDBGrid(Sender).MouseCoord(Pt.X, Pt.Y);
-    // row zero is title bar.
-    if (Coord.Y <> 0) then btnPostClick(Sender);
-  end
-  else btnPostClick(Sender);
-end;
-
-procedure TEntrantPickerCTRL.DBGrid1TitleClick(Column: TColumn);
-begin
-  // toggle the state of ASC or DESC.
-  ToggleState[Column.ID] := not ToggleState[Column.ID];
-  UpdateGridTitleBar(Column.ID);
-end;
-
 procedure TEntrantPickerCTRL.FormCreate(Sender: TObject);
 var
-  iniFileName: String;
-  ifile: TIniFile;
-  i: Integer;
-  css: TCustomStyleServices;
+  I: integer;
 begin
-
-  prefUseDefRaceTime := true;
-  prefRaceTimeTopPercent := 50.0;
-  prefHeatAlgorithm := 1; // Base is zero
-  fID := 0;
-  fEventType := etUnknown;
-  // ---------------------------------------------------------
-  // A S S I G N   P R E F E R E N C E S ...
-  // ---------------------------------------------------------
-  iniFileName := GetSCMPreferenceFileName();
-  if (FileExists(iniFileName)) then
-  begin
-    ifile := TIniFile.Create(iniFileName);
-    // if TTB is 0 - use the def qualify time + percent....
-    // reading integer resolves tri-states used by check boxes.
-    i := ifile.ReadInteger('Preferences', 'UseDefRaceTime', 1);
-    if i = 1 then prefUseDefRaceTime := true
-    else prefUseDefRaceTime := false;
-
-    prefRaceTimeTopPercent := ifile.ReadFloat('Preferences',
-      'RaceTimeTopPercent', 50);
-    // TTB defaults to (1) .. the entrant's average of top 3 race-times
-    // Base is zero
-    prefHeatAlgorithm := ifile.ReadInteger('Preferences', 'HeatAlgorithm', 1);
-    ifile.Free;
-  end;
-
-  // Color assignment to custom paint closed sessions in grid.
-  // -------------------------------------------
-  css := TStyleManager.Style[TStyleManager.ActiveStyle.Name];
-  if Assigned(css) then
-  begin
-    fPanelBgColor := css.GetSystemColor(clActiveCaption);
-  end
-  else
-  begin
-    fPanelBgColor := clActiveCaption;
-  end;
-//  Panel1.Color := fPanelBgColor;
-
-  UpdateGridTitleBar(0);
-
+  fLaneID := 0;
+  for I := 0 to Length(SortState)-1 do
+    SortState[I] := 0;
 end;
 
 procedure TEntrantPickerCTRL.FormKeyDown(Sender: TObject; var Key: Word;
@@ -193,22 +123,6 @@ procedure TEntrantPickerCTRL.FormKeyDown(Sender: TObject; var Key: Word;
 begin
   if (Key = VK_ESCAPE) then ModalResult := mrCancel;
 end;
-
-{
-function TEntrantPickerCTRL.GetEventDistanceID(aEventID: integer): integer;
-var
-SQL: string;
-v: variant;
-begin
-  result := 0;
-  if not AssertConnection(FConnection) then exit;
-  SQL := 'SELECT [DistanceID] FROM [SwimClubMeet].[dbo].[Event] '
-  + 'WHERE [Event].[EventID] = :ID';
-  v := FConnection.ExecSQLScalar(SQL, [aEventID]);
-  if VarIsNull(v) or VarIsEmpty(v) or (v = 0) then exit;
-  result := v;
-end;
-}
 
 function TEntrantPickerCTRL.LocateMemberID(AMemberID: Integer;
   ADataSet: TDataSet): boolean;
@@ -223,78 +137,37 @@ begin
   end;
 end;
 
-procedure TEntrantPickerCTRL.Nominate_EditChange(Sender: TObject);
+procedure TEntrantPickerCTRL.edtSearchChange(Sender: TObject);
 var
   fs: string;
 begin
-  with dsQuickPickCtrl.DataSet do
-  begin
-    if Active then
-    begin
-      fs := '';
-      DisableControls;
-      // update filter string ....
-      if (Length(Nominate_Edit.Text) > 0) then
-      begin
-        fs := fs + '[FName] LIKE ' + QuotedStr('%' + Nominate_Edit.Text + '%');
-      end;
-      // assign filter
-      if fs.IsEmpty then Filtered := false
-      else
-      begin
-        Filter := fs;
-        if not Filtered then Filtered := true;
-      end;
-      EnableControls;
-    end;
-  end;
-end;
+  if not qryQuickPickCtrl.Active then exit;
 
-{
-function TEntrantPickerCTRL.NormalizeDistanceID(aDistanceID: integer): integer;
-var
-  tbl: TFDTable;
-  SearchOptions: TLocateOptions;
-  foundit: Boolean;
-  meters, aEventTypeID: integer;
-begin
-  result := 0; // Flags - failed to normalize.
-  if not Assigned(fConnection) then exit;
-  tbl := TFDTable.Create(self);
-  tbl.TableName := 'SwimClubMeet..Distance';
-  tbl.Connection := FConnection;
-  tbl.IndexFieldNames := 'DistanceID';
-  tbl.UpdateOptions.ReadOnly := true;
-  tbl.Open;
-  if tbl.Active then
-  Begin
-    // locate the
-    foundit := tbl.Locate('DistanceID', aDistanceID, SearchOptions);
-    if foundit then
+  fs := '';
+  qryQuickPickCtrl.DisableControls;
+  grid.BeginUpdate;
+  LockDrawing;
+  try
+    // update filter string ....
+    if (Length(edtSearch.Text) > 0) then
+      fs := '[FName] LIKE ' + QuotedStr('%' + edtSearch.Text + '%');
+    // assign filter
+    if fs.IsEmpty then
+      qryQuickPickCtrl.Filtered := false
+    else
     begin
-      meters := tbl.FieldByName('Meters').AsInteger;
-      aEventTypeID := tbl.FieldByName('EventTypeID').AsInteger;
-      if aEventTypeID = 1 then // INDV EVENT
-          result := aDistanceID
-      else if aEventTypeID = 2 then // TEAM EVENT
-      Begin
-        // Total meters divided by number of swimmers.
-        // It's ASSUMED that relays have 4 swimmer (Olympic Standard).
-        meters := (meters div 4);
-        // XReference : The distance swum by each swimmer in the relay.
-        // Result is the ID of a INDV event.
-        foundit := tbl.Locate('Meters; EventTypeID', VarArrayOf([meters, 1]),
-          SearchOptions);
-        // This normalized distance is required/used by scalar
-        // functions dbo.TTB and dbo.PB
-        if foundit then result := tbl.FieldByName('DistanceID').AsInteger;
-      End;
+      qryQuickPickCtrl.Filter := fs;
+      if not qryQuickPickCtrl.Filtered then
+        qryQuickPickCtrl.Filtered := true;
     end;
-  End;
-  tbl.Close;
-  tbl.Free;
+
+  finally
+    qryQuickPickCtrl.EnableControls;
+    grid.EndUpdate;
+    UnlockDrawing;
+  end;
+
 end;
-}
 
 function TEntrantPickerCTRL.GetSeedDate(): TDateTime;
 var
@@ -320,6 +193,157 @@ begin
   result := SeedDate;
 end;
 
+procedure TEntrantPickerCTRL.GridClickCell(Sender: TObject; ARow, ACol:
+    Integer);
+var
+  G: TDBAdvGrid;
+  item: TDBGridColumnItem;
+  MemberID: integer;
+begin
+  G := TDBAdvGrid(Sender);
+  MemberID := 0;
+  if (ARow = 0) then // GRID's HEADER BAR.
+  begin
+    // Best practise to deal withsorted columns.
+    item := G.Columns[ACol];
+    if not Assigned(item) then exit;
+
+    LockDrawing;
+    grid.BeginUpdate;
+    try
+      MemberID := qryQuickPickCtrl.FieldByName('MemberID').AsInteger;
+
+
+      if (item.FieldName = 'FName') then
+      begin
+        INC(SortState[ACol]);
+        if SortState[ACol] > 2 then SortState[ACol] := 0;
+        case SortState[ACol] of
+        0:
+          qryQuickPickCtrl.IndexName := 'idxUnSorted';
+        1:
+          qryQuickPickCtrl.IndexName := 'idxMemberFName';
+        2:
+          qryQuickPickCtrl.IndexName := 'idxMemberFNameDESC';
+        end;
+      end
+
+      else if (item.FieldName = 'GenderStr') then
+      begin
+        INC(SortState[ACol]);
+        if SortState[ACol]  > 2 then SortState[ACol] := 0;
+        case SortState[ACol] of
+        0:
+          qryQuickPickCtrl.IndexName := 'idxUnSorted';
+        1:
+          qryQuickPickCtrl.IndexName := 'idxGender';
+        2:
+          qryQuickPickCtrl.IndexName := 'idxGenderDESC';
+        end;
+      end
+
+      else if (item.FieldName = 'PB') then
+      begin
+        INC(SortState[ACol]);
+        if SortState[ACol]  > 2 then SortState[ACol] := 0;
+        case SortState[ACol] of
+        0:
+          qryQuickPickCtrl.IndexName := 'idxUnSorted';
+        1:
+          qryQuickPickCtrl.IndexName := 'idxPB';
+        2:
+          qryQuickPickCtrl.IndexName := 'idxPBDESC';
+        end;
+      end
+
+      else if (item.FieldName = 'AGE') then
+      begin
+        INC(SortState[ACol]);
+        if SortState[ACol]  > 2 then SortState[ACol] := 0;
+        case SortState[ACol] of
+        0:
+          qryQuickPickCtrl.IndexName := 'idxUnSorted';
+        1:
+          qryQuickPickCtrl.IndexName := 'idxAge';
+        2:
+          qryQuickPickCtrl.IndexName := 'idxAgeDESC';
+        end;
+      end
+
+      else
+        qryQuickPickCtrl.IndexName := 'idxUnSorted';
+
+    finally
+
+      if not qryQuickPickCtrl.Filtered then qryQuickPickCtrl.Filtered := true;
+
+      if qryQuickPickCtrl.FieldByName('MemberID').AsInteger <> MemberID then
+        LocateMemberID(MemberID, qryQuickPickCtrl);
+
+      grid.EndUpdate;
+      UnlockDrawing;
+    end;
+
+
+  end;
+
+end;
+
+procedure TEntrantPickerCTRL.GridDrawCell(Sender: TObject; ACol, ARow: LongInt;
+    Rect: TRect; State: TGridDrawState);
+var
+  G: TDBAdvGrid;
+  item: TDBGridColumnItem;
+begin
+  G := TDBAdvGrid(Sender);
+  if (ARow = 0) then // GRID's HEADER BAR.
+  begin
+    // Best practise to deal withsorted columns.
+    item := G.Columns[ACol];
+
+    // Member's name - green member badge.
+    if (item.FieldName = 'FName') then
+    begin
+      IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 8);
+
+      if qryQuickPickCtrl.IndexName = 'idxMemberFName' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 28, Rect.top + 4, 9)
+      else if qryQuickPickCtrl.IndexName = 'idxMemberFNameDESC' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 28, Rect.top + 4, 10);
+    end
+
+    // Gender M,Y,X - tomatoe red uni-gender symbol
+    else if item.FieldName = 'GenderStr' then
+    begin
+      IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 3);
+
+      if qryQuickPickCtrl.IndexName = 'idxGender' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 28, Rect.top + 4, 9)
+      else if qryQuickPickCtrl.IndexName = 'idxGenderDESC' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 28, Rect.top + 4, 10);
+    end
+
+    // AGE
+    else if item.FieldName = 'AGE' then
+    begin
+      if qryQuickPickCtrl.IndexName = 'idxAge' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 9)
+      else if qryQuickPickCtrl.IndexName = 'idxAgeDESC' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 10);
+    end
+
+    // Personal Best
+    else if item.FieldName = 'PB' then
+    begin
+      if qryQuickPickCtrl.IndexName = 'idxPB' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 9)
+      else if qryQuickPickCtrl.IndexName = 'idxPBDESC' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 10);
+    end;
+
+  end;
+end;
+
 
 function TEntrantPickerCTRL.Prepare(LaneID: Integer): boolean;
 begin
@@ -334,8 +358,15 @@ begin
     qryQuickPickCtrl.ParamByName('SEEDATE').AsDateTime := GetSeedDate();
     qryQuickPickCtrl.Prepare();
     qryQuickPickCtrl.Open();
+
+
     if (qryQuickPickCtrl.Active) then
+    begin
+      qryQuickPickCtrl.IndexName := 'idxUnSorted';
+      if not qryQuickPickCtrl.Filtered then qryQuickPickCtrl.Filtered := true;
       result := true;
+    end;
+
   finally
     qryQuickPickCtrl.EnableControls;
     // Grid.EndUpdate
@@ -349,7 +380,6 @@ var
   MemberID: integer;
 begin
   result := false;
-  NomineeID := 0;
   if not qryQuickPickCtrl.Active then
   begin
     ModalResult := mrCancel;
@@ -359,28 +389,29 @@ begin
   CORE.qryLane.DisableControls;
   CORE.qryNominee.DisableControls;
   try
-  // U P D A T E   N O M I N A T I O N S .
+    // U P D A T E   N O M I N A T I O N S .
     begin
       MemberID := qryQuickPickCtrl.FieldByName('MemberID').AsInteger;
       NomineeID := uNominee.NewNominee(MemberID, uEvent.PK);
-    end;
 
-  // U P D A T E   L A N E   D A T A .
-    if (NomineeID <> 0) then
-    begin
-      try
-        CORE.qryLane.CheckBrowseMode; // finalize DB operations.
-        CORE.qryLane.Edit;
-        CORE.qryLane.FieldByName('NomineeID').AsInteger := NomineeID;
-        CORE.qryLane.Post;
-        ModalResult := mrOk;
-        result := true;
-      except on E: EFDDBEngineException do
-        begin
-          CORE.qryLane.Cancel;
-          ModalResult := mrCancel;
+      // U P D A T E   L A N E   D A T A .
+      if (NomineeID <> 0) then
+      begin
+        try
+          CORE.qryLane.CheckBrowseMode; // finalize DB operations.
+          CORE.qryLane.Edit;
+          CORE.qryLane.FieldByName('NomineeID').AsInteger := NomineeID;
+          CORE.qryLane.Post;
+          ModalResult := mrOk;
+          result := true;
+        except on E: EFDDBEngineException do
+          begin
+            CORE.qryLane.Cancel;
+            ModalResult := mrCancel;
+          end;
         end;
       end;
+
     end;
 
   finally
@@ -389,27 +420,6 @@ begin
   end;
 end;
 
-procedure TEntrantPickerCTRL.UpdateGridTitleBar(ColumnID: Integer);
-var
-  idx: Integer;
-  s: string;
-begin
-  Grid.Columns[0].Header := 'Nominees';
-  Grid.Columns[1].Header := 'TimeToBeat';
-  Grid.Columns[2].Header := 'Personal Best';
-  Grid.Columns[3].Header := 'AGE';
-  Grid.Columns[4].Header := 'Gender';
 
-  // This cryptic method works provided all indexes are listed in the
-  // correct order and all are active...
-  //
-  idx := (ColumnID * 2) + Integer(ToggleState[ColumnID]);
-  qryQuickPickCtrl.Indexes[idx].Selected := true;
-  if ToggleState[ColumnID] then s := (#$02C4 + ' ')
-  else s := (#$02C5 + ' ');
-
-  Grid.Columns[ColumnID].Header := s + Grid.Columns[ColumnID]
-    .Header;
-end;
 
 end.

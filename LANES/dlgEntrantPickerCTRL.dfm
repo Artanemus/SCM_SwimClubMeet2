@@ -24,7 +24,6 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 818
     object VirtualImage2: TVirtualImage
       Left = 8
       Top = 2
@@ -37,13 +36,13 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       ImageName = 'Search'
       Enabled = False
     end
-    object Nominate_Edit: TEdit
+    object edtSearch: TEdit
       Left = 48
       Top = 11
       Width = 249
       Height = 27
       TabOrder = 0
-      OnChange = Nominate_EditChange
+      OnChange = edtSearchChange
     end
   end
   object pnlBody: TPanel
@@ -54,8 +53,6 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 818
-    ExplicitHeight = 656
     object pnlCntrl: TPanel
       Left = 577
       Top = 0
@@ -66,8 +63,6 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       Color = clDarkslategray
       ParentBackground = False
       TabOrder = 0
-      ExplicitLeft = 696
-      ExplicitHeight = 656
       object btnCancel: TButton
         Left = 10
         Top = 47
@@ -107,8 +102,6 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitWidth = 696
-      ExplicitHeight = 656
       object Grid: TDBAdvGrid
         Left = 0
         Top = 0
@@ -132,9 +125,11 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
+        OnDrawCell = GridDrawCell
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
+        OnClickCell = GridClickCell
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
         ActiveCellFont.Height = -12
@@ -298,6 +293,7 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
             HeaderFont.Height = -16
             HeaderFont.Name = 'Tahoma'
             HeaderFont.Style = []
+            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clWindowText
@@ -324,6 +320,7 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
             HeaderFont.Height = -16
             HeaderFont.Name = 'Tahoma'
             HeaderFont.Style = []
+            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clWindowText
@@ -379,6 +376,7 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
             HeaderFont.Height = -16
             HeaderFont.Name = 'Tahoma'
             HeaderFont.Style = []
+            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clBlack
@@ -525,8 +523,6 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
-        ExplicitWidth = 696
-        ExplicitHeight = 656
         ColWidths = (
           20
           265
@@ -572,6 +568,33 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
         Name = 'idxGenderDESC'
         Fields = 'GenderID'
         Options = [soDescNullLast, soDescending]
+      end
+      item
+        Active = True
+        Name = 'idxUnSorted'
+        Fields = 'MemberID'
+      end
+      item
+        Active = True
+        Name = 'idxAge'
+        Fields = 'Age'
+      end
+      item
+        Active = True
+        Name = 'idxAgeDESC'
+        Fields = 'Age'
+        DescFields = 'Age'
+      end
+      item
+        Active = True
+        Name = 'idxPB'
+        Fields = 'PB'
+      end
+      item
+        Active = True
+        Name = 'idxPBDESC'
+        Fields = 'PB'
+        DescFields = 'PB'
       end>
     IndexName = 'idxMemberFName'
     DetailFields = 'MemberID'

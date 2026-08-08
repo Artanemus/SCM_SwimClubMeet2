@@ -78,7 +78,6 @@ uses
   dlgLaneColumnPicker in 'LANES\dlgLaneColumnPicker.pas' {LaneColumnPicker},
   dlgTeamPicker in 'LANES\dlgTeamPicker.pas' {TeamPicker},
   dlgTeamPickerCTRL in 'LANES\dlgTeamPickerCTRL.pas' {TeamPickerCTRL},
-  uPickerStage in 'LANES\uPickerStage.pas',
   dlgEditSession in 'SESSIONS\dlgEditSession.pas' {EditSession},
   dlgNewSession in 'SESSIONS\dlgNewSession.pas' {NewSession},
   dmSCM2 in 'DATA\dmSCM2.pas' {SCM2: TDataModule},

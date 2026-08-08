@@ -378,7 +378,6 @@
             <Form>TeamPickerCTRL</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="LANES\uPickerStage.pas"/>
         <DCCReference Include="SESSIONS\dlgEditSession.pas">
             <Form>EditSession</Form>
             <FormType>dfm</FormType>

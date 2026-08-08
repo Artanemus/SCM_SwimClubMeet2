@@ -2825,6 +2825,23 @@ object IMG: TIMG
           '288 2.013t.862 1.837L12 22l-1.5-1.5L9 22l-1.5-1.5L6 22l-1.5-1.5z' +
           '"/></svg>'
         FixedColor = clDarkgoldenrod
+      end
+      item
+        IconName = 'download-2-outline'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M4 22v-2h16v2z' +
+          'm8-4L5 9h4V2h6v7h4zm0-3.25L14.9 11H13V4h-2v7H9.1zM12 11"/></svg>'
+        FixedColor = clDarkgoldenrod
+      end
+      item
+        IconName = 'upload-2-outline'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M4 22v-2h16v2z' +
+          'm5-4v-7H5l7-9l7 9h-4v7zm2-2h2V9h1.9L12 5.25L9.1 9H11zm1-7"/></sv' +
+          'g>'
+        FixedColor = clDarkgoldenrod
       end>
     Left = 496
     Top = 16
@@ -14786,6 +14803,21 @@ object IMG: TIMG
         CollectionIndex = 102
         CollectionName = 'INDV_RELAY'
         Name = 'INDV_RELAY'
+      end
+      item
+        CollectionIndex = 105
+        CollectionName = 'Members'
+        Name = 'Members'
+      end
+      item
+        CollectionIndex = 123
+        CollectionName = 'download-2-outline'
+        Name = 'download-2-outline'
+      end
+      item
+        CollectionIndex = 124
+        CollectionName = 'upload-2-outline'
+        Name = 'upload-2-outline'
       end>
     ImageCollection = CollectionCore
     Width = 24

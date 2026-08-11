@@ -22,8 +22,8 @@ uses
 
   AdvUtil, AdvObj, BaseGrid,  AdvGrid, DBAdvGrid,
 
-  dmSCM2, dmCORE, dmIMG, uDefines, uSettings;
-  
+  dmSCM2, dmCORE, dmIMG, uDefines,
+  uSettings, uSession, uAgeOfSwimmer;
 type
 
   TEntrantPicker = class(TForm)
@@ -31,8 +31,8 @@ type
     btnPost: TButton;
     btnToggleName: TButton;
     dsQuickPick: TDataSource;
-    Grid: TDBAdvGrid;
     edtSearch: TEdit;
+    Grid: TDBAdvGrid;
     pnlBody: TPanel;
     pnlCntrl: TPanel;
     pnlGrid: TPanel;
@@ -51,28 +51,24 @@ type
     procedure btnCancelClick(Sender: TObject);
     procedure btnPostClick(Sender: TObject);
     procedure btnToggleNameClick(Sender: TObject);
+    procedure edtSearchChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure GridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
-        Boolean);
+    procedure GridClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure GridDblClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure GridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
         State: TGridDrawState);
-    procedure GridFixedCellClick(Sender: TObject; ACol, ARow: LongInt);
-    procedure GridGetCellColor(Sender: TObject; ARow, ACol: Integer; AState:
-        TGridDrawState; ABrush: TBrush; AFont: TFont);
-    procedure edtSearchChange(Sender: TObject);
     procedure qryQuickPickPBGetText(Sender: TField; var Text: string; DisplayText:
         Boolean);
     procedure qryQuickPickTTBGetText(Sender: TField; var Text: string; DisplayText:
         Boolean);
   private
-    fActiveSortCol: integer;
+    fLaneID: integer;
     fToggleNameState: boolean;
     // 6 grid columns containing TriState: unsorted, ascend, descend.
-    TSortState: Array [0 .. 5] of scmSortState;
-    procedure SortGrid(aActiveSortCol: Integer);
-    procedure ToogleSortState(indx: integer);
+    SortState: Array [0 .. 5] of integer;
+    function LocateNomineeID(ANomineeID: Integer; ADataSet: TDataSet): boolean;
+    function UpdateEntrantData(): boolean;
   public
     function Prepare(LaneID: Integer): boolean;
   end;
@@ -92,76 +88,79 @@ begin
 end;
 
 procedure TEntrantPicker.btnPostClick(Sender: TObject);
-var
-  aNomineeID: integer;
 begin
   if not qryQuickPick.Active then exit;
-  CORE.qryLane.DisableControls;
-  CORE.qryNominee.DisableControls;
-  try
-    begin
-      // grid and DB are syncronized.
-      aNomineeID := qryQuickPick.FieldByName('NomineeID').AsInteger;
-      if (aNomineeID <> 0) then
-      begin
-        try
-          CORE.qryLane.CheckBrowseMode; // finalize DB operations.
-          CORE.qryLane.Edit;
-          CORE.qryLane.FieldByName('NomineeID').AsInteger := aNomineeID;
-          CORE.qryLane.Post;
-          ModalResult := mrOk
-        except on E: EFDDBEngineException do
-          begin
-            CORE.qryLane.Cancel;
-            ModalResult := mrCancel;
-          end;
-        end;
-      end;
-    end;
-  finally
-    CORE.qryNominee.EnableControls;
-    CORE.qryLane.EnableControls;
-  end;
+  if UpdateEntrantData then
+  ModalResult := mrOk else ModalResult := mrCancel;
 end;
 
 procedure TEntrantPicker.btnToggleNameClick(Sender: TObject);
 var
-  aNomineeID: Integer;
+  NomineeID: Integer;
 begin
   fToggleNameState := not fToggleNameState;
-  with dsQuickPick.DataSet as TFDQuery do
-  begin
-    aNomineeID := FieldByName('NomineeID').AsInteger;
-    LockDrawing;
-    Grid.BeginUpdate;
-    DisableControls;
-    try
-      Close;
-      ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
-      Prepare;
-      Open;
-      if (Active) then uLane.LocateOnNominee(aNomineeID);
-    finally
-      EnableControls();
-      Grid.EndUpdate;
-      UnLockdrawing;
+
+  NomineeID := qryQuickPick.FieldByName('NomineeID').AsInteger;
+  LockDrawing;
+  grid.BeginUpdate;
+  qryQuickPick.DisableControls;
+  try
+    qryQuickPick.Close;
+    qryQuickPick.ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
+    qryQuickPick.Prepare;
+    qryQuickPick.Open;
+    if (qryQuickPick.Active) then
+    begin
+      if (NomineeID <> 0) and
+      (qryQuickPick.FieldByName('MemberID').AsInteger <> NomineeID) then
+        LocateNomineeID(NomineeID, qryQuickPick);
     end;
+  finally
+    qryQuickPick.EnableControls();
+    grid.EndUpdate;
+    UnlockDrawing;
   end;
 end;
 
-procedure TEntrantPicker.FormCreate(Sender: TObject);
+procedure TEntrantPicker.edtSearchChange(Sender: TObject);
+var
+  fs: string;
 begin
-  fActiveSortCol := -1;
+  if not qryQuickPick.Active then exit;
 
-  // assert connection ?
-  if Assigned(SCM2) and SCM2.scmConnection.Connected then
-  begin
-    qryQuickPick.Connection := SCM2.scmConnection;
-  end
-  else
-    Close;
+  fs := '';
+  qryQuickPick.DisableControls;
+  grid.BeginUpdate;
+  LockDrawing;
+  try
+    // update filter string ....
+    if (Length(edtSearch.Text) > 0) then
+      fs := '[FName] LIKE ' + QuotedStr('%' + edtSearch.Text + '%');
+    // assign filter
+    if fs.IsEmpty then
+      qryQuickPick.Filtered := false
+    else
+    begin
+      qryQuickPick.Filter := fs;
+      if not qryQuickPick.Filtered then
+        qryQuickPick.Filtered := true;
+    end;
 
-  grid.Options := grid.Options + [goRowSelect];
+  finally
+    qryQuickPick.EnableControls;
+    grid.EndUpdate;
+    UnlockDrawing;
+  end;
+
+end;
+
+procedure TEntrantPicker.FormCreate(Sender: TObject);
+var
+  I: integer;
+begin
+  fLaneID := 0;
+  for I := 0 to Length(SortState)-1 do
+    SortState[I] := 0;
 end;
 
 procedure TEntrantPicker.FormKeyDown(Sender: TObject; var Key: Word;
@@ -170,10 +169,112 @@ begin
   if (Key = VK_ESCAPE) then ModalResult := mrCancel;
 end;
 
-procedure TEntrantPicker.GridCanEditCell(Sender: TObject; ARow, ACol:
-    Integer; var CanEdit: Boolean);
+procedure TEntrantPicker.GridClickCell(Sender: TObject; ARow, ACol: Integer);
+var
+  G: TDBAdvGrid;
+  item: TDBGridColumnItem;
+  NomineeID: integer;
 begin
-  CanEdit := false; // grid is read-only...
+  G := TDBAdvGrid(Sender);
+  NomineeID := 0;
+  if (ARow = 0) then // GRID's HEADER BAR.
+  begin
+    // Best practise to deal withsorted columns.
+    item := G.Columns[ACol];
+    if not Assigned(item) then exit;
+
+    LockDrawing;
+    grid.BeginUpdate;
+    try
+      NomineeID := qryQuickPick.FieldByName('NomineeID').AsInteger;
+
+      if (item.FieldName = 'FName') then
+      begin
+        INC(SortState[ACol]);
+        if SortState[ACol] > 2 then SortState[ACol] := 0;
+        case SortState[ACol] of
+        0:
+          qryQuickPick.IndexName := 'idxUnSorted';
+        1:
+          qryQuickPick.IndexName := 'idxFName';
+        2:
+          qryQuickPick.IndexName := 'idxFNameDESC';
+        end;
+      end
+
+      else if (item.FieldName = 'GenderStr') then
+      begin
+        INC(SortState[ACol]);
+        if SortState[ACol]  > 2 then SortState[ACol] := 0;
+        case SortState[ACol] of
+        0:
+          qryQuickPick.IndexName := 'idxUnSorted';
+        1:
+          qryQuickPick.IndexName := 'idxGender';
+        2:
+          qryQuickPick.IndexName := 'idxGenderDESC';
+        end;
+      end
+
+      else if (item.FieldName = 'PB') then
+      begin
+        INC(SortState[ACol]);
+        if SortState[ACol]  > 2 then SortState[ACol] := 0;
+        case SortState[ACol] of
+        0:
+          qryQuickPick.IndexName := 'idxUnSorted';
+        1:
+          qryQuickPick.IndexName := 'idxPB';
+        2:
+          qryQuickPick.IndexName := 'idxPBDESC';
+        end;
+      end
+
+      else if (item.FieldName = 'TTB') then
+      begin
+        INC(SortState[ACol]);
+        if SortState[ACol]  > 2 then SortState[ACol] := 0;
+        case SortState[ACol] of
+        0:
+          qryQuickPick.IndexName := 'idxUnSorted';
+        1:
+          qryQuickPick.IndexName := 'idxTTB';
+        2:
+          qryQuickPick.IndexName := 'idxTTBDESC';
+        end;
+      end
+
+      else if (item.FieldName = 'AGE') then
+      begin
+        INC(SortState[ACol]);
+        if SortState[ACol]  > 2 then SortState[ACol] := 0;
+        case SortState[ACol] of
+        0:
+          qryQuickPick.IndexName := 'idxUnSorted';
+        1:
+          qryQuickPick.IndexName := 'idxAge';
+        2:
+          qryQuickPick.IndexName := 'idxAgeDESC';
+        end;
+      end
+
+      else
+        qryQuickPick.IndexName := 'idxUnSorted';
+
+    finally
+
+      if not qryQuickPick.Filtered then qryQuickPick.Filtered := true;
+
+      if (NomineeID <> 0) and
+        (qryQuickPick.FieldByName('MemberID').AsInteger <> NomineeID) then
+        LocateNomineeID(NomineeID, qryQuickPick);
+
+      grid.EndUpdate;
+      UnlockDrawing;
+    end;
+
+
+  end;
 end;
 
 procedure TEntrantPicker.GridDblClickCell(Sender: TObject; ARow, ACol: Integer);
@@ -186,101 +287,94 @@ procedure TEntrantPicker.GridDrawCell(Sender: TObject; ACol, ARow: LongInt;
     Rect: TRect; State: TGridDrawState);
 var
   G: TDBAdvGrid;
+  item: TDBGridColumnItem;
 begin
   G := TDBAdvGrid(Sender);
   if (ARow = 0) then
   begin
-    // Draw an indicator for the ActiveSortCol based on SortState.
-    // if SortState = stUnSorted then no sort idicator is drawn.
-    if fActiveSortCol = ACol then
+    // Best practise to deal withsorted columns.
+    item := G.Columns[ACol];
+
+    // Member's name - green member badge.
+    if (item.FieldName = 'FName') then
     begin
-      case TSortState[ACol] of
-        stAscend:
-          // Sort direction icon  UP.
-          IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 1, Rect.top + 4, 4);
-        stDescend:
-          // Sort direction icon DOWN.
-          IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 1, Rect.top + 4, 5);
-      end;
-    end;
-    // Special considerations...
-    case ACol of
-      5: // G E N D E R ...
-      begin
-        case TSortState[ACol] of
-        stUnsorted:
-          // centered gender icon...
-          IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 6, Rect.top + 4, 3);
-        stAscend, stDescend:
-          // move gender icon to right of sort direction icon.
-          IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 26, Rect.top + 4, 3)
-        end;
-      end;
-    end;
-  end;
-end;
+      IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 28, Rect.top + 4, 1);
 
-procedure TEntrantPicker.GridFixedCellClick(Sender: TObject; ACol, ARow:
-    LongInt);
-begin
-  if fActiveSortCol <> ACol  then
-  begin
-    fActiveSortCol := ACol; // Select col but only toggle on next click...
-    TSortState[ACol] := stUnSorted;
-  end
-  else
-  begin
-    if ACol <> 0 then // index column always unsorts the grid.
-      ToogleSortState(ACol);
-  end;
-  SortGrid(ACol);
-end;
-
-procedure TEntrantPicker.GridGetCellColor(Sender: TObject; ARow, ACol: Integer;
-    AState: TGridDrawState; ABrush: TBrush; AFont: TFont);
-begin
-  if ARow = 0 then
-  begin
-    if TSortState[ACol] in [stAscend, stDescend] then
-      ABrush.Color := clWebDarkGoldenRod;
-  end;
-end;
-
-procedure TEntrantPicker.edtSearchChange(Sender: TObject);
-var
-  fs: string;
-begin
-  with dsQuickPick.DataSet do
-  begin
-    fs := '';
-    LockDrawing;
-    Grid.BeginUpdate;
-    DisableControls;
-    try
-      // update filter string ....
-      if (Length(edtSearch.Text) > 0) then
-      begin
-        fs := fs + '[FName] LIKE ' + QuotedStr('%' + edtSearch.Text + '%');
-      end;
-      // assign filter
-      if fs.IsEmpty then Filtered := false
+      if qryQuickPick.IndexName = 'idxFName' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 9)
+      else if qryQuickPick.IndexName = 'idxFNameDESC' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 10)
       else
-      begin
-        Filter := fs;
-        if not Filtered then Filtered := true;
-      end;
-    finally
-      EnableControls;
-      Grid.EndUpdate;
-      UnLockDrawing;
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 11);
+    end
+
+    // Gender M,Y,X - tomatoe red uni-gender symbol
+    else if item.FieldName = 'GenderStr' then
+    begin
+      IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 28, Rect.top + 4, 3);
+
+      if qryQuickPick.IndexName = 'idxGender' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 9)
+      else if qryQuickPick.IndexName = 'idxGenderDESC' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 10)
+      else
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 11);
+    end
+
+    // AGE
+    else if item.FieldName = 'AGE' then
+    begin
+      if qryQuickPick.IndexName = 'idxAge' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 9)
+      else if qryQuickPick.IndexName = 'idxAgeDESC' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 10)
+      else
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 11);
+    end
+
+    // Personal Best
+    else if item.FieldName = 'PB' then
+    begin
+      if qryQuickPick.IndexName = 'idxPB' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 9)
+      else if qryQuickPick.IndexName = 'idxPBDESC' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 10)
+      else
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 11);
+    end
+
+    // TimeTo Beat
+    else if item.FieldName = 'TTB' then
+    begin
+      if qryQuickPick.IndexName = 'idxTTB' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 9)
+      else if qryQuickPick.IndexName = 'idxTTBDESC' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 10)
+      else
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 11);
     end;
+
+  end;
+
+end;
+
+function TEntrantPicker.LocateNomineeID(ANomineeID: Integer;
+  ADataSet: TDataSet): boolean;
+var
+  SearchOptions: TLocateOptions;
+begin
+  SearchOptions := SearchOptions + [loPartialKey];
+  try
+    result := ADataSet.Locate('NomineeID', ANomineeID, SearchOptions);
+  except
+    on E: Exception do result := false;
   end;
 end;
 
 function TEntrantPicker.Prepare(LaneID: Integer): boolean;
 begin
   result := false;
-  fActiveSortCol := -1; // no sorting...
+  fLaneID := LaneID;
   LockDrawing;
   Grid.BeginUpdate;
   qryQuickPick.DisableControls;
@@ -290,15 +384,18 @@ begin
     qryQuickPick.ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
     qryQuickPick.Prepare();
     qryQuickPick.Open();
+
     if (qryQuickPick.Active) then
     begin
-      // qryQuickPick.IndexName := 'idxUnsorted';
-      qryQuickPick.Indexes[10].Selected := true; // idxUnSorted.
-      { The InitSortXRef method initializes the current row indexing
-          as reference. }
-      // Grid.InitSortXRef;
+      qryQuickPick.IndexName := 'idxUnSorted';
+      if not qryQuickPick.Filtered then qryQuickPick.Filtered := true;
       result := true;
     end;
+
+    qryQuickPick.Filter := '';
+    qryQuickPick.Filtered := true;
+    qryQuickPick.IndexName := 'idxFName';
+
   finally
     qryQuickPick.EnableControls;
     Grid.EndUpdate;
@@ -352,71 +449,46 @@ begin
 
 end;
 
-procedure TEntrantPicker.SortGrid(aActiveSortCol: Integer);
+function TEntrantPicker.UpdateEntrantData: boolean;
 var
-  idx: Integer;
+  NomineeID: integer;
 begin
-  idx := 10;
-  if aActiveSortCol in [0..5] then
+  result := false;
+  if not qryQuickPick.Active then
   begin
-    case aActiveSortCol of
-      1: // MEMBER FNAME
-        case TSortState[aActiveSortCol] of
-          stDescend:
-            idx := 0;
-          stAscend:
-            idx := 1;
-        end;
-      2: // TTB
-        case TSortState[aActiveSortCol] of
-          stDescend:
-            idx := 2;
-          stAscend:
-            idx := 3;
-        end;
-      3: // PB
-        case TSortState[aActiveSortCol] of
-          stDescend:
-            idx := 4;
-          stAscend:
-            idx := 5;
-        end;
-      4: // AGE
-        case TSortState[aActiveSortCol] of
-          stDescend:
-            idx := 6;
-          stAscend:
-            idx := 7;
-        end;
-      5: // GENDER
-        case TSortState[aActiveSortCol] of
-          stDescend:
-            idx := 8;
-          stAscend:
-            idx := 9;
-        end;
-    end;
+    ModalResult := mrCancel;
+    exit;
   end;
-  // note aActiveSortCol = 0 ... idx = 10. (UnSorted)
-  qryQuickPick.Indexes[idx].Selected := true;
-end;
 
-procedure TEntrantPicker.ToogleSortState(indx: integer);
-begin
-  TSortState[indx] := stUnsorted;
-  // check bounds
-  if indx in [0..5] then
-  begin
-    case TSortState[indx] of
-      stDescend:
-        TSortState[indx] := stUnsorted;
-      stAscend:
-        TSortState[indx] := stDescend;
-      stUnSorted:
-        TSortState[indx] := stAscend;
+  CORE.qryLane.DisableControls;
+  CORE.qryNominee.DisableControls;
+  try
+    begin
+      NomineeID := qryQuickPick.FieldByName('NomineeID').AsInteger;
+      // U P D A T E   L A N E   D A T A .
+      if (NomineeID <> 0) then
+      begin
+        try
+          CORE.qryLane.CheckBrowseMode; // finalize DB operations.
+          CORE.qryLane.Edit;
+          CORE.qryLane.FieldByName('NomineeID').AsInteger := NomineeID;
+          CORE.qryLane.Post;
+          ModalResult := mrOk;
+          result := true;
+        except on E: EFDDBEngineException do
+          begin
+            CORE.qryLane.Cancel;
+            ModalResult := mrCancel;
+          end;
+        end;
+      end;
+
     end;
+
+  finally
+    CORE.qryNominee.EnableControls;
+    CORE.qryLane.EnableControls;
   end;
 end;
-
 
 end.

@@ -4,7 +4,7 @@ object EntrantPicker: TEntrantPicker
   BorderStyle = bsDialog
   Caption = 'Quick-Pick. Assign an unplaced NOMINEE into the selected lane. '
   ClientHeight = 633
-  ClientWidth = 772
+  ClientWidth = 805
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,7 +19,7 @@ object EntrantPicker: TEntrantPicker
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 772
+    Width = 805
     Height = 45
     Align = alTop
     BevelOuter = bvNone
@@ -47,24 +47,24 @@ object EntrantPicker: TEntrantPicker
   object pnlBody: TPanel
     Left = 0
     Top = 45
-    Width = 772
+    Width = 805
     Height = 588
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
     object pnlCntrl: TPanel
-      Left = 657
+      Left = 683
       Top = 0
       Width = 122
       Height = 588
-      Align = alLeft
+      Align = alRight
       BevelOuter = bvNone
       Color = clDarkslategray
       ParentBackground = False
       TabOrder = 1
       object btnCancel: TButton
         Left = 6
-        Top = 82
+        Top = 47
         Width = 106
         Height = 35
         Cancel = True
@@ -75,7 +75,7 @@ object EntrantPicker: TEntrantPicker
       end
       object btnPost: TButton
         Left = 6
-        Top = 41
+        Top = 6
         Width = 106
         Height = 35
         Caption = 'Post'
@@ -85,7 +85,7 @@ object EntrantPicker: TEntrantPicker
       end
       object btnToggleName: TButton
         Left = 6
-        Top = 0
+        Top = 88
         Width = 106
         Height = 35
         Caption = 'Toggle Name'
@@ -96,7 +96,7 @@ object EntrantPicker: TEntrantPicker
     object pnlGrid: TPanel
       Left = 0
       Top = 0
-      Width = 657
+      Width = 673
       Height = 588
       Align = alLeft
       BevelOuter = bvNone
@@ -104,7 +104,7 @@ object EntrantPicker: TEntrantPicker
       object Grid: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 657
+        Width = 673
         Height = 588
         Cursor = crDefault
         Align = alClient
@@ -125,13 +125,11 @@ object EntrantPicker: TEntrantPicker
         ScrollBars = ssBoth
         TabOrder = 0
         OnDrawCell = GridDrawCell
-        OnFixedCellClick = GridFixedCellClick
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
-        OnGetCellColor = GridGetCellColor
+        OnClickCell = GridClickCell
         OnDblClickCell = GridDblClickCell
-        OnCanEditCell = GridCanEditCell
         ActiveCellFont.Charset = DEFAULT_CHARSET
         ActiveCellFont.Color = 4474440
         ActiveCellFont.Height = -12
@@ -289,7 +287,7 @@ object EntrantPicker: TEntrantPicker
             Font.Height = -16
             Font.Name = 'Tahoma'
             Font.Style = []
-            Header = 'Nominee'
+            Header = '          Nominee'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
             HeaderFont.Height = -16
@@ -304,6 +302,7 @@ object EntrantPicker: TEntrantPicker
             Width = 265
           end
           item
+            Alignment = taRightJustify
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -316,6 +315,7 @@ object EntrantPicker: TEntrantPicker
             Font.Height = -16
             Font.Name = 'Tahoma'
             Font.Style = []
+            Header = '     TTB'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
             HeaderFont.Height = -16
@@ -330,6 +330,7 @@ object EntrantPicker: TEntrantPicker
             Width = 112
           end
           item
+            Alignment = taRightJustify
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -342,6 +343,7 @@ object EntrantPicker: TEntrantPicker
             Font.Height = -16
             Font.Name = 'Tahoma'
             Font.Style = []
+            Header = '     PB'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
             HeaderFont.Height = -16
@@ -369,21 +371,22 @@ object EntrantPicker: TEntrantPicker
             Font.Height = -16
             Font.Name = 'Tahoma'
             Font.Style = []
+            Header = '     AGE'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
             HeaderFont.Height = -16
             HeaderFont.Name = 'Tahoma'
             HeaderFont.Style = []
-            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clWindowText
             PrintFont.Height = -16
             PrintFont.Name = 'Tahoma'
             PrintFont.Style = []
-            Width = 55
+            Width = 68
           end
           item
+            Alignment = taCenter
             Borders = []
             BorderPen.Color = clSilver
             ButtonHeight = 18
@@ -553,7 +556,7 @@ object EntrantPicker: TEntrantPicker
           265
           112
           112
-          55
+          68
           64)
         RowHeights = (
           30
@@ -563,19 +566,18 @@ object EntrantPicker: TEntrantPicker
   end
   object qryQuickPick: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     FilterOptions = [foCaseInsensitive]
     Filter = '[FName] LIKE '#39'%b%'#39
     Indexes = <
       item
         Active = True
         Selected = True
-        Name = 'idxMemberFName'
+        Name = 'idxFName'
         Fields = 'FName'
       end
       item
         Active = True
-        Name = 'idxMemberFNameDESC'
+        Name = 'idxFNameDESC'
         Fields = 'FName'
         DescFields = 'FName'
         Options = [soDescNullLast, soDescending]
@@ -627,10 +629,11 @@ object EntrantPicker: TEntrantPicker
         Options = [soDescNullLast, soDescending]
       end
       item
+        Active = True
         Name = 'idxUnSorted'
         Fields = 'NomineeID'
       end>
-    IndexName = 'idxMemberFName'
+    IndexName = 'idxFName'
     DetailFields = 'MemberID'
     Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
@@ -660,7 +663,7 @@ object EntrantPicker: TEntrantPicker
       '    MemberID INT'
       ')'
       ''
-      '-- Members given a swimming lane in the given event '
+      '-- Nominees given a swimming lane in the given event '
       '    INSERT INTO #tmpID'
       '    SELECT Nominee.MemberID'
       '    FROM [SwimClubMeet2].[dbo].[Heat]'

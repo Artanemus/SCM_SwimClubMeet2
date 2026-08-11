@@ -1076,13 +1076,6 @@ begin
           begin
               try
                 CORE.qryLane.Edit;
-                {
-                if uEvent.EventType = scmTEAM then
-                begin
-                  CORE.qryLane.FieldByName('TeamID').AsInteger := obj.TeamID;
-                end
-                else
-                }
                 CORE.qryLane.FieldByName('NomineeID').AsInteger := obj.NomineeID;
                 CORE.qryLane.Post;
                 INC(Count, 1);

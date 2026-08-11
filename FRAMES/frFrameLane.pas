@@ -54,13 +54,13 @@ type
     actnLn_HeatPicker: TAction;
     pnlDebug: TPanel;
     spbtnMulti: TSpeedButton;
+    actnLn_MultNominate: TAction;
     procedure actnLn_DeleteExecute(Sender: TObject);
     procedure actnLn_DeleteForeverExecute(Sender: TObject);
     procedure actnLn_GenericUpdate(Sender: TObject);
     procedure actnLn_RefreshStatExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
-    procedure gridClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
         State: TGridDrawState);
     procedure gridEllipsClick(Sender: TObject; ACol, ARow: Integer; var S: string);
@@ -75,6 +75,7 @@ type
         string);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
     procedure actnLn_GridViewExecute(Sender: TObject);
+    procedure actnLn_MultNominateExecute(Sender: TObject);
   private
 
     // CALL-BACK NOTIFICATION...
@@ -219,6 +220,16 @@ begin
   grid.endUpdate;
 end;
 
+procedure TFrameLane.actnLn_MultNominateExecute(Sender: TObject);
+var
+  dlg: TEntrantPickerEx;
+begin
+  // Multi- Nominate Nominees to lanes...
+  dlg := TEntrantPickerEx.Create(Self);
+  dlg.ShowModal;
+  dlg.Free;
+end;
+
 procedure TFrameLane.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var
     CanEdit: Boolean);
 var
@@ -256,16 +267,6 @@ begin
   end;
 end;
 
-procedure TFrameLane.gridClickCell(Sender: TObject; ARow, ACol: Integer);
-//var
-//  item: TDBGridColumnItem;
-begin
-{ removed here - done OnLoad.}
-  // TMS Bug: AllowBlank keeps getting disabled.
-//  item := Grid.Columns[ACol];
-//  if item.FieldName = 'luDQ' then item.AllowBlank := true;
-end;
-
 procedure TFrameLane.gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect:
   TRect; State: TGridDrawState);
 var
@@ -283,13 +284,18 @@ begin
     begin
       IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 6);
       exit;
-    end;
-    if item.FieldName = 'GenderABREV' then  // male-female
+    end
+    else if item.FieldName = 'FullName' then  // Entrant + tick
+    begin
+      IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 2);
+      exit;
+    end
+    else if item.FieldName = 'GenderABREV' then  // male-female
     begin
       IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 3);
       exit;
-    end;
-    if item.FieldName = 'EventTypeID' then  // Event Type IND-R
+    end
+    else if item.FieldName = 'EventTypeID' then  // Event Type IND-R
     begin
       IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 7);
       exit;
@@ -305,6 +311,7 @@ var
   fld: TField;
   dlg: TEntrantPicker;
   dlgCTRL: TEntrantPickerCTRL;
+  LaneID: integer;
 begin
   mr := mrCancel;
   G := TDBAdvGrid(Sender);
@@ -313,6 +320,7 @@ begin
   begin
     LockDrawing;
     G.BeginUpdate;
+    LaneID := CORE.qryLane.FieldByName('LaneID').AsInteger;
     try
       if uEvent.GetEventType = etINDV then
       begin
@@ -328,11 +336,13 @@ begin
             dlgCTRL.Free;
           end
           else
+          begin
             // List nominee pool for entrant assignment
             dlg := TEntrantPicker.Create(Self);
             dlg.Prepare(uLane.PK);
             mr := dlg.ShowModal;
             dlg.Free;
+          end;
         end;
 
         // Record Time information.
@@ -367,7 +377,11 @@ begin
 
     finally
       if IsPositiveResult(mr) then
+      begin
         CORE.qryLane.Refresh;
+        if CORE.qryLane.FieldByName('LaneID').AsInteger <> LaneID then
+          uLane.Locate(LaneID);
+      end;
       G.EndUpdate;
       UnlockDrawing;
     end;
@@ -723,6 +737,12 @@ begin
   if (item <> nil) then
     TDBGridColumnItem(item).AllowBlank := true;
 
+  // set the default 'look' of the ellipse button. (effects edit text)
+  Grid.BtnEdit.ButtonWidth := 40;
+  Grid.BtnEdit.Font.Size := 12;
+  Grid.BtnEdit.Font.Style := Grid.BtnEdit.Font.Style + [TFontStyle.fsBold];
+  Grid.BtnEdit.ButtonCaption := '...';
+
   { Collapsed control panel UI State...  }
   SetCollapsedUIState;
 
@@ -785,9 +805,9 @@ begin
   if item <> nil then
   begin
     if AEventTypeID = 2 then
-      item.Header := 'Relay Team'
+      item.Header := '      Relay Team'
     else
-      item.Header := 'Entrant';
+      item.Header := '      Entrant';
   end;
 end;
 

@@ -23,44 +23,45 @@ uses
 
 type
   TEntrantPickerCTRL = class(TForm)
-    dsQuickPickCtrl: TDataSource;
-    qryQuickPickCtrl: TFDQuery;
-    pnlHeader: TPanel;
-    VirtualImage2: TVirtualImage;
-    edtSearch: TEdit;
-    pnlBody: TPanel;
-    pnlCntrl: TPanel;
     btnCancel: TButton;
     btnPost: TButton;
     btnToggleName: TButton;
-    pnlGrid: TPanel;
+    dsQuickPickCtrl: TDataSource;
+    edtSearch: TEdit;
     Grid: TDBAdvGrid;
-    qryQuickPickCtrlMemberID: TFDAutoIncField;
+    pnlBody: TPanel;
+    pnlBorder: TPanel;
+    pnlCntrl: TPanel;
+    pnlGrid: TPanel;
+    pnlHeader: TPanel;
+    qryQuickPickCtrl: TFDQuery;
+    qryQuickPickCtrlAge: TIntegerField;
+    qryQuickPickCtrlFName: TWideStringField;
     qryQuickPickCtrlGenderID: TIntegerField;
     qryQuickPickCtrlGenderStr: TWideStringField;
-    qryQuickPickCtrlFName: TWideStringField;
+    qryQuickPickCtrlMemberID: TFDAutoIncField;
     qryQuickPickCtrlPB: TTimeField;
-    qryQuickPickCtrlAge: TIntegerField;
+    VirtualImage2: TVirtualImage;
+    procedure btnCancelClick(Sender: TObject);
+    procedure btnPostClick(Sender: TObject);
+    procedure btnToggleNameClick(Sender: TObject);
+    procedure edtSearchChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure btnPostClick(Sender: TObject);
-    procedure btnCancelClick(Sender: TObject);
-    procedure btnToggleNameClick(Sender: TObject);
+    procedure GridClickCell(Sender: TObject; ARow, ACol: Integer);
+    procedure GridDblClickCell(Sender: TObject; ARow, ACol: Integer);
     procedure GridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
         State: TGridDrawState);
-    procedure edtSearchChange(Sender: TObject);
-    procedure GridClickCell(Sender: TObject; ARow, ACol: Integer);
+    procedure qryQuickPickCtrlPBGetText(Sender: TField; var Text: string;
+        DisplayText: Boolean);
   private
+    fLaneID: Integer;
     { Private declarations }
     fToggleNameState: boolean;
-    fLaneID: Integer;
     SortState: Array [0 .. 4] of integer;
-
-    function UpdateEntrantData(): boolean;
-    function LocateMemberID(AMemberID: Integer; ADataSet: TDataSet): boolean;
     function GetSeedDate: TDateTime;
-
-
+    function LocateMemberID(AMemberID: Integer; ADataSet: TDataSet): boolean;
+    function UpdateEntrantData(): boolean;
   public
     { Public declarations }
     function Prepare(LaneID: Integer): boolean;
@@ -76,7 +77,6 @@ implementation
 uses uUtility, System.IniFiles;
 
 { TEntrantPickerCTRL }
-
 
 
 procedure TEntrantPickerCTRL.btnCancelClick(Sender: TObject);
@@ -96,44 +96,26 @@ var
   MemberID: Integer;
 begin
   fToggleNameState := not fToggleNameState;
-  with dsQuickPickCtrl.DataSet as TFDQuery do
-  begin
-    MemberID := FieldByName('MemberID').AsInteger;
-    DisableControls;
-    Close;
-    ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
-    Prepare;
-    Open;
-    if (Active) then LocateMemberID(MemberID, dsQuickPickCtrl.DataSet);
-    EnableControls();
-  end;
-end;
 
-procedure TEntrantPickerCTRL.FormCreate(Sender: TObject);
-var
-  I: integer;
-begin
-  fLaneID := 0;
-  for I := 0 to Length(SortState)-1 do
-    SortState[I] := 0;
-end;
-
-procedure TEntrantPickerCTRL.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
-begin
-  if (Key = VK_ESCAPE) then ModalResult := mrCancel;
-end;
-
-function TEntrantPickerCTRL.LocateMemberID(AMemberID: Integer;
-  ADataSet: TDataSet): boolean;
-var
-  SearchOptions: TLocateOptions;
-begin
-  SearchOptions := SearchOptions + [loPartialKey];
+  MemberID := qryQuickPickCtrl.FieldByName('MemberID').AsInteger;
+  LockDrawing;
+  grid.BeginUpdate;
+  qryQuickPickCtrl.DisableControls;
   try
-    result := ADataSet.Locate('MemberID', AMemberID, SearchOptions);
-  except
-    on E: Exception do result := false;
+    qryQuickPickCtrl.Close;
+    qryQuickPickCtrl.ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
+    qryQuickPickCtrl.Prepare;
+    qryQuickPickCtrl.Open;
+    if (qryQuickPickCtrl.Active) then
+    begin
+      if (MemberID <> 0) and
+      (qryQuickPickCtrl.FieldByName('MemberID').AsInteger <> MemberID) then
+        LocateMemberID(MemberID, qryQuickPickCtrl);
+    end;
+  finally
+    qryQuickPickCtrl.EnableControls();
+    grid.EndUpdate;
+    UnlockDrawing;
   end;
 end;
 
@@ -167,6 +149,21 @@ begin
     UnlockDrawing;
   end;
 
+end;
+
+procedure TEntrantPickerCTRL.FormCreate(Sender: TObject);
+var
+  I: integer;
+begin
+  fLaneID := 0;
+  for I := 0 to Length(SortState)-1 do
+    SortState[I] := 0;
+end;
+
+procedure TEntrantPickerCTRL.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key = VK_ESCAPE) then ModalResult := mrCancel;
 end;
 
 function TEntrantPickerCTRL.GetSeedDate(): TDateTime;
@@ -222,9 +219,9 @@ begin
         0:
           qryQuickPickCtrl.IndexName := 'idxUnSorted';
         1:
-          qryQuickPickCtrl.IndexName := 'idxMemberFName';
+          qryQuickPickCtrl.IndexName := 'idxFName';
         2:
-          qryQuickPickCtrl.IndexName := 'idxMemberFNameDESC';
+          qryQuickPickCtrl.IndexName := 'idxFNameDESC';
         end;
       end
 
@@ -277,7 +274,8 @@ begin
 
       if not qryQuickPickCtrl.Filtered then qryQuickPickCtrl.Filtered := true;
 
-      if qryQuickPickCtrl.FieldByName('MemberID').AsInteger <> MemberID then
+      if (MemberID <> 0) and
+        (qryQuickPickCtrl.FieldByName('MemberID').AsInteger <> MemberID) then
         LocateMemberID(MemberID, qryQuickPickCtrl);
 
       grid.EndUpdate;
@@ -287,6 +285,13 @@ begin
 
   end;
 
+end;
+
+procedure TEntrantPickerCTRL.GridDblClickCell(Sender: TObject; ARow, ACol:
+    Integer);
+begin
+  // GO assign the 'Quick-Picked' Nominee.
+  if ARow >= TDBAdvGrid(Sender).FixedRows then btnPost.Click;
 end;
 
 procedure TEntrantPickerCTRL.GridDrawCell(Sender: TObject; ACol, ARow: LongInt;
@@ -304,23 +309,27 @@ begin
     // Member's name - green member badge.
     if (item.FieldName = 'FName') then
     begin
-      IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 8);
+      IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 28, Rect.top + 4, 8);
 
-      if qryQuickPickCtrl.IndexName = 'idxMemberFName' then
-        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 28, Rect.top + 4, 9)
-      else if qryQuickPickCtrl.IndexName = 'idxMemberFNameDESC' then
-        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 28, Rect.top + 4, 10);
+      if qryQuickPickCtrl.IndexName = 'idxFName' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 9)
+      else if qryQuickPickCtrl.IndexName = 'idxFNameDESC' then
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 10)
+      else
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 11);
     end
 
     // Gender M,Y,X - tomatoe red uni-gender symbol
     else if item.FieldName = 'GenderStr' then
     begin
-      IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 3);
+      IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 28, Rect.top + 4, 3);
 
       if qryQuickPickCtrl.IndexName = 'idxGender' then
-        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 28, Rect.top + 4, 9)
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 9)
       else if qryQuickPickCtrl.IndexName = 'idxGenderDESC' then
-        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 28, Rect.top + 4, 10);
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 10)
+      else
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 11);
     end
 
     // AGE
@@ -329,7 +338,10 @@ begin
       if qryQuickPickCtrl.IndexName = 'idxAge' then
         IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 9)
       else if qryQuickPickCtrl.IndexName = 'idxAgeDESC' then
-        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 10);
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 10)
+      else
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 11);
+
     end
 
     // Personal Best
@@ -338,27 +350,42 @@ begin
       if qryQuickPickCtrl.IndexName = 'idxPB' then
         IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 9)
       else if qryQuickPickCtrl.IndexName = 'idxPBDESC' then
-        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 10);
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 10)
+      else
+        IMG.imglstLaneCell.Draw(G.Canvas, Rect.left + 2, Rect.top + 4, 11);
+
     end;
 
   end;
 end;
 
+function TEntrantPickerCTRL.LocateMemberID(AMemberID: Integer;
+  ADataSet: TDataSet): boolean;
+var
+  SearchOptions: TLocateOptions;
+begin
+  SearchOptions := SearchOptions + [loPartialKey];
+  try
+    result := ADataSet.Locate('MemberID', AMemberID, SearchOptions);
+  except
+    on E: Exception do result := false;
+  end;
+end;
 
 function TEntrantPickerCTRL.Prepare(LaneID: Integer): boolean;
 begin
   result := false;
+  fLaneID := LaneID;
   LockDrawing;
-  // Grid.BeginUpdate
+  Grid.BeginUpdate;
   qryQuickPickCtrl.DisableControls;
   try
     qryQuickPickCtrl.Close();
     qryQuickPickCtrl.ParamByName('EVENTID').AsInteger := uEvent.PK;
     qryQuickPickCtrl.ParamByName('TOGGLENAME').AsBoolean := fToggleNameState;
-    qryQuickPickCtrl.ParamByName('SEEDATE').AsDateTime := GetSeedDate();
+    qryQuickPickCtrl.ParamByName('SEEDDATE').AsDateTime := GetSeedDate();
     qryQuickPickCtrl.Prepare();
     qryQuickPickCtrl.Open();
-
 
     if (qryQuickPickCtrl.Active) then
     begin
@@ -367,11 +394,38 @@ begin
       result := true;
     end;
 
+    qryQuickPickCtrl.Filter := '';
+    qryQuickPickCtrl.Filtered := true;
+    qryQuickPickCtrl.IndexName := 'idxFName';
+
   finally
     qryQuickPickCtrl.EnableControls;
-    // Grid.EndUpdate
+    Grid.EndUpdate;
     UnlockDrawing;
   end;
+end;
+
+procedure TEntrantPickerCTRL.qryQuickPickCtrlPBGetText(Sender: TField; var
+    Text: string; DisplayText: Boolean);
+var
+  Hour, Min, Sec, MSec: word;
+begin
+  // CALLED BY TimeToBeat AND PersonalBest (Read Only fields)
+  // this FIXES display format issues.
+  DecodeTime(Sender.AsDateTime, Hour, Min, Sec, MSec);
+  // DisplayText is true if the field's value is to be used for display only;
+  // false if the string is to be used for editing the field's value.
+  // "%" [index ":"] ["-"] [width] ["." prec] type
+  if DisplayText then
+  begin
+    if (Min > 0) then Text := Format('%0:2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec])
+    else if ((Min = 0) and (Sec > 0)) then
+        Text := Format('%1:2u.%2:3.3u', [Min, Sec, MSec])
+
+    else if ((Min = 0) and (Sec = 0)) then Text := '';
+  end
+  else Text := Format('%0:2.2u:%1:2.2u.%2:3.3u', [Min, Sec, MSec]);
+
 end;
 
 function TEntrantPickerCTRL.UpdateEntrantData: boolean;

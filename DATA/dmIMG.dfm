@@ -2813,7 +2813,7 @@ object IMG: TIMG
           '0-2h12V4h-7.15L6 8.85zm0 0h12z"/></svg>'
       end
       item
-        IconName = 'order-approve'
+        IconName = 'multi-nominate'
         SVGText = 
           '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
           ' viewBox="0 0 24 24"><path fill="currentColor" d="m17.275 20.25l' +
@@ -2830,8 +2830,9 @@ object IMG: TIMG
         IconName = 'download-2-outline'
         SVGText = 
           '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" d="M4 22v-2h16v2z' +
-          'm8-4L5 9h4V2h6v7h4zm0-3.25L14.9 11H13V4h-2v7H9.1zM12 11"/></svg>'
+          ' viewBox="0 0 24 24">'#13#10'  <path fill="currentColor" d="M4 22v-2h1' +
+          '6v2zm8-4L5 9h4V2h6v7h4zm0-3.25L14.9 11H13V4h-2v7H9.1zM12 11"/>'#13#10 +
+          '</svg>'#13#10
         FixedColor = clDarkgoldenrod
       end
       item
@@ -2841,6 +2842,38 @@ object IMG: TIMG
           ' viewBox="0 0 24 24"><path fill="currentColor" d="M4 22v-2h16v2z' +
           'm5-4v-7H5l7-9l7 9h-4v7zm2-2h2V9h1.9L12 5.25L9.1 9H11zm1-7"/></sv' +
           'g>'
+        FixedColor = clDarkgoldenrod
+      end
+      item
+        IconName = 'outline-circle'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M12 2C6.47 2 2' +
+          ' 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m0 18c-4.42 0' +
+          '-8-3.58-8-8s3.58-8 8-8s8 3.58 8 8s-3.58 8-8 8"/></svg>'
+        FixedColor = clGrayText
+      end
+      item
+        IconName = 'lower-bar'
+        SVGText = 
+          '<?xml version="1.0" encoding="UTF-8" standalone="no"?>'#10'<svg'#10'   w' +
+          'idth="1em"'#10'   height="1em"'#10'   viewBox="0 0 24 24"'#10'   version="1.' +
+          '1"'#10'   id="svg1"'#10'   sodipodi:docname="lower-bar.svg"'#10'   inkscape:' +
+          'version="1.4 (86a8ad7, 2024-10-11)"'#10'   xmlns:inkscape="http://ww' +
+          'w.inkscape.org/namespaces/inkscape"'#10'   xmlns:sodipodi="http://so' +
+          'dipodi.sourceforge.net/DTD/sodipodi-0.dtd"'#10'   xmlns="http://www.' +
+          'w3.org/2000/svg"'#10'   xmlns:svg="http://www.w3.org/2000/svg">'#10'  <d' +
+          'efs'#10'     id="defs1" />'#10'  <sodipodi:namedview'#10'     id="namedview1' +
+          '"'#10'     pagecolor="#ffffff"'#10'     bordercolor="#666666"'#10'     borde' +
+          'ropacity="1.0"'#10'     inkscape:showpageshadow="2"'#10'     inkscape:pa' +
+          'geopacity="0.0"'#10'     inkscape:pagecheckerboard="0"'#10'     inkscape' +
+          ':deskcolor="#d1d1d1"'#10'     inkscape:zoom="48.5"'#10'     inkscape:cx=' +
+          '"12.010309"'#10'     inkscape:cy="12"'#10'     inkscape:window-width="25' +
+          '60"'#10'     inkscape:window-height="1377"'#10'     inkscape:window-x="-' +
+          '8"'#10'     inkscape:window-y="-8"'#10'     inkscape:window-maximized="1' +
+          '"'#10'     inkscape:current-layer="svg1" />'#10'  <path'#10'     fill="curre' +
+          'ntColor"'#10'     d="m 4,22 v -2 h 16 v 2 z"'#10'     id="path1"'#10'     so' +
+          'dipodi:nodetypes="ccccc" />'#10'</svg>'#10
         FixedColor = clDarkgoldenrod
       end>
     Left = 496
@@ -13836,8 +13869,8 @@ object IMG: TIMG
       end
       item
         CollectionIndex = 122
-        CollectionName = 'order-approve'
-        Name = 'order-approve'
+        CollectionName = 'multi-nominate'
+        Name = 'multi-nominate'
       end>
     ImageCollection = CollectionCore
     Width = 48
@@ -14615,6 +14648,11 @@ object IMG: TIMG
         CollectionIndex = 28
         CollectionName = 'ToggleStatus'
         Name = 'ToggleStatus'
+      end
+      item
+        CollectionIndex = 122
+        CollectionName = 'multi-nominate'
+        Name = 'multi-nominate'
       end>
     ImageCollection = CollectionCore
     Width = 32
@@ -14818,6 +14856,11 @@ object IMG: TIMG
         CollectionIndex = 124
         CollectionName = 'upload-2-outline'
         Name = 'upload-2-outline'
+      end
+      item
+        CollectionIndex = 126
+        CollectionName = 'lower-bar'
+        Name = 'lower-bar'
       end>
     ImageCollection = CollectionCore
     Width = 24

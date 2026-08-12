@@ -133,10 +133,8 @@ type
     frNominate: TFrameNominate;
     frNavEv: TFrameNavEv;
 
-//    procedure HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
-//      NavEvItem: TFrameNavEvItem);
-
     procedure HandleOnGridViewChange(Sender: TObject; GridState: Boolean);
+    procedure HandleOnNominateChange(Sender: TObject);
 
     procedure SetPanelAndFrame_Visibility;
 
@@ -377,6 +375,7 @@ begin
   StatusBar.Panels[2].Text := ''; // entrant count
   StatusBar.Panels[3].Text := ''; // week of...
   StatusBar.Panels[4].Text := ''; // week of...
+  StatusBar.Panels[5].Text := '';
 
   Application.ShowHint := true;
 
@@ -418,6 +417,7 @@ begin
   // Adjust display of columns based on Settings.EnableDQcodes state.
   frLane.OnPreferenceChange;
   frLane.OnGridViewChanged := HandleOnGridViewChange; // assign event handle.
+  frLane.OnNominateChanged := HandleOnNominateChange; // assign event handle.
   pnlLane.Caption := '';
   frLane.LinkActionsToMenu(TActionClientItem(actnManager.ActionBars[0].Items[5]));
 
@@ -528,14 +528,46 @@ begin
       pnlHeat.Visible := false
     else
       pnlHeat.Visible := true;
-  end;
-  if Sender.ClassNameIs('TFrameEvent') then
+  end
+  else if Sender.ClassNameIs('TFrameEvent') then
   begin
     // if Event grid is expanded...
     if GridState = true then
       pnlSession.Visible := false
     else
       pnlSession.Visible := true;
+  end;
+end;
+
+procedure TMain2.HandleOnNominateChange(Sender: TObject);
+var
+  count, NomineeCount, EntrantCount: integer;
+begin
+
+  // default - clear message.
+  StatusBar.Panels[5].Text := '';
+
+  if uEvent.CalcEventMetrics(EntrantCount, NomineeCount) then
+  begin
+    if Sender.ClassNameIs('TFrameLane') then
+    begin
+      if PageControl.TabIndex = 2  then
+      begin
+        // ellipse key used - members, nominees lane assignment changed.
+        count := NomineeCount - EntrantCount;
+        if Count >= 0 then
+          StatusBar.Panels[5].Text := 'Unplaced Nominees: ' + IntToStr(Count);
+      end
+    end
+    else if Sender.ClassNameIs('TFrameNominate') then
+    begin
+      if PageControl.TabIndex = 1  then
+      begin
+        // a nominee was un/assigned to current event.
+        if NomineeCount > 0 then
+          StatusBar.Panels[5].Text := 'Nominee Count: ' + IntToStr(NomineeCount);
+      end;
+    end;
   end;
 end;
 

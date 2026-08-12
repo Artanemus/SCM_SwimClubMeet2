@@ -10,17 +10,13 @@ uses
 
   Data.DB,
 
-  FireDAC.Comp.Client, FireDAC.Stan.Param,
+  FireDAC.Comp.Client, FireDAC.Stan.Param, FireDAC.Stan.Error,
 
   dmCORE, dmSCM2, uDefines, Vcl.ActnList;
 
 function AllHeatsAreClosed: Boolean;
 function Assert(): boolean;
 
-//function CalcEvent_EntrantCount: integer;
-//function CalcEvent_NomineeCount: integer;
-//function GetEvent_EntrantCount: integer;
-//function GetEvent_NomineeCount: integer;
 
 function GetHeatCount: integer;
 function DeleteEvent(DoExclude: Boolean = true): boolean;
@@ -42,11 +38,7 @@ procedure RenumberHeats;
 
 procedure SetEventStatusID(aEventStatusID: integer);
 
-//procedure SetEvent_EntrantCount; // performs calculation
-//procedure SetEvent_NomineeCount; // performs calculation
 
-
-procedure FNameEllipse(); // todo: move out of uEvent to frame.
 function NewEvent: Integer;
 
 procedure MoveUpDown(MoveDirection: scmMoveDirection);
@@ -54,6 +46,8 @@ procedure DetailTBLs_DisableCNTRLs;
 procedure DetailTBLs_ApplyMaster;
 procedure DetailTBLs_EnableCNTRLs;
 
+function CalcEventMetrics( var EntrantCount: integer;
+      var NomineeCount: integer): boolean; // for curr event.
 
 
 implementation
@@ -231,26 +225,54 @@ begin
     if v = 0 then result := true;
 end;
 
-procedure FNameEllipse;
-//var
-//  ds: TFDQuery;
+function CalcEventMetrics( var EntrantCount: integer;
+      var NomineeCount: integer): boolean; // for curr event.
+var
+  SQL: string;
+  qry: TFDQuery;
 begin
-  // BSA wip - may all chage with TMS grid
-  (*
-  ds := (SCM2.dsFNameEllipse.DataSet as TFDQuery);
-  // re-assign parameters ...
-  // TODO: reassigning params without close or prepare?
-  ds.ParamByName('SESSIONID').AsInteger :=
-  CORE.qrySession.FieldByName('SessionID').AsInteger;
-  ds.ParamByName('EVENTID').AsInteger := CORE.qryEvent.FieldByName('EventID')
-  .AsInteger;
-  ds.ParamByName('DISTANCEID').AsInteger := CORE.qryEvent.FieldByName
-  ('DistanceID').AsInteger;
-  ds.ParamByName('STROKEID').AsInteger := CORE.qryEvent.FieldByName
-  ('StrokeID').AsInteger;
-  if (ds.Active) then ds.Refresh();
-  *)
+  EntrantCount := 0;
+  NomineeCount := 0;
+  result := false;
+  SQL := '''
+    USE SwimClubMeet2;
+
+    DECLARE @EventID AS INT;
+
+    SET @EventID = :EVENTID; -- 1760;
+
+    SELECT dbo.EntrantCount(@EventID) AS entrants,
+           dbo.NomineeCount(@EventID) AS nominees
+    FROM   SwimClubMeet2.dbo.[Event]
+    WHERE  [Event].EventID = @EventID;
+    ''';
+  qry := TFDQuery.Create(SCM2);
+  qry.Connection := SCM2.scmConnection; // Add this line
+  qry.SQL.Add(SQL);
+  qry.ParamByName('EVENTID').AsInteger := uEvent.PK;
+  try
+    qry.Prepare;
+    try
+      qry.Open;
+      if qry.Active and not qry.IsEmpty then
+      begin
+        EntrantCount := qry.FieldByName('entrants').AsInteger;
+        NomineeCount := qry.FieldByName('nominees').AsInteger;
+        result := true;
+      end;
+    except
+      on E: EFDDBEngineException do
+        SCM2.FDGUIxErrorDialog.Execute(E);
+    end;
+
+  finally
+    qry.Free;
+  end;
+
 end;
+
+
+
 
 {
 function CalcEvent_EntrantCount: integer;

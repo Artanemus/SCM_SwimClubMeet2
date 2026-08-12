@@ -29,8 +29,12 @@ type
     end;
 }
 
-  TFrameNotifyEvent_GridViewChange = procedure(Sender: TObject; GridState:
-      Boolean) of object;
+  TEventNotify_GridViewChange = procedure(Sender: TObject; GridState: Boolean) of
+      object;
+
+//    procedure HandleOnNominateChange(Sender: TObject; NomineeCount, EntrantCount:
+//        integer);
+
 
   TFrameEvent = class(TFrame)
     actnEv_ClearCell: TAction;
@@ -104,7 +108,7 @@ type
         string);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
   private
-    FOnGridViewChange: TFrameNotifyEvent_GridViewChange;
+    FOnGridViewChange: TEventNotify_GridViewChange;
 
     { Design Time Grid UI state. Captured on load.
       Captures column widths for all fields.}
@@ -129,7 +133,7 @@ type
     procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
     procedure UpdateUI(DoFullUpdate: Boolean = false);
     // Notify main form of a grid view change (expand/collapse)...
-    property OnGridViewChanged: TFrameNotifyEvent_GridViewChange
+    property OnGridViewChanged: TEventNotify_GridViewChange
       read FOnGridViewChange write FOnGridViewChange;
 
     procedure OnPreferenceChange(); // Tools preferences calls here, via main form.

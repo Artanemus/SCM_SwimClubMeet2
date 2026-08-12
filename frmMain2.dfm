@@ -2817,7 +2817,12 @@ object Main2: TMain2
       end
       item
         Text = 'Status Messages'
-        Width = 200
+        Width = 500
+      end
+      item
+        Alignment = taCenter
+        Text = 'Nominees 00 Entrants 00'
+        Width = 50
       end>
     SimpleText = 'Information and stats will appear here...'
     UseSystemFont = False
@@ -2830,7 +2835,7 @@ object Main2: TMain2
     Width = 1131
     Height = 681
     Margins.Top = 10
-    ActivePage = tabHeats
+    ActivePage = tabNominate
     Align = alClient
     TabOrder = 2
     OnChange = PageControlChange
@@ -2922,8 +2927,6 @@ object Main2: TMain2
           BevelOuter = bvNone
           Caption = 'Panel for TFrameLane (frLane)'
           TabOrder = 1
-          ExplicitLeft = 200
-          ExplicitWidth = 923
         end
       end
     end

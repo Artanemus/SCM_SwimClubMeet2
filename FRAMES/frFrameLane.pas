@@ -19,8 +19,11 @@ uses
 
 type
 
-  TFrameNotifyLane_GridViewChange = procedure(Sender: TObject; GridState:
-      Boolean) of object;
+  TLaneNotify_GridViewChange = procedure(Sender: TObject; GridState: Boolean) of
+      object;
+
+  TLaneNotify_NominateChange = procedure(Sender: TObject) of object;
+
 
   TFrameLane = class(TFrame)
     actnlist: TActionList;
@@ -79,7 +82,8 @@ type
   private
 
     // CALL-BACK NOTIFICATION...
-    FOnGridViewChange: TFrameNotifyLane_GridViewChange;
+    FOnGridViewChange: TLaneNotify_GridViewChange;
+    FOnNominateChange: TLaneNotify_NominateChange;
 
     { Design Time Grid UI state. Captured on load.
       Captures column widths for all fields.}
@@ -113,8 +117,10 @@ type
 
     // CALL-BACK...
     // Notify main form of a grid view change (expand/collapse)...
-    property OnGridViewChanged: TFrameNotifyLane_GridViewChange
+    property OnGridViewChanged: TLaneNotify_GridViewChange
       read FOnGridViewChange write FOnGridViewChange;
+    property OnNominateChanged: TLaneNotify_NominateChange
+      read FOnNominateChange write FOnNominateChange;
 
   end;
 
@@ -174,6 +180,7 @@ begin
       grid.EndUpdate;
     end;
   end;
+
   // Call-back to main form.
   if Assigned(FOnGridViewChange) then
     FOnGridViewChange(self, AAction.Checked);
@@ -381,6 +388,11 @@ begin
         CORE.qryLane.Refresh;
         if CORE.qryLane.FieldByName('LaneID').AsInteger <> LaneID then
           uLane.Locate(LaneID);
+
+        // Call-back to main form.
+        if Assigned(FOnNominateChange) then
+          FOnNominateChange(self);
+
       end;
       G.EndUpdate;
       UnlockDrawing;

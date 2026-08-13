@@ -31,11 +31,34 @@ uses
 
   procedure GetMetrics(var aMetrics: TSCMSwimmerMetrics);
 
+  function GetNomineeCount(aEventID: integer): integer;
+
 implementation
 
 uses
 
 dmCORE, dmSCM2, uSettings, uSwimClub, uSession, uEvent, uAgeOfSwimmer ;
+
+function GetNomineeCount(aEventID: integer): integer;
+var
+  SQL: string;
+  v: variant;
+begin
+  result := 0;
+  SQL := '''
+    SELECT COUNT(NomineeID)
+    FROM SwimClubMeet2.dbo.Nominee
+    WHERE Nominee.EventID  = :ID1
+    ''';
+  try
+    v := SCM2.scmConnection.ExecSQL(SQL, [aEventID, aEventID]);
+  except
+    on E: EFDDBEngineException do
+      SCM2.FDGUIxErrorDialog.Execute(E);
+  end;
+  if v > 0 then
+    result := v;
+end;
 
 function DeleteNominee(aMemberID, aEventID: integer): boolean;
 var

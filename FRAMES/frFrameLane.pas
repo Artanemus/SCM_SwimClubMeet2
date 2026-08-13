@@ -19,12 +19,6 @@ uses
 
 type
 
-  TLaneNotify_GridViewChange = procedure(Sender: TObject; GridState: Boolean) of
-      object;
-
-  TLaneNotify_NominateChange = procedure(Sender: TObject) of object;
-
-
   TFrameLane = class(TFrame)
     actnlist: TActionList;
     actnLn_Delete: TAction;
@@ -82,8 +76,8 @@ type
   private
 
     // CALL-BACK NOTIFICATION...
-    FOnGridViewChange: TLaneNotify_GridViewChange;
-    FOnNominateChange: TLaneNotify_NominateChange;
+    FOnGridViewChange: TNotify_GridViewChange; // defined in uDefines.
+    FOnNominateChange: TNotify_NominateChange; // defined in uDefines.
 
     { Design Time Grid UI state. Captured on load.
       Captures column widths for all fields.}
@@ -117,9 +111,9 @@ type
 
     // CALL-BACK...
     // Notify main form of a grid view change (expand/collapse)...
-    property OnGridViewChanged: TLaneNotify_GridViewChange
+    property OnGridViewChanged: TNotify_GridViewChange
       read FOnGridViewChange write FOnGridViewChange;
-    property OnNominateChanged: TLaneNotify_NominateChange
+    property OnNominateChanged: TNotify_NominateChange
       read FOnNominateChange write FOnNominateChange;
 
   end;
@@ -214,7 +208,12 @@ begin
   grid.BeginUpdate;
   CORE.qryLane.CheckBrowseMode;
   if (uLane.ClearLane()) then
+  begin
     CORE.qryLane.Refresh;
+    // Call-back to main form.
+    if Assigned(FOnNominateChange) then
+      FOnNominateChange(self);
+  end;
   grid.endUpdate;
 end;
 
@@ -223,7 +222,12 @@ begin
   grid.BeginUpdate;
   Core.qryLane.CheckBrowseMode;
   if (uLane.StrikeLane()) then
+  begin
     CORE.qryLane.Refresh;
+    // Call-back to main form.
+    if Assigned(FOnNominateChange) then
+      FOnNominateChange(self);
+  end;
   grid.endUpdate;
 end;
 

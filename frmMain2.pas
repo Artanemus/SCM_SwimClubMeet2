@@ -133,8 +133,9 @@ type
     frNominate: TFrameNominate;
     frNavEv: TFrameNavEv;
 
-    procedure HandleOnGridViewChange(Sender: TObject; GridState: Boolean);
-    procedure HandleOnNominateChange(Sender: TObject);
+    // CALL BACK ROUTINES :  see uDefines for type definition.
+    procedure FOnGridViewChange(Sender: TObject; GridState: Boolean);
+    procedure FOnNominateChange(Sender: TObject);
 
     procedure SetPanelAndFrame_Visibility;
 
@@ -178,20 +179,8 @@ implementation
 uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
   frmManageMember, frmSwimClub_Reports, frmMM_Stats, uEvent, dlgQualifyTimes,
-  dlgPoolTypes, frmDisqualificationCodes, frmSwimClubType, dlgDivisions;
-
-{
-  // Event handler:
-procedure TMain2.HandleNavEvItemSelected(Sender: TObject; EventID: Integer;
-    NavEvItem: TFrameNavEvItem);
-    begin
-      if (CORE.qryEvent.State in [dsOpening]) then exit;
-      if (EventID = 0) then exit;
-      if (uEvent.PK() <> EventID) then
-            uEvent.Locate(EventID); // generates a DB scroll event.
-    end;
-}
-
+  dlgPoolTypes, frmDisqualificationCodes, frmSwimClubType, dlgDivisions,
+  uNominee;
 
 
 procedure TMain2.File_ConnectionExecute(Sender: TObject);
@@ -400,7 +389,7 @@ begin
   frEvent.Parent := pnlEvent;
   frEvent.Align := alClient;
   frEvent.actnEv_GridView.Checked := false; // default: collapsed gridview.
-  frEvent.OnGridViewChanged := HandleOnGridViewChange; // assign event handle.
+  frEvent.OnGridViewChanged := FOnGridViewChange; // assign event handle.
   pnlEvent.Caption := '';
   frEvent.LinkActionsToMenu(TActionClientItem(actnManager.ActionBars[0].Items[3]));
 
@@ -416,8 +405,8 @@ begin
   frLane.Align := alClient;
   // Adjust display of columns based on Settings.EnableDQcodes state.
   frLane.OnPreferenceChange;
-  frLane.OnGridViewChanged := HandleOnGridViewChange; // assign event handle.
-  frLane.OnNominateChanged := HandleOnNominateChange; // assign event handle.
+  frLane.OnGridViewChanged := FOnGridViewChange; // assign event handle.
+  frLane.OnNominateChanged := FOnNominateChange; // assign event handle.
   pnlLane.Caption := '';
   frLane.LinkActionsToMenu(TActionClientItem(actnManager.ActionBars[0].Items[5]));
 
@@ -519,7 +508,7 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TMain2.HandleOnGridViewChange(Sender: TObject; GridState: Boolean);
+procedure TMain2.FOnGridViewChange(Sender: TObject; GridState: Boolean);
 begin
   if Sender.ClassNameIs('TFrameLane') then
   begin
@@ -539,35 +528,39 @@ begin
   end;
 end;
 
-procedure TMain2.HandleOnNominateChange(Sender: TObject);
+procedure TMain2.FOnNominateChange(Sender: TObject);
 var
   count, NomineeCount, EntrantCount: integer;
 begin
-
   // default - clear message.
   StatusBar.Panels[5].Text := '';
-
-  if uEvent.CalcEventMetrics(EntrantCount, NomineeCount) then
-  begin
-    if Sender.ClassNameIs('TFrameLane') then
-    begin
-      if PageControl.TabIndex = 2  then
+  case PageControl.TabIndex of
+    0:
+      // update event tables metrics...
+      ;
+    1:
+      if Sender.ClassNameIs('TFrameNominate') then
       begin
-        // ellipse key used - members, nominees lane assignment changed.
-        count := NomineeCount - EntrantCount;
-        if Count >= 0 then
-          StatusBar.Panels[5].Text := 'Unplaced Nominees: ' + IntToStr(Count);
-      end
-    end
-    else if Sender.ClassNameIs('TFrameNominate') then
-    begin
-      if PageControl.TabIndex = 1  then
-      begin
-        // a nominee was un/assigned to current event.
-        if NomineeCount > 0 then
-          StatusBar.Panels[5].Text := 'Nominee Count: ' + IntToStr(NomineeCount);
+        count := uNominee.GetNomineeCount(uEvent.PK);
+        if count > 0 then
+        begin
+          // a nominee was un/assigned to current event.
+          if NomineeCount > 0 then
+            StatusBar.Panels[5].Text := 'Nominee Count: ' +
+            IntToStr(NomineeCount);
+        end;
       end;
-    end;
+    2:
+      if Sender.ClassNameIs('TFrameLane') then
+      begin
+        if uEvent.CalcEventMetrics(EntrantCount, NomineeCount) then
+        begin
+          // ellipse key used - members, nominees lane assignment changed.
+          count := NomineeCount - EntrantCount;
+          if Count >= 0 then
+            StatusBar.Panels[5].Text := 'Unplaced Nominees: ' + IntToStr(Count);
+        end;
+      end
   end;
 end;
 

@@ -41,6 +41,13 @@ const
 
 
  type
+
+ TNotify_GridViewChange = procedure(Sender: TObject; GridState: Boolean) of
+      object;
+
+ TNotify_NominateChange = procedure(Sender: TObject) of object;
+
+
  scmSendToFileType = (sftPDF, sftXLS, sftHTML, sftIMG, sftNA);
  scmSendToDevice = (stdSendToPrinter, stdSendToFile);
  scmRptType = (rptSession, rptEvent, rptHeat, rptLane, rptNominee,

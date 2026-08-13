@@ -21,20 +21,6 @@ uses
 
 
 type
-{
-    // 1. THE INTERCEPTER MUST GO HERE (Before the TFrame declaration)
-    TSpeedButton = class(Vcl.Buttons.TSpeedButton)
-    protected
-      procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
-    end;
-}
-
-  TEventNotify_GridViewChange = procedure(Sender: TObject; GridState: Boolean) of
-      object;
-
-//    procedure HandleOnNominateChange(Sender: TObject; NomineeCount, EntrantCount:
-//        integer);
-
 
   TFrameEvent = class(TFrame)
     actnEv_ClearCell: TAction;
@@ -108,7 +94,7 @@ type
         string);
     procedure gridKeyPress(Sender: TObject; var Key: Char);
   private
-    FOnGridViewChange: TEventNotify_GridViewChange;
+    FOnGridViewChange: TNotify_GridViewChange; // defined in uDefines.
 
     { Design Time Grid UI state. Captured on load.
       Captures column widths for all fields.}
@@ -133,7 +119,7 @@ type
     procedure LinkActionsToMenu(AParentMenuItem: TActionClientItem);
     procedure UpdateUI(DoFullUpdate: Boolean = false);
     // Notify main form of a grid view change (expand/collapse)...
-    property OnGridViewChanged: TEventNotify_GridViewChange
+    property OnGridViewChanged: TNotify_GridViewChange
       read FOnGridViewChange write FOnGridViewChange;
 
     procedure OnPreferenceChange(); // Tools preferences calls here, via main form.

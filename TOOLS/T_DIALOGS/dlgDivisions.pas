@@ -196,9 +196,11 @@ procedure TDivisions.spbtnOutClick(Sender: TObject);
 var
   ex: TDivisionExporter;
   sl: TStringList;
+  currIndx: string;
 begin
   Grid.BeginUpdate;
   qryDivision.DisableControls;
+  currIndx := qryDivision.IndexName;
   ex := TDivisionExporter.Create(qryDivision);
   sl := TStringList.Create();
   try
@@ -210,7 +212,7 @@ begin
     begin
       sl.SaveToFile(SaveJSONFile.FileName);
     end;
-    qryDivision.IndexName := 'indxTTB';
+    qryDivision.IndexName := currIndx;
   finally
     ex.Free;
     sl.Free;

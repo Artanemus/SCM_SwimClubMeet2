@@ -3,8 +3,8 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
   Top = 0
   BorderStyle = bsDialog
   Caption = 
-    'Quick-Pick from club members. Assign member as a nominee and pla' +
-    'ce in the selected lane.'
+    'Quick-Pick from club members. Nominate a member and place in the' +
+    ' selected lane.'
   ClientHeight = 783
   ClientWidth = 699
   Color = clBtnFace
@@ -645,7 +645,9 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       'SET @ToggleName = :TOGGLENAME;'
       'SET @SeedDate = :SEEDDATE;'
       ''
-      'if @SeedDate IS NULL SET @SEEDDATE = GETDATE();'
+      
+        'IF @SeedDate IS NULL SET @SeedDate = GETDATE();  -- Fixed variab' +
+        'le name'
       ''
       '-- Needed to calculate the personal best for the member'
       'SELECT '
@@ -654,9 +656,7 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       '    @SessionDate = [Session].SessionDT,'
       '    @SwimClubID = [Session].SwimClubID'
       'FROM SwimClubMeet2.dbo.[Event]'
-      
-        'INNER JOIN [Session] ON [Event].SessionID = [Session].SessionID ' +
-        ' -- Fixed: SessionID not SessionDT'
+      'INNER JOIN [Session] ON [Event].SessionID = [Session].SessionID'
       'WHERE EventID = @EventID;'
       ''
       'SELECT '
@@ -664,42 +664,33 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       'FROM SwimClubMeet2.dbo.[SwimClub]'
       'WHERE [SwimClub].SwimClubID = @SwimClubID;'
       ''
-      '-- Drop a temporary table called '#39'#tmpID'#39
-      'IF OBJECT_ID('#39'tempDB..#tmpID'#39', '#39'U'#39') IS NOT NULL'
-      '    DROP TABLE #tmpID;'
+      '-- Drop temporary tables'
+      'IF OBJECT_ID('#39'tempDB..#tmpNominees'#39', '#39'U'#39') IS NOT NULL'
+      '    DROP TABLE #tmpNominees;'
       ''
-      'CREATE TABLE #tmpID'
+      'IF OBJECT_ID('#39'tempDB..#tmpSwimClubs'#39', '#39'U'#39') IS NOT NULL'
+      '    DROP TABLE #tmpSwimClubs;'
+      ''
+      'IF OBJECT_ID('#39'tempDB..#tmpMemberList'#39', '#39'U'#39') IS NOT NULL'
+      '    DROP TABLE #tmpMemberList;'
+      ''
+      '-- Create #tmpNominees'
+      'CREATE TABLE #tmpNominees'
       '('
       '    MemberID INT'
       ')'
       ''
-      '-- ************************************************'
-      '-- Members given a swimming lane in the given event '
-      '-- ************************************************'
-      'INSERT INTO #tmpID'
+      'INSERT INTO #tmpNominees'
       'SELECT Nominee.MemberID'
-      'FROM [SwimClubMeet2].[dbo].[Heat]'
-      '    INNER JOIN Lane'
-      '        ON Lane.HeatID = Heat.HeatID'
-      '    LEFT JOIN Nominee'
-      '        ON Lane.NomineeID = Nominee.NomineeID'
-      'WHERE Heat.EventID = @EventID AND Lane.NomineeID IS NOT NULL;'
-      ' '
-      '-- IF @SwimClubID is a group of swim clubs.'
-      '-- ie. SwimClubMeet2.dbo.SwimClub.IsClubGroup = 1'
-      '-- BUILD a List of SwimClubs...'
-      '-- ELSE just insert a single record into tmpSwimClubs'
+      'FROM [SwimClubMeet2].[dbo].[Nominee]'
+      'WHERE Nominee.EventID = @EventID;'
       ''
-      '-- Drop a temporary table called '#39'#tmpSwimClubs'#39
-      'IF OBJECT_ID('#39'tempDB..#tmpSwimClubs'#39', '#39'U'#39') IS NOT NULL'
-      '    DROP TABLE #tmpSwimClubs;'
-      ''
+      '-- Create #tmpSwimClubs'
       'CREATE TABLE #tmpSwimClubs'
       '('
       '    SwimClubID INT'
       ')'
       ''
-      '-- Fixed: Changed @IsSwimClub to @IsClubGroup'
       'IF @IsClubGroup = 1'
       'BEGIN'
       '    INSERT INTO #tmpSwimClubs'
@@ -710,56 +701,61 @@ object EntrantPickerCTRL: TEntrantPickerCTRL
       'ELSE'
       'BEGIN'
       '    INSERT INTO #tmpSwimClubs'
-      
-        '    SELECT @SwimClubID AS SwimClubID  -- Fixed: Added SELECT and' +
-        ' corrected variable name'
+      '    SELECT @SwimClubID'
       'END'
       ''
-      '-- ************************************************'
-      
-        '-- ALL OTHER Members who have not been placed in the current sel' +
-        'ected event'
-      '-- Currently ANY member from ANY club will be listed... '
-      
-        '-- Now filtered to only members in the swim clubs from #tmpSwimC' +
-        'lubs'
-      '-- ************************************************'
-      'SELECT Member.MemberID'
-      '     , Member.GenderID'
-      '     , dbo.SwimmerGenderToString(Member.MemberID) AS GenderStr'
-      
-        '     , dbo.PersonalBest(Member.MemberID, @DistanceID, @StrokeID,' +
-        ' @SessionDate) AS PB'
-      '     , dbo.SwimmerAge(@SeedDate, Member.DOB) AS Age'
-      '     , CASE'
-      '           WHEN @ToggleName = 0 THEN'
-      
-        '               SUBSTRING(CONCAT(UPPER([LastName]), '#39', '#39', [FirstN' +
-        'ame]), 0, 30)'
-      '           WHEN @ToggleName = 1 THEN'
-      
-        '               SUBSTRING(CONCAT([FirstName], '#39', '#39', UPPER([LastNa' +
-        'me])), 0, 48)'
-      '       END AS FName'
+      '-- Create #tmpMemberList with all needed columns'
+      'CREATE TABLE #tmpMemberList'
+      '('
+      '    MemberID INT,'
+      '    GenderID INT,'
+      '    DOB DATETIME,'
+      '    LastName NVARCHAR(100),'
+      '    FirstName NVARCHAR(100)'
+      ')'
+      ''
+      '-- Populate #tmpMemberList with all needed data'
+      'INSERT INTO #tmpMemberList'
+      'SELECT DISTINCT '
+      '    Member.MemberID,'
+      '    Member.GenderID,'
+      '    Member.DOB,'
+      '    Member.LastName,'
+      '    Member.FirstName'
       'FROM Member'
-      'LEFT OUTER JOIN #tmpID'
-      '    ON #tmpID.MemberID = Member.MemberID'
-      
-        '-- Added JOIN to MemberLink and #tmpSwimClubs to filter by swim ' +
-        'club'
+      'LEFT OUTER JOIN #tmpNominees'
+      '    ON #tmpNominees.MemberID = Member.MemberID'
       'INNER JOIN MemberLink'
       '    ON Member.MemberID = MemberLink.MemberID'
       'INNER JOIN #tmpSwimClubs'
       '    ON MemberLink.SwimClubID = #tmpSwimClubs.SwimClubID'
-      'WHERE #tmpID.MemberID IS NULL'
+      'WHERE #tmpNominees.MemberID IS NULL'
       '    AND Member.IsActive = 1 '
       '    AND Member.IsSwimmer = 1 '
+      '    AND Member.IsArchived = 0'
+      '    AND MemberLink.IsArchived = 0'
+      ''
+      '-- Final SELECT'
+      'SELECT '
+      '    tml.MemberID,'
+      '    tml.GenderID,'
+      '    dbo.SwimmerGenderToString(tml.MemberID) AS GenderStr,'
       
-        '    AND Member.IsArchived = 0  -- Fixed: Changed NOT Member.IsAr' +
-        'chived = 1 to this'
+        '    dbo.PersonalBest(tml.MemberID, @DistanceID, @StrokeID, @Sess' +
+        'ionDate) AS PB,'
+      '    dbo.SwimmerAge(@SeedDate, tml.DOB) AS Age,'
+      '    CASE'
+      '        WHEN @ToggleName = 0 THEN'
       
-        '    AND MemberLink.IsArchived = 0  -- Added: Only include active' +
-        ' member-club links')
+        '            SUBSTRING(CONCAT(UPPER(tml.LastName), '#39', '#39', tml.Firs' +
+        'tName), 1, 30)'
+      '        WHEN @ToggleName = 1 THEN'
+      
+        '            SUBSTRING(CONCAT(tml.FirstName, '#39', '#39', UPPER(tml.Last' +
+        'Name)), 1, 48)'
+      '    END AS FName'
+      'FROM #tmpMemberList tml'
+      'ORDER BY tml.LastName, tml.FirstName  -- Optional ordering')
     Left = 72
     Top = 136
     ParamData = <

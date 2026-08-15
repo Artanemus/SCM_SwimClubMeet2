@@ -2,9 +2,9 @@ object EntrantPickerEx: TEntrantPickerEx
   Left = 0
   Top = 0
   BorderStyle = bsDialog
-  Caption = 'Quick-Pick. Drag and drop enabled. Multi-select. '
+  Caption = 'Quick-Pick Lane Entrants. Multi-select. '
   ClientHeight = 633
-  ClientWidth = 1183
+  ClientWidth = 1201
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,16 +19,18 @@ object EntrantPickerEx: TEntrantPickerEx
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 1183
+    Width = 1201
     Height = 45
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
+    ExplicitWidth = 1183
     object VirtualImage2: TVirtualImage
       Left = 8
       Top = 2
       Width = 34
       Height = 39
+      ImageCollection = IMG.CollectionCore
       ImageWidth = 0
       ImageHeight = 0
       ImageIndex = 67
@@ -47,13 +49,14 @@ object EntrantPickerEx: TEntrantPickerEx
   object pnlBody: TPanel
     Left = 0
     Top = 45
-    Width = 1183
+    Width = 1201
     Height = 588
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitWidth = 1183
     object pnlCntrl: TPanel
-      Left = 657
+      Left = 674
       Top = 0
       Width = 122
       Height = 588
@@ -62,27 +65,16 @@ object EntrantPickerEx: TEntrantPickerEx
       Color = clDarkslategray
       ParentBackground = False
       TabOrder = 1
-      object btnCancel: TButton
+      ExplicitLeft = 663
+      object btnClose: TButton
         Left = 10
-        Top = 410
-        Width = 106
-        Height = 35
-        Cancel = True
-        Caption = 'Cancel'
-        ModalResult = 2
-        TabOrder = 1
-        Visible = False
-        OnClick = btnCancelClick
-      end
-      object btnPost: TButton
-        Left = 10
-        Top = 369
+        Top = 545
         Width = 106
         Height = 35
         Caption = 'Close'
         ModalResult = 1
         TabOrder = 0
-        OnClick = btnPostClick
+        OnClick = btnCloseClick
       end
       object btnToggleName: TButton
         Left = 10
@@ -90,47 +82,74 @@ object EntrantPickerEx: TEntrantPickerEx
         Width = 106
         Height = 35
         Caption = 'Toggle Name'
-        TabOrder = 2
+        TabOrder = 1
         OnClick = btnToggleNameClick
       end
       object btnClearLane: TButton
-        Left = 10
-        Top = 129
+        Left = 6
+        Top = 148
         Width = 106
-        Height = 35
+        Height = 54
         Cancel = True
-        Caption = 'Empty'
-        ModalResult = 2
-        TabOrder = 3
-        OnClick = btnCancelClick
+        ImageAlignment = iaCenter
+        ImageIndex = 0
+        ImageName = 'arrow-left2'
+        Images = IMG.imglstClubGroup
+        TabOrder = 2
       end
       object btnSortLanes: TButton
-        Left = 10
-        Top = 170
+        Left = 6
+        Top = 208
         Width = 106
-        Height = 35
+        Height = 54
         Cancel = True
-        Caption = 'Quick Sort'
-        ModalResult = 2
-        TabOrder = 4
-        OnClick = btnCancelClick
+        ImageAlignment = iaCenter
+        ImageIndex = 6
+        ImageName = 'renumber'
+        Images = IMG.imglstClubGroup
+        TabOrder = 3
       end
       object btnInject: TButton
-        Left = 10
+        Left = 6
         Top = 88
         Width = 106
-        Height = 35
+        Height = 54
         Cancel = True
-        Caption = 'Inject'
-        ModalResult = 2
+        ImageAlignment = iaCenter
+        ImageIndex = 1
+        ImageName = 'arrow-right2'
+        Images = IMG.imglstClubGroup
+        TabOrder = 4
+      end
+      object btnUp: TButton
+        Left = 6
+        Top = 268
+        Width = 106
+        Height = 54
+        Cancel = True
+        ImageAlignment = iaCenter
+        ImageIndex = 7
+        ImageName = 'up'
+        Images = IMG.imglstClubGroup
         TabOrder = 5
-        OnClick = btnCancelClick
+      end
+      object btnDown: TButton
+        Left = 6
+        Top = 328
+        Width = 106
+        Height = 54
+        Cancel = True
+        ImageAlignment = iaCenter
+        ImageIndex = 8
+        ImageName = 'down'
+        Images = IMG.imglstClubGroup
+        TabOrder = 6
       end
     end
     object pnlGrid: TPanel
       Left = 0
       Top = 0
-      Width = 657
+      Width = 674
       Height = 588
       Align = alLeft
       BevelOuter = bvNone
@@ -138,7 +157,7 @@ object EntrantPickerEx: TEntrantPickerEx
       object Grid: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 657
+        Width = 674
         Height = 588
         Cursor = crDefault
         Align = alClient
@@ -147,7 +166,7 @@ object EntrantPickerEx: TEntrantPickerEx
         DefaultRowHeight = 30
         DrawingStyle = gdsClassic
         FixedColor = clWhite
-        RowCount = 2
+        RowCount = 15
         FixedRows = 1
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -159,11 +178,10 @@ object EntrantPickerEx: TEntrantPickerEx
         ScrollBars = ssBoth
         TabOrder = 0
         OnDrawCell = GridDrawCell
-        OnFixedCellClick = GridFixedCellClick
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
-        OnGetCellColor = GridGetCellColor
+        OnClickCell = GridClickCell
         OnDblClickCell = GridDblClickCell
         OnCanEditCell = GridCanEditCell
         ActiveCellFont.Charset = DEFAULT_CHARSET
@@ -323,7 +341,7 @@ object EntrantPickerEx: TEntrantPickerEx
             Font.Height = -16
             Font.Name = 'Tahoma'
             Font.Style = []
-            Header = 'Nominee'
+            Header = '          Nominee'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
             HeaderFont.Height = -16
@@ -350,6 +368,7 @@ object EntrantPickerEx: TEntrantPickerEx
             Font.Height = -16
             Font.Name = 'Tahoma'
             Font.Style = []
+            Header = '     TTB'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
             HeaderFont.Height = -16
@@ -376,6 +395,7 @@ object EntrantPickerEx: TEntrantPickerEx
             Font.Height = -16
             Font.Name = 'Tahoma'
             Font.Style = []
+            Header = '     PB'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
             HeaderFont.Height = -16
@@ -403,19 +423,19 @@ object EntrantPickerEx: TEntrantPickerEx
             Font.Height = -16
             Font.Name = 'Tahoma'
             Font.Style = []
+            Header = '   AGE'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = 3881787
             HeaderFont.Height = -16
             HeaderFont.Name = 'Tahoma'
             HeaderFont.Style = []
-            HeaderAlignment = taCenter
             PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
             PrintFont.Charset = DEFAULT_CHARSET
             PrintFont.Color = clWindowText
             PrintFont.Height = -16
             PrintFont.Name = 'Tahoma'
             PrintFont.Style = []
-            Width = 55
+            Width = 68
           end
           item
             Borders = []
@@ -587,21 +607,35 @@ object EntrantPickerEx: TEntrantPickerEx
           265
           112
           112
-          55
+          68
           64)
         RowHeights = (
+          30
+          30
+          30
+          30
+          30
+          30
+          30
+          30
+          30
+          30
+          30
+          30
+          30
           30
           30)
       end
     end
     object pnlLane: TPanel
-      Left = 779
+      Left = 797
       Top = 0
       Width = 404
       Height = 588
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 2
+      ExplicitLeft = 779
       object lanegrid: TDBAdvGrid
         Left = 0
         Top = 0
@@ -625,6 +659,7 @@ object EntrantPickerEx: TEntrantPickerEx
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
+        OnDrawCell = lanegridDrawCell
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
@@ -804,13 +839,13 @@ object EntrantPickerEx: TEntrantPickerEx
             CheckFalse = 'N'
             CheckTrue = 'Y'
             Color = clWindow
-            FieldName = 'FName'
+            FieldName = 'FullName'
             Font.Charset = DEFAULT_CHARSET
             Font.Color = clWindowText
             Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
-            Header = 'Entrant'
+            Header = '     Entrant'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = clWindowText
             HeaderFont.Height = -16
@@ -837,7 +872,7 @@ object EntrantPickerEx: TEntrantPickerEx
             Font.Height = -16
             Font.Name = 'Segoe UI'
             Font.Style = []
-            Header = 'TimeToBeat'
+            Header = 'TTB'
             HeaderFont.Charset = DEFAULT_CHARSET
             HeaderFont.Color = clWindowText
             HeaderFont.Height = -16
@@ -851,7 +886,7 @@ object EntrantPickerEx: TEntrantPickerEx
             PrintFont.Style = []
             Width = 112
           end>
-        DataSource = dsLane
+        DataSource = CORE.dsLane
         InvalidPicture.Data = {
           055449636F6E0000010001002020200000000000A81000001600000028000000
           2000000040000000010020000000000000100000000000000000000000000000
@@ -1008,13 +1043,12 @@ object EntrantPickerEx: TEntrantPickerEx
     Indexes = <
       item
         Active = True
-        Selected = True
-        Name = 'idxMemberFName'
+        Name = 'idxFName'
         Fields = 'FName'
       end
       item
         Active = True
-        Name = 'idxMemberFNameDESC'
+        Name = 'idxFNameDESC'
         Fields = 'FName'
         DescFields = 'FName'
         Options = [soDescNullLast, soDescending]
@@ -1066,10 +1100,12 @@ object EntrantPickerEx: TEntrantPickerEx
         Options = [soDescNullLast, soDescending]
       end
       item
+        Active = True
+        Selected = True
         Name = 'idxUnSorted'
         Fields = 'NomineeID'
       end>
-    IndexName = 'idxMemberFName'
+    IndexName = 'idxUnSorted'
     DetailFields = 'MemberID'
     Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
@@ -1099,7 +1135,7 @@ object EntrantPickerEx: TEntrantPickerEx
       '    MemberID INT'
       ')'
       ''
-      '-- Members given a swimming lane in the given event '
+      '-- Nominees given a swimming lane in the given event '
       '    INSERT INTO #tmpID'
       '    SELECT Nominee.MemberID'
       '    FROM [SwimClubMeet2].[dbo].[Heat]'
@@ -1144,7 +1180,7 @@ object EntrantPickerEx: TEntrantPickerEx
         Name = 'EVENTID'
         DataType = ftInteger
         ParamType = ptInput
-        Value = 65
+        Value = 1760
       end
       item
         Name = 'TOGGLENAME'
@@ -1218,88 +1254,5 @@ object EntrantPickerEx: TEntrantPickerEx
     DataSet = qryQuickPick
     Left = 240
     Top = 216
-  end
-  object qryLane: TFDQuery
-    ActiveStoredUsage = [auDesignTime]
-    Connection = SCM2.scmConnection
-    SQL.Strings = (
-      'USE SwimClubMeet2;'
-      ''
-      'DECLARE @HeatID AS INTEGER;'
-      'SET @HeatID =  :HEATID;'
-      ''
-      'SELECT [LaneID]'
-      '      ,[LaneNum]'
-      '      ,[RaceTime]'
-      '      ,[IsDisqualified]'
-      '      ,[IsScratched]'
-      '      ,[EvPlace]'
-      '      ,[HtPlace]'
-      '      ,[EvScore]'
-      '      ,[HtScore]'
-      '      ,[SplitCount]'
-      '      ,[HeatID]'
-      '      ,[DisqualifyCodeID]'
-      '      ,[TeamID]'
-      '      ,[Lane].[NomineeID]'
-      
-        '      ,CONCAT([Member].FirstName, '#39' '#39', [Member].LastName) AS FNa' +
-        'me'
-      '      ,[Nominee].TTB'
-      '  FROM [SwimClubMeet2].[dbo].[Lane]'
-      '  Left Join [Nominee] ON [Lane].NomineeID = [Nominee].NomineeID'
-      '  left join [Member] ON [Nominee].Memberid = [Member].MemberID'
-      '  WHERE [HeatID] = @HeatID'
-      '  ORDER BY [LaneNum] ASC'
-      '')
-    Left = 152
-    Top = 288
-    ParamData = <
-      item
-        Name = 'HEATID'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = Null
-      end>
-    object qryLaneLaneID: TFDAutoIncField
-      FieldName = 'LaneID'
-      Origin = 'LaneID'
-      Visible = False
-    end
-    object qryLaneLaneNum: TIntegerField
-      DisplayLabel = 'Lane'
-      FieldName = 'LaneNum'
-      Origin = 'LaneNum'
-    end
-    object qryLaneFName: TWideStringField
-      DisplayLabel = 'Entrant'
-      DisplayWidth = 64
-      FieldName = 'FName'
-      Origin = 'FName'
-      ReadOnly = True
-      Required = True
-      Size = 257
-    end
-    object qryLaneTTB: TTimeField
-      DisplayLabel = 'TimeToBeat'
-      FieldName = 'TTB'
-      Origin = 'TTB'
-      OnGetText = qryLaneTTBGetText
-    end
-    object qryLaneHeatID: TIntegerField
-      FieldName = 'HeatID'
-      Origin = 'HeatID'
-      Visible = False
-    end
-    object qryLaneNomineeID: TIntegerField
-      FieldName = 'NomineeID'
-      Origin = 'NomineeID'
-      Visible = False
-    end
-  end
-  object dsLane: TDataSource
-    DataSet = qryLane
-    Left = 240
-    Top = 288
   end
 end

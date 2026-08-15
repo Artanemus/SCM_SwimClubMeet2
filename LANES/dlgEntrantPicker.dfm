@@ -1,6 +1,6 @@
 object EntrantPicker: TEntrantPicker
-  Left = 0
-  Top = 0
+  Left = 2
+  Top = 2
   BorderStyle = bsDialog
   Caption = 'Quick-Pick. Assign an unplaced NOMINEE into the selected lane. '
   ClientHeight = 633
@@ -551,6 +551,8 @@ object EntrantPicker: TEntrantPicker
           80000001C0000003C0000003E0000007F000000FF800001FFC00003FFF0000FF
           FFC003FF}
         ShowUnicode = False
+        ExplicitLeft = 4
+        ExplicitTop = -1
         ColWidths = (
           20
           265

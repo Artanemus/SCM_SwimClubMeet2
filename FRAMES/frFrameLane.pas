@@ -234,11 +234,21 @@ end;
 procedure TFrameLane.actnLn_MultNominateExecute(Sender: TObject);
 var
   dlg: TEntrantPickerEx;
+  laneID: integer;
 begin
   // Multi- Nominate Nominees to lanes...
+  LaneID := CORE.qryLane.FieldByName('LaneID').AsInteger;
+  LockDrawing;
+  grid.BeginUpdate;
   dlg := TEntrantPickerEx.Create(Self);
-  dlg.ShowModal;
-  dlg.Free;
+  try
+    dlg.Prepare(LaneID);
+    dlg.ShowModal;
+  finally
+    dlg.Free;
+    grid.EndUpdate;
+    UnlockDrawing;
+  end;
 end;
 
 procedure TFrameLane.gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var

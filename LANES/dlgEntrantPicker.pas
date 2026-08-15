@@ -80,7 +80,7 @@ implementation
 
 {$R *.dfm}
 
-uses uUtility, uEvent, uNominee, uLane, IniFiles, System.Math;
+uses uUtility, uEvent, uNominee, uLane, System.Math;
 
 procedure TEntrantPicker.btnCancelClick(Sender: TObject);
 begin
@@ -89,9 +89,10 @@ end;
 
 procedure TEntrantPicker.btnPostClick(Sender: TObject);
 begin
-  if not qryQuickPick.Active then exit;
   if UpdateEntrantData then
-  ModalResult := mrOk else ModalResult := mrCancel;
+    ModalResult := mrOk
+  else
+    ModalResult := mrCancel;
 end;
 
 procedure TEntrantPicker.btnToggleNameClick(Sender: TObject);
@@ -127,7 +128,6 @@ var
   fs: string;
 begin
   if not qryQuickPick.Active then exit;
-
   fs := '';
   qryQuickPick.DisableControls;
   grid.BeginUpdate;
@@ -151,7 +151,6 @@ begin
     grid.EndUpdate;
     UnlockDrawing;
   end;
-
 end;
 
 procedure TEntrantPicker.FormCreate(Sender: TObject);
@@ -272,8 +271,6 @@ begin
       grid.EndUpdate;
       UnlockDrawing;
     end;
-
-
   end;
 end;
 

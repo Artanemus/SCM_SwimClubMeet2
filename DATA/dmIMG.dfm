@@ -2815,15 +2815,14 @@ object IMG: TIMG
       item
         IconName = 'multi-nominate'
         SVGText = 
-          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
-          ' viewBox="0 0 24 24"><path fill="currentColor" d="m17.275 20.25l' +
-          '3.475-3.45l-1.05-1.05l-2.425 2.375l-.975-.975l-1.05 1.075zM6 9h1' +
-          '2V7H6zm12 14q-2.075 0-3.537-1.463T13 18t1.463-3.537T18 13t3.538 ' +
-          '1.463T23 18t-1.463 3.538T18 23M3 22V5q0-.825.588-1.412T5 3h14q.8' +
-          '25 0 1.413.588T21 5v6.675q-.7-.35-1.463-.513T18 11H6v2h7.1q-.425' +
-          '.425-.787.925T11.675 15H6v2h5.075q-.05.25-.062.488T11 18q0 1.05.' +
-          '288 2.013t.862 1.837L12 22l-1.5-1.5L9 22l-1.5-1.5L6 22l-1.5-1.5z' +
-          '"/></svg>'
+          '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">'#13#10'  ' +
+          '<path d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 ' +
+          '0 0 1 4 0m4 8c0 1-1 1-1 1H1s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.0' +
+          '01-.246-.154-.986-.832-1.664C9.516 10.68 8.289 10 6 10s-3.516.68' +
+          '-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>'#13#10'  <path fill-ru' +
+          'le="evenodd" d="M13.5 5a.5.5 0 0 1 .5.5V7h1.5a.5.5 0 0 1 0 1H14v' +
+          '1.5a.5.5 0 0 1-1 0V8h-1.5a.5.5 0 0 1 0-1H13V5.5a.5.5 0 0 1 .5-.5' +
+          '"/>'#13#10'</svg>'#13#10
         FixedColor = clDarkgoldenrod
       end
       item
@@ -14336,6 +14335,31 @@ object IMG: TIMG
         CollectionIndex = 67
         CollectionName = 'search'
         Name = 'search'
+      end
+      item
+        CollectionIndex = 30
+        CollectionName = 'delete'
+        Name = 'delete'
+      end
+      item
+        CollectionIndex = 103
+        CollectionName = 'renumber'
+        Name = 'renumber'
+      end
+      item
+        CollectionIndex = 26
+        CollectionName = 'up'
+        Name = 'up'
+      end
+      item
+        CollectionIndex = 27
+        CollectionName = 'down'
+        Name = 'down'
+      end
+      item
+        CollectionIndex = 52
+        CollectionName = 'sort'
+        Name = 'sort'
       end>
     ImageCollection = CollectionCore
     Width = 48

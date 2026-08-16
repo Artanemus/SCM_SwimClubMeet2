@@ -92,7 +92,19 @@ uses
   uExportDivisionToJSON in 'TOOLS\uExportDivisionToJSON.pas',
   dlgEntrantPickerEx in 'LANES\dlgEntrantPickerEx.pas' {EntrantPickerEx},
   dlgEntrantPicker in 'LANES\dlgEntrantPicker.pas' {EntrantPicker},
-  dlgDeleteConfirm in 'HEATS\dlgDeleteConfirm.pas' {DeleteConfirm};
+  dlgDeleteConfirm in 'HEATS\dlgDeleteConfirm.pas' {DeleteConfirm},
+  rptEventReportA in 'REPORTS\rptEventReportA.pas' {EventReportA: TDataModule},
+  rptEventReportB in 'REPORTS\rptEventReportB.pas' {EventReportB: TDataModule},
+  rptHeatReportA in 'REPORTS\rptHeatReportA.pas' {HeatReportA: TDataModule},
+  rptHeatReportB in 'REPORTS\rptHeatReportB.pas' {HeatReportB: TDataModule},
+  rptMarshallReportA in 'REPORTS\rptMarshallReportA.pas' {MarshallReportA: TDataModule},
+  rptMarshallReportA_ALT in 'REPORTS\rptMarshallReportA_ALT.pas' {MarshallReportA_ALT: TDataModule},
+  rptMarshallReportB in 'REPORTS\rptMarshallReportB.pas' {MarshallReportB: TDataModule},
+  rptMarshallReportC in 'REPORTS\rptMarshallReportC.pas' {MarshallReportC: TDataModule},
+  rptSessionReportA in 'REPORTS\rptSessionReportA.pas' {SessionReportA: TDataModule},
+  rptSessionReportB in 'REPORTS\rptSessionReportB.pas' {SessionReportB: TDataModule},
+  rptTimeKeeperReportA in 'REPORTS\rptTimeKeeperReportA.pas' {TimeKeeperReportA: TDataModule},
+  rptTimeKeeperReportB in 'REPORTS\rptTimeKeeperReportB.pas' {TimeKeeperReportB: TDataModule};
 
 {$R *.res}
 

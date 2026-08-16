@@ -428,6 +428,66 @@
             <Form>DeleteConfirm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="REPORTS\rptEventReportA.pas">
+            <Form>EventReportA</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\rptEventReportB.pas">
+            <Form>EventReportB</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\rptHeatReportA.pas">
+            <Form>HeatReportA</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\rptHeatReportB.pas">
+            <Form>HeatReportB</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\rptMarshallReportA.pas">
+            <Form>MarshallReportA</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\rptMarshallReportA_ALT.pas">
+            <Form>MarshallReportA_ALT</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\rptMarshallReportB.pas">
+            <Form>MarshallReportB</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\rptMarshallReportC.pas">
+            <Form>MarshallReportC</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\rptSessionReportA.pas">
+            <Form>SessionReportA</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\rptSessionReportB.pas">
+            <Form>SessionReportB</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\rptTimeKeeperReportA.pas">
+            <Form>TimeKeeperReportA</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
+        <DCCReference Include="REPORTS\rptTimeKeeperReportB.pas">
+            <Form>TimeKeeperReportB</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TDataModule</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

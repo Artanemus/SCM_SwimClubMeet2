@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<TfrxReport Version="6.6.11" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.AllowEdit="False" PreviewOptions.Buttons="4095" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="43428.811813125" ReportOptions.Description.Text="" ReportOptions.LastChange="46250.4729506366" ScriptLanguage="PascalScript" ScriptText.Text="begin&#13;&#10;&#13;&#10;end.">
+  <Datasets>
+    <item DataSet="frxDSReport" DataSetName="frxDS"/>
+  </Datasets>
+  <TfrxDataPage Name="Data" Height="1000" Left="0" Top="0" Width="1000"/>
+  <TfrxReportPage Name="Page1" PaperWidth="210" PaperHeight="297" PaperSize="9" LeftMargin="10" RightMargin="10" TopMargin="10" BottomMargin="10" ColumnWidth="0" ColumnPositions.Text="" Frame.Typ="0" MirrorMode="0" HGuides.Text="" VGuides.Text="">
+    <TfrxPageHeader Name="PageHeader1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="56.69295" Left="0" Top="18.89765" Width="718.1107">
+      <TfrxMemoView Name="FDQuery1cSwimClub" AllowVectorExport="True" Left="0" Top="0" Width="400.63018" Height="30.23624" AutoWidth="True" DataSetName="FDQuery1" Font.Charset="1" Font.Color="0" Font.Height="-19" Font.Name="Arial" Font.Style="1" Frame.Typ="0" ParentFont="False" Text="[frxDS.&#34;SwimClub&#34;]"/>
+      <TfrxMemoView Name="FDQuery1NickName" AllowVectorExport="True" Left="0" Top="22.67718" Width="400.63018" Height="18.89765" DataSetName="FDQuery1" Frame.Typ="0" Text="[frxDS.&#34;NickName&#34;]"/>
+      <TfrxMemoView Name="frxDSSessionStart" AllowVectorExport="True" Left="408.18924" Top="22.67718" Width="306.14193" Height="18.89765" DataSet="frxDSReport" DataSetName="frxDS" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haRight" ParentFont="False" Text="Session Date: [&#60;frxDS.&#34;SessionDT&#34;&#62; #dddd dd mmm yyyy HH:MM AM/PM]"/>
+    </TfrxPageHeader>
+    <TfrxGroupHeader Name="GroupHeader1" FillType="ftBrush" Fill.BackColor="15461355" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Height="37.7953" Left="0" ParentFont="False" Top="136.06308" Width="718.1107" Condition="frxDS.&#34;SessionID&#34;">
+      <TfrxMemoView Name="Memo1" AllowVectorExport="True" Left="7.77953" Top="7.55906" Width="38.35961667" Height="18.89765" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="Ev#"/>
+      <TfrxMemoView Name="Memo3" AllowVectorExport="True" Left="52.47773667" Top="7.55906" Width="56.97248" Height="18.89765" Frame.Typ="0" Text="Distance"/>
+      <TfrxMemoView Name="Memo2" AllowVectorExport="True" Left="113.12214" Top="7.55906" Width="113.3859" Height="18.89765" Frame.Typ="0" Text="Stroke"/>
+      <TfrxMemoView Name="Memo4" AllowVectorExport="True" Left="514.90321667" Top="7.55906" Width="54.86481963" Height="18.89765" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="Nominees"/>
+      <TfrxMemoView Name="Memo5" AllowVectorExport="True" Left="572.43475667" Top="7.55906" Width="44.0314863" Height="18.89765" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="Entrants"/>
+      <TfrxMemoView Name="Memo7" AllowVectorExport="True" Left="618.29963" Top="7.55906" Width="35.0314863" Height="18.89765" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="Heats"/>
+      <TfrxMemoView Name="Memo6" AllowVectorExport="True" Left="229.41094667" Top="7.55906" Width="219.21274" Height="18.89765" Frame.Typ="0" Text="Event Description"/>
+      <TfrxLineView Name="Line1" AllowVectorExport="True" Left="2.44619667" Top="32.23624" Width="710.55164" Height="0" Color="0" Frame.Typ="4" Frame.Width="2"/>
+      <TfrxMemoView Name="Memo8" AllowVectorExport="True" Left="653" Top="7.43692" Width="58.5314863" Height="18.89765" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haRight" ParentFont="False" Text="Scheduled"/>
+    </TfrxGroupHeader>
+    <TfrxMasterData Name="MasterData1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="22.67718" Left="0" Top="196.53556" Width="718.1107" ColumnWidth="0" ColumnGap="0" DataSet="frxDSReport" DataSetName="frxDS" RowCount="0">
+      <TfrxMemoView Name="frxDSEventNum" AllowVectorExport="True" Left="3.77953" Top="0" Width="37.24675333" Height="18.89765" DataSet="frxDSReport" DataSetName="frxDS" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haRight" ParentFont="False" Text="[&#60;frxDS.&#34;EventNum&#34;&#62; #n%3g]"/>
+      <TfrxMemoView Name="frxDScDistance" AllowVectorExport="True" Left="44.47773667" Top="0" Width="58.97248" Height="18.89765" DataSet="frxDSReport" DataSetName="frxDS" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haRight" ParentFont="False" Text="[frxDS.&#34;Distance&#34;]"/>
+      <TfrxMemoView Name="frxDScStroke" AllowVectorExport="True" Left="111.78880667" Top="0" Width="113.3859" Height="18.89765" DataSet="frxDSReport" DataSetName="frxDS" Frame.Typ="0" Text="[frxDS.&#34;Stroke&#34;]"/>
+      <TfrxMemoView Name="frxDSNomineeCount" AllowVectorExport="True" Left="514.90321667" Top="0" Width="55.4724263" Height="18.89765" DataSet="frxDSReport" DataSetName="frxDS" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="[IIF(&#60;frxDS.&#34;NomineeCount&#34;&#62; = 0 ,0,&#60;frxDS.&#34;NomineeCount&#34;&#62;) #n%3.0f]"/>
+      <TfrxMemoView Name="frxDSHeatCount" AllowVectorExport="True" Left="572.43475667" Top="-0.5" Width="43.4724263" Height="18.89765" DataSet="frxDSReport" DataSetName="frxDS" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="[IIF(&#60;frxDS.&#34;EntrantCount&#34;&#62; = 0 ,0,&#60;frxDS.&#34;EntrantCount&#34;&#62;) #n%3.0f]"/>
+      <TfrxMemoView Name="frxDSHeatCount1" AllowVectorExport="True" Left="617.46629667" Top="0" Width="34.4724263" Height="18.89765" DataSet="frxDSReport" DataSetName="frxDS" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="[frxDS.&#34;HeatCount&#34; #n%3.0f]"/>
+      <TfrxMemoView Name="frxDScEvent" AllowVectorExport="True" Left="229.41094667" Top="0" Width="283.71274" Height="18.89765" DataSet="frxDSReport" DataSetName="frxDS" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" ParentFont="False" Text="[frxDS.&#34;Event_Description&#34;]"/>
+      <TfrxMemoView Name="frxDSScheduleDT" IndexTag="1" AllowVectorExport="True" Left="653.5" Top="-0.03556" Width="53.37013" Height="18.89765" DataSet="frxDSReport" DataSetName="frxDS" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haRight" ParentFont="False" Text="[frxDS.&#34;StartTime&#34;]"/>
+    </TfrxMasterData>
+    <TfrxPageFooter Name="PageFooter1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="22.67718" Left="0" Top="279.68522" Width="718.1107">
+      <TfrxMemoView Name="TotalPages" AllowVectorExport="True" Left="266.456865" Top="1.88976500000001" Width="185.19697" Height="18.89765" AutoWidth="True" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" ParentFont="False" Text="Page [Page#] of [TotalPages#]">
+        <Formats>
+          <item/>
+          <item/>
+        </Formats>
+      </TfrxMemoView>
+      <TfrxMemoView Name="Date" AllowVectorExport="True" Left="0" Top="1.88976500000001" Width="264.5671" Height="18.89765" Frame.Typ="0" Text="Printed On: [Date]"/>
+    </TfrxPageFooter>
+  </TfrxReportPage>
+</TfrxReport>

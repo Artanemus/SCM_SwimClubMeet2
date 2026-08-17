@@ -68,6 +68,9 @@ type
     Ln_ColumnStatesStringSystem: string; // DEFAULT Line state string.
     Ev_ColumnStatesStringSystem: string; // DEFAULT Event state state.
 
+    rpt_ReportFolderSystem: string;
+    rpt_ReportFolderCustom: string;
+
 
     constructor Create(); overload;
     constructor Create(AutoLoad: boolean); overload;
@@ -150,6 +153,9 @@ begin
   Ev_ColumnStatesStringExpanded := '';
   Ln_ColumnStatesStringSystem := '';
   Ev_ColumnStatesStringSystem := '';
+
+  rpt_ReportFolderSystem := '..\..\REPORTS\';
+  rpt_ReportFolderCustom := GetDefPath;
 
   EnableDQcodes := false; // use simple DQ method. (not World Aquatics Codes).
 

@@ -3,9 +3,7 @@ object MarshallReportC: TMarshallReportC
   Width = 393
   object qryMain: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'HeatID'
-    Connection = SCM.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
@@ -69,12 +67,10 @@ object MarshallReportC: TMarshallReportC
   end
   object qryTEAM: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'HeatID'
     MasterSource = dsMain
     MasterFields = 'HeatID'
     DetailFields = 'HeatID'
-    Connection = SCM.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
@@ -115,12 +111,10 @@ object MarshallReportC: TMarshallReportC
   end
   object qryINDV: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'HeatID'
     MasterSource = dsMain
     MasterFields = 'HeatID'
     DetailFields = 'HeatID'
-    Connection = SCM.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
@@ -712,9 +706,7 @@ object MarshallReportC: TMarshallReportC
   end
   object qryClubInfoRpt: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'SwimClubID'
-    Connection = SCM.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False

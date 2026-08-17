@@ -3113,6 +3113,19 @@ object Main2: TMain2
           item
             Items = <
               item
+                Action = Report_Manage
+                Caption = '&Manage Reports'
+              end
+              item
+                Action = Report_Design
+                Caption = '&Design Report'
+              end>
+            Caption = '&Reports'
+            ImageName = 'EmptyFrame'
+          end
+          item
+            Items = <
+              item
                 Action = Tools_Preferences
                 Caption = '&Preferences...'
                 ImageName = 'settings'
@@ -3395,10 +3408,40 @@ object Main2: TMain2
       Caption = 'Pool Type...'
       OnExecute = Tools_PoolTypeExecute
     end
+    object Report_Manage: TAction
+      Category = 'Reports'
+      Caption = 'Manage Reports'
+    end
+    object Report_Design: TAction
+      Category = 'Reports'
+      Caption = 'Design Report'
+    end
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
     Left = 615
     Top = 153
+  end
+  object frxSCMDesigner: TfrxDesigner
+    DefaultScriptLanguage = 'PascalScript'
+    DefaultFont.Charset = DEFAULT_CHARSET
+    DefaultFont.Color = clWindowText
+    DefaultFont.Height = -13
+    DefaultFont.Name = 'Arial'
+    DefaultFont.Style = []
+    DefaultLeftMargin = 10.000000000000000000
+    DefaultRightMargin = 10.000000000000000000
+    DefaultTopMargin = 10.000000000000000000
+    DefaultBottomMargin = 10.000000000000000000
+    DefaultPaperSize = 9
+    DefaultOrientation = poPortrait
+    GradientEnd = 11982554
+    GradientStart = clWindow
+    TemplatesExt = 'fr3'
+    Restrictions = []
+    RTLLanguage = False
+    MemoParentFont = False
+    Left = 167
+    Top = 185
   end
 end

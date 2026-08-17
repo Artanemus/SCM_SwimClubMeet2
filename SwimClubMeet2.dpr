@@ -104,7 +104,8 @@ uses
   rptSessionReportA in 'REPORTS\rptSessionReportA.pas' {SessionReportA: TDataModule},
   rptSessionReportB in 'REPORTS\rptSessionReportB.pas' {SessionReportB: TDataModule},
   rptTimeKeeperReportA in 'REPORTS\rptTimeKeeperReportA.pas' {TimeKeeperReportA: TDataModule},
-  rptTimeKeeperReportB in 'REPORTS\rptTimeKeeperReportB.pas' {TimeKeeperReportB: TDataModule};
+  rptTimeKeeperReportB in 'REPORTS\rptTimeKeeperReportB.pas' {TimeKeeperReportB: TDataModule},
+  dlgReportPicker in 'REPORTS\RPT_DIALOGS\dlgReportPicker.pas' {ReportPicker};
 
 {$R *.res}
 

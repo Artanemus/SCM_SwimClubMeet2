@@ -597,7 +597,6 @@ object HeatReportA: THeatReportA
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'SessionID'
-    Connection = SCM.scmConnection
     SQL.Strings = (
       'USE SwimClubMeet'
       ''

@@ -460,9 +460,7 @@ object SessionReportB: TSessionReportB
   end
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'SessionID'
-    Connection = SCM.scmConnection
     SQL.Strings = (
       'USE SwimClubMeet'
       ''

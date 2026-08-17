@@ -672,7 +672,6 @@ object EventReportB: TEventReportB
     ActiveStoredUsage = [auDesignTime]
     IndexesActive = False
     IndexFieldNames = 'EventID'
-    Connection = SCM.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayDateTime, fvFmtDisplayTime]
     FormatOptions.FmtDisplayDateTime = 'dd mmm YYYY'
     FormatOptions.FmtDisplayTime = 'nn:ss.zzz'

@@ -7,7 +7,8 @@ uses
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, frxClass, frxDBSet,
   Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, frxExportPDF,
-  frxExportHTML, frxExportBaseDialog, frxExportXLS, frxPrinter, dmSCM;
+  frxExportHTML, frxExportBaseDialog, frxExportXLS, frxPrinter,
+  dmSCM2, uSwimClub, uSession;
 
 type
   TMarshallReportA_ALT = class(TDataModule)
@@ -69,7 +70,7 @@ end;
 
 procedure TMarshallReportA_ALT.DataModuleCreate(Sender: TObject);
 begin
-  if not Assigned(SCM) then
+  if not Assigned(SCM2) then
     raise Exception.Create('SCM data module not assigned.');
 end;
 
@@ -83,21 +84,21 @@ end;
 procedure TMarshallReportA_ALT.RunReport;
 var
   aSessionID: integer;
-  aSessionStart: TDateTime;
+  aSessionDT: TDateTime;
   aSwimClubID: integer;
 begin
 
-  qryClubInfo.Connection := SCM.scmConnection;
-  qrySession.Connection := SCM.scmConnection;
-  qryEvent.Connection := SCM.scmConnection;
-  qryHeat.Connection := SCM.scmConnection;
-  qryEntrant.Connection := SCM.scmConnection;
-  qryTEAM.Connection := SCM.scmConnection;
-  qryTeamEntrant.Connection := SCM.scmConnection;
+  qryClubInfo.Connection := SCM2.scmConnection;
+  qrySession.Connection := SCM2.scmConnection;
+  qryEvent.Connection := SCM2.scmConnection;
+  qryHeat.Connection := SCM2.scmConnection;
+  qryEntrant.Connection := SCM2.scmConnection;
+  qryTEAM.Connection := SCM2.scmConnection;
+  qryTeamEntrant.Connection := SCM2.scmConnection;
 
-  aSessionID := SCM.Session_ID;
-  aSessionStart := SCM.Session_Start;
-  aSwimClubID := SCM.SwimClub_ID;
+  aSessionID := uSession.PK;
+  aSessionDT := uSession.SessionDT;
+  aSwimClubID := uSwimClub.PK;
 
   if (aSessionID > 0) then
   begin
@@ -118,7 +119,7 @@ begin
 
     // CALCULATE AGE
     qryEntrant.Close;
-    qryEntrant.ParamByName('SESSIONDATE').AsDateTime := aSessionStart;
+    qryEntrant.ParamByName('SESSIONDATE').AsDateTime := aSessionDT;
     qryEntrant.Prepare;
     qryEntrant.Open;
 
@@ -126,7 +127,7 @@ begin
 
     // CALCULATE AGE
     qryTeamEntrant.Close;
-    qryTeamEntrant.ParamByName('SESSIONDATE').AsDateTime := aSessionStart;
+    qryTeamEntrant.ParamByName('SESSIONDATE').AsDateTime := aSessionDT;
     qryTeamEntrant.Prepare;
     qryTeamEntrant.Open;
 

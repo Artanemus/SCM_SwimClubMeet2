@@ -593,7 +593,6 @@ object HeatReportB: THeatReportB
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'SessionID'
-    Connection = SCM.scmConnection
     SQL.Strings = (
       'SELECT'
       '  Event.EventNum,'

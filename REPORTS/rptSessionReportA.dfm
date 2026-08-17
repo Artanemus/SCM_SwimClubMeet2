@@ -62,9 +62,7 @@ object SessionReportA: TSessionReportA
   end
   object qryClubInfo: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'SwimClubID'
-    Connection = SCM.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False
@@ -121,9 +119,7 @@ object SessionReportA: TSessionReportA
   end
   object qrySession: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'SessionID'
-    Connection = SCM.scmConnection
     FormatOptions.AssignedValues = [fvMaxBcdPrecision, fvFmtDisplayTime, fvFmtDisplayNumeric, fvFmtEditNumeric]
     FormatOptions.MaxBcdPrecision = 16
     FormatOptions.FmtDisplayTime = 'mm:ss.zz'
@@ -164,12 +160,10 @@ object SessionReportA: TSessionReportA
   end
   object qryEvent: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'SessionID;EventID'
     MasterSource = dsSession
     MasterFields = 'SessionID'
     DetailFields = 'SessionID'
-    Connection = SCM.scmConnection
     FormatOptions.AssignedValues = [fvMaxBcdPrecision, fvFmtDisplayTime, fvFmtDisplayNumeric, fvFmtEditNumeric]
     FormatOptions.MaxBcdPrecision = 16
     FormatOptions.FmtDisplayTime = 'mm:ss.zz'
@@ -240,12 +234,10 @@ object SessionReportA: TSessionReportA
   end
   object qryHeat: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'EventID;HeatID'
     MasterSource = dsEvent
     MasterFields = 'EventID'
     DetailFields = 'EventID'
-    Connection = SCM.scmConnection
     FormatOptions.AssignedValues = [fvMaxBcdPrecision, fvFmtDisplayTime, fvFmtDisplayNumeric, fvFmtEditNumeric]
     FormatOptions.MaxBcdPrecision = 16
     FormatOptions.FmtDisplayTime = 'mm:ss.zz'
@@ -327,12 +319,10 @@ object SessionReportA: TSessionReportA
   end
   object qryEntrant: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'HeatID;EntrantID'
     MasterSource = dsHeat
     MasterFields = 'HeatID'
     DetailFields = 'HeatID'
-    Connection = SCM.scmConnection
     FormatOptions.AssignedValues = [fvMaxBcdPrecision, fvFmtDisplayTime, fvFmtDisplayNumeric, fvFmtEditNumeric]
     FormatOptions.MaxBcdPrecision = 16
     FormatOptions.FmtDisplayTime = 'nn:ss.zz'
@@ -1338,12 +1328,10 @@ object SessionReportA: TSessionReportA
   end
   object qryTEAM: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'HeatID;TeamID'
     MasterSource = dsHeat
     MasterFields = 'HeatID'
     DetailFields = 'HeatID'
-    Connection = SCM.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
     SQL.Strings = (
@@ -1396,12 +1384,10 @@ object SessionReportA: TSessionReportA
   end
   object qryTeamEntrant: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'TeamID;TeamEntrantID'
     MasterSource = dsTEAM
     MasterFields = 'TeamID'
     DetailFields = 'TeamID'
-    Connection = SCM.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
     SQL.Strings = (

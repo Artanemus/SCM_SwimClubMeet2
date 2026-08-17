@@ -77,6 +77,7 @@ type
     procedure actnEv_NewUpdate(Sender: TObject);
     procedure actnEv_RenumberExecute(Sender: TObject);
     procedure actnEv_RenumberUpdate(Sender: TObject);
+    procedure actnEv_ReportExecute(Sender: TObject);
     procedure gridCanEditCell(Sender: TObject; ARow, ACol: Integer; var CanEdit:
         Boolean);
     procedure gridDrawCell(Sender: TObject; ACol, ARow: LongInt; Rect: TRect;
@@ -319,6 +320,12 @@ begin
     Assigned(CORE) and CORE.IsActive and
     not CORE.qryEvent.IsEmpty then DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
+end;
+
+procedure TFrameEvent.actnEv_ReportExecute(Sender: TObject);
+begin
+  // open the report mapped to the button.
+  // or open the ReporrtPicker...
 end;
 
 procedure TFrameEvent.gridCanEditCell(Sender: TObject; ARow, ACol: Integer;

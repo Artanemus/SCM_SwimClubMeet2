@@ -15,11 +15,12 @@ uses
   Vcl.PlatformDefaultStyleActnCtrls, Vcl.ActnMan, Vcl.ToolWin, Vcl.ActnCtrls,
   Vcl.ActnMenus, Vcl.BaseImageCollection,
   Vcl.ImageCollection,  Vcl.ImgList, Vcl.VirtualImageList,
-  Vcl.Grids, Vcl.DBGrids, Vcl.Themes,
+  Vcl.Grids, Vcl.DBGrids, Vcl.Themes,  Vcl.Menus, Vcl.WinXCtrls,
 
   Data.DB,
 
-  FireDAC.Stan.Option,
+  FireDAC.Stan.Option, FireDAC.UI.Intf, FireDAC.VCLUI.Wait,
+  FireDAC.Stan.Intf, FireDAC.Comp.UI,
 
   dmSCM2, dmIMG, dmCore,  uSettings, uDefines, uSwimClub, uUtility,
 
@@ -34,8 +35,10 @@ uses
   frFrameNavEv,
   frFrameNavEvItem,
   frFrameHeat,
-  frFrameLane, Vcl.Menus, Vcl.WinXCtrls, FireDAC.UI.Intf, FireDAC.VCLUI.Wait,
-  FireDAC.Stan.Intf, FireDAC.Comp.UI;
+  frFrameLane,
+
+  { fast reports designer}
+  frxDesgn;
 
 type
   TMain2 = class(TForm)
@@ -93,6 +96,9 @@ type
     Tools_PoolType: TAction;
     FDGUIxWaitCursor1: TFDGUIxWaitCursor;
     pgbar: TProgressBar;
+    Report_Manage: TAction;
+    Report_Design: TAction;
+    frxSCMDesigner: TfrxDesigner;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);

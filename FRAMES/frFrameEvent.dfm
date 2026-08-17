@@ -1040,6 +1040,7 @@ object FrameEvent: TFrameEvent
       Hint = 'Select an event report to display and print.'
       ImageIndex = 15
       ImageName = 'report'
+      OnExecute = actnEv_ReportExecute
     end
     object actnEv_Final: TAction
       Category = 'Events'

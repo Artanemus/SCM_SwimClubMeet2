@@ -38,7 +38,7 @@ implementation
 procedure TEventReportA.DataModuleCreate(Sender: TObject);
 begin
   if not Assigned(SCM2) then
-  raise Exception.Create('SCM not assigned.');
+  raise Exception.Create('SCM2 not assigned.');
 end;
 
 procedure TEventReportA.RunReport;

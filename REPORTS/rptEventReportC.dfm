@@ -1,7 +1,7 @@
-object EventReportA: TEventReportA
+object EventReportC: TEventReportC
   OnCreate = DataModuleCreate
-  Height = 366
-  Width = 325
+  Height = 355
+  Width = 334
   object frxReport1: TfrxReport
     Version = '6.6.11'
     DotMatrixReport = False
@@ -16,7 +16,7 @@ object EventReportA: TEventReportA
     ReportOptions.Description.Strings = (
       'Event Summary. '
       'Basic report, outlining event number, distancce and stroke.')
-    ReportOptions.Name = 'Sys-Event-Summary'
+    ReportOptions.Name = 'Sys-Event-AllFields'
     ReportOptions.LastChange = 46252.439264919000000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
@@ -433,7 +433,6 @@ object EventReportA: TEventReportA
   end
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'SessionID'
     Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
@@ -452,15 +451,23 @@ object EventReportA: TEventReportA
       '         dbo.EntrantCount(Event.EventID) AS EntrantCount,'
       '         dbo.NomineeCount(Event.EventID) AS NomineeCount,'
       '         dbo.HeatCount(Event.EventID) AS HeatCount,'
-      '         SubString(SwimClub.NickName, 1, 64) AS NickName,'
-      '         SubString(SwimClub.Caption, 1, 64) AS SwimClub,'
+      '         SubString(SwimClub.NickName, 1, 48) AS NickName,'
+      '         SubString(SwimClub.Caption, 1, 56) AS SwimClub,'
       '         Session.SessionDT,'
       '         Event.SessionID,'
       
         '         SubString(Event.Caption, 1, 64) AS Event_Description, -' +
         '- 05.06.2023'
       '         Event.StartTime,'
-      '         SubString(EventStatus.Caption,1,8) AS Status'
+      '         SubString(EventStatus.Caption,1,8) AS Status,'
+      '         '
+      '      SubString([Round].Caption, 1, 24) AS EventRound,'
+      '      [Gender].Caption AS EventGender,'
+      '      [EventCategory].Caption AS EventCategory ,'
+      '      [ParalympicType].Caption AS ParalympicType,'
+      '      SubString([EventType].Caption,1, 16) AS EventType, '
+      '      SubString([EventType].ABREV,1, 16) AS EventTypeABREV '
+      '         '
       'FROM     Event'
       '         INNER JOIN'
       '         Distance'
@@ -477,6 +484,19 @@ object EventReportA: TEventReportA
       '         INNER JOIN'
       '         EventStatus'
       '         ON Event.EventStatusID = EventStatus.EventStatusID'
+      '         '
+      '  left join Round on Event.RoundID = Round.RoundID'
+      '  left join Gender on Event.GenderID = Gender.GenderID'
+      
+        '  left join EventCategory on Event.[EventCategoryID] = EventCate' +
+        'gory.EventCategoryID'
+      
+        '  left join ParalympicType on Event.[ParalympicTypeID] = Paralym' +
+        'picType.ParalympicTypeID'
+      
+        '  left join EventType on Event.[EventTypeID] = EventType.EventTy' +
+        'peID'
+      '         '
       ''
       'WHERE    Event.SessionID = @SessionID'
       'ORDER BY Event.EventNum;'
@@ -505,8 +525,8 @@ object EventReportA: TEventReportA
     PageBreaks = True
     EmptyLines = True
     SuppressPageHeadersFooters = False
-    Left = 160
-    Top = 256
+    Left = 136
+    Top = 232
   end
   object frxHTMLExport1: TfrxHTMLExport
     UseFileCache = True
@@ -520,8 +540,8 @@ object EventReportA: TEventReportA
     EmptyLines = True
     Print = False
     PictureType = gpPNG
-    Left = 160
-    Top = 200
+    Left = 136
+    Top = 176
   end
   object frxPDFExport1: TfrxPDFExport
     UseFileCache = True
@@ -547,8 +567,8 @@ object EventReportA: TEventReportA
     PdfA = False
     PDFStandard = psNone
     PDFVersion = pv17
-    Left = 160
-    Top = 144
+    Left = 136
+    Top = 120
   end
   object frxDSReport: TfrxDBDataset
     UserName = 'frxDS'
@@ -567,7 +587,13 @@ object EventReportA: TEventReportA
       'SessionID=SessionID'
       'Event_Description=Event_Description'
       'StartTime=StartTime'
-      'Status=Status')
+      'Status=Status'
+      'EventRound=EventRound'
+      'EventGender=EventGender'
+      'EventCategory=EventCategory'
+      'ParalympicType=ParalympicType'
+      'EventType=EventType'
+      'EventTypeABREV=EventTypeABREV')
     DataSet = qryReport
     BCDToCurrency = False
     Left = 160

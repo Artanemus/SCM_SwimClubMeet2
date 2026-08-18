@@ -1,4 +1,4 @@
-unit rptHeatReportA;
+unit rptEventReportC;
 
 interface
 
@@ -8,10 +8,10 @@ uses
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, frxClass, frxDBSet,
   frxExportPDF, frxExportHTML, frxExportBaseDialog, frxExportXLS, Data.DB,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  dmSCM2, uHeat;
+  dmSCM2, uSession;
 
 type
-  THeatReportA = class(TDataModule)
+  TEventReportC = class(TDataModule)
     frxReport1: TfrxReport;
     qryReport: TFDQuery;
     frxXLSExport1: TfrxXLSExport;
@@ -22,13 +22,11 @@ type
   private
     { Private declarations }
   public
-    { Public declarations }
     procedure RunReport;
-
   end;
 
 var
-  HeatReportA: THeatReportA;
+  EventReportC: TEventReportC;
 
 implementation
 
@@ -36,16 +34,17 @@ implementation
 
 {$R *.dfm}
 
-procedure THeatReportA.DataModuleCreate(Sender: TObject);
+procedure TEventReportC.DataModuleCreate(Sender: TObject);
 begin
-  if not Assigned(SCM2) then
-  raise Exception.Create('SCM2 not assigned.');
+	if not Assigned(SCM2) then
+    raise exception.Create('SCM2 not assigned.');
+
 end;
 
-procedure THeatReportA.RunReport;
+procedure TEventReportC.RunReport;
 begin
 	qryReport.Connection := SCM2.scmConnection;
-	qryReport.ParamByName('HEATID').AsInteger := uHeat.PK;
+	qryReport.ParamByName('SESSIONID').AsInteger := uSession.PK;
 	qryReport.Prepare;
 	qryReport.Open;
 	if qryReport.Active then

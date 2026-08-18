@@ -11,14 +11,16 @@ object EventReportB: TEventReportB
     PreviewOptions.Zoom = 1.000000000000000000
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
+    ReportOptions.Author = 'Ben Ambrose'
     ReportOptions.CreateDate = 43428.811813125000000000
-    ReportOptions.LastChange = 43501.725641678200000000
+    ReportOptions.Name = 'Sys-Event-Detailed'
+    ReportOptions.LastChange = 46252.472540069440000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
       ''
       'end.')
-    Left = 160
+    Left = 176
     Top = 16
     Datasets = <
       item
@@ -61,7 +63,7 @@ object EventReportB: TEventReportB
           Font.Style = [fsBold]
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDS."cSwimClub"]')
+            '[frxDS."SwimClub"]')
           ParentFont = False
         end
         object FDQuery1NickName: TfrxMemoView
@@ -91,8 +93,8 @@ object EventReportB: TEventReportB
           HAlign = haRight
           Memo.UTF8W = (
             
-              'Session Date: [<frxDS."SessionStart"> #dddd dd mmm yyyy HH:MM AM' +
-              '/PM]')
+              'Session Date: [<frxDS."SessionDT"> #dddd dd mmm yyyy HH:MM AM/PM' +
+              ']')
           ParentFont = False
         end
       end
@@ -249,7 +251,6 @@ object EventReportB: TEventReportB
           Top = 2.000000000000000000
           Width = 60.472480000000000000
           Height = 18.897650000000000000
-          DataField = 'cDistance'
           DataSet = frxDSReport
           DataSetName = 'frxDS'
           Font.Charset = DEFAULT_CHARSET
@@ -260,7 +261,7 @@ object EventReportB: TEventReportB
           Frame.Typ = []
           HAlign = haRight
           Memo.UTF8W = (
-            '[frxDS."cDistance"]')
+            '[frxDS."Distance"]')
           ParentFont = False
         end
         object Memo11: TfrxMemoView
@@ -269,12 +270,11 @@ object EventReportB: TEventReportB
           Top = 2.000000000000000000
           Width = 102.047310000000000000
           Height = 18.897650000000000000
-          DataField = 'cStroke'
           DataSet = frxDSReport
           DataSetName = 'frxDS'
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDS."cStroke"]')
+            '[frxDS."Stroke"]')
         end
         object Memo12: TfrxMemoView
           AllowVectorExport = True
@@ -343,7 +343,6 @@ object EventReportB: TEventReportB
           Top = 2.000000000000000000
           Width = 245.669450000000000000
           Height = 18.897650000000000000
-          DataField = 'cEvent'
           DataSet = frxDSReport
           DataSetName = 'frxDS'
           Font.Charset = DEFAULT_CHARSET
@@ -353,7 +352,7 @@ object EventReportB: TEventReportB
           Font.Style = []
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDS."cEvent"]')
+            '[frxDS."EventDescription"]')
           ParentFont = False
         end
       end
@@ -416,12 +415,7 @@ object EventReportB: TEventReportB
           DataSetName = 'frxDS'
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDS."FNAME"]')
-          Formats = <
-            item
-            end
-            item
-            end>
+            '[frxDS."MemberName"]')
         end
         object frxDSRaceTime: TfrxMemoView
           AllowVectorExport = True
@@ -448,7 +442,7 @@ object EventReportB: TEventReportB
           Font.Style = []
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDS."Lane" #n%2.0f]')
+            '[frxDS."LaneNum" #n%2.0f]')
           ParentFont = False
         end
       end
@@ -644,7 +638,7 @@ object EventReportB: TEventReportB
           AllowVectorExport = True
           Left = 482.000310000000000000
           Top = 37.015770000000000000
-          Height = 71.811070000000000000
+          Height = 101.811070000000000000
           Color = clBlack
           Frame.Typ = [ftLeft]
           Frame.Width = 2.000000000000000000
@@ -653,7 +647,7 @@ object EventReportB: TEventReportB
           AllowVectorExport = True
           Left = 240.110390000000000000
           Top = 37.795300000000000000
-          Height = 71.811070000000000000
+          Height = 100.311070000000000000
           Color = clBlack
           Frame.Typ = [ftLeft]
           Frame.Width = 2.000000000000000000
@@ -670,61 +664,69 @@ object EventReportB: TEventReportB
   end
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexesActive = False
     IndexFieldNames = 'EventID'
+    Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayDateTime, fvFmtDisplayTime]
     FormatOptions.FmtDisplayDateTime = 'dd mmm YYYY'
     FormatOptions.FmtDisplayTime = 'nn:ss.zzz'
     SQL.Strings = (
-      'USE SwimClubMeet;'
+      'USE SwimClubMeet2;'
       ''
       'DECLARE @EventID AS INT;'
       ''
       'SET @EventID = :EVENTID;'
       ''
-      ''
-      'SELECT Event.EventID'
-      '        ,dbo.EntrantCount(Event.EventID) AS EntrantCount'
-      #9',dbo.NomineeCount(Event.EventID) AS NomineeCount'
-      #9',qryHeatCount.HeatCount'
-      #9',SUBSTRING(CONCAT ('
-      #9#9'Upper(Member.LastName)'
-      #9#9','#39', '#39
-      #9#9',Member.FirstName'
-      #9#9'),0,30) AS FName'
-      #9',Member.MemberID'
-      #9',Session.SessionStart'
-      #9',Event.EventNum'
-      #9',Event.SessionID'
-      ',Entrant.HeatID'
-      ',dbo.SwimTimeToString(Entrant.RaceTime) AS RaceTime'
-      #9',SUBSTRING(Distance.Caption, 0, 8) AS cDistance'
-      #9',SUBSTRING(Stroke.Caption, 0, 12) AS cStroke'
-      #9',HeatIndividual.HeatNum'
-      #9',Entrant.Lane'
-      #9',SwimClub.NickName'
-      #9',SwimClub.Caption AS cSwimClub'
-      #9',Event.Caption AS cEvent'
-      'FROM Event'
+      'SELECT   Event.EventID,'
+      '         dbo.EntrantCount(Event.EventID) AS EntrantCount,'
+      '         dbo.NomineeCount(Event.EventID) AS NomineeCount,'
+      '         dbo.HeatCount(Event.EventID) AS HeatCount,'
       
-        'INNER JOIN HeatIndividual ON Event.EventID = HeatIndividual.Even' +
-        'tID'
-      'INNER JOIN Entrant ON HeatIndividual.HeatID = Entrant.HeatID'
-      'INNER JOIN Member ON Entrant.MemberID = Member.MemberID'
-      'INNER JOIN Distance ON Event.DistanceID = Distance.DistanceID'
-      'INNER JOIN Stroke ON Event.StrokeID = Stroke.StrokeID'
-      'INNER JOIN Session ON Session.SessionID = Event.SessionID'
-      'INNER JOIN SwimClub ON Session.SwimClubID = SwimClub.SwimClubID'
-      'LEFT JOIN ('
-      #9'SELECT EventID'
-      #9#9',Count(HeatID) AS HeatCount'
-      #9'FROM HeatIndividual'
-      #9'GROUP BY EventID'
-      #9') AS qryHeatCount ON qryHeatCount.EventID = Event.EventID'
-      'WHERE Event.EventID = @EventID'
-      'ORDER BY  HeatNum, Lane;')
-    Left = 160
-    Top = 272
+        '         SUBSTRING(dbo.GetMemberFullName(Member.memberID), 1, 32' +
+        ') AS MemberName,'
+      '         Member.MemberID,'
+      '         Session.SessionDT,'
+      '         Event.EventNum,'
+      '         Event.SessionID,'
+      '         Lane.HeatID,'
+      '         dbo.SwimTimeToString(Lane.RaceTime) AS RaceTime,'
+      '         SUBSTRING(Distance.CalcCaption, 0, 8) AS Distance,'
+      '         SUBSTRING(Stroke.Caption, 0, 12) AS Stroke,'
+      '         Heat.HeatNum,'
+      '         Lane.LaneNum,'
+      '         SwimClub.NickName,'
+      '         SwimClub.Caption AS SwimClub,'
+      '         Event.Caption AS EventDescription'
+      'FROM     Event'
+      '         INNER JOIN'
+      '         Heat'
+      '         ON Event.EventID = Heat.EventID'
+      '         INNER JOIN'
+      '         Lane'
+      '         ON Heat.HeatID = Lane.HeatID'
+      '         LEFT OUTER JOIN'
+      '         Nominee'
+      '         ON Lane.NomineeId = Nominee.NomineeID'
+      '         LEFT OUTER JOIN'
+      '         Member'
+      '         ON Nominee.MemberID = Member.MemberID'
+      '         INNER JOIN'
+      '         Distance'
+      '         ON Event.DistanceID = Distance.DistanceID'
+      '         INNER JOIN'
+      '         Stroke'
+      '         ON Event.StrokeID = Stroke.StrokeID'
+      '         INNER JOIN'
+      '         Session'
+      '         ON Session.SessionID = Event.SessionID'
+      '         INNER JOIN'
+      '         SwimClub'
+      '         ON Session.SwimClubID = SwimClub.SwimClubID'
+      'WHERE    Event.EventID = @EventID'
+      'ORDER BY HeatNum, LaneNum;')
+    Left = 16
+    Top = 16
     ParamData = <
       item
         Name = 'EVENTID'
@@ -745,7 +747,7 @@ object EventReportB: TEventReportB
     PageBreaks = True
     EmptyLines = True
     SuppressPageHeadersFooters = False
-    Left = 160
+    Left = 96
     Top = 208
   end
   object frxHTMLExport1: TfrxHTMLExport
@@ -760,7 +762,7 @@ object EventReportB: TEventReportB
     EmptyLines = True
     Print = False
     PictureType = gpPNG
-    Left = 160
+    Left = 96
     Top = 152
   end
   object frxPDFExport1: TfrxPDFExport
@@ -787,15 +789,34 @@ object EventReportB: TEventReportB
     PdfA = False
     PDFStandard = psNone
     PDFVersion = pv17
-    Left = 160
+    Left = 96
     Top = 96
   end
   object frxDSReport: TfrxDBDataset
     UserName = 'frxDS'
     CloseDataSource = False
+    FieldAliases.Strings = (
+      'EventID=EventID'
+      'EntrantCount=EntrantCount'
+      'NomineeCount=NomineeCount'
+      'HeatCount=HeatCount'
+      'MemberName=MemberName'
+      'MemberID=MemberID'
+      'SessionDT=SessionDT'
+      'EventNum=EventNum'
+      'SessionID=SessionID'
+      'HeatID=HeatID'
+      'RaceTime=RaceTime'
+      'Distance=Distance'
+      'Stroke=Stroke'
+      'HeatNum=HeatNum'
+      'LaneNum=LaneNum'
+      'NickName=NickName'
+      'SwimClub=SwimClub'
+      'EventDescription=EventDescription')
     DataSet = qryReport
     BCDToCurrency = False
-    Left = 64
-    Top = 272
+    Left = 96
+    Top = 16
   end
 end

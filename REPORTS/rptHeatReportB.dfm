@@ -1,7 +1,7 @@
 object HeatReportB: THeatReportB
   OnCreate = DataModuleCreate
   Height = 363
-  Width = 284
+  Width = 533
   object frxReport1: TfrxReport
     Version = '6.6.11'
     DotMatrixReport = False
@@ -18,8 +18,8 @@ object HeatReportB: THeatReportB
       'begin'
       ''
       'end.')
-    Left = 160
-    Top = 16
+    Left = 288
+    Top = 24
     Datasets = <
       item
         DataSet = frxDSReport
@@ -647,8 +647,8 @@ object HeatReportB: THeatReportB
       'ORDER BY'
       '  HeatIndividual.HeatNum,'
       '  Entrant.Lane')
-    Left = 160
-    Top = 272
+    Left = 88
+    Top = 24
     ParamData = <
       item
         Name = 'EVENTID'
@@ -669,8 +669,8 @@ object HeatReportB: THeatReportB
     PageBreaks = True
     EmptyLines = True
     SuppressPageHeadersFooters = False
-    Left = 160
-    Top = 208
+    Left = 192
+    Top = 224
   end
   object frxHTMLExport1: TfrxHTMLExport
     UseFileCache = True
@@ -684,8 +684,8 @@ object HeatReportB: THeatReportB
     EmptyLines = True
     Print = False
     PictureType = gpPNG
-    Left = 160
-    Top = 152
+    Left = 192
+    Top = 168
   end
   object frxPDFExport1: TfrxPDFExport
     UseFileCache = True
@@ -711,15 +711,15 @@ object HeatReportB: THeatReportB
     PdfA = False
     PDFStandard = psNone
     PDFVersion = pv17
-    Left = 160
-    Top = 96
+    Left = 192
+    Top = 112
   end
   object frxDSReport: TfrxDBDataset
     UserName = 'frxDS'
     CloseDataSource = False
     DataSet = qryReport
     BCDToCurrency = False
-    Left = 64
-    Top = 272
+    Left = 192
+    Top = 24
   end
 end

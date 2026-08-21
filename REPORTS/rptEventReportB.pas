@@ -8,16 +8,18 @@ uses
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, frxClass, frxDBSet,
   frxExportPDF, frxExportHTML, frxExportBaseDialog, frxExportXLS, Data.DB,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  dmSCM2, uEvent;
+  dmSCM2, uSwimClub, uEvent;
 
 type
   TEventReportB = class(TDataModule)
-    frxReport1: TfrxReport;
+    frxrptEventDetailed: TfrxReport;
     qryReport: TFDQuery;
     frxXLSExport1: TfrxXLSExport;
     frxHTMLExport1: TfrxHTMLExport;
     frxPDFExport1: TfrxPDFExport;
-    frxDSReport: TfrxDBDataset;
+    frxdsReport: TfrxDBDataset;
+    qrySwimClub: TFDQuery;
+    frxdsSwimClub: TfrxDBDataset;
     procedure DataModuleCreate(Sender: TObject);
   private
     { Private declarations }
@@ -43,12 +45,17 @@ end;
 
 procedure TEventReportB.RunReport;
 begin
+	qrySwimClub.Connection := SCM2.scmConnection;
+	qrySwimClub.ParamByName('SWIMCLUBID').AsInteger := uSwimClub.PK;
+	qrySwimClub.Prepare;
+	qrySwimClub.Open;
+
 	qryReport.Connection := SCM2.scmConnection;
 	qryReport.ParamByName('EVENTID').AsInteger := uEvent.PK;
 	qryReport.Prepare;
 	qryReport.Open;
 	if qryReport.Active then
-		frxReport1.ShowReport;
+		frxrptEventDetailed.ShowReport;
 	qryReport.Close
 end;
 

@@ -7,7 +7,8 @@ uses
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, frxExportMail, Data.DB,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, frxExportXLS, frxExportPDF,
-  frxClass, frxExportBaseDialog, frxExportHTML, frxDBSet, dmSCM;
+  frxClass, frxExportBaseDialog, frxExportHTML, frxDBSet,
+  dmSCM2, uSession;
 
 type
   TNominateReportA = class(TDataModule)
@@ -37,14 +38,14 @@ implementation
 
 procedure TNominateReportA.DataModuleCreate(Sender: TObject);
 begin
-	if not Assigned(SCM) then
+	if not Assigned(SCM2) then
     raise exception.Create('SCM not assigned.');
 end;
 
 procedure TNominateReportA.RunReport;
 begin
-  qryReport.Connection := SCM.scmConnection;
-  qryReport.ParamByName('SESSIONID').AsInteger := SCM.Session_ID;
+  qryReport.Connection := SCM2.scmConnection;
+  qryReport.ParamByName('SESSIONID').AsInteger := uSession.PK;
   qryReport.Prepare;
   qryReport.Open;
   if qryReport.Active then

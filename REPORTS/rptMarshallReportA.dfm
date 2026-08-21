@@ -388,9 +388,7 @@ object MarshallReportA: TMarshallReportA
   end
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'HeatNum'
-    Connection = SCM.scmConnection
     UpdateOptions.KeyFields = 'HeatID'
     SQL.Strings = (
       'USE SwimClubMeet;'
@@ -582,9 +580,7 @@ object MarshallReportA: TMarshallReportA
   end
   object qryClubInfoRpt: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'SwimClubID'
-    Connection = SCM.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
     UpdateOptions.EnableInsert = False

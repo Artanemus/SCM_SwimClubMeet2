@@ -1,8 +1,8 @@
 object EventReportB: TEventReportB
   OnCreate = DataModuleCreate
-  Height = 365
-  Width = 279
-  object frxReport1: TfrxReport
+  Height = 375
+  Width = 352
+  object frxrptEventDetailed: TfrxReport
     Version = '6.6.11'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
@@ -14,18 +14,22 @@ object EventReportB: TEventReportB
     ReportOptions.Author = 'Ben Ambrose'
     ReportOptions.CreateDate = 43428.811813125000000000
     ReportOptions.Name = 'Sys-Event-Detailed'
-    ReportOptions.LastChange = 46252.472540069440000000
+    ReportOptions.LastChange = 46252.472540069400000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
       ''
       'end.')
-    Left = 176
+    Left = 256
     Top = 16
     Datasets = <
       item
-        DataSet = frxDSReport
-        DataSetName = 'frxDS'
+        DataSet = frxdsReport
+        DataSetName = 'Event'
+      end
+      item
+        DataSet = frxdsSwimClub
+        DataSetName = 'SwimClub'
       end>
     Variables = <>
     Style = <>
@@ -82,8 +86,8 @@ object EventReportB: TEventReportB
           Top = 22.677180000000000000
           Width = 306.141930000000000000
           Height = 18.897650000000000000
-          DataSet = frxDSReport
-          DataSetName = 'frxDS'
+          DataSet = frxdsReport
+          DataSetName = 'Event'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -13
@@ -224,16 +228,16 @@ object EventReportB: TEventReportB
         Height = 49.133890000000000000
         Top = 200.315090000000000000
         Width = 718.110700000000000000
-        DataSet = frxDSReport
-        DataSetName = 'frxDS'
+        DataSet = frxdsReport
+        DataSetName = 'Event'
         RowCount = 0
         object Memo9: TfrxMemoView
           AllowVectorExport = True
           Top = 2.000000000000000000
           Width = 52.913420000000000000
           Height = 18.897650000000000000
-          DataSet = frxDSReport
-          DataSetName = 'frxDS'
+          DataSet = frxdsReport
+          DataSetName = 'Event'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -13
@@ -251,8 +255,8 @@ object EventReportB: TEventReportB
           Top = 2.000000000000000000
           Width = 60.472480000000000000
           Height = 18.897650000000000000
-          DataSet = frxDSReport
-          DataSetName = 'frxDS'
+          DataSet = frxdsReport
+          DataSetName = 'Event'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -13
@@ -270,8 +274,8 @@ object EventReportB: TEventReportB
           Top = 2.000000000000000000
           Width = 102.047310000000000000
           Height = 18.897650000000000000
-          DataSet = frxDSReport
-          DataSetName = 'frxDS'
+          DataSet = frxdsReport
+          DataSetName = 'Event'
           Frame.Typ = []
           Memo.UTF8W = (
             '[frxDS."Stroke"]')
@@ -282,8 +286,8 @@ object EventReportB: TEventReportB
           Top = 2.000000000000000000
           Width = 60.472426300000000000
           Height = 18.897650000000000000
-          DataSet = frxDSReport
-          DataSetName = 'frxDS'
+          DataSet = frxdsReport
+          DataSetName = 'Event'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -13
@@ -303,8 +307,8 @@ object EventReportB: TEventReportB
           Top = 2.000000000000000000
           Width = 60.472426300000000000
           Height = 18.897650000000000000
-          DataSet = frxDSReport
-          DataSetName = 'frxDS'
+          DataSet = frxdsReport
+          DataSetName = 'Event'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -13
@@ -324,8 +328,8 @@ object EventReportB: TEventReportB
           Top = 2.000000000000000000
           Width = 60.472426300000000000
           Height = 18.897650000000000000
-          DataSet = frxDSReport
-          DataSetName = 'frxDS'
+          DataSet = frxdsReport
+          DataSetName = 'Event'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -13
@@ -343,8 +347,8 @@ object EventReportB: TEventReportB
           Top = 2.000000000000000000
           Width = 245.669450000000000000
           Height = 18.897650000000000000
-          DataSet = frxDSReport
-          DataSetName = 'frxDS'
+          DataSet = frxdsReport
+          DataSetName = 'Event'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -13
@@ -403,16 +407,16 @@ object EventReportB: TEventReportB
         Columns = 3
         ColumnWidth = 238.110236220472000000
         ColumnGap = 3.779527559055120000
-        DataSet = frxDSReport
-        DataSetName = 'frxDS'
+        DataSet = frxdsReport
+        DataSetName = 'Event'
         RowCount = 0
         object frxDSNominee: TfrxMemoView
           AllowVectorExport = True
           Left = 29.472480000000000000
           Width = 132.283550000000000000
           Height = 18.897650000000000000
-          DataSet = frxDSReport
-          DataSetName = 'frxDS'
+          DataSet = frxdsReport
+          DataSetName = 'Event'
           Frame.Typ = []
           Memo.UTF8W = (
             '[frxDS."MemberName"]')
@@ -422,8 +426,8 @@ object EventReportB: TEventReportB
           Left = 167.299320000000000000
           Width = 68.031540000000000000
           Height = 18.897650000000000000
-          DataSet = frxDSReport
-          DataSetName = 'frxDS'
+          DataSet = frxdsReport
+          DataSetName = 'Event'
           Frame.Typ = []
           Memo.UTF8W = (
             '[frxDS."RaceTime"]')
@@ -433,8 +437,8 @@ object EventReportB: TEventReportB
           Left = 2.779530000000000000
           Width = 22.677180000000000000
           Height = 18.897650000000000000
-          DataSet = frxDSReport
-          DataSetName = 'frxDS'
+          DataSet = frxdsReport
+          DataSetName = 'Event'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -13
@@ -725,7 +729,7 @@ object EventReportB: TEventReportB
       '         ON Session.SwimClubID = SwimClub.SwimClubID'
       'WHERE    Event.EventID = @EventID'
       'ORDER BY HeatNum, LaneNum;')
-    Left = 16
+    Left = 56
     Top = 16
     ParamData = <
       item
@@ -747,8 +751,8 @@ object EventReportB: TEventReportB
     PageBreaks = True
     EmptyLines = True
     SuppressPageHeadersFooters = False
-    Left = 96
-    Top = 208
+    Left = 104
+    Top = 280
   end
   object frxHTMLExport1: TfrxHTMLExport
     UseFileCache = True
@@ -762,8 +766,8 @@ object EventReportB: TEventReportB
     EmptyLines = True
     Print = False
     PictureType = gpPNG
-    Left = 96
-    Top = 152
+    Left = 104
+    Top = 224
   end
   object frxPDFExport1: TfrxPDFExport
     UseFileCache = True
@@ -789,11 +793,11 @@ object EventReportB: TEventReportB
     PdfA = False
     PDFStandard = psNone
     PDFVersion = pv17
-    Left = 96
-    Top = 96
+    Left = 104
+    Top = 168
   end
-  object frxDSReport: TfrxDBDataset
-    UserName = 'frxDS'
+  object frxdsReport: TfrxDBDataset
+    UserName = 'Event'
     CloseDataSource = False
     FieldAliases.Strings = (
       'EventID=EventID'
@@ -816,7 +820,72 @@ object EventReportB: TEventReportB
       'EventDescription=EventDescription')
     DataSet = qryReport
     BCDToCurrency = False
-    Left = 96
+    Left = 144
     Top = 16
+  end
+  object qrySwimClub: TFDQuery
+    Connection = SCM2.scmConnection
+    SQL.Strings = (
+      'USE SwimClubMeet2;'
+      ''
+      'DECLARE @SwimClubID AS INTEGER;'
+      'SET @SwimClubID = :SWIMCLUBID;'
+      ''
+      'SELECT [SwimClubID]'
+      '      ,[GUID]'
+      '      ,[NickName]'
+      '      ,[Caption] AS ClubName'
+      '      ,[Email]'
+      '      ,[ContactNum]'
+      '      ,[WebSite]'
+      '      ,[HeatAlgorithm]'
+      '      ,[EnableSimpleDQ]'
+      '      ,[NumOfLanes]'
+      '      ,[LenOfPool]'
+      '      ,[DefTeamSize]'
+      '      ,[CreatedOn]'
+      '      ,[LogoImg]'
+      '      ,[IsArchived]'
+      '      ,[IsClubGroup]'
+      '      ,[SwimClubTypeID]'
+      '      ,[PoolTypeID]'
+      '  FROM [SwimClubMeet2].[dbo].[SwimClub]'
+      '  WHERE SwimCLubID = @SwimClubID;')
+    Left = 56
+    Top = 88
+    ParamData = <
+      item
+        Name = 'SWIMCLUBID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = 1
+      end>
+  end
+  object frxdsSwimClub: TfrxDBDataset
+    UserName = 'SwimClub'
+    CloseDataSource = False
+    FieldAliases.Strings = (
+      'SwimClubID=SwimClubID'
+      'GUID=GUID'
+      'NickName=NickName'
+      'ClubName=ClubName'
+      'Email=Email'
+      'ContactNum=ContactNum'
+      'WebSite=WebSite'
+      'HeatAlgorithm=HeatAlgorithm'
+      'EnableSimpleDQ=EnableSimpleDQ'
+      'NumOfLanes=NumOfLanes'
+      'LenOfPool=LenOfPool'
+      'DefTeamSize=DefTeamSize'
+      'CreatedOn=CreatedOn'
+      'LogoImg=LogoImg'
+      'IsArchived=IsArchived'
+      'IsClubGroup=IsClubGroup'
+      'SwimClubTypeID=SwimClubTypeID'
+      'PoolTypeID=PoolTypeID')
+    DataSet = qrySwimClub
+    BCDToCurrency = False
+    Left = 144
+    Top = 88
   end
 end

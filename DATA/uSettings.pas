@@ -70,7 +70,7 @@ type
 
     rpt_ReportFolderSystem: string;
     rpt_ReportFolderCustom: string;
-
+    rpt_EnablePrintClubLogo: boolean;
 
     constructor Create(); overload;
     constructor Create(AutoLoad: boolean); overload;
@@ -156,6 +156,7 @@ begin
 
   rpt_ReportFolderSystem := '..\..\REPORTS\';
   rpt_ReportFolderCustom := GetDefPath;
+  rpt_EnablePrintClubLogo := false;
 
   EnableDQcodes := false; // use simple DQ method. (not World Aquatics Codes).
 

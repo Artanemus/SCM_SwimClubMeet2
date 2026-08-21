@@ -45,7 +45,7 @@ object Preferences: TPreferences
     Top = 0
     Width = 695
     Height = 453
-    ActivePage = TabSheet7
+    ActivePage = TabSheet6
     Align = alClient
     TabOrder = 1
     object TabSheet2: TTabSheet
@@ -568,18 +568,20 @@ object Preferences: TPreferences
       end
       object CheckBox1: TCheckBox
         Left = 32
-        Top = 272
-        Width = 97
-        Height = 17
-        Caption = 'CheckBox1'
+        Top = 275
+        Width = 489
+        Height = 24
+        Caption = 
+          'Enable the display and printing of the SwimClub'#39's logo in report' +
+          's.'
         TabOrder = 2
       end
       object prefVerbose: TCheckBox
         Left = 32
         Top = 208
-        Width = 97
+        Width = 281
         Height = 17
-        Caption = 'Verbose'
+        Caption = 'Enable verbose for Auto-Build.'
         TabOrder = 3
       end
     end

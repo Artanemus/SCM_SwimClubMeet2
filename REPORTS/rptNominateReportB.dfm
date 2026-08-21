@@ -325,7 +325,6 @@ object NominateReportB: TNominateReportB
     ActiveStoredUsage = [auDesignTime]
     IndexesActive = False
     IndexFieldNames = 'SessionID'
-    Connection = SCM.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayDateTime, fvFmtDisplayDate, fvFmtDisplayTime]
     FormatOptions.FmtDisplayDateTime = 'dd mmm YYYY HH:MM'
     FormatOptions.FmtDisplayDate = 'dd mmm YYYYY'

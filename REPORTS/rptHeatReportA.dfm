@@ -18,8 +18,8 @@ object HeatReportA: THeatReportA
       'begin'
       ''
       'end.')
-    Left = 96
-    Top = 24
+    Left = 296
+    Top = 88
     Datasets = <
       item
         DataSet = frxDSReport
@@ -598,7 +598,7 @@ object HeatReportA: THeatReportA
     ActiveStoredUsage = [auDesignTime]
     IndexFieldNames = 'SessionID'
     SQL.Strings = (
-      'USE SwimClubMeet'
+      'USE SwimClubMeet2'
       ''
       'SELECT Event.EventNum'
       #9',Event.Caption AS cEvent'
@@ -633,7 +633,7 @@ object HeatReportA: THeatReportA
         'AS PersonalBest,'
       #9'Entrant.IsDisqualified'
       #9',Entrant.IsScratched'
-      'FROM HeatIndividual'
+      'FROM Heat'
       
         'INNER JOIN HeatStatus ON HeatIndividual.HeatStatusID = HeatStatu' +
         's.HeatStatusID'
@@ -644,8 +644,8 @@ object HeatReportA: THeatReportA
       'INNER JOIN Member ON Entrant.MemberID = Member.MemberID'
       'INNER JOIN Session ON Event.SessionID = Session.SessionID'
       'INNER JOIN SwimClub ON Session.SwimClubID = SwimClub.SwimClubID'
-      'WHERE HeatIndividual.HeatID = :HEATID'
-      'ORDER BY HeatIndividual.HeatNum'
+      'WHERE Heat.HeatID = :HEATID'
+      'ORDER BY Heat.HeatNum'
       #9',Entrant.Lane')
     Left = 144
     Top = 88
@@ -669,8 +669,8 @@ object HeatReportA: THeatReportA
     PageBreaks = True
     EmptyLines = True
     SuppressPageHeadersFooters = False
-    Left = 144
-    Top = 208
+    Left = 216
+    Top = 168
   end
   object frxHTMLExport1: TfrxHTMLExport
     UseFileCache = True
@@ -684,8 +684,8 @@ object HeatReportA: THeatReportA
     EmptyLines = True
     Print = False
     PictureType = gpPNG
-    Left = 48
-    Top = 264
+    Left = 216
+    Top = 296
   end
   object frxPDFExport1: TfrxPDFExport
     UseFileCache = True
@@ -711,15 +711,15 @@ object HeatReportA: THeatReportA
     PdfA = False
     PDFStandard = psNone
     PDFVersion = pv17
-    Left = 48
-    Top = 208
+    Left = 216
+    Top = 232
   end
   object frxDSReport: TfrxDBDataset
     UserName = 'frxDS'
     CloseDataSource = False
     DataSet = qryReport
     BCDToCurrency = False
-    Left = 48
+    Left = 216
     Top = 88
   end
 end

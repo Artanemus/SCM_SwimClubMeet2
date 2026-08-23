@@ -1,7 +1,7 @@
 object EventReportB: TEventReportB
   OnCreate = DataModuleCreate
-  Height = 375
-  Width = 352
+  Height = 484
+  Width = 466
   object frxrptEventDetailed: TfrxReport
     Version = '6.6.11'
     DotMatrixReport = False
@@ -14,11 +14,17 @@ object EventReportB: TEventReportB
     ReportOptions.Author = 'Ben Ambrose'
     ReportOptions.CreateDate = 43428.811813125000000000
     ReportOptions.Name = 'Sys-Event-Detailed'
-    ReportOptions.LastChange = 46252.472540069400000000
+    ReportOptions.LastChange = 46257.510804560190000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
-      'begin'
+      'var'
+      ' EnablePrintClubLogo: boolean;'
       ''
+      '   '
+      'begin'
+      
+        ' EnablePrintClubLogo := false;                                  ' +
+        '                                                    '
       'end.')
     Left = 256
     Top = 16
@@ -26,6 +32,10 @@ object EventReportB: TEventReportB
       item
         DataSet = frxdsReport
         DataSetName = 'Event'
+      end
+      item
+        DataSet = frxdsSession
+        DataSetName = 'Session'
       end
       item
         DataSet = frxdsSwimClub
@@ -54,7 +64,7 @@ object EventReportB: TEventReportB
         Height = 68.031540000000000000
         Top = 18.897650000000000000
         Width = 718.110700000000000000
-        object FDQuery1cSwimClub: TfrxMemoView
+        object FSwimClub: TfrxMemoView
           AllowVectorExport = True
           Width = 400.630180000000000000
           Height = 30.236240000000000000
@@ -67,10 +77,10 @@ object EventReportB: TEventReportB
           Font.Style = [fsBold]
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDS."SwimClub"]')
+            '[SwimClub."ClubName"]')
           ParentFont = False
         end
-        object FDQuery1NickName: TfrxMemoView
+        object FNickName: TfrxMemoView
           AllowVectorExport = True
           Top = 22.677180000000000000
           Width = 400.630180000000000000
@@ -78,9 +88,9 @@ object EventReportB: TEventReportB
           DataSetName = 'FDQuery1'
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDS."NickName"]')
+            '[SwimClub."NickName"]')
         end
-        object frxDSSessionStart: TfrxMemoView
+        object FSessionStart: TfrxMemoView
           AllowVectorExport = True
           Left = 404.409710000000000000
           Top = 22.677180000000000000
@@ -97,8 +107,8 @@ object EventReportB: TEventReportB
           HAlign = haRight
           Memo.UTF8W = (
             
-              'Session Date: [<frxDS."SessionDT"> #dddd dd mmm yyyy HH:MM AM/PM' +
-              ']')
+              'Session Date: [<Session."SessionDT"> #dddd dd mmm yyyy HH:MM AM/' +
+              'PM]')
           ParentFont = False
         end
       end
@@ -115,8 +125,8 @@ object EventReportB: TEventReportB
         ParentFont = False
         Top = 147.401670000000000000
         Width = 718.110700000000000000
-        Condition = 'frxDS."SessionID"'
-        object Memo1: TfrxMemoView
+        Condition = 'Event."SessionID"'
+        object MemoEventNum: TfrxMemoView
           AllowVectorExport = True
           Left = 3.779530000000000000
           Top = 8.456710000000000000
@@ -133,7 +143,7 @@ object EventReportB: TEventReportB
             'Event #')
           ParentFont = False
         end
-        object Memo3: TfrxMemoView
+        object MemoDistance: TfrxMemoView
           AllowVectorExport = True
           Left = 60.472480000000000000
           Top = 8.456710000000000000
@@ -150,7 +160,7 @@ object EventReportB: TEventReportB
             'Distance')
           ParentFont = False
         end
-        object Memo2: TfrxMemoView
+        object MemoStroke: TfrxMemoView
           AllowVectorExport = True
           Left = 133.842610000000000000
           Top = 8.456710000000000000
@@ -160,7 +170,7 @@ object EventReportB: TEventReportB
           Memo.UTF8W = (
             'Stroke')
         end
-        object Memo4: TfrxMemoView
+        object MemoNominees: TfrxMemoView
           AllowVectorExport = True
           Left = 506.457020000000000000
           Top = 8.456710000000000000
@@ -177,7 +187,7 @@ object EventReportB: TEventReportB
             'Nominees')
           ParentFont = False
         end
-        object Memo5: TfrxMemoView
+        object MemoEntrants: TfrxMemoView
           AllowVectorExport = True
           Left = 574.488560000000000000
           Top = 8.456710000000000000
@@ -194,7 +204,7 @@ object EventReportB: TEventReportB
             'Entrants')
           ParentFont = False
         end
-        object Memo7: TfrxMemoView
+        object MemoHeats: TfrxMemoView
           AllowVectorExport = True
           Left = 642.520100000000000000
           Top = 8.456710000000000000
@@ -211,7 +221,7 @@ object EventReportB: TEventReportB
             'Heats')
           ParentFont = False
         end
-        object Memo15: TfrxMemoView
+        object MemoEvDescription: TfrxMemoView
           AllowVectorExport = True
           Left = 238.110390000000000000
           Top = 8.456710000000000000
@@ -231,7 +241,7 @@ object EventReportB: TEventReportB
         DataSet = frxdsReport
         DataSetName = 'Event'
         RowCount = 0
-        object Memo9: TfrxMemoView
+        object FEventNum: TfrxMemoView
           AllowVectorExport = True
           Top = 2.000000000000000000
           Width = 52.913420000000000000
@@ -246,10 +256,10 @@ object EventReportB: TEventReportB
           Frame.Typ = []
           HAlign = haCenter
           Memo.UTF8W = (
-            '[<frxDS."EventNum"> #n%3.0g]')
+            '[<Event."EventNum"> #n%3.0g]')
           ParentFont = False
         end
-        object Memo10: TfrxMemoView
+        object FDistance: TfrxMemoView
           AllowVectorExport = True
           Left = 68.031540000000000000
           Top = 2.000000000000000000
@@ -265,10 +275,10 @@ object EventReportB: TEventReportB
           Frame.Typ = []
           HAlign = haRight
           Memo.UTF8W = (
-            '[frxDS."Distance"]')
+            '[Event."Distance"]')
           ParentFont = False
         end
-        object Memo11: TfrxMemoView
+        object FStroke: TfrxMemoView
           AllowVectorExport = True
           Left = 133.842610000000000000
           Top = 2.000000000000000000
@@ -278,9 +288,9 @@ object EventReportB: TEventReportB
           DataSetName = 'Event'
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDS."Stroke"]')
+            '[Event."Stroke"]')
         end
-        object Memo12: TfrxMemoView
+        object FNominees: TfrxMemoView
           AllowVectorExport = True
           Left = 506.457020000000000000
           Top = 2.000000000000000000
@@ -297,11 +307,11 @@ object EventReportB: TEventReportB
           HAlign = haCenter
           Memo.UTF8W = (
             
-              '[IIF(<frxDS."NomineeCount"> = 0 ,0,<frxDS."NomineeCount">) #n%3.' +
+              '[IIF(<Event."NomineeCount"> = 0 ,0,<Event."NomineeCount">) #n%3.' +
               '0g]')
           ParentFont = False
         end
-        object Memo13: TfrxMemoView
+        object FEntrants: TfrxMemoView
           AllowVectorExport = True
           Left = 574.488560000000000000
           Top = 2.000000000000000000
@@ -318,11 +328,11 @@ object EventReportB: TEventReportB
           HAlign = haCenter
           Memo.UTF8W = (
             
-              '[IIF(<frxDS."EntrantCount"> = 0 ,0,<frxDS."EntrantCount">) #n%3.' +
+              '[IIF(<Event."EntrantCount"> = 0 ,0,<Event."EntrantCount">) #n%3.' +
               '0g]')
           ParentFont = False
         end
-        object Memo14: TfrxMemoView
+        object FHeats: TfrxMemoView
           AllowVectorExport = True
           Left = 642.520100000000000000
           Top = 2.000000000000000000
@@ -338,13 +348,13 @@ object EventReportB: TEventReportB
           Frame.Typ = []
           HAlign = haCenter
           Memo.UTF8W = (
-            '[frxDS."HeatCount" #n%3.0g]')
+            '[Event."HeatCount" #n%3.0g]')
           ParentFont = False
         end
-        object frxDScEvent: TfrxMemoView
+        object FEvDescription: TfrxMemoView
           AllowVectorExport = True
           Left = 238.110390000000000000
-          Top = 2.000000000000000000
+          Top = 1.333333330000000000
           Width = 245.669450000000000000
           Height = 18.897650000000000000
           DataSet = frxdsReport
@@ -356,7 +366,7 @@ object EventReportB: TEventReportB
           Font.Style = []
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDS."EventDescription"]')
+            '[Event."Event_Description"]')
           ParentFont = False
         end
       end
@@ -410,18 +420,19 @@ object EventReportB: TEventReportB
         DataSet = frxdsReport
         DataSetName = 'Event'
         RowCount = 0
-        object frxDSNominee: TfrxMemoView
+        object FNominee: TfrxMemoView
           AllowVectorExport = True
           Left = 29.472480000000000000
+          Top = -0.666666670000000000
           Width = 132.283550000000000000
           Height = 18.897650000000000000
           DataSet = frxdsReport
           DataSetName = 'Event'
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDS."MemberName"]')
+            '[Event."MemberName"]')
         end
-        object frxDSRaceTime: TfrxMemoView
+        object FRaceTime: TfrxMemoView
           AllowVectorExport = True
           Left = 167.299320000000000000
           Width = 68.031540000000000000
@@ -430,7 +441,7 @@ object EventReportB: TEventReportB
           DataSetName = 'Event'
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDS."RaceTime"]')
+            '[Event."RaceTime"]')
         end
         object frxDSLane: TfrxMemoView
           AllowVectorExport = True
@@ -446,7 +457,7 @@ object EventReportB: TEventReportB
           Font.Style = []
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDS."LaneNum" #n%2.0f]')
+            '[Event."LaneNum" #n%2.0f]')
           ParentFont = False
         end
       end
@@ -456,7 +467,7 @@ object EventReportB: TEventReportB
         Height = 64.252010000000000000
         Top = 272.126160000000000000
         Width = 718.110700000000000000
-        Condition = 'frxDS."HeatNum"'
+        Condition = 'Event."HeatNum"'
         object Shape1: TfrxShapeView
           AllowVectorExport = True
           Top = 11.338590000000000000
@@ -466,7 +477,7 @@ object EventReportB: TEventReportB
           Frame.Color = clNone
           Frame.Typ = []
         end
-        object Memo6: TfrxMemoView
+        object MemoHeatGrp2: TfrxMemoView
           AllowVectorExport = True
           Left = 3.779530000000000000
           Top = 18.897650000000000000
@@ -479,10 +490,10 @@ object EventReportB: TEventReportB
           Font.Style = [fsBold]
           Frame.Typ = []
           Memo.UTF8W = (
-            'HEAT : [frxDS."HeatNum"]')
+            'HEAT : [Event."HeatNum"]')
           ParentFont = False
         end
-        object Line1: TfrxLineView
+        object LineGrpr2: TfrxLineView
           AllowVectorExport = True
           Left = 1.779530000000000000
           Top = 37.795300000000000000
@@ -491,7 +502,7 @@ object EventReportB: TEventReportB
           Frame.Typ = [ftTop]
           Frame.Width = 2.000000000000000000
         end
-        object Memo8: TfrxMemoView
+        object MemoRaceTime: TfrxMemoView
           AllowVectorExport = True
           Left = 166.039476670000000000
           Top = 42.614203330000000000
@@ -508,7 +519,7 @@ object EventReportB: TEventReportB
             'RaceTime')
           ParentFont = False
         end
-        object Memo16: TfrxMemoView
+        object MemoEntrant: TfrxMemoView
           AllowVectorExport = True
           Left = 29.472480000000000000
           Top = 42.354360000000000000
@@ -524,7 +535,7 @@ object EventReportB: TEventReportB
             'Entrant')
           ParentFont = False
         end
-        object Memo17: TfrxMemoView
+        object MemoLane: TfrxMemoView
           AllowVectorExport = True
           Left = 0.740156670000000000
           Top = 42.354360000000000000
@@ -540,7 +551,7 @@ object EventReportB: TEventReportB
             'Lane')
           ParentFont = False
         end
-        object Memo18: TfrxMemoView
+        object MemoRaceTimeC2: TfrxMemoView
           AllowVectorExport = True
           Left = 407.189240000000000000
           Top = 41.834673330000000000
@@ -557,7 +568,7 @@ object EventReportB: TEventReportB
             'RaceTime')
           ParentFont = False
         end
-        object Memo19: TfrxMemoView
+        object MemoEntrantC2: TfrxMemoView
           AllowVectorExport = True
           Left = 270.622243330000000000
           Top = 41.574830000000000000
@@ -573,7 +584,7 @@ object EventReportB: TEventReportB
             'Entrant')
           ParentFont = False
         end
-        object Memo20: TfrxMemoView
+        object MemoLaneC2: TfrxMemoView
           AllowVectorExport = True
           Left = 241.889920000000000000
           Top = 41.574830000000000000
@@ -589,7 +600,7 @@ object EventReportB: TEventReportB
             'Lane')
           ParentFont = False
         end
-        object Memo21: TfrxMemoView
+        object MemoRaceTimeCc2: TfrxMemoView
           AllowVectorExport = True
           Left = 649.079160000000000000
           Top = 41.834673330000000000
@@ -606,7 +617,7 @@ object EventReportB: TEventReportB
             'RaceTime')
           ParentFont = False
         end
-        object Memo22: TfrxMemoView
+        object FEntrantC3: TfrxMemoView
           AllowVectorExport = True
           Left = 512.512163330000000000
           Top = 41.574830000000000000
@@ -622,7 +633,7 @@ object EventReportB: TEventReportB
             'Entrant')
           ParentFont = False
         end
-        object Memo23: TfrxMemoView
+        object MemoLaneC3: TfrxMemoView
           AllowVectorExport = True
           Left = 483.779840000000000000
           Top = 41.574830000000000000
@@ -638,7 +649,7 @@ object EventReportB: TEventReportB
             'Lane')
           ParentFont = False
         end
-        object Line2: TfrxLineView
+        object LineC2: TfrxLineView
           AllowVectorExport = True
           Left = 482.000310000000000000
           Top = 37.015770000000000000
@@ -647,7 +658,7 @@ object EventReportB: TEventReportB
           Frame.Typ = [ftLeft]
           Frame.Width = 2.000000000000000000
         end
-        object Line3: TfrxLineView
+        object LineC3: TfrxLineView
           AllowVectorExport = True
           Left = 240.110390000000000000
           Top = 37.795300000000000000
@@ -683,25 +694,25 @@ object EventReportB: TEventReportB
       'SET @EventID = :EVENTID;'
       ''
       'SELECT   Event.EventID,'
+      '         Event.EventNum,'
+      '         SubString(Distance.CalcCaption,1, 8) AS Distance,'
+      '         SubString(Stroke.Caption,1,16) AS Stroke,'
+      '         SubString(Event.Caption, 1, 64) AS Event_Description,'
       '         dbo.EntrantCount(Event.EventID) AS EntrantCount,'
       '         dbo.NomineeCount(Event.EventID) AS NomineeCount,'
       '         dbo.HeatCount(Event.EventID) AS HeatCount,'
+      '         Event.SessionID,'
+      '         Event.StartTime,'
+      '         Member.MemberID,'
       
         '         SUBSTRING(dbo.GetMemberFullName(Member.memberID), 1, 32' +
         ') AS MemberName,'
-      '         Member.MemberID,'
-      '         Session.SessionDT,'
-      '         Event.EventNum,'
-      '         Event.SessionID,'
       '         Lane.HeatID,'
       '         dbo.SwimTimeToString(Lane.RaceTime) AS RaceTime,'
-      '         SUBSTRING(Distance.CalcCaption, 0, 8) AS Distance,'
-      '         SUBSTRING(Stroke.Caption, 0, 12) AS Stroke,'
       '         Heat.HeatNum,'
       '         Lane.LaneNum,'
-      '         SwimClub.NickName,'
-      '         SwimClub.Caption AS SwimClub,'
-      '         Event.Caption AS EventDescription'
+      '         SubString(EventStatus.Caption,1,8) AS Status'
+      ''
       'FROM     Event'
       '         INNER JOIN'
       '         Heat'
@@ -722,11 +733,9 @@ object EventReportB: TEventReportB
       '         Stroke'
       '         ON Event.StrokeID = Stroke.StrokeID'
       '         INNER JOIN'
-      '         Session'
-      '         ON Session.SessionID = Event.SessionID'
-      '         INNER JOIN'
-      '         SwimClub'
-      '         ON Session.SwimClubID = SwimClub.SwimClubID'
+      '         EventStatus'
+      '         ON Event.EventStatusID = EventStatus.EventStatusID'
+      ''
       'WHERE    Event.EventID = @EventID'
       'ORDER BY HeatNum, LaneNum;')
     Left = 56
@@ -751,8 +760,8 @@ object EventReportB: TEventReportB
     PageBreaks = True
     EmptyLines = True
     SuppressPageHeadersFooters = False
-    Left = 104
-    Top = 280
+    Left = 184
+    Top = 352
   end
   object frxHTMLExport1: TfrxHTMLExport
     UseFileCache = True
@@ -766,8 +775,8 @@ object EventReportB: TEventReportB
     EmptyLines = True
     Print = False
     PictureType = gpPNG
-    Left = 104
-    Top = 224
+    Left = 184
+    Top = 296
   end
   object frxPDFExport1: TfrxPDFExport
     UseFileCache = True
@@ -793,38 +802,44 @@ object EventReportB: TEventReportB
     PdfA = False
     PDFStandard = psNone
     PDFVersion = pv17
-    Left = 104
-    Top = 168
+    Left = 184
+    Top = 240
   end
   object frxdsReport: TfrxDBDataset
     UserName = 'Event'
     CloseDataSource = False
     FieldAliases.Strings = (
       'EventID=EventID'
+      'EventNum=EventNum'
+      'Distance=Distance'
+      'Stroke=Stroke'
+      'Event_Description=Event_Description'
       'EntrantCount=EntrantCount'
       'NomineeCount=NomineeCount'
       'HeatCount=HeatCount'
-      'MemberName=MemberName'
-      'MemberID=MemberID'
-      'SessionDT=SessionDT'
-      'EventNum=EventNum'
       'SessionID=SessionID'
+      'StartTime=StartTime'
+      'MemberID=MemberID'
+      'MemberName=MemberName'
       'HeatID=HeatID'
       'RaceTime=RaceTime'
-      'Distance=Distance'
-      'Stroke=Stroke'
       'HeatNum=HeatNum'
       'LaneNum=LaneNum'
-      'NickName=NickName'
-      'SwimClub=SwimClub'
-      'EventDescription=EventDescription')
+      'Status=Status')
     DataSet = qryReport
     BCDToCurrency = False
     Left = 144
     Top = 16
   end
   object qrySwimClub: TFDQuery
+    ActiveStoredUsage = [auDesignTime]
+    Active = True
     Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.KeyFields = 'SwimClubID'
     SQL.Strings = (
       'USE SwimClubMeet2;'
       ''
@@ -834,22 +849,31 @@ object EventReportB: TEventReportB
       'SELECT [SwimClubID]'
       '      ,[GUID]'
       '      ,[NickName]'
-      '      ,[Caption] AS ClubName'
+      '      ,[SwimClub].[Caption] AS ClubName'
       '      ,[Email]'
       '      ,[ContactNum]'
       '      ,[WebSite]'
-      '      ,[HeatAlgorithm]'
-      '      ,[EnableSimpleDQ]'
+      '--      ,[Address]   '
+      '--      ,[HeatAlgorithm]'
+      '--      ,[EnableSimpleDQ]'
       '      ,[NumOfLanes]'
       '      ,[LenOfPool]'
-      '      ,[DefTeamSize]'
+      '--      ,[DefTeamSize]'
       '      ,[CreatedOn]'
       '      ,[LogoImg]'
-      '      ,[IsArchived]'
+      '      ,[SwimClub].[IsArchived]'
       '      ,[IsClubGroup]'
-      '      ,[SwimClubTypeID]'
-      '      ,[PoolTypeID]'
+      '--      ,[SwimClub].[SwimClubTypeID]'
+      '      ,[SwimClubType].Caption AS SwimClub_Type '
+      '--      ,[SwimClub].[PoolTypeID]'
+      '      ,[PoolType].Caption AS Pool_Type '
       '  FROM [SwimClubMeet2].[dbo].[SwimClub]'
+      '  LEFT JOIN [SwimClubType] '
+      
+        '      ON [SwimClub].[SwimClubTypeID] = [SwimClubType].[SwimClubT' +
+        'ypeID]'
+      '  LEFT JOIN [PoolType] '
+      '      ON [SwimClub].[PoolTypeID] = [PoolType].[PoolTypeID]'
       '  WHERE SwimCLubID = @SwimClubID;')
     Left = 56
     Top = 88
@@ -887,5 +911,66 @@ object EventReportB: TEventReportB
     BCDToCurrency = False
     Left = 144
     Top = 88
+  end
+  object qrySession: TFDQuery
+    Active = True
+    Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.KeyFields = 'SessionID'
+    SQL.Strings = (
+      'USE SwimClubMeet2;'
+      'DECLARE @SessionID AS INTEGER;'
+      'SET @SessionID = :SESSIONID;'
+      'SELECT [SessionID]'
+      '      ,[Session].[Caption] AS Session_Descrption'
+      '      ,[SessionDT]'
+      '      ,[Session].[CreatedOn]'
+      '      ,[Session].[ModifiedOn]'
+      '      ,[NomineeCount]'
+      '      ,[EntrantCount]'
+      '      ,[SwimClubID]'
+      '      --,[Session].[SessionStatusID]'
+      '      ,[SessionStatus].Caption AS Session_Status'
+      '      --,[Session].[MeetID]'
+      '      ,[Meet].Caption AS Meet_Description'
+      '  FROM [SwimClubMeet2].[dbo].[Session]'
+      '  LEFT JOIN [SessionStatus] ON '
+      
+        '    [Session].[SessionStatusID] =[SessionStatus].[SessionStatusI' +
+        'D]'
+      '  LEFT JOIN [Meet] ON '
+      '    [Session].[MeetID] = [Meet].[MeetID]'
+      'WHERE [Session].SessionID = @SessionID;')
+    Left = 56
+    Top = 152
+    ParamData = <
+      item
+        Name = 'SESSIONID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = Null
+      end>
+  end
+  object frxdsSession: TfrxDBDataset
+    UserName = 'Session'
+    CloseDataSource = False
+    FieldAliases.Strings = (
+      'SessionID=SessionID'
+      'Session_Descrption=Session_Descrption'
+      'SessionDT=SessionDT'
+      'CreatedOn=CreatedOn'
+      'ModifiedOn=ModifiedOn'
+      'NomineeCount=NomineeCount'
+      'EntrantCount=EntrantCount'
+      'SwimClubID=SwimClubID'
+      'Session_Status=Session_Status'
+      'Meet_Description=Meet_Description')
+    DataSet = qrySession
+    BCDToCurrency = False
+    Left = 144
+    Top = 152
   end
 end

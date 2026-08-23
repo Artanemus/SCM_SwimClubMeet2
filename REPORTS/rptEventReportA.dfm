@@ -17,7 +17,7 @@ object EventReportA: TEventReportA
       'Event Summary. '
       'Basic report, outlining event number, distancce and stroke.')
     ReportOptions.Name = 'Sys-Event-Summary'
-    ReportOptions.LastChange = 46255.588420671300000000
+    ReportOptions.LastChange = 46257.511005370370000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'var'
@@ -55,14 +55,14 @@ object EventReportA: TEventReportA
       '  end'
       '  else'
       '  begin'
-      '    FLogo.Visible := False;      '
+      '    FLogo.Visible := false;      '
       '  end;'
       'end;'
       ''
       'begin'
       
-        '  EnablePrintClubLogo := false; // Default to True so it display' +
-        's in your designer preview  '
+        '  EnablePrintClubLogo := true; // Sett to True to display the cl' +
+        'ub logo                                 '
       'end.                                                ')
     Left = 288
     Top = 16
@@ -70,6 +70,10 @@ object EventReportA: TEventReportA
       item
         DataSet = frxdsReport
         DataSetName = 'Event'
+      end
+      item
+        DataSet = frxdsSession
+        DataSetName = 'Session'
       end
       item
         DataSet = frxdsSwimClub
@@ -99,7 +103,7 @@ object EventReportA: TEventReportA
       BottomMargin = 10.000000000000000000
       Frame.Typ = []
       MirrorMode = []
-      object PageHeader1: TfrxPageHeader
+      object EvPageHeader: TfrxPageHeader
         FillType = ftBrush
         Frame.Typ = []
         Height = 56.692950000000000000
@@ -116,10 +120,10 @@ object EventReportA: TEventReportA
           Memo.UTF8W = (
             '[SwimClub."NickName"]')
         end
-        object frxDSSessionStart: TfrxMemoView
+        object FSessionStart: TfrxMemoView
           AllowVectorExport = True
           Left = 408.189240000000000000
-          Top = 22.677180000000000000
+          Top = 22.010513330000000000
           Width = 306.141930000000000000
           Height = 18.897650000000000000
           DataSet = frxdsReport
@@ -133,8 +137,8 @@ object EventReportA: TEventReportA
           HAlign = haRight
           Memo.UTF8W = (
             
-              'Session Date: [<Event."SessionDT"> #dddd dd mmm yyyy HH:MM AM/PM' +
-              ']')
+              'Session Date: [<Session."SessionDT"> #dddd dd mmm yyyy HH:MM AM/' +
+              'PM]')
           ParentFont = False
         end
         object FLogo: TfrxPictureView
@@ -172,7 +176,7 @@ object EventReportA: TEventReportA
           ParentFont = False
         end
       end
-      object GroupHeader1: TfrxGroupHeader
+      object EvGroupHeader: TfrxGroupHeader
         FillType = ftBrush
         Fill.BackColor = 15461355
         Frame.Typ = []
@@ -186,7 +190,7 @@ object EventReportA: TEventReportA
         Top = 136.063080000000000000
         Width = 718.110700000000000000
         Condition = 'Event."SessionID"'
-        object Memo1: TfrxMemoView
+        object MemoEv: TfrxMemoView
           AllowVectorExport = True
           Left = 7.779530000000000000
           Top = 7.559060000000000000
@@ -203,7 +207,7 @@ object EventReportA: TEventReportA
             'Ev#')
           ParentFont = False
         end
-        object Memo3: TfrxMemoView
+        object MemoDistance: TfrxMemoView
           AllowVectorExport = True
           Left = 52.477736670000000000
           Top = 7.559060000000000000
@@ -213,7 +217,7 @@ object EventReportA: TEventReportA
           Memo.UTF8W = (
             'Distance')
         end
-        object Memo2: TfrxMemoView
+        object MemoStroke: TfrxMemoView
           AllowVectorExport = True
           Left = 113.122140000000000000
           Top = 7.559060000000000000
@@ -223,7 +227,7 @@ object EventReportA: TEventReportA
           Memo.UTF8W = (
             'Stroke')
         end
-        object Memo4: TfrxMemoView
+        object MemoNominees: TfrxMemoView
           AllowVectorExport = True
           Left = 517.403216670000000000
           Top = 8.059060000000000000
@@ -240,7 +244,7 @@ object EventReportA: TEventReportA
             'Nominees')
           ParentFont = False
         end
-        object Memo5: TfrxMemoView
+        object MemoEntrants: TfrxMemoView
           AllowVectorExport = True
           Left = 574.934756670000000000
           Top = 8.059060000000000000
@@ -257,7 +261,7 @@ object EventReportA: TEventReportA
             'Entrants')
           ParentFont = False
         end
-        object Memo7: TfrxMemoView
+        object MemoHeats: TfrxMemoView
           AllowVectorExport = True
           Left = 620.799630000000000000
           Top = 8.059060000000000000
@@ -274,7 +278,7 @@ object EventReportA: TEventReportA
             'Heats')
           ParentFont = False
         end
-        object Memo6: TfrxMemoView
+        object MemoEvdescription: TfrxMemoView
           AllowVectorExport = True
           Left = 229.410946670000000000
           Top = 7.559060000000000000
@@ -284,7 +288,7 @@ object EventReportA: TEventReportA
           Memo.UTF8W = (
             'Event Description')
         end
-        object Line1: TfrxLineView
+        object LineGroupHeader: TfrxLineView
           AllowVectorExport = True
           Left = 2.500000000000000000
           Top = 32.736240000000000000
@@ -293,7 +297,7 @@ object EventReportA: TEventReportA
           Frame.Typ = [ftTop]
           Frame.Width = 2.000000000000000000
         end
-        object Memo9: TfrxMemoView
+        object MemoStatus: TfrxMemoView
           AllowVectorExport = True
           Left = 657.000000000000000000
           Top = 7.936920000000000000
@@ -310,7 +314,7 @@ object EventReportA: TEventReportA
           ParentFont = False
         end
       end
-      object MasterData1: TfrxMasterData
+      object EvMasterData: TfrxMasterData
         FillType = ftBrush
         Frame.Typ = []
         Height = 22.677180000000000000
@@ -319,7 +323,7 @@ object EventReportA: TEventReportA
         DataSet = frxdsReport
         DataSetName = 'Event'
         RowCount = 0
-        object frxDSEventNum: TfrxMemoView
+        object frxEventNum: TfrxMemoView
           AllowVectorExport = True
           Left = 3.779530000000000000
           Width = 37.246753330000000000
@@ -337,7 +341,7 @@ object EventReportA: TEventReportA
             '[<Event."EventNum"> #n%3g]')
           ParentFont = False
         end
-        object frxDScDistance: TfrxMemoView
+        object frxDistance: TfrxMemoView
           AllowVectorExport = True
           Left = 44.477736670000000000
           Width = 58.972480000000000000
@@ -355,7 +359,7 @@ object EventReportA: TEventReportA
             '[Event."Distance"]')
           ParentFont = False
         end
-        object frxDScStroke: TfrxMemoView
+        object frxStroke: TfrxMemoView
           AllowVectorExport = True
           Left = 111.788806670000000000
           Width = 113.385900000000000000
@@ -366,7 +370,7 @@ object EventReportA: TEventReportA
           Memo.UTF8W = (
             '[Event."Stroke"]')
         end
-        object frxDSNomineeCount: TfrxMemoView
+        object frxNomineeCount: TfrxMemoView
           AllowVectorExport = True
           Left = 517.403216670000000000
           Top = 0.500000000000000000
@@ -387,7 +391,7 @@ object EventReportA: TEventReportA
               '0f]')
           ParentFont = False
         end
-        object frxDSHeatCount: TfrxMemoView
+        object frxEntrantCount: TfrxMemoView
           AllowVectorExport = True
           Left = 574.934756670000000000
           Width = 43.472426300000000000
@@ -407,7 +411,7 @@ object EventReportA: TEventReportA
               '0f]')
           ParentFont = False
         end
-        object frxDSHeatCount1: TfrxMemoView
+        object frxHeatCount: TfrxMemoView
           AllowVectorExport = True
           Left = 619.966296670000000000
           Top = 0.500000000000000000
@@ -426,7 +430,7 @@ object EventReportA: TEventReportA
             '[Event."HeatCount" #n%3.0f]')
           ParentFont = False
         end
-        object frxDScEvent: TfrxMemoView
+        object frxEvent: TfrxMemoView
           AllowVectorExport = True
           Left = 231.910946670000000000
           Top = 0.500000000000000000
@@ -444,7 +448,7 @@ object EventReportA: TEventReportA
             '[Event."Event_Description"]')
           ParentFont = False
         end
-        object frxDSStatus: TfrxMemoView
+        object frxStatus: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
           Left = 657.000000000000000000
@@ -463,7 +467,7 @@ object EventReportA: TEventReportA
           ParentFont = False
         end
       end
-      object PageFooter1: TfrxPageFooter
+      object EvPageFooter: TfrxPageFooter
         FillType = ftBrush
         Frame.Typ = []
         Height = 22.677180000000000000
@@ -510,6 +514,11 @@ object EventReportA: TEventReportA
     Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
     FormatOptions.FmtDisplayTime = 'hh:nn'
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.KeyFields = 'EventID'
     SQL.Strings = (
       'USE SwimClubMeet2;'
       ''
@@ -524,8 +533,6 @@ object EventReportA: TEventReportA
       '         dbo.EntrantCount(Event.EventID) AS EntrantCount,'
       '         dbo.NomineeCount(Event.EventID) AS NomineeCount,'
       '         dbo.HeatCount(Event.EventID) AS HeatCount,'
-      '         SubString(SwimClub.NickName, 1, 64) AS NickName,'
-      '         SubString(SwimClub.Caption, 1, 64) AS SwimClub,'
       '         Session.SessionDT,'
       '         Event.SessionID,'
       
@@ -543,9 +550,6 @@ object EventReportA: TEventReportA
       '         INNER JOIN'
       '         Session'
       '         ON Event.SessionID = Session.SessionID'
-      '         INNER JOIN'
-      '         SwimClub'
-      '         ON Session.SwimClubID = SwimClub.SwimClubID'
       '         INNER JOIN'
       '         EventStatus'
       '         ON Event.EventStatusID = EventStatus.EventStatusID'
@@ -577,7 +581,7 @@ object EventReportA: TEventReportA
     PageBreaks = True
     EmptyLines = True
     SuppressPageHeadersFooters = False
-    Left = 120
+    Left = 352
     Top = 280
   end
   object frxHTMLExport1: TfrxHTMLExport
@@ -592,7 +596,7 @@ object EventReportA: TEventReportA
     EmptyLines = True
     Print = False
     PictureType = gpPNG
-    Left = 120
+    Left = 352
     Top = 224
   end
   object frxPDFExport1: TfrxPDFExport
@@ -619,7 +623,7 @@ object EventReportA: TEventReportA
     PdfA = False
     PDFStandard = psNone
     PDFVersion = pv17
-    Left = 120
+    Left = 352
     Top = 168
   end
   object frxdsReport: TfrxDBDataset
@@ -649,6 +653,11 @@ object EventReportA: TEventReportA
     ActiveStoredUsage = [auDesignTime]
     Active = True
     Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.KeyFields = 'SwimClubID'
     SQL.Strings = (
       'USE SwimClubMeet2;'
       ''
@@ -658,22 +667,31 @@ object EventReportA: TEventReportA
       'SELECT [SwimClubID]'
       '      ,[GUID]'
       '      ,[NickName]'
-      '      ,[Caption] AS ClubName'
+      '      ,[SwimClub].[Caption] AS ClubName'
       '      ,[Email]'
       '      ,[ContactNum]'
       '      ,[WebSite]'
-      '      ,[HeatAlgorithm]'
-      '      ,[EnableSimpleDQ]'
+      '--      ,[Address]   '
+      '--      ,[HeatAlgorithm]'
+      '--      ,[EnableSimpleDQ]'
       '      ,[NumOfLanes]'
       '      ,[LenOfPool]'
-      '      ,[DefTeamSize]'
+      '--      ,[DefTeamSize]'
       '      ,[CreatedOn]'
       '      ,[LogoImg]'
-      '      ,[IsArchived]'
+      '      ,[SwimClub].[IsArchived]'
       '      ,[IsClubGroup]'
-      '      ,[SwimClubTypeID]'
-      '      ,[PoolTypeID]'
+      '--      ,[SwimClub].[SwimClubTypeID]'
+      '      ,[SwimClubType].Caption AS SwimClub_Type '
+      '--      ,[SwimClub].[PoolTypeID]'
+      '      ,[PoolType].Caption AS Pool_Type '
       '  FROM [SwimClubMeet2].[dbo].[SwimClub]'
+      '  LEFT JOIN [SwimClubType] '
+      
+        '      ON [SwimClub].[SwimClubTypeID] = [SwimClubType].[SwimClubT' +
+        'ypeID]'
+      '  LEFT JOIN [PoolType] '
+      '      ON [SwimClub].[PoolTypeID] = [PoolType].[PoolTypeID]'
       '  WHERE SwimCLubID = @SwimClubID;')
     Left = 72
     Top = 80
@@ -711,5 +729,66 @@ object EventReportA: TEventReportA
     BCDToCurrency = False
     Left = 160
     Top = 80
+  end
+  object qrySession: TFDQuery
+    Active = True
+    Connection = SCM2.scmConnection
+    UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
+    UpdateOptions.EnableDelete = False
+    UpdateOptions.EnableInsert = False
+    UpdateOptions.EnableUpdate = False
+    UpdateOptions.KeyFields = 'SessionID'
+    SQL.Strings = (
+      'USE SwimClubMeet2;'
+      'DECLARE @SessionID AS INTEGER;'
+      'SET @SessionID = :SESSIONID;'
+      'SELECT [SessionID]'
+      '      ,[Session].[Caption] AS Session_Descrption'
+      '      ,[SessionDT]'
+      '      ,[Session].[CreatedOn]'
+      '      ,[Session].[ModifiedOn]'
+      '      ,[NomineeCount]'
+      '      ,[EntrantCount]'
+      '      ,[SwimClubID]'
+      '      --,[Session].[SessionStatusID]'
+      '      ,[SessionStatus].Caption AS Session_Status'
+      '      --,[Session].[MeetID]'
+      '      ,[Meet].Caption AS Meet_Description'
+      '  FROM [SwimClubMeet2].[dbo].[Session]'
+      '  LEFT JOIN [SessionStatus] ON '
+      
+        '    [Session].[SessionStatusID] =[SessionStatus].[SessionStatusI' +
+        'D]'
+      '  LEFT JOIN [Meet] ON '
+      '    [Session].[MeetID] = [Meet].[MeetID]'
+      'WHERE [Session].SessionID = @SessionID;')
+    Left = 72
+    Top = 144
+    ParamData = <
+      item
+        Name = 'SESSIONID'
+        DataType = ftInteger
+        ParamType = ptInput
+        Value = Null
+      end>
+  end
+  object frxdsSession: TfrxDBDataset
+    UserName = 'Session'
+    CloseDataSource = False
+    FieldAliases.Strings = (
+      'SessionID=SessionID'
+      'Session_Descrption=Session_Descrption'
+      'SessionDT=SessionDT'
+      'CreatedOn=CreatedOn'
+      'ModifiedOn=ModifiedOn'
+      'NomineeCount=NomineeCount'
+      'EntrantCount=EntrantCount'
+      'SwimClubID=SwimClubID'
+      'Session_Status=Session_Status'
+      'Meet_Description=Meet_Description')
+    DataSet = qrySession
+    BCDToCurrency = False
+    Left = 160
+    Top = 144
   end
 end

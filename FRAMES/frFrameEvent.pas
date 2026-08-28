@@ -15,7 +15,7 @@ uses
 
   AdvUtil, AdvObj, AdvGrid, DBAdvGrid, Vcl.WinXCtrls,
 
-  dmSCM2, dmIMG, dmCORE, uDefines,
+  dmSCM2, dmIMG, dmCORE, dmFRXRPT, dmRPT, uDefines,
 
   uSettings, uSession, uEvent, Vcl.StdCtrls;
 
@@ -324,8 +324,15 @@ end;
 
 procedure TFrameEvent.actnEv_ReportExecute(Sender: TObject);
 begin
-  // open the report mapped to the button.
-  // or open the ReporrtPicker...
+
+  if not Assigned(FRXRPT) then
+  begin
+    // construct the datamodule
+    FRXRPT := TFRXRPT.Create(self);
+    FRXRPT.RunReport_EvSummary;
+    FreeAndNil(FRXRPT);
+  end;
+
 end;
 
 procedure TFrameEvent.gridCanEditCell(Sender: TObject; ARow, ACol: Integer;

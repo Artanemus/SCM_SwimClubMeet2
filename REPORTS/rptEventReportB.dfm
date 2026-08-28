@@ -14,13 +14,47 @@ object EventReportB: TEventReportB
     ReportOptions.Author = 'Ben Ambrose'
     ReportOptions.CreateDate = 43428.811813125000000000
     ReportOptions.Name = 'Sys-Event-Detailed'
-    ReportOptions.LastChange = 46257.510804560190000000
+    ReportOptions.LastChange = 46261.459876354170000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'var'
       ' EnablePrintClubLogo: boolean;'
-      ''
       '   '
+      'procedure Page1OnBeforePrint(Sender: TfrxComponent);'
+      'begin'
+      
+        '    // Set default coordinates (using fr1cm to convert 1.75 cm t' +
+        'o pixels)'
+      '  FClubName.Left := 0;'
+      
+        '  FNickName.Left := 0;                                          ' +
+        '                      '
+      '  '
+      
+        '  // Reference the script variable directly as a boolean (no bra' +
+        'ckets)'
+      '  if (EnablePrintClubLogo = true) then'
+      '  begin              '
+      '    // Check if the database BLOB field is Null [6]'
+      '    if <SwimClub."LogoImg"> = Null then'
+      '    begin                '
+      '      FLogo.Visible := False;'
+      '    end                '
+      '    else'
+      '    begin              '
+      '      FLogo.Visible := True;'
+      '      FClubName.Left := 1.75 * fr1cm;'
+      
+        '      FNickName.Left := 1.75 * fr1cm;                           ' +
+        '                                     '
+      '    end;'
+      '  end'
+      '  else'
+      '  begin'
+      '    FLogo.Visible := false;      '
+      '  end;  '
+      'end;'
+      ''
       'begin'
       
         ' EnablePrintClubLogo := false;                                  ' +
@@ -58,31 +92,17 @@ object EventReportB: TEventReportB
       Frame.Typ = []
       EndlessWidth = True
       MirrorMode = []
+      OnBeforePrint = 'Page1OnBeforePrint'
       object PageHeader1: TfrxPageHeader
         FillType = ftBrush
         Frame.Typ = []
         Height = 68.031540000000000000
         Top = 18.897650000000000000
         Width = 718.110700000000000000
-        object FSwimClub: TfrxMemoView
-          AllowVectorExport = True
-          Width = 400.630180000000000000
-          Height = 30.236240000000000000
-          AutoWidth = True
-          DataSetName = 'FDQuery1'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -19
-          Font.Name = 'Arial'
-          Font.Style = [fsBold]
-          Frame.Typ = []
-          Memo.UTF8W = (
-            '[SwimClub."ClubName"]')
-          ParentFont = False
-        end
         object FNickName: TfrxMemoView
           AllowVectorExport = True
-          Top = 22.677180000000000000
+          Left = 58.666666670000000000
+          Top = 19.343846670000000000
           Width = 400.630180000000000000
           Height = 18.897650000000000000
           DataSetName = 'FDQuery1'
@@ -90,7 +110,7 @@ object EventReportB: TEventReportB
           Memo.UTF8W = (
             '[SwimClub."NickName"]')
         end
-        object FSessionStart: TfrxMemoView
+        object FSessionDT: TfrxMemoView
           AllowVectorExport = True
           Left = 404.409710000000000000
           Top = 22.677180000000000000
@@ -109,6 +129,60 @@ object EventReportB: TEventReportB
             
               'Session Date: [<Session."SessionDT"> #dddd dd mmm yyyy HH:MM AM/' +
               'PM]')
+          ParentFont = False
+        end
+        object FClubName: TfrxMemoView
+          AllowVectorExport = True
+          Left = 58.666666660000000000
+          Top = -0.666666670000000000
+          Width = 400.630180000000000000
+          Height = 30.236240000000000000
+          AutoWidth = True
+          DataSetName = 'FDQuery1'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -19
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[SwimClub."ClubName"]')
+          ParentFont = False
+        end
+        object FLogo: TfrxPictureView
+          Description = 'SwimClub Logo'
+          AllowVectorExport = True
+          Left = 2.000000000000000000
+          Top = -0.230983330000000000
+          Width = 53.291338580000000000
+          Height = 53.338582680000000000
+          Center = True
+          DataField = 'LogoImg'
+          DataSet = frxdsSwimClub
+          DataSetName = 'SwimClub'
+          Frame.Typ = []
+          HightQuality = True
+          Transparent = True
+          TransparentColor = clWhite
+        end
+        object SessionSessionStatus: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 505.333333330000000000
+          Top = 35.769016670000000000
+          Width = 257.008040000000000000
+          Height = 18.897650000000000000
+          DataField = 'SessionStatus'
+          DataSet = frxdsSession
+          DataSetName = 'Session'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[Session."SessionStatus"]')
           ParentFont = False
         end
       end
@@ -366,7 +440,7 @@ object EventReportB: TEventReportB
           Font.Style = []
           Frame.Typ = []
           Memo.UTF8W = (
-            '[Event."Event_Description"]')
+            '[Event."EventDescription"]')
           ParentFont = False
         end
       end
@@ -677,9 +751,8 @@ object EventReportB: TEventReportB
       end
     end
   end
-  object qryReport: TFDQuery
+  object qryReportB: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexesActive = False
     IndexFieldNames = 'EventID'
     Connection = SCM2.scmConnection
@@ -697,7 +770,7 @@ object EventReportB: TEventReportB
       '         Event.EventNum,'
       '         SubString(Distance.CalcCaption,1, 8) AS Distance,'
       '         SubString(Stroke.Caption,1,16) AS Stroke,'
-      '         SubString(Event.Caption, 1, 64) AS Event_Description,'
+      '         SubString(Event.Caption, 1, 64) AS EventDescription,'
       '         dbo.EntrantCount(Event.EventID) AS EntrantCount,'
       '         dbo.NomineeCount(Event.EventID) AS NomineeCount,'
       '         dbo.HeatCount(Event.EventID) AS HeatCount,'
@@ -711,7 +784,7 @@ object EventReportB: TEventReportB
       '         dbo.SwimTimeToString(Lane.RaceTime) AS RaceTime,'
       '         Heat.HeatNum,'
       '         Lane.LaneNum,'
-      '         SubString(EventStatus.Caption,1,8) AS Status'
+      '         SubString(EventStatus.Caption,1,8) AS EventStatus'
       ''
       'FROM     Event'
       '         INNER JOIN'
@@ -813,7 +886,7 @@ object EventReportB: TEventReportB
       'EventNum=EventNum'
       'Distance=Distance'
       'Stroke=Stroke'
-      'Event_Description=Event_Description'
+      'EventDescription=EventDescription'
       'EntrantCount=EntrantCount'
       'NomineeCount=NomineeCount'
       'HeatCount=HeatCount'
@@ -825,8 +898,8 @@ object EventReportB: TEventReportB
       'RaceTime=RaceTime'
       'HeatNum=HeatNum'
       'LaneNum=LaneNum'
-      'Status=Status')
-    DataSet = qryReport
+      'EventStatus=EventStatus')
+    DataSet = qryReportB
     BCDToCurrency = False
     Left = 144
     Top = 16
@@ -864,9 +937,9 @@ object EventReportB: TEventReportB
       '      ,[SwimClub].[IsArchived]'
       '      ,[IsClubGroup]'
       '--      ,[SwimClub].[SwimClubTypeID]'
-      '      ,[SwimClubType].Caption AS SwimClub_Type '
+      '      ,[SwimClubType].Caption AS SwimClubType '
       '--      ,[SwimClub].[PoolTypeID]'
-      '      ,[PoolType].Caption AS Pool_Type '
+      '      ,[PoolType].Caption AS PoolType '
       '  FROM [SwimClubMeet2].[dbo].[SwimClub]'
       '  LEFT JOIN [SwimClubType] '
       
@@ -896,17 +969,14 @@ object EventReportB: TEventReportB
       'Email=Email'
       'ContactNum=ContactNum'
       'WebSite=WebSite'
-      'HeatAlgorithm=HeatAlgorithm'
-      'EnableSimpleDQ=EnableSimpleDQ'
       'NumOfLanes=NumOfLanes'
       'LenOfPool=LenOfPool'
-      'DefTeamSize=DefTeamSize'
       'CreatedOn=CreatedOn'
       'LogoImg=LogoImg'
       'IsArchived=IsArchived'
       'IsClubGroup=IsClubGroup'
-      'SwimClubTypeID=SwimClubTypeID'
-      'PoolTypeID=PoolTypeID')
+      'SwimClubType=SwimClubType'
+      'PoolType=PoolType')
     DataSet = qrySwimClub
     BCDToCurrency = False
     Left = 144
@@ -925,7 +995,7 @@ object EventReportB: TEventReportB
       'DECLARE @SessionID AS INTEGER;'
       'SET @SessionID = :SESSIONID;'
       'SELECT [SessionID]'
-      '      ,[Session].[Caption] AS Session_Descrption'
+      '      ,[Session].[Caption] AS SessionDescrption'
       '      ,[SessionDT]'
       '      ,[Session].[CreatedOn]'
       '      ,[Session].[ModifiedOn]'
@@ -933,9 +1003,9 @@ object EventReportB: TEventReportB
       '      ,[EntrantCount]'
       '      ,[SwimClubID]'
       '      --,[Session].[SessionStatusID]'
-      '      ,[SessionStatus].Caption AS Session_Status'
+      '      ,[SessionStatus].Caption AS SessionStatus'
       '      --,[Session].[MeetID]'
-      '      ,[Meet].Caption AS Meet_Description'
+      '      ,[Meet].Caption AS MeetDescription'
       '  FROM [SwimClubMeet2].[dbo].[Session]'
       '  LEFT JOIN [SessionStatus] ON '
       
@@ -959,15 +1029,15 @@ object EventReportB: TEventReportB
     CloseDataSource = False
     FieldAliases.Strings = (
       'SessionID=SessionID'
-      'Session_Descrption=Session_Descrption'
+      'SessionDescrption=SessionDescrption'
       'SessionDT=SessionDT'
       'CreatedOn=CreatedOn'
       'ModifiedOn=ModifiedOn'
       'NomineeCount=NomineeCount'
       'EntrantCount=EntrantCount'
       'SwimClubID=SwimClubID'
-      'Session_Status=Session_Status'
-      'Meet_Description=Meet_Description')
+      'SessionStatus=SessionStatus'
+      'MeetDescription=MeetDescription')
     DataSet = qrySession
     BCDToCurrency = False
     Left = 144

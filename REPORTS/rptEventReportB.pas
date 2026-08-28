@@ -13,7 +13,7 @@ uses
 type
   TEventReportB = class(TDataModule)
     frxrptEventDetailed: TfrxReport;
-    qryReport: TFDQuery;
+    qryReportB: TFDQuery;
     frxXLSExport1: TfrxXLSExport;
     frxHTMLExport1: TfrxHTMLExport;
     frxPDFExport1: TfrxPDFExport;

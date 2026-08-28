@@ -3121,6 +3121,7 @@ object Main2: TMain2
                 Caption = '&Design Report'
               end>
             Caption = '&Reports'
+            ImageIndex = 0
             ImageName = 'EmptyFrame'
           end
           item
@@ -3437,7 +3438,16 @@ object Main2: TMain2
     DefaultOrientation = poPortrait
     GradientEnd = 11982554
     GradientStart = clWindow
+    OpenDir = 
+      'C:\Users\Ben\Documents\GitHub\SCM_SwimClubMeet2\REPORTS\RPT_File' +
+      's'
+    SaveDir = 
+      'C:\Users\Ben\Documents\GitHub\SCM_SwimClubMeet2\REPORTS\RPT_File' +
+      's'
     TemplatesExt = 'fr3'
+    TemplateDir = 
+      'C:\Users\Ben\Documents\GitHub\SCM_SwimClubMeet2\REPORTS\TEMPLATE' +
+      'DIR'
     Restrictions = []
     RTLLanguage = False
     MemoParentFont = False

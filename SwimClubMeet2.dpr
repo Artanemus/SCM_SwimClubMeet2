@@ -93,22 +93,9 @@ uses
   dlgEntrantPickerEx in 'LANES\dlgEntrantPickerEx.pas' {EntrantPickerEx},
   dlgEntrantPicker in 'LANES\dlgEntrantPicker.pas' {EntrantPicker},
   dlgDeleteConfirm in 'HEATS\dlgDeleteConfirm.pas' {DeleteConfirm},
-  rptEventReportA in 'REPORTS\rptEventReportA.pas' {EventReportA: TDataModule},
-  rptEventReportB in 'REPORTS\rptEventReportB.pas' {EventReportB: TDataModule},
-  rptHeatReportA in 'REPORTS\rptHeatReportA.pas' {HeatReportA: TDataModule},
-  rptHeatReportB in 'REPORTS\rptHeatReportB.pas' {HeatReportB: TDataModule},
-  rptMarshallReportA in 'REPORTS\rptMarshallReportA.pas' {MarshallReportA: TDataModule},
-  rptMarshallReportA_ALT in 'REPORTS\rptMarshallReportA_ALT.pas' {MarshallReportA_ALT: TDataModule},
-  rptMarshallReportB in 'REPORTS\rptMarshallReportB.pas' {MarshallReportB: TDataModule},
-  rptMarshallReportC in 'REPORTS\rptMarshallReportC.pas' {MarshallReportC: TDataModule},
-  rptSessionReportA in 'REPORTS\rptSessionReportA.pas' {SessionReportA: TDataModule},
-  rptSessionReportB in 'REPORTS\rptSessionReportB.pas' {SessionReportB: TDataModule},
-  rptTimeKeeperReportA in 'REPORTS\rptTimeKeeperReportA.pas' {TimeKeeperReportA: TDataModule},
-  rptTimeKeeperReportB in 'REPORTS\rptTimeKeeperReportB.pas' {TimeKeeperReportB: TDataModule},
   dlgReportPicker in 'REPORTS\RPT_DIALOGS\dlgReportPicker.pas' {ReportPicker},
-  rptEventReportC in 'REPORTS\rptEventReportC.pas' {EventReportC: TDataModule},
-  rptNominateReportA in 'REPORTS\rptNominateReportA.pas' {NominateReportA: TDataModule},
-  rptNominateReportB in 'REPORTS\rptNominateReportB.pas' {NominateReportB: TDataModule};
+  dmFRXRPT in 'DATA\dmFRXRPT.pas' {FRXRPT: TDataModule},
+  dmRPT in 'REPORTS\dmRPT.pas' {RPT: TDataModule};
 
 {$R *.res}
 

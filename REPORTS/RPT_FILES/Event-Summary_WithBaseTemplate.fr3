@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<inherited ParentReport="..\..\..\..\..\Users\Ben\Documents\GitHub\SCM_SwimClubMeet2\REPORTS\TEMPLATEDIR\HeaderFooter.fr3" PreviewOptions.AllowEdit="False" PreviewOptions.Buttons="4095" ReportOptions.LastChange="46262.5080230556">
+  <Datasets>
+    <item DataSet="dsEvSummary" DataSetName="Event"/>
+    <item DataSet="dsSession" DataSetName="Session"/>
+    <item DataSet="dsSwimClub" DataSetName="SwimClub"/>
+  </Datasets>
+  <inherited Name="Data"/>
+  <inherited Name="Page1" PaperSize="1">
+    <inherited Name="scmHeader">
+      <inherited Name="FClubName"/>
+      <inherited Name="FNickName"/>
+      <inherited Name="FSessionDT"/>
+      <inherited Name="FLogo"/>
+    </inherited>
+    <inherited Name="scmFooter" Top="291.02381">
+      <inherited Name="TotalPages">
+        <Formats>
+          <item/>
+          <item/>
+        </Formats>
+      </inherited>
+      <inherited Name="Date"/>
+    </inherited>
+    <TfrxGroupHeader Name="grpEvSummary" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="48.01051333" Left="0" Top="136.06308" Width="740.409927" Condition="Event.&#34;SessionID&#34;"/>
+    <TfrxMasterData Name="MasterData1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="22.67718" Left="0" Top="207.87415" Width="740.409927" ColumnWidth="0" ColumnGap="0" DataSet="dsEvSummary" DataSetName="Event" RowCount="0"/>
+  </inherited>
+</inherited>

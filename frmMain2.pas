@@ -99,6 +99,9 @@ type
     Report_Manage: TAction;
     Report_Design: TAction;
     frxSCMDesigner: TfrxDesigner;
+    Report_Prefences: TAction;
+    Report_Run: TAction;
+    SwimClub_Edit: TAction;
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -331,7 +334,6 @@ procedure TMain2.FormCreate(Sender: TObject);
 var
   item: TActionListItem;
 begin
-
   // Setting font size at design time is ignored.
   Screen.MenuFont.Name := 'Segoe UI Semibold';
   Screen.MenuFont.Size := 12;
@@ -444,6 +446,28 @@ begin
   item.ActionList := frLane.actnlist;
 
   SetPanelAndFrame_Visibility(); // hide all panels displaying frames.
+
+  frxSCMDesigner.DefaultPaperSize := DMPAPER_A4 ; // = 9;  Winapi.Windows...
+  if Assigned(Settings) then
+  begin
+    var s: string;
+    s := Settings.GetDefPath;
+
+    if Length(Settings.frx_SaveDir) > 0 then
+      frxSCMDesigner.TemplateDir := Settings.frx_SaveDir
+    else
+      frxSCMDesigner.TemplateDir := '..\TEMPLATEDIR\';
+
+    if Length(Settings.frx_OpenDir) > 0 then
+      frxSCMDesigner.OpenDir := Settings.frx_OpenDir
+    else
+      frxSCMDesigner.OpenDir := s;
+
+    if Length(Settings.frx_SaveDir) > 0 then
+      frxSCMDesigner.SaveDir := Settings.frx_SaveDir
+    else
+      frxSCMDesigner.SaveDir := s;
+  end;
 
 end;
 
@@ -969,6 +993,14 @@ begin
   if Assigned(frEvent) then frEvent.OnPreferenceChange;
   if Assigned(frSession) then frSession.OnPreferenceChange;
   if Assigned(frFilterMember) then frFilterMember.OnPreferenceChange;
+
+  // assign changes to report designer..
+  if Assigned(Settings) then
+  begin
+    frxSCMDesigner.TemplateDir := Settings.frx_TemplateDir;
+    frxSCMDesigner.SaveDir := Settings.frx_SaveDir;
+    frxSCMDesigner.OpenDir := Settings.frx_SaveDir;
+  end;
 
 end;
 

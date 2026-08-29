@@ -2885,6 +2885,8 @@ object Main2: TMain2
         BevelOuter = bvNone
         Caption = 'Panel for TFrameNominate (frNominate)'
         TabOrder = 1
+        ExplicitLeft = 439
+        ExplicitTop = 1
       end
     end
     object tabHeats: TTabSheet
@@ -2975,6 +2977,11 @@ object Main2: TMain2
               end
               item
                 Caption = '-'
+              end
+              item
+                Action = SwimClub_Edit
+                ImageIndex = 20
+                ImageName = 'edit'
               end
               item
                 Action = SwimClub_Houses
@@ -3113,16 +3120,25 @@ object Main2: TMain2
           item
             Items = <
               item
+                Action = Report_Run
+                Caption = 'R&un Report...'
+              end
+              item
+                Caption = '-'
+              end
+              item
                 Action = Report_Manage
                 Caption = '&Manage Reports'
               end
               item
                 Action = Report_Design
                 Caption = '&Design Report'
+              end
+              item
+                Action = Report_Prefences
+                Caption = '&Report Preferences'
               end>
             Caption = '&Reports'
-            ImageIndex = 0
-            ImageName = 'EmptyFrame'
           end
           item
             Items = <
@@ -3136,7 +3152,7 @@ object Main2: TMain2
               end
               item
                 Action = Tools_PoolType
-                Caption = 'P&ool Type...'
+                Caption = 'P&ool Types...'
               end
               item
                 Action = Tools_QualifyTimes
@@ -3144,7 +3160,7 @@ object Main2: TMain2
               end
               item
                 Action = Tools_Swimmercategory
-                Caption = '&Swim Categories...'
+                Caption = '&Swim Club Categories...'
               end
               item
                 Action = Tools_Score
@@ -3209,8 +3225,8 @@ object Main2: TMain2
         Caption = '(No Name)'
       end>
     Images = IMG.imglstMenuBar
-    Left = 424
-    Top = 240
+    Left = 312
+    Top = 184
     StyleName = 'Platform Default'
     object Help_About: TAction
       Category = 'Help'
@@ -3251,7 +3267,7 @@ object Main2: TMain2
     end
     object Tools_Swimmercategory: TAction
       Category = 'Tools'
-      Caption = 'Swim Categories...'
+      Caption = 'Swim Club Categories...'
       OnExecute = Tools_SwimmercategoryExecute
     end
     object Tools_Score: TAction
@@ -3333,6 +3349,12 @@ object Main2: TMain2
       ImageIndex = 21
       ImageName = 'in'
     end
+    object SwimClub_Edit: TAction
+      Category = 'SwimClub'
+      Caption = 'Edit Swim Club...'
+      ImageIndex = 20
+      ImageName = 'edit'
+    end
     object SwimClub_Houses: TAction
       Category = 'SwimClub'
       Caption = 'Club Houses...'
@@ -3344,6 +3366,14 @@ object Main2: TMain2
       Caption = 'Club Statistics...'
       ImageIndex = 28
       ImageName = 'Query-Stats'
+    end
+    object SwimClub_Reports: TAction
+      Category = 'SwimClub'
+      Caption = 'Club Reports...'
+      ImageIndex = 15
+      ImageName = 'report'
+      OnExecute = SwimClub_ReportsExecute
+      OnUpdate = GenericActionUpdate
     end
     object File_ExportClub: TAction
       Category = 'SwimClub'
@@ -3378,14 +3408,6 @@ object Main2: TMain2
       ImageIndex = 31
       ImageName = 'cog'
     end
-    object SwimClub_Reports: TAction
-      Category = 'SwimClub'
-      Caption = 'Club Reports...'
-      ImageIndex = 15
-      ImageName = 'report'
-      OnExecute = SwimClub_ReportsExecute
-      OnUpdate = GenericActionUpdate
-    end
     object Member_Roles: TAction
       Category = 'Members'
       Caption = 'Roles...'
@@ -3406,8 +3428,12 @@ object Main2: TMain2
     end
     object Tools_PoolType: TAction
       Category = 'Tools'
-      Caption = 'Pool Type...'
+      Caption = 'Pool Types...'
       OnExecute = Tools_PoolTypeExecute
+    end
+    object Report_Run: TAction
+      Category = 'Reports'
+      Caption = 'Run Report...'
     end
     object Report_Manage: TAction
       Category = 'Reports'
@@ -3417,11 +3443,15 @@ object Main2: TMain2
       Category = 'Reports'
       Caption = 'Design Report'
     end
+    object Report_Prefences: TAction
+      Category = 'Reports'
+      Caption = 'Report Preferences'
+    end
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor
     Provider = 'Forms'
-    Left = 615
-    Top = 153
+    Left = 415
+    Top = 185
   end
   object frxSCMDesigner: TfrxDesigner
     DefaultScriptLanguage = 'PascalScript'
@@ -3451,7 +3481,7 @@ object Main2: TMain2
     Restrictions = []
     RTLLanguage = False
     MemoParentFont = False
-    Left = 167
+    Left = 223
     Top = 185
   end
 end

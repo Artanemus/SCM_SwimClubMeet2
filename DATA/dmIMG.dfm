@@ -2875,6 +2875,7 @@ object IMG: TIMG
           'dipodi:nodetypes="ccccc" />'#10'</svg>'#10
         FixedColor = clDarkgoldenrod
       end>
+    ApplyFixedColorToRootOnly = True
     Left = 496
     Top = 16
   end
@@ -13780,6 +13781,11 @@ object IMG: TIMG
         CollectionIndex = 76
         CollectionName = 'archive'
         Name = 'archive'
+      end
+      item
+        CollectionIndex = 82
+        CollectionName = 'folder-open'
+        Name = 'folder-open'
       end>
     ImageCollection = CollectionCore
     Width = 36

@@ -68,9 +68,12 @@ type
     Ln_ColumnStatesStringSystem: string; // DEFAULT Line state string.
     Ev_ColumnStatesStringSystem: string; // DEFAULT Event state state.
 
-    rpt_ReportFolderSystem: string;
-    rpt_ReportFolderCustom: string;
+    rpt_SystemReportDir: string;
     rpt_EnablePrintClubLogo: boolean;
+
+    frx_TemplateDir: string;
+    frx_SaveDir: string;
+    frx_OpenDir: string;
 
     constructor Create(); overload;
     constructor Create(AutoLoad: boolean); overload;
@@ -154,9 +157,12 @@ begin
   Ln_ColumnStatesStringSystem := '';
   Ev_ColumnStatesStringSystem := '';
 
-  rpt_ReportFolderSystem := '..\..\REPORTS\';
-  rpt_ReportFolderCustom := GetDefPath;
+  rpt_SystemReportDir := '..\..\REPORTS\';
   rpt_EnablePrintClubLogo := false;
+
+  frx_TemplateDir := '..\TEMPLATEDIR\';
+  frx_SaveDir := GetDefPath;
+  frx_OpenDir := GetDefPath;
 
   EnableDQcodes := false; // use simple DQ method. (not World Aquatics Codes).
 

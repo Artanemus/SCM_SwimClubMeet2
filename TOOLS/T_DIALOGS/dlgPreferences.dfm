@@ -45,7 +45,7 @@ object Preferences: TPreferences
     Top = 0
     Width = 695
     Height = 453
-    ActivePage = TabSheet6
+    ActivePage = ts_Reports
     Align = alClient
     TabOrder = 1
     object TabSheet2: TTabSheet
@@ -232,21 +232,21 @@ object Preferences: TPreferences
       end
       object lblSeedDepth2: TLabel
         Left = 513
-        Top = 298
+        Top = 322
         Width = 73
         Height = 21
         Caption = '(Default 3)'
       end
       object lblSeedDepth1: TLabel
         Left = 376
-        Top = 298
+        Top = 322
         Width = 81
         Height = 21
         Caption = 'Seed depth:'
       end
       object lblSeedingDepthAll: TLabel
         Left = 376
-        Top = 332
+        Top = 356
         Width = 185
         Height = 45
         AutoSize = False
@@ -276,7 +276,7 @@ object Preferences: TPreferences
       end
       object lblBracketMsg: TLabel
         Left = 40
-        Top = 284
+        Top = 308
         Width = 201
         Height = 39
         AutoSize = False
@@ -301,7 +301,7 @@ object Preferences: TPreferences
       end
       object prefGroupBy: TRadioGroup
         Left = 9
-        Top = 147
+        Top = 171
         Width = 232
         Height = 131
         Hint = 'Broad categories that gather together entants.'
@@ -315,7 +315,7 @@ object Preferences: TPreferences
       end
       object prefSeedMethod: TRadioGroup
         Left = 344
-        Top = 147
+        Top = 171
         Width = 264
         Height = 131
         Hint = 'Decides what lane an entrant is given.'
@@ -329,7 +329,7 @@ object Preferences: TPreferences
       end
       object prefSeedDepth: TSpinEdit
         Left = 466
-        Top = 295
+        Top = 319
         Width = 41
         Height = 31
         MaxValue = 10
@@ -566,23 +566,13 @@ object Preferences: TPreferences
         TabOrder = 1
         WordWrap = True
       end
-      object CheckBox1: TCheckBox
-        Left = 32
-        Top = 275
-        Width = 489
-        Height = 24
-        Caption = 
-          'Enable the display and printing of the SwimClub'#39's logo in report' +
-          's.'
-        TabOrder = 2
-      end
       object prefVerbose: TCheckBox
         Left = 32
-        Top = 208
-        Width = 281
+        Top = 233
+        Width = 240
         Height = 17
         Caption = 'Enable verbose for Auto-Build.'
-        TabOrder = 3
+        TabOrder = 2
       end
     end
     object ts_Charts: TTabSheet
@@ -615,10 +605,107 @@ object Preferences: TPreferences
         Text = '26'
       end
     end
+    object ts_Reports: TTabSheet
+      Caption = 'Reports'
+      ImageIndex = 5
+      object prefRptPrintClubLogo: TCheckBox
+        Left = 16
+        Top = 283
+        Width = 489
+        Height = 24
+        Caption = 
+          'Enable the display and printing of the SwimClub'#39's logo in report' +
+          's.'
+        TabOrder = 0
+      end
+      object prefRptSystemReportDir: TLabeledEdit
+        Left = 16
+        Top = 48
+        Width = 649
+        Height = 29
+        EditLabel.Width = 266
+        EditLabel.Height = 21
+        EditLabel.Caption = 'System Reports Directory. (Read only.)'
+        Enabled = False
+        TabOrder = 1
+        Text = ''
+      end
+      object prefRptSaveDir: TLabeledEdit
+        Left = 16
+        Top = 232
+        Width = 649
+        Height = 29
+        EditLabel.Width = 379
+        EditLabel.Height = 21
+        EditLabel.Caption = 'Directory where users reports are saved and opened  ...'
+        TabOrder = 2
+        Text = ''
+      end
+      object btnSelectSaveDir: TButton
+        Tag = 1
+        Left = 512
+        Top = 194
+        Width = 153
+        Height = 32
+        Hint = 'Assign todays date to custom.'
+        Caption = 'Select Directory'
+        ImageIndex = 19
+        ImageName = 'folder-open'
+        Images = IMG.imglstMiscButtons
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 3
+        OnClick = btnSelectReportDirClick
+      end
+      object prefRptTemplateDir: TLabeledEdit
+        Left = 16
+        Top = 135
+        Width = 649
+        Height = 29
+        EditLabel.Width = 406
+        EditLabel.Height = 21
+        EditLabel.Caption = 'Template Directory (Used in page headers and footers, etc.)'
+        TabOrder = 4
+        Text = ''
+      end
+      object btnSelectTemplateDir: TButton
+        Tag = 1
+        Left = 512
+        Top = 97
+        Width = 153
+        Height = 32
+        Hint = 'Assign todays date to custom.'
+        Caption = 'Select Directory'
+        ImageIndex = 19
+        ImageName = 'folder-open'
+        Images = IMG.imglstMiscButtons
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 5
+        OnClick = btnSelectReportDirClick
+      end
+    end
   end
   object BalloonHintPreferences: TBalloonHint
     Delay = 0
-    Left = 516
-    Top = 48
+    Left = 484
+    Top = 56
+  end
+  object fod_RptDir: TFileOpenDialog
+    FavoriteLinks = <>
+    FileTypes = <
+      item
+        DisplayName = 'Fast Report (*.fr3)'
+        FileMask = '*.fr3'
+      end
+      item
+        DisplayName = 'All Files (*.*)'
+        FileMask = '*.*'
+      end>
+    OkButtonLabel = 'Select Folder'
+    Options = [fdoPickFolders, fdoPathMustExist]
+    Title = 'Select Directory...'
+    Left = 604
+    Top = 56
   end
 end

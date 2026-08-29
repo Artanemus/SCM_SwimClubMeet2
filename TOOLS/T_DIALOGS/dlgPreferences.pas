@@ -66,12 +66,20 @@ type
     prefExcludeLanes: TCheckBox;
     prefListOfExcludeLanes: TEdit;
     lblListOfLanes: TLabel;
-    CheckBox1: TCheckBox;
+    prefRptPrintClubLogo: TCheckBox;
     prefVerbose: TCheckBox;
     lblBracketMsg: TLabel;
+    ts_Reports: TTabSheet;
+    prefRptSystemReportDir: TLabeledEdit;
+    prefRptSaveDir: TLabeledEdit;
+    btnSelectSaveDir: TButton;
+    prefRptTemplateDir: TLabeledEdit;
+    btnSelectTemplateDir: TButton;
+    fod_RptDir: TFileOpenDialog;
     procedure infoBugAutoBuildMouseLeave(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
     procedure btnDateClick(Sender: TObject);
+    procedure btnSelectReportDirClick(Sender: TObject);
     procedure btnTodayClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -122,6 +130,18 @@ begin
     datePickerCustom.Date := dlg.CalendarView1.Date;
 
   dlg.Free;
+end;
+
+procedure TPreferences.btnSelectReportDirClick(Sender: TObject);
+begin
+  fod_RptDir.DefaultFolder := prefRptSaveDir.Text;
+  if fod_RptDir.Execute then
+  begin
+    if TButton(Sender).Name = 'btnSelectTemplateDir' then
+      prefRptTemplateDir.Text := fod_RptDir.FileName
+    else if TButton(Sender).Name = 'btnSelectSaveDir' then
+      prefRptSaveDir.Text := fod_RptDir.FileName;
+  end;
 end;
 
 procedure TPreferences.btnTodayClick(Sender: TObject);
@@ -192,6 +212,13 @@ begin
   end;
     rgrpMembersAge.ItemIndex := indx;
 
+  // reports
+  prefRptSystemReportDir.Text := Settings.rpt_SystemReportDir;
+  prefRptPrintClubLogo.Checked := Settings.rpt_EnablePrintClubLogo;
+  prefRptTemplateDir.Text := Settings.frx_TemplateDir;
+  prefRptSaveDir.Text := Settings.frx_SaveDir;
+  prefRptSaveDir.Text := Settings.frx_OpenDir;
+
 end;
 
 procedure TPreferences.spbtnMembersAgeMouseLeave(Sender: TObject);
@@ -240,6 +267,14 @@ begin
   if (i > 1000) then i := 1000;
 
   Settings.MemberChartDataPoints := i;
+
+  // reports
+  Settings.rpt_SystemReportDir := prefRptSystemReportDir.Text;
+  Settings.rpt_EnablePrintClubLogo := prefRptPrintClubLogo.Checked;
+  Settings.frx_TemplateDir := prefRptTemplateDir.Text;
+  Settings.frx_SaveDir := prefRptSaveDir.Text;
+  Settings.frx_OpenDir := prefRptSaveDir.Text;
+
 
 end;
 

@@ -177,7 +177,7 @@ begin
 
   end;
 
-  CGFrame.Initialize; // assigned connection but not active.
+  CGFrame.Prepare(AParentClubID); // assigned connection but not active.
 
 end;
 

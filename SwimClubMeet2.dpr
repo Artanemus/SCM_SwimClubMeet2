@@ -31,7 +31,6 @@ uses
   frmMain2 in 'frmMain2.pas' {Main2},
   dlgMemberPicker in 'PICKERS\dlgMemberPicker.pas' {MemberPicker},
   dlgscmDatePicker in 'PICKERS\dlgscmDatePicker.pas' {scmDatePicker},
-  frFrameClubGroup in 'SWIMCLUBS\SC_FRAMES\frFrameClubGroup.pas' {FrameClubGroup: TFrame},
   dlgSwimClub_Manage in 'SWIMCLUBS\SC_DIALOGS\dlgSwimClub_Manage.pas' {SwimClubManage},
   dlgSwimClub_Switch in 'SWIMCLUBS\SC_DIALOGS\dlgSwimClub_Switch.pas' {SwimClubSwitch},
   dlgSwimClubGroup_View in 'SWIMCLUBS\SC_DIALOGS\dlgSwimClubGroup_View.pas' {SwimClubGroup_View},
@@ -95,7 +94,9 @@ uses
   dlgDeleteConfirm in 'HEATS\dlgDeleteConfirm.pas' {DeleteConfirm},
   dlgReportPicker in 'REPORTS\RPT_DIALOGS\dlgReportPicker.pas' {ReportPicker},
   dmFRXRPT in 'DATA\dmFRXRPT.pas' {FRXRPT: TDataModule},
-  dmRPT in 'REPORTS\dmRPT.pas' {RPT: TDataModule};
+  dmRPT in 'REPORTS\dmRPT.pas' {RPT: TDataModule},
+  frFrameSwimClub in 'FRAMES\frFrameSwimClub.pas' {FrameSwimClub: TFrame},
+  frFrameClubGroup in 'FRAMES\frFrameClubGroup.pas' {FrameClubGroup: TFrame};
 
 {$R *.res}
 

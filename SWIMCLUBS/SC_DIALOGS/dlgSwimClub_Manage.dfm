@@ -2699,6 +2699,7 @@ object SwimClubManage: TSwimClubManage
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
+    ExplicitLeft = 146
     object gSwimClub: TDBAdvGrid
       Left = 0
       Top = 0
@@ -3230,6 +3231,7 @@ object SwimClubManage: TSwimClubManage
       ParentShowHint = False
       ShowHint = True
       TabOrder = 0
+      ExplicitWidth = 0
       object tsMain: TTabSheet
         Caption = 'Required (*)'
         Font.Charset = DEFAULT_CHARSET
@@ -3624,7 +3626,7 @@ object SwimClubManage: TSwimClubManage
           Font.Style = []
           ParentFont = False
           TabOrder = 0
-          ExplicitWidth = 622
+          ExplicitWidth = 0
           ExplicitHeight = 539
           inherited pnlHeader: TPanel
             Width = 622

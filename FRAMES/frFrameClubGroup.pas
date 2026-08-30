@@ -37,6 +37,7 @@ type
     qryLstSwimClubGroup: TFDQuery;
     lbl1: TLabel;
     lbl2: TLabel;
+    procedure FrameExit(Sender: TObject);
     procedure spbtnMoveL2Click(Sender: TObject);
     procedure spbtnMoveLClick(Sender: TObject);
     procedure spbtnMoveR2Click(Sender: TObject);
@@ -47,56 +48,56 @@ type
 //    procedure MoveSelectedItem(lstL, lstR: TListBox);
     procedure MoveSelectedItems(lstL, lstR: TListBox);
     procedure MoveAllItems(lstL, lstR: TListBox);
+    procedure LoadList_SwimClubGroup(AParentClubID: integer);
+    procedure LoadList_SwimClub(AParentClubID: integer);
 
+  protected
+    procedure Loaded; override;
 
   public
-  {
-    constructor Create(AOwner: TComponent); override;  }
-    procedure Initialize;
-
-    procedure LoadList_SwimClubGroup(ParentClubID: integer);
-    procedure LoadList_SwimClub(ParentClubID: integer);
-    procedure UpdateData_SwimClubGroup(ParentClubID: Integer);
-    property ParentClubID: integer read FParentClubID write FParentClubID;
-    property IsChanged: boolean read FIsChanged write FIsChanged;
-
+    procedure Prepare(AParentClubID: Integer);
+    property IsChanged: boolean read FIsChanged;
+    procedure UpdateData_SwimClubGroup(AParentClubID: Integer);
   end;
 
 implementation
 
 {$R *.dfm}
 
-{ TClubGroupAssign }
-
-(*
-constructor TFrClubGroup.Create(AOwner: TComponent);
+procedure TFrameClubGroup.FrameExit(Sender: TObject);
 begin
-  inherited Create(AOwner);
-  // Initialization here
-  fIsChanged := False;
+  if fIsChanged then
+  begin
+    if FParentClubID > 0 then
+        UpdateData_SwimClubGroup(FParentClubID);
+    fIsChanged := false; // On exit - force state.
+  end;
 end;
 
-
-{
-Since TFrame can be placed on a form at design-time, sometimes its constructor
-might be called before some properties are set. Therefore call here after
-construction.
-}
-
-*)
-procedure TFrameClubGroup.Initialize;
+procedure TFrameClubGroup.Prepare(AParentClubID: Integer);
 begin
+  FParentClubID := AParentClubID;
+  if FParentClubID > 0 then
+  begin
+    LoadList_SwimClub(FParentClubID);
+    LoadList_SwimClubGroup(FParentClubID);
+  end;
+end;
+
+procedure TFrameClubGroup.Loaded;
+begin
+  inherited;
   fIsChanged := False;
-  ParentClubID := 0;
+  FParentClubID := 0;
 
   if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
   if not Assigned(CORE) or not CORE.IsActive then exit;
   qryLstSwimClubGroup.Connection := SCM2.scmConnection;
   qryLstSwimClub.Connection := SCM2.scmConnection;
+
 end;
 
-
-procedure TFrameClubGroup.LoadList_SwimClub(ParentClubID: integer);
+procedure TFrameClubGroup.LoadList_SwimClub(AParentClubID: integer);
 var
   s: string;
   idx: integer;
@@ -105,7 +106,7 @@ begin
   lbxL.Items.Clear;
   // re-query the records to be placed in list.
   qryLstSwimClub.Close;
-  qryLstSwimClub.ParamByName('PARENTCLUBID').AsInteger := ParentClubID;
+  qryLstSwimClub.ParamByName('PARENTCLUBID').AsInteger := AParentClubID;
   qryLstSwimClub.Prepare;
   qryLstSwimClub.Open;
   if qryLstSwimClub.Active then
@@ -121,7 +122,7 @@ begin
   end;
 end;
 
-procedure TFrameClubGroup.LoadList_SwimClubGroup(ParentClubID: integer);
+procedure TFrameClubGroup.LoadList_SwimClubGroup(AParentClubID: integer);
 var
   s: string;
   idx: integer;
@@ -130,7 +131,7 @@ begin
   lbxR.Items.Clear;
   // re-query the records to be placed in list.
   qryLstSwimClubGroup.Close;
-  qryLstSwimClubGroup.ParamByName('PARENTCLUBID').AsInteger := ParentClubID;
+  qryLstSwimClubGroup.ParamByName('AParentClubID').AsInteger := AParentClubID;
   qryLstSwimClubGroup.Prepare;
   qryLstSwimClubGroup.Open;
   if qryLstSwimClubGroup.Active then
@@ -223,40 +224,43 @@ begin
   MoveSelectedItems(lbxL, lbxR);
 end;
 
-procedure TFrameClubGroup.UpdateData_SwimClubGroup(ParentClubID: Integer);
+procedure TFrameClubGroup.UpdateData_SwimClubGroup(AParentClubID: Integer);
 var
   SQLDelete, SQLInsert: string;
   idx, ChildClubID: Integer;
 begin
-  if fIsChanged then
+  if (fIsChanged = true) and (AParentClubID > 0) then
   begin
+    fIsChanged := false; // on passed or failed - false.
     SQLDelete := '''
       DELETE FROM [SwimClubMeet2].[dbo].[SwimClubGroup]
-      WHERE [ParentClubID] = :ID;
+      WHERE [AParentClubID] = :ID;
       ''';
 
     SQLInsert := '''
       INSERT INTO [SwimClubMeet2].[dbo].[SwimClubGroup]
-        ([ParentClubID], [ChildClubID])
+        ([AParentClubID], [ChildClubID])
       VALUES (:ID1, :ID2);
       ''';
 //    SCM2.scmConnection.StartTransaction;
     try
       // clear all old records
-      SCM2.scmConnection.ExecSQL(SQLDelete, [ParentClubID]);
+      SCM2.scmConnection.ExecSQL(SQLDelete, [AParentClubID]);
       // add new records
       for idx := 0 to lbxR.Items.Count - 1 do
       begin
         ChildClubID := Integer(lbxR.Items.Objects[idx]);
         // if trust FK constraints, just insert:
-        SCM2.scmConnection.ExecSQL(SQLInsert, [ParentClubID, ChildClubID]);
+        SCM2.scmConnection.ExecSQL(SQLInsert, [AParentClubID, ChildClubID]);
       end;
 //      SCM2.scmConnection.Commit;
     except
 //      SCM2.scmConnection.Rollback;
       raise;
     end;
-  end;
+  end
+  else
+    fIsChanged := false; // on passed or failed - state is false.
 end;
 
 

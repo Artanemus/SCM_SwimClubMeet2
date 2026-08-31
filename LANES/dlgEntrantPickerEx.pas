@@ -491,6 +491,7 @@ end;
 function TEntrantPickerEx.UpdateEntrantData: boolean;
 begin
   {TODO -oBSA -cGeneral : Update Entrant Data....}
+  result := true;
 end;
 
 end.

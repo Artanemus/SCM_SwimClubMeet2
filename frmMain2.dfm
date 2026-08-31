@@ -2835,7 +2835,7 @@ object Main2: TMain2
     Width = 1131
     Height = 681
     Margins.Top = 10
-    ActivePage = tabNominate
+    ActivePage = tabSession
     Align = alClient
     TabOrder = 2
     OnChange = PageControlChange
@@ -2885,8 +2885,6 @@ object Main2: TMain2
         BevelOuter = bvNone
         Caption = 'Panel for TFrameNominate (frNominate)'
         TabOrder = 1
-        ExplicitLeft = 439
-        ExplicitTop = 1
       end
     end
     object tabHeats: TTabSheet
@@ -2980,6 +2978,7 @@ object Main2: TMain2
               end
               item
                 Action = SwimClub_Edit
+                Caption = 'E&dit Swim Club...'
                 ImageIndex = 20
                 ImageName = 'edit'
               end
@@ -3354,6 +3353,7 @@ object Main2: TMain2
       Caption = 'Edit Swim Club...'
       ImageIndex = 20
       ImageName = 'edit'
+      OnExecute = SwimClub_EditExecute
     end
     object SwimClub_Houses: TAction
       Category = 'SwimClub'

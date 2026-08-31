@@ -4,12 +4,14 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, frFrameClubGroup,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
   Vcl.DBCtrls, Vcl.StdCtrls, Vcl.Mask, Vcl.ExtCtrls, SVGIconImage, Vcl.ComCtrls,
   dmSCM2, dmCORE,  uSwimClub, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
+  Data.DB, Data.Bind.Components,
+  FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+  frFrameClubGroup;
 
 type
   TFrameSwimClub = class(TFrame)
@@ -53,18 +55,27 @@ type
     btnSaveClubLogo: TButton;
     btnClearClubLogo: TButton;
     ts_LinkedClubs: TTabSheet;
-    CGFrame: TFrameClubGroup;
     luUnitType: TDataSource;
     tblUnitType: TFDTable;
+    pnlClubGroup: TPanel;
   private
     { Private declarations }
     FIsClubGroup: boolean;
+    frClubGroup: TFrameClubGroup;
+
+    // Link Icon image to data change.
+    FDataLink: TFieldDataLink;
+    procedure DataLinkDataChange(Sender: TObject);
+
   protected
     procedure Loaded; override;
 
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
     procedure Prepare();
-    procedure Finalize();
+    procedure SetDataSource(ADataSource: TDataSource);
   end;
 
 implementation
@@ -73,31 +84,87 @@ implementation
 
 { TFrameSwimClub }
 
-procedure TFrameSwimClub.Finalize;
+constructor TFrameSwimClub.Create(AOwner: TComponent);
 begin
-  CORE.qrySwimClub.CheckBrowseMode;
-  {
-    Trap possible UI condition...
-    if focus is still on FrameClubGroup when finalize is called then
-    FrameClubGroup.OnExit hasn't been called and we are
-    missing an update to the SwimClubGroup state.
-  }
-  CGFrame.OnExit(Self);
+  inherited Create(AOwner);
+  // Use for:
+  // - Initializing non-visual fields (integers, strings, objects)
+  // - Setting default property values
+  // - Creating objects that don't depend on child components
+  // - DO NOT access child components (they don't exist yet!)
+
+  FIsClubGroup := false;
+
 end;
 
 procedure TFrameSwimClub.Loaded;
 begin
+  // Loaded can be called multiple times (in rare cases)
   inherited;
   if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
   if not Assigned(CORE) or not CORE.IsActive then exit;
-  tblUnitType.Connection := SCM2.scmConnection;
+
+  // Only create if not already assigned.
+  if not Assigned(frClubGroup) then
+  begin
+    frClubGroup := TFrameClubGroup.Create(Self);
+  end;
+
+  if not Assigned(FDataLink) then
+  begin
+    // create
+    FDataLink := TFieldDataLink.Create;
+    FDataLink.OnDataChange := DataLinkDataChange;
+  end;
+
+end;
+
+procedure TFrameSwimClub.DataLinkDataChange(Sender: TObject);
+begin
+  if Assigned(FDataLink.DataSource) and
+     Assigned(FDataLink.DataSource.DataSet) then
+  begin
+    // You can check the actual field value directly
+    if FDataLink.DataSource.DataSet.FieldByName('IsArchived').AsBoolean then
+      imgIndxArchive.ImageIndex := 1
+    else
+      imgIndxArchive.ImageIndex := 0;
+  end;
+end;
+
+destructor TFrameSwimClub.Destroy;
+begin
+  // Explicit free - optional but good practice
+  // This is safe even if nil
+
+  frClubGroup.Free;
+  FDataLink.Free;
+
+  inherited;
 end;
 
 procedure TFrameSwimClub.Prepare;
 var
   PK: integer;
 begin
-  // prepare the IsArchived icon image.
+
+  if Assigned(frClubGroup) then
+  begin
+    frClubGroup.Parent := pnlClubGroup;
+    frClubGroup.Align := alClient;
+  end;
+
+  SetDataSource(CORE.dsSwimClub);
+
+  tblUnitType.Connection := SCM2.scmConnection;
+  try
+    tblUnitType.Open;
+  except
+    on E: EFDDBEngineException do
+      SCM2.FDGUIxErrorDialog.Execute(E);
+  end;
+
+  // IsArchived icon image.
   imgIndxArchive.ImageIndex :=
   CORE.qrySwimClub.FieldByName('imgIndxArchived').AsInteger;
   FIsClubGroup := false;
@@ -128,8 +195,7 @@ begin
     tsLogo.TabVisible := true;
 
     // PREPARE CLUB GROUP FRAME.
-    CGFrame.Prepare(PK)
-
+    frClubGroup.Prepare(PK)
   end
   else
   begin
@@ -150,6 +216,13 @@ begin
 
   pcntrlEdit.ActivePageIndex := 0; // default to tabsheet 'tsMAIN'
 
+end;
+
+procedure TFrameSwimClub.SetDataSource(ADataSource: TDataSource);
+begin
+  FDataLink.DataSource := ADataSource;
+  // Optionally specify a specific field
+  FDataLink.FieldName := 'IsArchived';
 end;
 
 end.

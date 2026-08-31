@@ -37,7 +37,6 @@ type
     qryLstSwimClubGroup: TFDQuery;
     lbl1: TLabel;
     lbl2: TLabel;
-    procedure FrameExit(Sender: TObject);
     procedure spbtnMoveL2Click(Sender: TObject);
     procedure spbtnMoveLClick(Sender: TObject);
     procedure spbtnMoveR2Click(Sender: TObject);
@@ -55,6 +54,9 @@ type
     procedure Loaded; override;
 
   public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+
     procedure Prepare(AParentClubID: Integer);
     property IsChanged: boolean read FIsChanged;
     procedure UpdateData_SwimClubGroup(AParentClubID: Integer);
@@ -64,18 +66,12 @@ implementation
 
 {$R *.dfm}
 
-procedure TFrameClubGroup.FrameExit(Sender: TObject);
-begin
-  if fIsChanged then
-  begin
-    if FParentClubID > 0 then
-        UpdateData_SwimClubGroup(FParentClubID);
-    fIsChanged := false; // On exit - force state.
-  end;
-end;
-
 procedure TFrameClubGroup.Prepare(AParentClubID: Integer);
 begin
+
+  qryLstSwimClubGroup.Connection := SCM2.scmConnection;
+  qryLstSwimClub.Connection := SCM2.scmConnection;
+
   FParentClubID := AParentClubID;
   if FParentClubID > 0 then
   begin
@@ -84,16 +80,36 @@ begin
   end;
 end;
 
-procedure TFrameClubGroup.Loaded;
+constructor TFrameClubGroup.Create(AOwner: TComponent);
 begin
-  inherited;
+  // Use for:
+  // - Initializing non-visual fields (integers, strings, objects)
+  // - Setting default property values
+  // - Creating objects that don't depend on child components
+  // - DO NOT access child components (they don't exist yet!)
   fIsChanged := False;
   FParentClubID := 0;
+end;
+
+destructor TFrameClubGroup.Destroy;
+begin
+  { Test condition...
+    Are we missing an update to the SwimClubGroup state.
+    param = 0 : Default to frClubGroup.FClubGroupID.
+  }
+  if (fIsChanged = true) and (FParentClubID > 0) then
+    UpdateData_SwimClubGroup(FParentClubID);
+
+  inherited;
+end;
+
+procedure TFrameClubGroup.Loaded;
+begin
+  // Loaded can be called multiple times (in rare cases)
+  inherited;
 
   if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
   if not Assigned(CORE) or not CORE.IsActive then exit;
-  qryLstSwimClubGroup.Connection := SCM2.scmConnection;
-  qryLstSwimClub.Connection := SCM2.scmConnection;
 
 end;
 
@@ -108,18 +124,24 @@ begin
   qryLstSwimClub.Close;
   qryLstSwimClub.ParamByName('PARENTCLUBID').AsInteger := AParentClubID;
   qryLstSwimClub.Prepare;
-  qryLstSwimClub.Open;
-  if qryLstSwimClub.Active then
-  begin
-    While not qryLstSwimClub.eof do
+  try
+    qryLstSwimClub.Open;
+    if qryLstSwimClub.Active then
     begin
-      s := qryLstSwimClub.FieldByName('Caption').AsString;
-      idx := lbxL.Items.Add(s); // show the caption
-      lbxL.Items.Objects[idx] := TObject(qryLstSwimClub.FieldByName('SwimClubID').AsInteger);
-      //  RESTORE SwimClubID := Integer(lbxL.Items.Objects[idx]);
-      qryLstSwimClub.Next;
+      While not qryLstSwimClub.eof do
+      begin
+        s := qryLstSwimClub.FieldByName('Caption').AsString;
+        idx := lbxL.Items.Add(s); // show the caption
+        lbxL.Items.Objects[idx] := TObject(qryLstSwimClub.FieldByName('SwimClubID').AsInteger);
+        //  RESTORE SwimClubID := Integer(lbxL.Items.Objects[idx]);
+        qryLstSwimClub.Next;
+      end;
     end;
+  except
+    on E: EFDDBEngineException do
+      SCM2.FDGUIxErrorDialog.Execute(E);
   end;
+
 end;
 
 procedure TFrameClubGroup.LoadList_SwimClubGroup(AParentClubID: integer);
@@ -133,18 +155,24 @@ begin
   qryLstSwimClubGroup.Close;
   qryLstSwimClubGroup.ParamByName('AParentClubID').AsInteger := AParentClubID;
   qryLstSwimClubGroup.Prepare;
-  qryLstSwimClubGroup.Open;
-  if qryLstSwimClubGroup.Active then
-  begin
-    While not qryLstSwimClubGroup.eof do
+  try
+    qryLstSwimClubGroup.Open;
+    if qryLstSwimClubGroup.Active then
     begin
-      s := qryLstSwimClubGroup.FieldByName('Caption').AsString;
-      idx := lbxR.Items.Add(s); // show the caption
-      lbxR.Items.Objects[idx] := TObject(qryLstSwimClubGroup.FieldByName('ChildClubID').AsInteger);
-      //  RESTORE SwimClubID := Integer(lbxR.Items.Objects[idx]);
-      qryLstSwimClubGroup.Next;
+      While not qryLstSwimClubGroup.eof do
+      begin
+        s := qryLstSwimClubGroup.FieldByName('Caption').AsString;
+        idx := lbxR.Items.Add(s); // show the caption
+        lbxR.Items.Objects[idx] := TObject(qryLstSwimClubGroup.FieldByName('ChildClubID').AsInteger);
+        //  RESTORE SwimClubID := Integer(lbxR.Items.Objects[idx]);
+        qryLstSwimClubGroup.Next;
+      end;
     end;
+  except
+    on E: EFDDBEngineException do
+      SCM2.FDGUIxErrorDialog.Execute(E);
   end;
+
 end;
 
 procedure TFrameClubGroup.MoveAllItems(lstL, lstR: TListBox);
@@ -229,6 +257,7 @@ var
   SQLDelete, SQLInsert: string;
   idx, ChildClubID: Integer;
 begin
+
   if (fIsChanged = true) and (AParentClubID > 0) then
   begin
     fIsChanged := false; // on passed or failed - false.

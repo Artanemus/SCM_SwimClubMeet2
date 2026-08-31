@@ -9,7 +9,7 @@ object FrameSwimClub: TFrameSwimClub
     Top = 0
     Width = 620
     Height = 578
-    ActivePage = tsMain
+    ActivePage = ts_LinkedClubs
     Align = alClient
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clWindowText
@@ -395,93 +395,14 @@ object FrameSwimClub: TFrameSwimClub
     object ts_LinkedClubs: TTabSheet
       Caption = 'Group Details'
       ImageIndex = 2
-      inline CGFrame: TFrameClubGroup
+      object pnlClubGroup: TPanel
         Left = 0
         Top = 0
         Width = 612
         Height = 542
         Align = alClient
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -16
-        Font.Name = 'Segoe UI'
-        Font.Style = []
-        ParentFont = False
+        BevelOuter = bvNone
         TabOrder = 0
-        ExplicitWidth = 612
-        ExplicitHeight = 542
-        inherited pnlHeader: TPanel
-          Width = 612
-          ExplicitWidth = 612
-        end
-        inherited pnlFooter: TPanel
-          Top = 501
-          Width = 612
-          ExplicitTop = 501
-          ExplicitWidth = 612
-        end
-        inherited rpnlBody: TRelativePanel
-          Height = 462
-          ControlCollection = <
-            item
-              Control = CGFrame.lbxL
-              AlignBottomWithPanel = True
-              AlignHorizontalCenterWithPanel = False
-              AlignLeftWithPanel = True
-              AlignRightWithPanel = False
-              AlignTopWithPanel = True
-              AlignVerticalCenterWithPanel = False
-            end
-            item
-              Control = CGFrame.lbxR
-              AlignBottomWithPanel = True
-              AlignHorizontalCenterWithPanel = False
-              AlignLeftWithPanel = False
-              AlignRightWithPanel = True
-              AlignTopWithPanel = True
-              AlignVerticalCenterWithPanel = False
-              RightOf = CGFrame.spnlBtns
-            end
-            item
-              Control = CGFrame.spnlBtns
-              AlignBottomWithPanel = True
-              AlignHorizontalCenterWithPanel = False
-              AlignLeftWithPanel = False
-              AlignRightWithPanel = False
-              AlignTopWithPanel = True
-              AlignVerticalCenterWithPanel = False
-              RightOf = CGFrame.lbxL
-            end>
-          ExplicitHeight = 462
-          DesignSize = (
-            612
-            462)
-          inherited lbxL: TListBox
-            Height = 462
-            ExplicitHeight = 462
-          end
-          inherited lbxR: TListBox
-            Height = 462
-            ExplicitHeight = 462
-          end
-          inherited spnlBtns: TStackPanel
-            Height = 462
-            ControlCollection = <
-              item
-                Control = CGFrame.spbtnMoveR
-              end
-              item
-                Control = CGFrame.spbtnMoveR2
-              end
-              item
-                Control = CGFrame.spbtnMoveL
-              end
-              item
-                Control = CGFrame.spbtnMoveL2
-              end>
-            ExplicitHeight = 462
-          end
-        end
       end
     end
   end

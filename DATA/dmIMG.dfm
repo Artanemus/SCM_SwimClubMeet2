@@ -2875,7 +2875,6 @@ object IMG: TIMG
           'dipodi:nodetypes="ccccc" />'#10'</svg>'#10
         FixedColor = clDarkgoldenrod
       end>
-    ApplyFixedColorToRootOnly = True
     Left = 496
     Top = 16
   end

@@ -121,6 +121,7 @@ type
     procedure pnlTitleBarPaint(Sender: TObject; Canvas: TCanvas; var ARect: TRect);
     procedure StatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const
         Rect: TRect);
+    procedure SwimClub_EditExecute(Sender: TObject);
     procedure SwimClub_ManageExecute(Sender: TObject);
     procedure SwimClub_ReportsExecute(Sender: TObject);
     procedure SwimClub_SwitchExecute(Sender: TObject);
@@ -189,7 +190,7 @@ uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
   frmManageMember, frmSwimClub_Reports, frmMM_Stats, uEvent, dlgQualifyTimes,
   dlgPoolTypes, frmDisqualificationCodes, frmSwimClubType, dlgDivisions,
-  uNominee;
+  uNominee, dlgSwimClub_Edit;
 
 
 procedure TMain2.File_ConnectionExecute(Sender: TObject);
@@ -1019,6 +1020,16 @@ begin
     frNavEv.UpdateUI(true);
 //    frNominate.UpdateUI(true);
 
+end;
+
+procedure TMain2.SwimClub_EditExecute(Sender: TObject);
+var
+  dlg: TSwimClubEdit;
+begin
+  dlg := TSwimClubEdit.Create(self);
+  dlg.Prepare;
+  dlg.ShowModal;
+  dlg.Free;
 end;
 
 procedure TMain2.Tools_DisqualifyCodesExecute(Sender: TObject);

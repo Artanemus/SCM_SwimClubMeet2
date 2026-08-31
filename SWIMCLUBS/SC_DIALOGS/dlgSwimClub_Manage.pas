@@ -22,7 +22,7 @@ uses
   dmIMG, dmCORE, dmSCM2,
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid, SVGIconImage,
-  AdvDateTimePicker, AdvDBDateTimePicker, frFrameClubGroup;
+  AdvDateTimePicker, AdvDBDateTimePicker, frFrameSwimClub, frFrameClubGroup;
 
   //, hintlist;
 
@@ -37,58 +37,17 @@ type
     pnlBody: TPanel;
     gSwimClub: TDBAdvGrid;
     pnlTools: TPanel;
-    pcntrlEdit: TPageControl;
-    tsMain: TTabSheet;
-    tsLogo: TTabSheet;
     SaveLogoDlg: TSavePictureDialog;
     OpenLogoDlg: TOpenPictureDialog;
-    DBLogo: TDBImage;
-    btnLoadClubLogo: TButton;
-    btnSaveClubLogo: TButton;
-    btnClearClubLogo: TButton;
-    lblLogoHintTxt: TLabel;
-    lblClubName: TLabel;
-    lblNickname: TLabel;
-    lblEmail: TLabel;
-    lblContactNum: TLabel;
-    lblWebSite: TLabel;
-    lblNumOfLanes: TLabel;
-    lblPoolLength: TLabel;
-    DBClubName: TDBEdit;
-    DBNickName: TDBEdit;
-    DBEmail: TDBEdit;
-    DBContactNum: TDBEdit;
-    DBWebSite: TDBEdit;
-    DBEditNumOfLanes: TDBEdit;
     actnArchive: TAction;
     splitvEdit: TSplitView;
-    imgIndxArchive: TSVGIconImage;
     actnClose: TAction;
-    DBTextPrimaryKey: TDBText;
-    ts_LinkedClubs: TTabSheet;
-    imgindxGroup: TSVGIconImage;
     actnNewGroup: TAction;
     qrySwimClubGroup: TFDQuery;
     actnInfo: TAction;
     hintInfo: TBalloonHint;
-    CGFrame: TFrameClubGroup;
-    lblClubType: TLabel;
-    lblQualifyType: TLabel;
-    DBLookupComboBox1: TDBLookupComboBox;
-    dbcboxArchive: TDBCheckBox;
-    DBLookupComboBox2: TDBLookupComboBox;
-    btnClearClubType: TButton;
-    btnClearPoolType: TButton;
-    tsOptions2: TTabSheet;
-    DBMemoAddress: TDBMemo;
-    lblAddress: TLabel;
-    lblUnitType: TLabel;
-    lblCourseType: TLabel;
     tblUnitType: TFDTable;
     luUnitType: TDataSource;
-    DBTextCourseType: TDBText;
-    DBTextLengthOfPool: TDBText;
-    DBTextUnitType: TDBText;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure actnArchiveExecute(Sender: TObject);
@@ -119,6 +78,7 @@ type
     procedure btnClearPoolTypeClick(Sender: TObject);
   private
     fGridIsUpdating: Boolean;
+    frSwimClub: TFrameSwimClub;
     // if row=0 then Grid's focused display row number is used.
     procedure SyncDBtoGrid(AMethod: integer; ARow: integer = 0);
     // ScrollInView currently not enabled...
@@ -162,7 +122,6 @@ begin
   splitvEdit.UseAnimation := false;
   splitvEdit.Opened := false;
 //  splitvEdit.UseAnimation := true;
-  if pcntrlEdit.ActivePageIndex <> 0 then pcntrlEdit.ActivePageIndex := 0;
 
   // Assign current connection...
   if Assigned(SCM2) then
@@ -177,7 +136,10 @@ begin
 
   end;
 
-  CGFrame.Prepare(AParentClubID); // assigned connection but not active.
+  frSwimClub := TFrameSwimClub.Create(Self);
+  frSwimClub.Parent := splitvEdit;
+  frSwimClub.Align := alClient;
+  frSwimClub.Prepare(); // assigned connection but not active.
 
 end;
 
@@ -630,8 +592,8 @@ begin
     CORE.qrySwimClub.FieldByName('IsArchived').AsBoolean := not
       CORE.qrySwimClub.FieldByName('IsArchived').AsBoolean;
     // paint the correct icon
-    imgIndxArchive.ImageIndex :=
-      ORD(CORE.qrySwimClub.FieldByName('IsArchived').AsBoolean);
+//    imgIndxArchive.ImageIndex :=
+//      ORD(CORE.qrySwimClub.FieldByName('IsArchived').AsBoolean);
   end;
 end;
 
@@ -684,8 +646,8 @@ begin
 
   if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
   begin
-    if CGFrame.IsChanged then
-      CGFrame.UpdateData_SwimClubGroup(CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger);
+//    if frSwimClub.IsChanged then
+//      frSwimClub.UpdateData_SwimClubGroup(CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger);
   end;
 
   if fGridIsUpdating then
@@ -703,63 +665,12 @@ begin
 end;
 
 procedure TSwimClubManage.splitvEditOpened(Sender: TObject);
-var
-  PK: integer;
 begin
-  // prepare the IsArchived icon image.
-  imgIndxArchive.ImageIndex :=
-  CORE.qrySwimClub.FieldByName('imgIndxArchived').AsInteger;
   gSwimClub.BeginUpdate; // disable changes in TMS grid.
   fGridIsUpdating := true; // store TMS update state...
-
-  // When Swimming Club is a Group then PK = ParentClubID.
-  PK := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
-
   // E D I T   R E C O R D . ===============================
   if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
     CORE.qrySwimClub.Edit;
-
-  // UI init...
-  if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
-  begin
-    lblClubName.Caption := 'Group Name*';
-    lblNickname.Caption := 'Description';
-    lblEmail.Visible := false;
-    lblWebSite.Visible := false;
-    lblContactNum.Visible := false;
-    DBEmail.Visible := false;
-    DBWebSite.Visible := false;
-    DBContactNum.Visible := false;
-    DBTextPrimaryKey.Visible := true;
-    imgindxGroup.Visible := true;
-    ts_LinkedClubs.TabVisible := true; // 'Group Club' info on linked clubs.
-    tsMain.TabVisible := true;
-    tsLogo.TabVisible := true;
-
-    // PREPARE FRAME.
-    CGFrame.IsChanged := false;
-    CGFrame.ParentClubID := PK;
-    CGFrame.LoadList_SwimClubGroup(PK);
-    CGFrame.LoadList_SwimClub(PK);
-
-  end
-  else
-  begin
-    lblClubName.Caption := 'Club Name*';
-    lblNickname.Caption := 'Club Nickname*';
-    lblEmail.Visible := true;
-    lblWebSite.Visible := true;
-    lblContactNum.Visible := true;
-    DBEmail.Visible := true;
-    DBWebSite.Visible := true;
-    DBContactNum.Visible := true;
-    DBTextPrimaryKey.Visible := false;
-    imgindxGroup.Visible := false;
-    ts_LinkedClubs.TabVisible := false; // doesn't apply to 'Clubs'
-    tsMain.TabVisible := true;
-    tsLogo.TabVisible := true;
-  end;
-  pcntrlEdit.ActivePageIndex := 0; // default to tabsheet 'tsMAIN'
 end;
 
 procedure TSwimClubManage.splitvEditOpening(Sender: TObject);

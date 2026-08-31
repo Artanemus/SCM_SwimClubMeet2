@@ -10,7 +10,6 @@ object FrameClubGroup: TFrameClubGroup
   Font.Style = []
   ParentFont = False
   TabOrder = 0
-  OnExit = FrameExit
   object pnlHeader: TPanel
     Left = 0
     Top = 0

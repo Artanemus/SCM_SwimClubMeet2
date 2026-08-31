@@ -54,7 +54,6 @@ object EntrantPickerEx: TEntrantPickerEx
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 1183
     object pnlCntrl: TPanel
       Left = 674
       Top = 0
@@ -166,7 +165,7 @@ object EntrantPickerEx: TEntrantPickerEx
         DefaultRowHeight = 30
         DrawingStyle = gdsClassic
         FixedColor = clWhite
-        RowCount = 15
+        RowCount = 2
         FixedRows = 1
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
@@ -610,19 +609,6 @@ object EntrantPickerEx: TEntrantPickerEx
           68
           64)
         RowHeights = (
-          30
-          30
-          30
-          30
-          30
-          30
-          30
-          30
-          30
-          30
-          30
-          30
-          30
           30
           30)
       end

@@ -11,7 +11,7 @@ uses
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   Data.DB, Data.Bind.Components,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  frFrameClubGroup;
+  frFrame2ClubGroup;
 
 type
   TFrameSwimClub = class(TFrame)
@@ -57,11 +57,11 @@ type
     ts_LinkedClubs: TTabSheet;
     luUnitType: TDataSource;
     tblUnitType: TFDTable;
-    pnlClubGroup: TPanel;
+    pnlCG: TPanel;
   private
     { Private declarations }
     FIsClubGroup: boolean;
-    frClubGroup: TFrameClubGroup;
+    frCG: TFrame2ClubGroup;
 
     // Link Icon image to data change.
     FDataLink: TFieldDataLink;
@@ -76,6 +76,7 @@ type
 
     procedure Prepare();
     procedure SetDataSource(ADataSource: TDataSource);
+    procedure CheckAndSaveData();
   end;
 
 implementation
@@ -83,6 +84,14 @@ implementation
 {$R *.dfm}
 
 { TFrameSwimClub }
+
+procedure TFrameSwimClub.CheckAndSaveData;
+begin
+  if (Assigned(frCG) and frCG.IsChanged) then
+  begin
+    frCG.CheckAndSaveData;
+  end;
+end;
 
 constructor TFrameSwimClub.Create(AOwner: TComponent);
 begin
@@ -101,20 +110,25 @@ procedure TFrameSwimClub.Loaded;
 begin
   // Loaded can be called multiple times (in rare cases)
   inherited;
+
   if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
   if not Assigned(CORE) or not CORE.IsActive then exit;
 
-  // Only create if not already assigned.
-  if not Assigned(frClubGroup) then
-  begin
-    frClubGroup := TFrameClubGroup.Create(Self);
-  end;
 
   if not Assigned(FDataLink) then
   begin
     // create
     FDataLink := TFieldDataLink.Create;
     FDataLink.OnDataChange := DataLinkDataChange;
+  end;
+
+  if not Assigned(frCG) then
+  begin
+     frCG := TFrame2ClubGroup.Create(Self);
+    // PREPARE CLUB GROUP FRAME.  exception error!!!!!!!!!!
+    frCG.Parent := pnlCG; // should work if tab is visible?
+    frCG.Align := alClient;
+    frCG.Prepare(PK);
   end;
 
 end;
@@ -137,7 +151,7 @@ begin
   // Explicit free - optional but good practice
   // This is safe even if nil
 
-  frClubGroup.Free;
+  frCG.Free;
   FDataLink.Free;
 
   inherited;
@@ -147,12 +161,6 @@ procedure TFrameSwimClub.Prepare;
 var
   PK: integer;
 begin
-
-  if Assigned(frClubGroup) then
-  begin
-    frClubGroup.Parent := pnlClubGroup;
-    frClubGroup.Align := alClient;
-  end;
 
   SetDataSource(CORE.dsSwimClub);
 
@@ -168,6 +176,9 @@ begin
   imgIndxArchive.ImageIndex :=
   CORE.qrySwimClub.FieldByName('imgIndxArchived').AsInteger;
   FIsClubGroup := false;
+
+  if Assigned(frCG) then
+      frCG.IsChanged := false;;
 
   // When Swimming Club is a Group then PK = ParentClubID.
   PK := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
@@ -190,12 +201,14 @@ begin
     DBContactNum.Visible := false;
     DBTextPrimaryKey.Visible := true;
     imgindxGroup.Visible := true;
-    ts_LinkedClubs.TabVisible := true; // 'Group Club' info on linked clubs.
+    ts_LinkedClubs.TabVisible := true;
+    pnlCG.Visible := true;   // 'Group Club' info on linked clubs.
     tsMain.TabVisible := true;
     tsLogo.TabVisible := true;
 
-    // PREPARE CLUB GROUP FRAME.
-    frClubGroup.Prepare(PK)
+    if Assigned(frCG) then
+      frCG.Prepare(PK);
+
   end
   else
   begin
@@ -209,7 +222,8 @@ begin
     DBContactNum.Visible := true;
     DBTextPrimaryKey.Visible := false;
     imgindxGroup.Visible := false;
-    ts_LinkedClubs.TabVisible := false; // doesn't apply to none grouped Clubs.
+    ts_LinkedClubs.TabVisible := true;
+//    pnlCG.Visible := false;  // doesn't apply to none grouped Clubs.
     tsMain.TabVisible := true;
     tsLogo.TabVisible := true;
   end;

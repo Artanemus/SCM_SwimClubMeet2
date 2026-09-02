@@ -22,7 +22,7 @@ uses
   dmIMG, dmCORE, dmSCM2,
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid, SVGIconImage,
-  AdvDateTimePicker, AdvDBDateTimePicker, frFrameSwimClub, frFrameClubGroup;
+  AdvDateTimePicker, AdvDBDateTimePicker, frFrameSwimClub, frFrame2ClubGroup;
 
   //, hintlist;
 

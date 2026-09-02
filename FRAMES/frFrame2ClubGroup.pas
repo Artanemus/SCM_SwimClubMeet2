@@ -1,87 +1,83 @@
-unit frFrameClubGroup;
+unit frFrame2ClubGroup;
 
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages,
-
-  System.SysUtils, System.Variants, System.Classes,
-
-  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.WinXCtrls,
-  Vcl.ExtCtrls, Vcl.StdCtrls, Vcl.WinXPanels, Vcl.Buttons, Vcl.VirtualImage,
-
-  Data.DB,
-
-  FireDAC.Stan.Intf, FireDAC.Stan.Option,
-  FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
-  FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
-  FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-
-  dmIMG,  dmCORE, dmSCM2;
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.ExtCtrls,
+  Vcl.VirtualImage, Vcl.WinXCtrls, Vcl.Buttons, Vcl.WinXPanels,
+  FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
+  FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
+  FireDAC.Stan.Async, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
+  FireDAC.Comp.Client,
+  dmSCM2;
 
 type
-  TFrameClubGroup = class(TFrame)
-    lbxR: TListBox;
-    lbxL: TListBox;
-    pnlHeader: TPanel;
-    pnlFooter: TPanel;
-    rpnlBody: TRelativePanel;
-    spnlBtns: TStackPanel;
-    spbtnMoveL: TSpeedButton;
-    spbtnMoveR: TSpeedButton;
-    spbtnMoveL2: TSpeedButton;
-    spbtnMoveR2: TSpeedButton;
-    edtL: TEdit;
-    vimg1: TVirtualImage;
-    qryLstSwimClub: TFDQuery;
-    qryLstSwimClubGroup: TFDQuery;
+  TFrame2ClubGroup = class(TFrame)
     lbl1: TLabel;
     lbl2: TLabel;
+    vimg1: TVirtualImage;
+    edtL: TEdit;
+    spnlBtns: TStackPanel;
+    spbtnMoveR: TSpeedButton;
+    spbtnMoveR2: TSpeedButton;
+    spbtnMoveL: TSpeedButton;
+    spbtnMoveL2: TSpeedButton;
+    pnlL: TPanel;
+    pnlR: TPanel;
+    lbxL: TListBox;
+    lbxR: TListBox;
+    qryLstSwimClub: TFDQuery;
+    qryLstSwimClubGroup: TFDQuery;
+    pnlGrid: TGridPanel;
     procedure spbtnMoveL2Click(Sender: TObject);
     procedure spbtnMoveLClick(Sender: TObject);
     procedure spbtnMoveR2Click(Sender: TObject);
     procedure spbtnMoveRClick(Sender: TObject);
   private
-    fParentClubID: integer;
-    fIsChanged: boolean;
-//    procedure MoveSelectedItem(lstL, lstR: TListBox);
+    FIsChanged: boolean;
+    FParentClubID: integer;
+
     procedure MoveSelectedItems(lstL, lstR: TListBox);
     procedure MoveAllItems(lstL, lstR: TListBox);
     procedure LoadList_SwimClubGroup(AParentClubID: integer);
     procedure LoadList_SwimClub(AParentClubID: integer);
+    procedure UpdateData_SwimClubGroup(AParentClubID: Integer);
 
   protected
-    procedure Loaded; override;
 
   public
     constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
 
     procedure Prepare(AParentClubID: Integer);
-    property IsChanged: boolean read FIsChanged;
-    procedure UpdateData_SwimClubGroup(AParentClubID: Integer);
+    procedure CheckAndSaveData();
+    property IsChanged: boolean read FIsChanged write FIsChanged;
+
   end;
 
 implementation
 
 {$R *.dfm}
 
-procedure TFrameClubGroup.Prepare(AParentClubID: Integer);
+{ TFrame2ClubGroup }
+
+
+
+procedure TFrame2ClubGroup.CheckAndSaveData;
 begin
-
-  qryLstSwimClubGroup.Connection := SCM2.scmConnection;
-  qryLstSwimClub.Connection := SCM2.scmConnection;
-
-  FParentClubID := AParentClubID;
-  if FParentClubID > 0 then
+  { Test condition...
+    Are we missing an update to the SwimClubGroup state.
+    param = 0 : Default to frClubGroup.FClubGroupID.
+  }
+  if (fIsChanged = true) and (FParentClubID > 0) then
   begin
-    LoadList_SwimClub(FParentClubID);
-    LoadList_SwimClubGroup(FParentClubID);
+    UpdateData_SwimClubGroup(FParentClubID);
   end;
 end;
 
-constructor TFrameClubGroup.Create(AOwner: TComponent);
+constructor TFrame2ClubGroup.Create(AOwner: TComponent);
 begin
+  inherited;
   // Use for:
   // - Initializing non-visual fields (integers, strings, objects)
   // - Setting default property values
@@ -89,31 +85,16 @@ begin
   // - DO NOT access child components (they don't exist yet!)
   fIsChanged := False;
   FParentClubID := 0;
-end;
 
-destructor TFrameClubGroup.Destroy;
-begin
-  { Test condition...
-    Are we missing an update to the SwimClubGroup state.
-    param = 0 : Default to frClubGroup.FClubGroupID.
-  }
-  if (fIsChanged = true) and (FParentClubID > 0) then
-    UpdateData_SwimClubGroup(FParentClubID);
-
-  inherited;
-end;
-
-procedure TFrameClubGroup.Loaded;
-begin
-  // Loaded can be called multiple times (in rare cases)
-  inherited;
-
-  if not Assigned(SCM2) or not SCM2.scmConnection.connected then exit;
-  if not Assigned(CORE) or not CORE.IsActive then exit;
+  // If Parent is not set yet, create a temporary parent
+  // This ensures all child controls are properly initialized.
+  if not (csDesigning in ComponentState) and (AOwner is TWinControl) then
+    Parent := TWinControl(AOwner);
 
 end;
 
-procedure TFrameClubGroup.LoadList_SwimClub(AParentClubID: integer);
+
+procedure TFrame2ClubGroup.LoadList_SwimClub(AParentClubID: integer);
 var
   s: string;
   idx: integer;
@@ -141,41 +122,33 @@ begin
     on E: EFDDBEngineException do
       SCM2.FDGUIxErrorDialog.Execute(E);
   end;
-
 end;
 
-procedure TFrameClubGroup.LoadList_SwimClubGroup(AParentClubID: integer);
-var
-  s: string;
-  idx: integer;
+procedure TFrame2ClubGroup.LoadList_SwimClubGroup(AParentClubID: integer);
 begin
   // clear the Left ListBox - Swimming Clubs;
   lbxR.Items.Clear;
   // re-query the records to be placed in list.
   qryLstSwimClubGroup.Close;
-  qryLstSwimClubGroup.ParamByName('AParentClubID').AsInteger := AParentClubID;
+  qryLstSwimClubGroup.ParamByName('PARENTCLUBID').AsInteger := AParentClubID;
   qryLstSwimClubGroup.Prepare;
   try
     qryLstSwimClubGroup.Open;
-    if qryLstSwimClubGroup.Active then
+    while not qryLstSwimClubGroup.eof do
     begin
-      While not qryLstSwimClubGroup.eof do
-      begin
-        s := qryLstSwimClubGroup.FieldByName('Caption').AsString;
-        idx := lbxR.Items.Add(s); // show the caption
-        lbxR.Items.Objects[idx] := TObject(qryLstSwimClubGroup.FieldByName('ChildClubID').AsInteger);
-        //  RESTORE SwimClubID := Integer(lbxR.Items.Objects[idx]);
-        qryLstSwimClubGroup.Next;
-      end;
+      lbxR.Items.AddObject(
+        qryLstSwimClubGroup.FieldByName('Caption').AsString,
+        TObject(qryLstSwimClubGroup.FieldByName('ChildClubID').AsInteger)
+        );
+      qryLstSwimClubGroup.Next;
     end;
   except
     on E: EFDDBEngineException do
       SCM2.FDGUIxErrorDialog.Execute(E);
   end;
-
 end;
 
-procedure TFrameClubGroup.MoveAllItems(lstL, lstR: TListBox);
+procedure TFrame2ClubGroup.MoveAllItems(lstL, lstR: TListBox);
 var
   i: Integer;
 begin
@@ -193,25 +166,7 @@ begin
   lstR.ItemIndex := -1;
 end;
 
-(*
-procedure TFrClubGroup.MoveSelectedItem(lstL, lstR: TListBox);
-var
-  idx, newIdx: Integer;
-begin
-  idx := lstL.ItemIndex;
-  if idx < 0 then
-    Exit; // nothing selected
-  fIsChanged := true;
-  // Add to right listbox (both text and object pointer)
-  newIdx := lstR.Items.AddObject(lstL.Items[idx], lstL.Items.Objects[idx]);
-  // Remove from left listbox
-  lstL.Items.Delete(idx);
-  // Optionally select the newly added item in lstR
-  lstR.ItemIndex := newIdx;
-end;
-*)
-
-procedure TFrameClubGroup.MoveSelectedItems(lstL, lstR: TListBox);
+procedure TFrame2ClubGroup.MoveSelectedItems(lstL, lstR: TListBox);
 var
   i: Integer;
 begin
@@ -232,43 +187,55 @@ begin
   lstR.ItemIndex := -1;
 end;
 
-procedure TFrameClubGroup.spbtnMoveL2Click(Sender: TObject);
+procedure TFrame2ClubGroup.Prepare(AParentClubID: Integer);
+begin
+  qryLstSwimClubGroup.Connection := SCM2.scmConnection;
+  qryLstSwimClub.Connection := SCM2.scmConnection;
+
+  FParentClubID := AParentClubID;
+  if FParentClubID > 0 then
+  begin
+    LoadList_SwimClub(FParentClubID);
+    LoadList_SwimClubGroup(FParentClubID);
+  end;
+end;
+
+procedure TFrame2ClubGroup.spbtnMoveL2Click(Sender: TObject);
 begin
   MoveAllItems(lbxR, lbxL);
 end;
 
-procedure TFrameClubGroup.spbtnMoveLClick(Sender: TObject);
+procedure TFrame2ClubGroup.spbtnMoveLClick(Sender: TObject);
 begin
   MoveSelectedItems(lbxR, lbxL);
 end;
 
-procedure TFrameClubGroup.spbtnMoveR2Click(Sender: TObject);
+procedure TFrame2ClubGroup.spbtnMoveR2Click(Sender: TObject);
 begin
   MoveAllItems(lbxL, lbxR);
 end;
 
-procedure TFrameClubGroup.spbtnMoveRClick(Sender: TObject);
+procedure TFrame2ClubGroup.spbtnMoveRClick(Sender: TObject);
 begin
   MoveSelectedItems(lbxL, lbxR);
 end;
 
-procedure TFrameClubGroup.UpdateData_SwimClubGroup(AParentClubID: Integer);
+procedure TFrame2ClubGroup.UpdateData_SwimClubGroup(AParentClubID: Integer);
 var
   SQLDelete, SQLInsert: string;
   idx, ChildClubID: Integer;
 begin
-
   if (fIsChanged = true) and (AParentClubID > 0) then
   begin
     fIsChanged := false; // on passed or failed - false.
     SQLDelete := '''
       DELETE FROM [SwimClubMeet2].[dbo].[SwimClubGroup]
-      WHERE [AParentClubID] = :ID;
+      WHERE [ParentClubID] = :ID;
       ''';
 
     SQLInsert := '''
       INSERT INTO [SwimClubMeet2].[dbo].[SwimClubGroup]
-        ([AParentClubID], [ChildClubID])
+        ([ParentClubID], [ChildClubID])
       VALUES (:ID1, :ID2);
       ''';
 //    SCM2.scmConnection.StartTransaction;
@@ -291,6 +258,5 @@ begin
   else
     fIsChanged := false; // on passed or failed - state is false.
 end;
-
 
 end.

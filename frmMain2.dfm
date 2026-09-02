@@ -3216,6 +3216,10 @@ object Main2: TMain2
             Caption = 'Hel&p'
             ImageIndex = 30
             ImageName = 'Help'
+          end
+          item
+            Action = actnTest
+            Caption = '&Action-Test'
           end>
         ActionBar = actnMainMenuBar
       end>
@@ -3446,6 +3450,10 @@ object Main2: TMain2
     object Report_Prefences: TAction
       Category = 'Reports'
       Caption = 'Report Preferences'
+    end
+    object actnTest: TAction
+      Caption = 'Action Test'
+      OnExecute = actnTestExecute
     end
   end
   object FDGUIxWaitCursor1: TFDGUIxWaitCursor

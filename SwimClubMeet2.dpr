@@ -96,8 +96,9 @@ uses
   dmFRXRPT in 'DATA\dmFRXRPT.pas' {FRXRPT: TDataModule},
   dmRPT in 'REPORTS\dmRPT.pas' {RPT: TDataModule},
   frFrameSwimClub in 'FRAMES\frFrameSwimClub.pas' {FrameSwimClub: TFrame},
-  frFrameClubGroup in 'FRAMES\frFrameClubGroup.pas' {FrameClubGroup: TFrame},
-  dlgSwimClub_Edit in 'SWIMCLUBS\SC_DIALOGS\dlgSwimClub_Edit.pas' {SwimClubEdit};
+  dlgSwimClub_Edit in 'SWIMCLUBS\SC_DIALOGS\dlgSwimClub_Edit.pas' {SwimClubEdit},
+  frmTestFrame in 'frmTestFrame.pas' {TestFrame},
+  frFrame2ClubGroup in 'FRAMES\frFrame2ClubGroup.pas' {Frame2ClubGroup: TFrame};
 
 {$R *.res}
 

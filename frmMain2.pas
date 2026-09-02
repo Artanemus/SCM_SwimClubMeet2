@@ -102,6 +102,8 @@ type
     Report_Prefences: TAction;
     Report_Run: TAction;
     SwimClub_Edit: TAction;
+    actnTest: TAction;
+    procedure actnTestExecute(Sender: TObject);
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
@@ -189,9 +191,18 @@ implementation
 uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
   frmManageMember, frmSwimClub_Reports, frmMM_Stats, uEvent, dlgQualifyTimes,
-  dlgPoolTypes, frmDisqualificationCodes, frmSwimClubType, dlgDivisions,
-  uNominee, dlgSwimClub_Edit;
+  dlgPoolTypes, frmDisqualificationCodes, dlgDivisions,
+  uNominee, dlgSwimClub_Edit, frmTestFrame, frmSwimClubType;
 
+
+procedure TMain2.actnTestExecute(Sender: TObject);
+var
+  dlg: TTestFrame;
+begin
+  dlg := TTestFrame.Create(Self);
+  dlg.ShowModal();
+  dlg.Free;
+end;
 
 procedure TMain2.File_ConnectionExecute(Sender: TObject);
 var

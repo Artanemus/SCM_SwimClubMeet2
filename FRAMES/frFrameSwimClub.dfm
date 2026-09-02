@@ -395,7 +395,7 @@ object FrameSwimClub: TFrameSwimClub
     object ts_LinkedClubs: TTabSheet
       Caption = 'Group Details'
       ImageIndex = 2
-      object pnlClubGroup: TPanel
+      object pnlCG: TPanel
         Left = 0
         Top = 0
         Width = 612
@@ -408,8 +408,8 @@ object FrameSwimClub: TFrameSwimClub
   end
   object luUnitType: TDataSource
     DataSet = tblUnitType
-    Left = 320
-    Top = 244
+    Left = 152
+    Top = 84
   end
   object tblUnitType: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -426,7 +426,7 @@ object FrameSwimClub: TFrameSwimClub
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2.dbo.UnitType'
-    Left = 256
-    Top = 244
+    Left = 64
+    Top = 84
   end
 end

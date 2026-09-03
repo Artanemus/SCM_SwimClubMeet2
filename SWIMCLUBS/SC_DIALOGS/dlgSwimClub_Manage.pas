@@ -22,19 +22,17 @@ uses
   dmIMG, dmCORE, dmSCM2,
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid, SVGIconImage,
-  AdvDateTimePicker, AdvDBDateTimePicker, frFrameSwimClub, frFrame2ClubGroup;
+  AdvDateTimePicker, AdvDBDateTimePicker, frFrameSwimClub, frFrameClubGroup;
 
   //, hintlist;
 
 type
   TSwimClubManage = class(TForm)
-    pnlHeader: TPanel;
     actnToolBar: TActionToolBar;
     actnSwimClub: TActionManager;
     actnEdit: TAction;
     actnNew: TAction;
     actnDelete: TAction;
-    pnlBody: TPanel;
     gSwimClub: TDBAdvGrid;
     pnlTools: TPanel;
     SaveLogoDlg: TSavePictureDialog;
@@ -48,6 +46,10 @@ type
     hintInfo: TBalloonHint;
     tblUnitType: TFDTable;
     luUnitType: TDataSource;
+    tabcntrl: TTabControl;
+    pnlBody: TPanel;
+    pnlGrid: TPanel;
+    pnlEdit: TPanel;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure actnArchiveExecute(Sender: TObject);
@@ -76,6 +78,8 @@ type
     procedure splitvEditOpened(Sender: TObject);
     procedure btnClearClubTypeClick(Sender: TObject);
     procedure btnClearPoolTypeClick(Sender: TObject);
+    procedure tabcntrlChange(Sender: TObject);
+    procedure tabcntrlChanging(Sender: TObject; var AllowChange: Boolean);
   private
     fGridIsUpdating: Boolean;
     frSwimClub: TFrameSwimClub;
@@ -137,9 +141,25 @@ begin
   end;
 
   frSwimClub := TFrameSwimClub.Create(Self);
-  frSwimClub.Parent := splitvEdit;
+  frSwimClub.Parent := pnlEdit;
   frSwimClub.Align := alClient;
   frSwimClub.Prepare(); // assigned connection but not active.
+
+  // apparently calling here, we find, dbo.SwimClub is in edit mode...
+  // exiting edit mode - enables all buttons.
+
+  CORE.qrySwimClub.CheckBrowseMode;
+
+  pnlGrid.Visible := true;
+  pnlGrid.Align := alClient;
+  pnlEdit.Visible := false;
+  pnlEdit.Align := alClient;
+
+  tabcntrl.Visible := false;
+  // tabcntrl.Height := 1;
+
+  tabcntrl.TabIndex := 0;
+  actnEdit.Checked := false;
 
 end;
 
@@ -274,11 +294,40 @@ begin
 end;
 
 procedure TSwimClubManage.actnEditExecute(Sender: TObject);
+var
+  ANewIndex: integer;
+  CanChange: boolean;
 begin
-  if TAction(Sender).Checked then
-    splitvEdit.Open
+  { programmatically change tabindex, edit state and toolbox button
+    enable/disable state via TAction.OnUpdate.}
+
+  // works for a TControlTab with only two tabs.
+  ANewIndex := ORD(actnEdit.Checked);
+
+  // Check if changing is allowed
+  if Assigned(tabcntrl.OnChanging) then
+    tabcntrl.OnChanging(Self, CanChange);
+  if CanChange then
+  begin
+    tabcntrl.TabIndex := ANewIndex;
+
+    // Trigger the OnChanged event
+    if Assigned(tabcntrl.OnChange) then
+      tabcntrl.OnChange(Self);
+  end;
+
+  // Setting State here means UpdateActions will work correctly...
+  if actnEdit.Checked then
+  begin
+    if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
+      CORE.qrySwimClub.Edit;
+  end
   else
-    splitvEdit.Close;
+    CORE.qrySwimClub.CheckBrowseMode;
+
+  // Enable/Disable toolbuttons.
+  UpdateActions;
+
 end;
 
 procedure TSwimClubManage.actnGenericUpdate(Sender: TObject);
@@ -288,7 +337,7 @@ begin
   DoEnable := false;
   // Is the table begin modified? (used by buttons, new, delete, archive)
   if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
-  DoEnable := true;
+    DoEnable := true;
   TAction(Sender).Enabled := DoEnable;
 end;
 
@@ -644,10 +693,9 @@ begin
   CORE.qrySwimClub.CheckBrowseMode;
   CORE.qrySwimClub.Refresh; // Updates qrySwimClub.imgIndxArchived value.
 
-  if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
+  if Assigned(frSwimClub) then
   begin
-//    if frSwimClub.IsChanged then
-//      frSwimClub.UpdateData_SwimClubGroup(CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger);
+    frSwimClub.CheckAndSaveData;
   end;
 
   if fGridIsUpdating then
@@ -727,6 +775,43 @@ begin
         CORE.qrySwimClub.RecNo := gSwimclub.RealRowIndex(ARow);
       gSwimClub.MouseActions.DisjunctRowSelect := true;
     end;
+  end;
+end;
+
+procedure TSwimClubManage.tabcntrlChange(Sender: TObject);
+begin
+  case tabcntrl.TabIndex of
+  0:
+    begin
+      pnlGrid.Visible := true;
+      pnlEdit.Visible := false;
+    end;
+  1:
+    begin
+      pnlGrid.Visible := false;
+      pnlEdit.Visible := true;
+    end;
+
+  end;
+end;
+
+procedure TSwimClubManage.tabcntrlChanging(Sender: TObject; var AllowChange:
+    Boolean);
+begin
+  case tabcntrl.TabIndex of
+  0:
+    begin
+      // Grid.
+    end;
+  1:
+    begin
+      if Assigned(frSwimClub) then
+      begin
+        frSwimClub.CheckAndSaveData;
+      end;
+      actnEdit.Checked := false; // de-select button on the actnToolBar.
+    end;
+
   end;
 end;
 

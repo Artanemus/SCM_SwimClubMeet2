@@ -1,4 +1,4 @@
-unit frFrame2ClubGroup;
+unit frFrameClubGroup;
 
 interface
 
@@ -13,7 +13,7 @@ uses
   dmSCM2;
 
 type
-  TFrame2ClubGroup = class(TFrame)
+  TFrameClubGroup = class(TFrame)
     lbl1: TLabel;
     lbl2: TLabel;
     vimg1: TVirtualImage;
@@ -63,7 +63,7 @@ implementation
 
 
 
-procedure TFrame2ClubGroup.CheckAndSaveData;
+procedure TFrameClubGroup.CheckAndSaveData;
 begin
   { Test condition...
     Are we missing an update to the SwimClubGroup state.
@@ -75,7 +75,7 @@ begin
   end;
 end;
 
-constructor TFrame2ClubGroup.Create(AOwner: TComponent);
+constructor TFrameClubGroup.Create(AOwner: TComponent);
 begin
   inherited;
   // Use for:
@@ -94,7 +94,7 @@ begin
 end;
 
 
-procedure TFrame2ClubGroup.LoadList_SwimClub(AParentClubID: integer);
+procedure TFrameClubGroup.LoadList_SwimClub(AParentClubID: integer);
 var
   s: string;
   idx: integer;
@@ -124,7 +124,7 @@ begin
   end;
 end;
 
-procedure TFrame2ClubGroup.LoadList_SwimClubGroup(AParentClubID: integer);
+procedure TFrameClubGroup.LoadList_SwimClubGroup(AParentClubID: integer);
 begin
   // clear the Left ListBox - Swimming Clubs;
   lbxR.Items.Clear;
@@ -148,7 +148,7 @@ begin
   end;
 end;
 
-procedure TFrame2ClubGroup.MoveAllItems(lstL, lstR: TListBox);
+procedure TFrameClubGroup.MoveAllItems(lstL, lstR: TListBox);
 var
   i: Integer;
 begin
@@ -166,7 +166,7 @@ begin
   lstR.ItemIndex := -1;
 end;
 
-procedure TFrame2ClubGroup.MoveSelectedItems(lstL, lstR: TListBox);
+procedure TFrameClubGroup.MoveSelectedItems(lstL, lstR: TListBox);
 var
   i: Integer;
 begin
@@ -187,7 +187,7 @@ begin
   lstR.ItemIndex := -1;
 end;
 
-procedure TFrame2ClubGroup.Prepare(AParentClubID: Integer);
+procedure TFrameClubGroup.Prepare(AParentClubID: Integer);
 begin
   qryLstSwimClubGroup.Connection := SCM2.scmConnection;
   qryLstSwimClub.Connection := SCM2.scmConnection;
@@ -200,27 +200,27 @@ begin
   end;
 end;
 
-procedure TFrame2ClubGroup.spbtnMoveL2Click(Sender: TObject);
+procedure TFrameClubGroup.spbtnMoveL2Click(Sender: TObject);
 begin
   MoveAllItems(lbxR, lbxL);
 end;
 
-procedure TFrame2ClubGroup.spbtnMoveLClick(Sender: TObject);
+procedure TFrameClubGroup.spbtnMoveLClick(Sender: TObject);
 begin
   MoveSelectedItems(lbxR, lbxL);
 end;
 
-procedure TFrame2ClubGroup.spbtnMoveR2Click(Sender: TObject);
+procedure TFrameClubGroup.spbtnMoveR2Click(Sender: TObject);
 begin
   MoveAllItems(lbxL, lbxR);
 end;
 
-procedure TFrame2ClubGroup.spbtnMoveRClick(Sender: TObject);
+procedure TFrameClubGroup.spbtnMoveRClick(Sender: TObject);
 begin
   MoveSelectedItems(lbxL, lbxR);
 end;
 
-procedure TFrame2ClubGroup.UpdateData_SwimClubGroup(AParentClubID: Integer);
+procedure TFrameClubGroup.UpdateData_SwimClubGroup(AParentClubID: Integer);
 var
   SQLDelete, SQLInsert: string;
   idx, ChildClubID: Integer;

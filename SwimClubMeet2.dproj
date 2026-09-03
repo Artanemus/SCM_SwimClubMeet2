@@ -451,8 +451,8 @@
             <Form>TestFrame</Form>
             <FormType>dfm</FormType>
         </DCCReference>
-        <DCCReference Include="FRAMES\frFrame2ClubGroup.pas">
-            <Form>Frame2ClubGroup</Form>
+        <DCCReference Include="FRAMES\frFrameClubGroup.pas">
+            <Form>FrameClubGroup</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>

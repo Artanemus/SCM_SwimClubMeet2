@@ -1,7 +1,7 @@
-object Frame2ClubGroup: TFrame2ClubGroup
+object FrameClubGroup: TFrameClubGroup
   Left = 0
   Top = 0
-  Width = 621
+  Width = 620
   Height = 627
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,7 +13,7 @@ object Frame2ClubGroup: TFrame2ClubGroup
   object pnlGrid: TGridPanel
     Left = 0
     Top = 0
-    Width = 621
+    Width = 620
     Height = 627
     Align = alClient
     ColumnCollection = <
@@ -76,12 +76,9 @@ object Frame2ClubGroup: TFrame2ClubGroup
         Value = 41.000000000000000000
       end>
     TabOrder = 0
-    ExplicitLeft = 224
-    ExplicitTop = 296
-    ExplicitWidth = 185
-    ExplicitHeight = 41
+    ExplicitWidth = 621
     DesignSize = (
-      621
+      620
       627)
     object spnlBtns: TStackPanel
       Left = 284
@@ -105,8 +102,6 @@ object Frame2ClubGroup: TFrame2ClubGroup
         end>
       HorizontalPositioning = sphpCenter
       TabOrder = 0
-      ExplicitLeft = 93
-      ExplicitTop = 0
       object spbtnMoveR: TSpeedButton
         Left = 2
         Top = 0
@@ -162,8 +157,8 @@ object Frame2ClubGroup: TFrame2ClubGroup
       object lbxL: TListBox
         Left = 0
         Top = 0
-        Width = 326
-        Height = 549
+        Width = 272
+        Height = 535
         Margins.Left = 10
         Align = alClient
         BevelInner = bvNone
@@ -172,26 +167,25 @@ object Frame2ClubGroup: TFrame2ClubGroup
         MultiSelect = True
         Sorted = True
         TabOrder = 0
-        ExplicitWidth = 280
-        ExplicitHeight = 537
       end
     end
     object pnlR: TPanel
       AlignWithMargins = True
       Left = 338
       Top = 47
-      Width = 272
+      Width = 271
       Height = 535
       Margins.Left = 0
       Margins.Right = 10
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 2
+      ExplicitWidth = 272
       object lbxR: TListBox
         Left = 0
         Top = 0
-        Width = 326
-        Height = 549
+        Width = 271
+        Height = 535
         Margins.Right = 10
         Align = alClient
         BevelInner = bvNone
@@ -200,8 +194,7 @@ object Frame2ClubGroup: TFrame2ClubGroup
         MultiSelect = True
         Sorted = True
         TabOrder = 0
-        ExplicitWidth = 280
-        ExplicitHeight = 537
+        ExplicitWidth = 272
       end
     end
     object lbl1: TLabel
@@ -213,22 +206,18 @@ object Frame2ClubGroup: TFrame2ClubGroup
       Alignment = taCenter
       Caption = 'Available Clubs'
       Layout = tlCenter
-      ExplicitLeft = 56
-      ExplicitTop = 6
       ExplicitWidth = 106
       ExplicitHeight = 21
     end
     object lbl2: TLabel
       Left = 338
       Top = 585
-      Width = 282
+      Width = 281
       Height = 41
       Align = alClient
       Alignment = taCenter
       Caption = 'Club Group'
       Layout = tlCenter
-      ExplicitLeft = 407
-      ExplicitTop = 6
       ExplicitWidth = 80
       ExplicitHeight = 21
     end
@@ -242,9 +231,6 @@ object Frame2ClubGroup: TFrame2ClubGroup
       Margins.Right = 0
       Align = alClient
       TabOrder = 3
-      ExplicitLeft = 10
-      ExplicitTop = 3
-      ExplicitWidth = 280
       ExplicitHeight = 29
     end
     object vimg1: TVirtualImage

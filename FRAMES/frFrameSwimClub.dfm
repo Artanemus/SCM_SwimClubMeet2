@@ -3,6 +3,13 @@ object FrameSwimClub: TFrameSwimClub
   Top = 0
   Width = 620
   Height = 578
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -16
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  ParentBackground = False
+  ParentFont = False
   TabOrder = 0
   object pcntrlEdit: TPageControl
     Left = 0
@@ -11,14 +18,8 @@ object FrameSwimClub: TFrameSwimClub
     Height = 578
     ActivePage = ts_LinkedClubs
     Align = alClient
-    Font.Charset = DEFAULT_CHARSET
-    Font.Color = clWindowText
-    Font.Height = -16
-    Font.Name = 'Segoe UI'
-    Font.Style = []
-    ParentFont = False
     ParentShowHint = False
-    ShowHint = True
+    ShowHint = False
     TabOrder = 0
     object tsMain: TTabSheet
       Caption = 'Required (*)'
@@ -403,6 +404,7 @@ object FrameSwimClub: TFrameSwimClub
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
+        ExplicitHeight = 548
       end
     end
   end

@@ -11,7 +11,7 @@ uses
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   Data.DB, Data.Bind.Components,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  frFrame2ClubGroup;
+  frFrameClubGroup;
 
 type
   TFrameSwimClub = class(TFrame)
@@ -61,7 +61,7 @@ type
   private
     { Private declarations }
     FIsClubGroup: boolean;
-    frCG: TFrame2ClubGroup;
+    frCG: TFrameClubGroup;
 
     // Link Icon image to data change.
     FDataLink: TFieldDataLink;
@@ -87,6 +87,7 @@ implementation
 
 procedure TFrameSwimClub.CheckAndSaveData;
 begin
+  CORE.qrySwimClub.CheckBrowseMode;
   if (Assigned(frCG) and frCG.IsChanged) then
   begin
     frCG.CheckAndSaveData;
@@ -124,7 +125,7 @@ begin
 
   if not Assigned(frCG) then
   begin
-     frCG := TFrame2ClubGroup.Create(Self);
+     frCG := TFrameClubGroup.Create(Self);
     // PREPARE CLUB GROUP FRAME.  exception error!!!!!!!!!!
     frCG.Parent := pnlCG; // should work if tab is visible?
     frCG.Align := alClient;
@@ -172,7 +173,7 @@ begin
       SCM2.FDGUIxErrorDialog.Execute(E);
   end;
 
-  // IsArchived icon image.
+  // IsArchived icon image. Default state.
   imgIndxArchive.ImageIndex :=
   CORE.qrySwimClub.FieldByName('imgIndxArchived').AsInteger;
   FIsClubGroup := false;
@@ -222,13 +223,16 @@ begin
     DBContactNum.Visible := true;
     DBTextPrimaryKey.Visible := false;
     imgindxGroup.Visible := false;
-    ts_LinkedClubs.TabVisible := true;
-//    pnlCG.Visible := false;  // doesn't apply to none grouped Clubs.
+    ts_LinkedClubs.TabVisible := false;
+    pnlCG.Visible := false;  // doesn't apply to none grouped Clubs.
+    ts_LinkedClubs.Visible := false;
     tsMain.TabVisible := true;
     tsLogo.TabVisible := true;
   end;
 
   pcntrlEdit.ActivePageIndex := 0; // default to tabsheet 'tsMAIN'
+
+  // DataLinkDataChange(Self); // if data is linked - set icon state.
 
 end;
 

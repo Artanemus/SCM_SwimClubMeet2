@@ -9,7 +9,6 @@ uses
 
 type
   TSwimClubEdit = class(TForm)
-    pnlHeader: TPanel;
     pnlFooter: TPanel;
     pnlBody: TPanel;
     procedure FormDestroy(Sender: TObject);
@@ -29,6 +28,7 @@ implementation
 
 procedure TSwimClubEdit.FormDestroy(Sender: TObject);
 begin
+  frSwimClub.CheckAndSaveData;
   if Assigned(frSwimClub) then
     FreeAndNil(frSwimClub);
 end;

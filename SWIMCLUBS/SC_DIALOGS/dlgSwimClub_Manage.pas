@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages,
   System.SysUtils, System.Variants, System.Classes, system.UITypes,
-  System.Generics.Collections,
+  System.Generics.Collections, System.Hash,
 
   Data.DB,
 
@@ -38,7 +38,6 @@ type
     SaveLogoDlg: TSavePictureDialog;
     OpenLogoDlg: TOpenPictureDialog;
     actnArchive: TAction;
-    splitvEdit: TSplitView;
     actnClose: TAction;
     actnNewGroup: TAction;
     qrySwimClubGroup: TFDQuery;
@@ -60,28 +59,17 @@ type
     procedure actnNewExecute(Sender: TObject);
     procedure actnNewGroupExecute(Sender: TObject);
     procedure actnNewGroupUpdate(Sender: TObject);
-    procedure btnClearClubLogoClick(Sender: TObject);
-    procedure btnLoadClubLogoClick(Sender: TObject);
-    procedure btnSaveClubLogoClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure gSwimClubAnchorClick(Sender: TObject; ARow, ACol: Integer; Anchor:
         string; var AutoHandle: Boolean);
-    procedure gSwimClubClick(Sender: TObject);
     procedure gSwimClubDblClick(Sender: TObject);
     procedure gSwimClubGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
     procedure imgIndxArchiveClick(Sender: TObject);
-    procedure splitvEditClosed(Sender: TObject);
-    procedure splitvEditClosing(Sender: TObject);
-    procedure splitvEditOpening(Sender: TObject);
-    procedure splitvEditOpened(Sender: TObject);
-    procedure btnClearClubTypeClick(Sender: TObject);
-    procedure btnClearPoolTypeClick(Sender: TObject);
     procedure tabcntrlChange(Sender: TObject);
     procedure tabcntrlChanging(Sender: TObject; var AllowChange: Boolean);
   private
-    fGridIsUpdating: Boolean;
     frSwimClub: TFrameSwimClub;
     // if row=0 then Grid's focused display row number is used.
     procedure SyncDBtoGrid(AMethod: integer; ARow: integer = 0);
@@ -121,11 +109,6 @@ begin
 
   // reveal archived swimming clubs which are by default hidden.
   CORE.qrySwimClub.IndexName := 'indxShowAll';
-  fGridIsUpdating := false;
-  // bring UI to the correct display state.
-  splitvEdit.UseAnimation := false;
-  splitvEdit.Opened := false;
-//  splitvEdit.UseAnimation := true;
 
   // Assign current connection...
   if Assigned(SCM2) then
@@ -147,19 +130,16 @@ begin
 
   // apparently calling here, we find, dbo.SwimClub is in edit mode...
   // exiting edit mode - enables all buttons.
-
   CORE.qrySwimClub.CheckBrowseMode;
-
-  pnlGrid.Visible := true;
-  pnlGrid.Align := alClient;
-  pnlEdit.Visible := false;
-  pnlEdit.Align := alClient;
-
-  tabcntrl.Visible := false;
-  // tabcntrl.Height := 1;
-
-  tabcntrl.TabIndex := 0;
   actnEdit.Checked := false;
+
+  // bring UI to the correct display state.
+  tabcntrl.Visible := false;
+  tabcntrl.TabIndex := 0;
+  pnlGrid.Align := alClient;
+  pnlEdit.Align := alClient;
+  pnlEdit.Visible := false;
+  pnlGrid.Visible := true;
 
 end;
 
@@ -179,10 +159,8 @@ end;
 procedure TSwimClubManage.actnCloseExecute(Sender: TObject);
 begin
   // NOTE: this action traps VK_ESCAPE before event TForm.OnFormKeyDown is called.
-  if splitvEdit.Opened then
-    splitvEdit.Close // CheckBrowseMode will be called here.
-  else
-    ModalResult := mrOK;
+  CORE.qrySwimClub.CheckBrowseMode;
+  ModalResult := mrOK;
 end;
 
 procedure TSwimClubManage.actnDeleteExecute(Sender: TObject);
@@ -212,7 +190,7 @@ begin
   // collect some helpful db info.
   PK := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
   ClubName := CORE.qrySwimClub.FieldByName('Caption').AsString;
-  mbTitle := 'DELETE ' + ClubName + '...';
+  mbTitle := 'Manage ' + ClubName + '...';
 
   // uses EXECSCALAR method to ensure it's empty.
   if uSwimClub.SessionCount = 0 then
@@ -304,7 +282,7 @@ begin
   // works for a TControlTab with only two tabs.
   ANewIndex := ORD(actnEdit.Checked);
 
-  // Check if changing is allowed
+  // Check if changing is allowed.
   if Assigned(tabcntrl.OnChanging) then
     tabcntrl.OnChanging(Self, CanChange);
   if CanChange then
@@ -319,11 +297,19 @@ begin
   // Setting State here means UpdateActions will work correctly...
   if actnEdit.Checked then
   begin
+    // updates TFDQuery.unitType and syncronizes ClubGroup to the
+    // current selected SwimClub.
+    if Assigned(frSwimClub) then
+      frSwimClub.Prepare();
+
     if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
       CORE.qrySwimClub.Edit;
   end
   else
+  begin
     CORE.qrySwimClub.CheckBrowseMode;
+    CORE.qrySwimClub.Refresh;
+  end;
 
   // Enable/Disable toolbuttons.
   UpdateActions;
@@ -344,22 +330,54 @@ end;
 procedure TSwimClubManage.actnNewExecute(Sender: TObject);
 var
   success: boolean;
+  s, newclubname, FourDigitStr: string;
+  mr: TModalResult;
+  AHash: THashBobJenkins;
+  HashValue: UInt32;
+  FourDigit: Integer;
 begin
   success := false;
-  try
-    CORE.qrySwimClub.Insert;
-    // NOTE: IsClubGroup = false in CORE.qrySwimClub.OnNewRecord.
-    CORE.qrySwimClub.FieldByName('Caption').AsString := 'NEW UNNAMED CLUB';
-    CORE.qrySwimClub.Post;
-    Success := true;
-  except on E: Exception do
-      CORE.qrySwimClub.Cancel;
-  end;
+  s := '''
+    Create a new 'blank..empty' swimming club?
+    (Requires initialization, after creation, use edit
+    to setup pool length, number of lanes, etc.)
+    ''';
 
-  if Success then // Fix UI selection. Sync to database
-  begin
-    CORE.qrySwimClub.Refresh; // ensured all ImageIndex values are correct.
-    SyncGridToDB(1);
+  CORE.qrySwimClub.DisableControls;
+  try
+    mr := MessageBox(0, PChar(s), PChar('Mange Swimming Clubs ...'),
+      MB_ICONQUESTION or
+      MB_YESNO);
+    if mr = mrYes then
+    begin
+      // GetHashValue returns UInt32 directly!
+      HashValue := AHash.GetHashValue('SwimClubMeet2');
+      FourDigit := HashValue mod 10000;  // 0..9999
+      FourDigitStr := FourDigit.ToString.PadLeft(4, '0');
+      newclubname := 'CLUB' + FourDigitStr;
+      try
+        begin
+          CORE.qrySwimClub.Insert;
+          // NOTE: IsClubGroup = false in CORE.qrySwimClub.OnNewRecord.
+          CORE.qrySwimClub.FieldByName('Caption').AsString := newclubname;
+          CORE.qrySwimClub.Post;
+          Success := true;
+        end;
+      except on E: Exception do
+          CORE.qrySwimClub.Cancel;
+      end;
+    end;
+  finally
+    CORE.qrySwimClub.EnableControls;
+    if Success then
+    begin
+      // Ensured all ImageIndex values are correct.
+      UpdateActions;
+      // Fix UI selection. Sync to database
+      // Controls must be enabled - else TDBAdvGrid exception error.
+      // if this isn't called - multi rows are selected in grid.
+      SyncGridToDB(1);
+    end;
   end;
 end;
 
@@ -461,78 +479,9 @@ begin
   TAction(Sender).Enabled := DoEnable;
 end;
 
-procedure TSwimClubManage.btnClearClubLogoClick(Sender: TObject);
-begin
-  if (CORE.qrySwimClub.State = dsEdit) or (CORE.qrySwimClub.State = dsInsert)
-    then
-  begin
-    CORE.qrySwimClub.FieldByName('LogoDir').Clear;
-    CORE.qrySwimClub.FieldByName('LogoImg').Clear;
-    CORE.qrySwimClub.FieldByName('LogoType').Clear;
-  end;
-end;
-
-procedure TSwimClubManage.btnClearClubTypeClick(Sender: TObject);
-begin
-  if not CORE.IsActive then exit;
-  if CORE.qrySwimClub.IsEmpty then exit;
-  CORE.qrySwimClub.CheckBrowseMode;
-  CORE.qrySwimClub.Edit;
-  CORE.qrySwimClub.FieldByName('SwimClubTypeID').Clear;
-  CORE.qrySwimClub.Post;
-end;
-
-procedure TSwimClubManage.btnClearPoolTypeClick(Sender: TObject);
-begin
-  if not CORE.IsActive then exit;
-  if CORE.qrySwimClub.IsEmpty then exit;
-  CORE.qrySwimClub.CheckBrowseMode;
-  CORE.qrySwimClub.Edit;
-  CORE.qrySwimClub.FieldByName('PoolTypeID').Clear;
-  CORE.qrySwimClub.Post;
-
-end;
-
-procedure TSwimClubManage.btnLoadClubLogoClick(Sender: TObject);
-begin
-  if (CORE.qrySwimClub.State = dsEdit) or (CORE.qrySwimClub.State = dsInsert)
-    then
-  begin
-    // NOTE: TOpenPictureDialog.options - ofPathMustExist, ofFileMustExist.
-    if (OpenLogoDlg.Execute) then
-    begin
-      try
-        (CORE.qrySwimClub.FieldByName('LogoImg') as TBlobField)
-          .LoadFromFile(OpenLogoDlg.FileName);
-      except on E: Exception do
-        // handle error.
-      end;
-    end;
-  end;
-end;
-
-procedure TSwimClubManage.btnSaveClubLogoClick(Sender: TObject);
-begin
-  if (CORE.qrySwimClub.State = dsEdit) or (CORE.qrySwimClub.State = dsInsert)
-    then
-  begin
-    if (SaveLogoDlg.Execute) then
-    begin
-      try
-        (CORE.qrySwimClub.FieldByName('LogoImg') as TBlobField)
-        .SaveToFile(SaveLogoDlg.FileName);
-      except on E: Exception do
-        // handle error
-      end;
-    end;
-  end;
-end;
-
 procedure TSwimClubManage.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-    CORE.qrySwimClub.CheckBrowseMode; // ASSERT - finalize all editing.
-    if fGridIsUpdating then gSwimClub.EndUpdate;
-    if splitvEdit.Opened then splitvEdit.Close;
+  CORE.qrySwimClub.CheckBrowseMode; // ASSERT - finalize all editing.
 end;
 
 procedure TSwimClubManage.FormKeyDown(Sender: TObject; var Key: Word; Shift:
@@ -542,20 +491,9 @@ begin
   // and this event never gets called ... (TForm.KeyPreview = true.)
   if Key = VK_ESCAPE then
   begin
-    if not splitvEdit.Opened then
-    begin
-      Key := 0;
-      CORE.qrySwimClub.CheckBrowseMode; // ASSERT STATE...
-      ModalResult := mrCancel;
-    end
-    else
-    begin
-      begin
-        CORE.qrySwimClub.CheckBrowseMode; // ASSERT STATE...
-        splitvEdit.Close;
-      end;
-      Key := 0;
-    end;
+    CORE.qrySwimClub.CheckBrowseMode; // ASSERT STATE...
+    ModalResult := mrCancel;
+    Key := 0;
   end;
 end;
 
@@ -581,12 +519,6 @@ begin
 
   end;
 
-end;
-
-procedure TSwimClubManage.gSwimClubClick(Sender: TObject);
-begin
-  { FIX SYNC - Locate DataBase to Grid ROW.}
-//  SyncDBtoGrid(1); // TESTING SYNC METHODS.
 end;
 
 procedure TSwimClubManage.gSwimClubDblClick(Sender: TObject);
@@ -688,44 +620,6 @@ begin
 
 end;
 
-procedure TSwimClubManage.splitvEditClosed(Sender: TObject);
-begin
-  CORE.qrySwimClub.CheckBrowseMode;
-  CORE.qrySwimClub.Refresh; // Updates qrySwimClub.imgIndxArchived value.
-
-  if Assigned(frSwimClub) then
-  begin
-    frSwimClub.CheckAndSaveData;
-  end;
-
-  if fGridIsUpdating then
-  begin
-    gSwimClub.EndUpdate; // Enable changes in TMS grid.
-    fGridIsUpdating := false;
-  end;
-
-  actnEdit.Checked := false; // de-select button on the actnToolBar.
-end;
-
-procedure TSwimClubManage.splitvEditClosing(Sender: TObject);
-begin
-  // Occurs when the split view closes and the UseAnimation property is True
-end;
-
-procedure TSwimClubManage.splitvEditOpened(Sender: TObject);
-begin
-  gSwimClub.BeginUpdate; // disable changes in TMS grid.
-  fGridIsUpdating := true; // store TMS update state...
-  // E D I T   R E C O R D . ===============================
-  if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
-    CORE.qrySwimClub.Edit;
-end;
-
-procedure TSwimClubManage.splitvEditOpening(Sender: TObject);
-begin
-  // Occurs when the split view opens and the UseAnimation property is True
-end;
-
 procedure TSwimClubManage.SyncGridToDB(AMethod: integer);
 begin
   case AMethod of
@@ -780,6 +674,7 @@ end;
 
 procedure TSwimClubManage.tabcntrlChange(Sender: TObject);
 begin
+  LockDrawing;
   case tabcntrl.TabIndex of
   0:
     begin
@@ -788,11 +683,11 @@ begin
     end;
   1:
     begin
-      pnlGrid.Visible := false;
       pnlEdit.Visible := true;
+      pnlGrid.Visible := false;
     end;
-
   end;
+  UnlockDrawing;
 end;
 
 procedure TSwimClubManage.tabcntrlChanging(Sender: TObject; var AllowChange:

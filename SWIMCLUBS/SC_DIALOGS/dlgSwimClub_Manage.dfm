@@ -2714,30 +2714,13 @@ object SwimClubManage: TSwimClubManage
       Spacing = 0
     end
   end
-  object splitvEdit: TSplitView
-    Left = 121
-    Top = 34
-    Width = 0
-    Height = 582
-    AnimationDelay = 1
-    AnimationStep = 100
-    Opened = False
-    OpenedWidth = 630
-    Placement = svpLeft
-    TabOrder = 1
-    UseAnimation = False
-    OnClosed = splitvEditClosed
-    OnClosing = splitvEditClosing
-    OnOpened = splitvEditOpened
-    OnOpening = splitvEditOpening
-  end
   object tabcntrl: TTabControl
     Left = 0
     Top = 0
     Width = 773
     Height = 34
     Align = alTop
-    TabOrder = 2
+    TabOrder = 1
     Tabs.Strings = (
       'Grid'
       'Edit')
@@ -2752,7 +2735,7 @@ object SwimClubManage: TSwimClubManage
     Height = 582
     Align = alClient
     BevelOuter = bvNone
-    TabOrder = 3
+    TabOrder = 2
     object pnlGrid: TPanel
       Left = 0
       Top = 0
@@ -2784,7 +2767,6 @@ object SwimClubManage: TSwimClubManage
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
-        OnClick = gSwimClubClick
         OnDblClick = gSwimClubDblClick
         GridLineColor = 15987699
         GridFixedLineColor = 15987699

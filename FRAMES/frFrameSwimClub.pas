@@ -11,7 +11,7 @@ uses
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   Data.DB, Data.Bind.Components,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  frFrameClubGroup;
+  frFrameClubGroup, Vcl.ExtDlgs;
 
 type
   TFrameSwimClub = class(TFrame)
@@ -58,6 +58,13 @@ type
     luUnitType: TDataSource;
     tblUnitType: TFDTable;
     pnlCG: TPanel;
+    SaveLogoDlg: TSavePictureDialog;
+    OpenLogoDlg: TOpenPictureDialog;
+    procedure btnClearClubLogoClick(Sender: TObject);
+    procedure btnClearClubTypeClick(Sender: TObject);
+    procedure btnClearPoolTypeClick(Sender: TObject);
+    procedure btnLoadClubLogoClick(Sender: TObject);
+    procedure btnSaveClubLogoClick(Sender: TObject);
   private
     { Private declarations }
     FIsClubGroup: boolean;
@@ -158,13 +165,76 @@ begin
   inherited;
 end;
 
+procedure TFrameSwimClub.btnClearClubLogoClick(Sender: TObject);
+begin
+  if (CORE.qrySwimClub.State = dsEdit) or (CORE.qrySwimClub.State = dsInsert)
+    then
+  begin
+    CORE.qrySwimClub.FieldByName('LogoImg').Clear;
+  end;
+end;
+
+procedure TFrameSwimClub.btnClearClubTypeClick(Sender: TObject);
+begin
+  if not CORE.IsActive then exit;
+  if CORE.qrySwimClub.IsEmpty then exit;
+  CORE.qrySwimClub.CheckBrowseMode;
+  CORE.qrySwimClub.Edit;
+  CORE.qrySwimClub.FieldByName('SwimClubTypeID').Clear;
+  CORE.qrySwimClub.Post;
+end;
+
+procedure TFrameSwimClub.btnClearPoolTypeClick(Sender: TObject);
+begin
+  if not CORE.IsActive then exit;
+  if CORE.qrySwimClub.IsEmpty then exit;
+  CORE.qrySwimClub.CheckBrowseMode;
+  CORE.qrySwimClub.Edit;
+  CORE.qrySwimClub.FieldByName('PoolTypeID').Clear;
+  CORE.qrySwimClub.Post;
+end;
+
+procedure TFrameSwimClub.btnLoadClubLogoClick(Sender: TObject);
+begin
+  if (CORE.qrySwimClub.State = dsEdit) or (CORE.qrySwimClub.State = dsInsert)
+    then
+  begin
+    // NOTE: TOpenPictureDialog.options - ofPathMustExist, ofFileMustExist.
+    if (OpenLogoDlg.Execute) then
+    begin
+      try
+        (CORE.qrySwimClub.FieldByName('LogoImg') as TBlobField)
+          .LoadFromFile(OpenLogoDlg.FileName);
+      except on E: Exception do
+        // handle error.
+      end;
+    end;
+  end;
+end;
+
+procedure TFrameSwimClub.btnSaveClubLogoClick(Sender: TObject);
+begin
+  if (CORE.qrySwimClub.State = dsEdit) or (CORE.qrySwimClub.State = dsInsert)
+    then
+  begin
+    if (SaveLogoDlg.Execute) then
+    begin
+      try
+        (CORE.qrySwimClub.FieldByName('LogoImg') as TBlobField)
+        .SaveToFile(SaveLogoDlg.FileName);
+      except on E: Exception do
+        // handle error
+      end;
+    end;
+  end;
+end;
+
 procedure TFrameSwimClub.Prepare;
 var
   PK: integer;
 begin
 
   SetDataSource(CORE.dsSwimClub);
-
   tblUnitType.Connection := SCM2.scmConnection;
   try
     tblUnitType.Open;
@@ -172,11 +242,6 @@ begin
     on E: EFDDBEngineException do
       SCM2.FDGUIxErrorDialog.Execute(E);
   end;
-
-  // IsArchived icon image. Default state.
-  imgIndxArchive.ImageIndex :=
-  CORE.qrySwimClub.FieldByName('imgIndxArchived').AsInteger;
-  FIsClubGroup := false;
 
   if Assigned(frCG) then
       frCG.IsChanged := false;;
@@ -232,7 +297,13 @@ begin
 
   pcntrlEdit.ActivePageIndex := 0; // default to tabsheet 'tsMAIN'
 
-  // DataLinkDataChange(Self); // if data is linked - set icon state.
+  DataLinkDataChange(Self); // if data is linked - set icon state.
+  {
+  // IsArchived icon image. Default state.
+  imgIndxArchive.ImageIndex :=
+  CORE.qrySwimClub.FieldByName('imgIndxArchived').AsInteger;
+  FIsClubGroup := false;
+  }
 
 end;
 

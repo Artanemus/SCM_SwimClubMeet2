@@ -16,7 +16,7 @@ object FrameSwimClub: TFrameSwimClub
     Top = 0
     Width = 620
     Height = 578
-    ActivePage = ts_LinkedClubs
+    ActivePage = tsMain
     Align = alClient
     ParentShowHint = False
     ShowHint = False
@@ -252,6 +252,7 @@ object FrameSwimClub: TFrameSwimClub
         Images = IMG.imglstMiscButtons
         TabOrder = 6
         TabStop = False
+        OnClick = btnClearClubTypeClick
       end
       object btnClearPoolType: TButton
         Tag = 1
@@ -267,6 +268,7 @@ object FrameSwimClub: TFrameSwimClub
         TabOrder = 7
         TabStop = False
         Visible = False
+        OnClick = btnClearPoolTypeClick
       end
     end
     object tsOptions2: TTabSheet
@@ -375,6 +377,7 @@ object FrameSwimClub: TFrameSwimClub
         Height = 33
         Caption = 'Load'
         TabOrder = 0
+        OnClick = btnLoadClubLogoClick
       end
       object btnSaveClubLogo: TButton
         Left = 344
@@ -383,6 +386,7 @@ object FrameSwimClub: TFrameSwimClub
         Height = 33
         Caption = 'Save'
         TabOrder = 1
+        OnClick = btnSaveClubLogoClick
       end
       object btnClearClubLogo: TButton
         Left = 344
@@ -391,6 +395,7 @@ object FrameSwimClub: TFrameSwimClub
         Height = 33
         Caption = 'Clear'
         TabOrder = 2
+        OnClick = btnClearClubLogoClick
       end
     end
     object ts_LinkedClubs: TTabSheet
@@ -404,14 +409,13 @@ object FrameSwimClub: TFrameSwimClub
         Align = alClient
         BevelOuter = bvNone
         TabOrder = 0
-        ExplicitHeight = 548
       end
     end
   end
   object luUnitType: TDataSource
     DataSet = tblUnitType
-    Left = 152
-    Top = 84
+    Left = 432
+    Top = 220
   end
   object tblUnitType: TFDTable
     ActiveStoredUsage = [auDesignTime]
@@ -428,7 +432,17 @@ object FrameSwimClub: TFrameSwimClub
     CatalogName = 'SwimClubMeet2'
     SchemaName = 'dbo'
     TableName = 'SwimClubMeet2.dbo.UnitType'
-    Left = 64
-    Top = 84
+    Left = 360
+    Top = 220
+  end
+  object SaveLogoDlg: TSavePictureDialog
+    Left = 360
+    Top = 312
+  end
+  object OpenLogoDlg: TOpenPictureDialog
+    Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
+    Title = 'Load SCM2 Club Logo'
+    Left = 440
+    Top = 312
   end
 end

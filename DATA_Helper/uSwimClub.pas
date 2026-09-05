@@ -25,11 +25,32 @@ function TestForSwimClubID(SwimCLubID: integer): boolean;
 procedure UpdateDistanceToString(PoolTypeID: integer);
 
 procedure SwitchClubs(FromClubID, ToClubID: integer);
+procedure AutoAssignClubName;
 
 // procedure RenumberSessions();
 
 
 implementation
+
+procedure AutoAssignClubName;
+var
+  ID: Integer;
+  SQL, NewClubName: string;
+begin
+  if SCM2.scmConnection.Connected and CORE.IsActive then
+  begin
+    ID := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+    if ID = 0 then Exit;
+    SQL := '''
+      UPDATE dbo.SwimClub
+      SET Caption = :id1
+      WHERE SwimClubID = :id2;
+      ''';
+    NewClubName := Format('SWIMCLUB%.6d', [ID]);
+    SCM2.scmConnection.ExecSQL(SQL, [NewClubName, uSwimClub.PK], [ftString, ftInteger]);
+  end;
+
+end;
 
 procedure SwitchClubs(FromClubID, ToClubID: integer);
 var

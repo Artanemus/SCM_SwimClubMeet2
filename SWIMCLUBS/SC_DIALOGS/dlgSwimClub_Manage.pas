@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages,
   System.SysUtils, System.Variants, System.Classes, system.UITypes,
-  System.Generics.Collections, System.Hash,
+  System.Generics.Collections,
 
   Data.DB,
 
@@ -330,14 +330,11 @@ end;
 procedure TSwimClubManage.actnNewExecute(Sender: TObject);
 var
   success: boolean;
-  s, newclubname, FourDigitStr: string;
+  SQL: string;
   mr: TModalResult;
-  AHash: THashBobJenkins;
-  HashValue: UInt32;
-  FourDigit: Integer;
 begin
   success := false;
-  s := '''
+  SQL := '''
     Create a new 'blank..empty' swimming club?
     (Requires initialization, after creation, use edit
     to setup pool length, number of lanes, etc.)
@@ -345,29 +342,30 @@ begin
 
   CORE.qrySwimClub.DisableControls;
   try
-    mr := MessageBox(0, PChar(s), PChar('Mange Swimming Clubs ...'),
+    mr := MessageBox(0, PChar(SQL), PChar('Mange Swimming Clubs ...'),
       MB_ICONQUESTION or
       MB_YESNO);
     if mr = mrYes then
     begin
-      // GetHashValue returns UInt32 directly!
-      HashValue := AHash.GetHashValue('SwimClubMeet2');
-      FourDigit := HashValue mod 10000;  // 0..9999
-      FourDigitStr := FourDigit.ToString.PadLeft(4, '0');
-      newclubname := 'CLUB' + FourDigitStr;
       try
         begin
           CORE.qrySwimClub.Insert;
           // NOTE: IsClubGroup = false in CORE.qrySwimClub.OnNewRecord.
-          CORE.qrySwimClub.FieldByName('Caption').AsString := newclubname;
           CORE.qrySwimClub.Post;
           Success := true;
+
         end;
       except on E: Exception do
           CORE.qrySwimClub.Cancel;
       end;
     end;
   finally
+    if Success then
+    begin
+      if CORE.qrySwimClub.FieldByName('Caption').IsNull then
+          uSwimClub.AutoAssignClubName; // 'CLUBNAME' + 6 digit - based on PK.
+    end;
+
     CORE.qrySwimClub.EnableControls;
     if Success then
     begin

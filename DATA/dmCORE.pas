@@ -226,6 +226,7 @@ type
     procedure qrySessionSessionDTGetText(Sender: TField; var Text: string;
         DisplayText: Boolean);
     procedure qrySessionSessionDTSetText(Sender: TField; const Text: string);
+    procedure qrySwimClubBeforePost(DataSet: TDataSet);
     procedure qrySwimClubNewRecord(DataSet: TDataSet);
 	private
     FIsActive: boolean;
@@ -848,6 +849,22 @@ begin
   end;
 end;
 
+procedure TCORE.qrySwimClubBeforePost(DataSet: TDataSet);
+var
+  fld: TField;
+  ID: Integer;
+begin
+  fld := DataSet.FindField('SwimClubID');
+  if Assigned(fld) then
+  begin
+    (DataSet AS TFDQuery).SetFieldAutoGenerateValue(fld, TAutoRefreshFlag.arAutoInc);
+    ID := DataSet.FieldByName('SwimClubID').AsInteger ;
+    if ID <> 0 then
+       Dataset.FieldByName('Caption').AsString := Format('SWIMCLUB%.6d', [ID]);
+  end;
+
+end;
+
 procedure TCORE.qrySwimClubNewRecord(DataSet: TDataSet);
 begin
   // ensure all boolean fields are assigned a value.
@@ -860,7 +877,6 @@ begin
   Dataset.FieldByName('LenOfPool').AsInteger := 50;
   Dataset.FieldByName('DefTeamSize').AsInteger := 4;
   Dataset.FieldByName('CreatedOn').AsDateTime := Now;
-  Dataset.FieldByName('Caption').AsString := '';
   Dataset.FieldByName('NickName').AsString := '';
 end;
 

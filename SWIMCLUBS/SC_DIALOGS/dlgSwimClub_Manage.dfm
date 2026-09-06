@@ -2736,18 +2736,30 @@ object SwimClubManage: TSwimClubManage
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
+    object pnlEdit: TPanel
+      Left = 0
+      Top = 0
+      Width = 652
+      Height = 582
+      Align = alClient
+      BevelOuter = bvNone
+      TabOrder = 1
+      ExplicitLeft = 467
+      ExplicitWidth = 185
+    end
     object pnlGrid: TPanel
       Left = 0
       Top = 0
-      Width = 313
+      Width = 652
       Height = 582
-      Align = alLeft
+      Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
+      ExplicitWidth = 313
       object gSwimClub: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 313
+        Width = 652
         Height = 582
         Cursor = crDefault
         Align = alClient
@@ -2767,7 +2779,6 @@ object SwimClubManage: TSwimClubManage
         ParentFont = False
         ScrollBars = ssBoth
         TabOrder = 0
-        OnDblClick = gSwimClubDblClick
         GridLineColor = 15987699
         GridFixedLineColor = 15987699
         HoverRowCells = [hcNormal, hcSelected]
@@ -3205,6 +3216,7 @@ object SwimClubManage: TSwimClubManage
           FFC003FF}
         ShowUnicode = False
         OnGetHTMLTemplate = gSwimClubGetHTMLTemplate
+        ExplicitWidth = 313
         ColWidths = (
           0
           64
@@ -3216,15 +3228,6 @@ object SwimClubManage: TSwimClubManage
           30
           60)
       end
-    end
-    object pnlEdit: TPanel
-      Left = 467
-      Top = 0
-      Width = 185
-      Height = 582
-      Align = alRight
-      BevelOuter = bvNone
-      TabOrder = 1
     end
   end
   object actnSwimClub: TActionManager
@@ -3283,6 +3286,7 @@ object SwimClubManage: TSwimClubManage
       ImageName = 'edit'
       ShortCut = 16453
       OnExecute = actnEditExecute
+      OnUpdate = actnEditUpdate
     end
     object actnNew: TAction
       Caption = 'New'
@@ -3314,7 +3318,7 @@ object SwimClubManage: TSwimClubManage
       ImageIndex = 7
       ImageName = 'group'
       OnExecute = actnNewGroupExecute
-      OnUpdate = actnNewGroupUpdate
+      OnUpdate = actnGenericUpdate
     end
     object actnInfo: TAction
       Caption = 'Group'#13#10'Information'

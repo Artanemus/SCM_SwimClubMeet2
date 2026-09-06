@@ -244,55 +244,59 @@ begin
   end;
 
   if Assigned(frCG) then
-      frCG.IsChanged := false;;
+      frCG.IsChanged := false;
 
-  // When Swimming Club is a Group then PK = ParentClubID.
-  PK := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+  if not CORE.qrySwimClub.IsEmpty then
+  begin
 
-  // E N T E R   E D I T   R E C O R D .
-  if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
-    CORE.qrySwimClub.Edit;
+    // When Swimming Club is a Group then PK = ParentClubID.
+    PK := CORE.qrySwimClub.FieldByName('SwimClubID').AsInteger;
+
+    // OPTIONAL ... E N T E R   E D I T   R E C O R D .
+    // if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
+      // CORE.qrySwimClub.Edit;
 
   // UI init...
-  if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
-  begin
-    FIsClubGroup := true;
-    lblClubName.Caption := 'Group Name*';
-    lblNickname.Caption := 'Description';
-    lblEmail.Visible := false;
-    lblWebSite.Visible := false;
-    lblContactNum.Visible := false;
-    DBEmail.Visible := false;
-    DBWebSite.Visible := false;
-    DBContactNum.Visible := false;
-    DBTextPrimaryKey.Visible := true;
-    imgindxGroup.Visible := true;
-    ts_LinkedClubs.TabVisible := true;
-    pnlCG.Visible := true;   // 'Group Club' info on linked clubs.
-    tsMain.TabVisible := true;
-    tsLogo.TabVisible := true;
+    if CORE.qrySwimClub.FieldByName('IsClubGroup').AsBoolean then
+    begin
+      FIsClubGroup := true;
+      lblClubName.Caption := 'Group Name*';
+      lblNickname.Caption := 'Description';
+      lblEmail.Visible := false;
+      lblWebSite.Visible := false;
+      lblContactNum.Visible := false;
+      DBEmail.Visible := false;
+      DBWebSite.Visible := false;
+      DBContactNum.Visible := false;
+      DBTextPrimaryKey.Visible := true;
+      imgindxGroup.Visible := true;
+      ts_LinkedClubs.TabVisible := true;
+      pnlCG.Visible := true;   // 'Group Club' info on linked clubs.
+      tsMain.TabVisible := true;
+      tsLogo.TabVisible := true;
 
-    if Assigned(frCG) then
-      frCG.Prepare(PK);
+      if Assigned(frCG) then
+        frCG.Prepare(PK);
 
-  end
-  else
-  begin
-    lblClubName.Caption := 'Club Name*';
-    lblNickname.Caption := 'Club Nickname*';
-    lblEmail.Visible := true;
-    lblWebSite.Visible := true;
-    lblContactNum.Visible := true;
-    DBEmail.Visible := true;
-    DBWebSite.Visible := true;
-    DBContactNum.Visible := true;
-    DBTextPrimaryKey.Visible := false;
-    imgindxGroup.Visible := false;
-    ts_LinkedClubs.TabVisible := false;
-    pnlCG.Visible := false;  // doesn't apply to none grouped Clubs.
-    ts_LinkedClubs.Visible := false;
-    tsMain.TabVisible := true;
-    tsLogo.TabVisible := true;
+    end
+    else
+    begin
+      lblClubName.Caption := 'Club Name*';
+      lblNickname.Caption := 'Club Nickname*';
+      lblEmail.Visible := true;
+      lblWebSite.Visible := true;
+      lblContactNum.Visible := true;
+      DBEmail.Visible := true;
+      DBWebSite.Visible := true;
+      DBContactNum.Visible := true;
+      DBTextPrimaryKey.Visible := false;
+      imgindxGroup.Visible := false;
+      ts_LinkedClubs.TabVisible := false;
+      pnlCG.Visible := false;  // doesn't apply to none grouped Clubs.
+      ts_LinkedClubs.Visible := false;
+      tsMain.TabVisible := true;
+      tsLogo.TabVisible := true;
+    end;
   end;
 
   pcntrlEdit.ActivePageIndex := 0; // default to tabsheet 'tsMAIN'

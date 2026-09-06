@@ -55,15 +55,14 @@ type
     procedure actnCloseExecute(Sender: TObject);
     procedure actnDeleteExecute(Sender: TObject);
     procedure actnEditExecute(Sender: TObject);
+    procedure actnEditUpdate(Sender: TObject);
     procedure actnGenericUpdate(Sender: TObject);
     procedure actnNewExecute(Sender: TObject);
     procedure actnNewGroupExecute(Sender: TObject);
-    procedure actnNewGroupUpdate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure gSwimClubAnchorClick(Sender: TObject; ARow, ACol: Integer; Anchor:
         string; var AutoHandle: Boolean);
-    procedure gSwimClubDblClick(Sender: TObject);
     procedure gSwimClubGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
     procedure imgIndxArchiveClick(Sender: TObject);
@@ -126,7 +125,6 @@ begin
   frSwimClub := TFrameSwimClub.Create(Self);
   frSwimClub.Parent := pnlEdit;
   frSwimClub.Align := alClient;
-  frSwimClub.Prepare(); // assigned connection but not active.
 
   // apparently calling here, we find, dbo.SwimClub is in edit mode...
   // exiting edit mode - enables all buttons.
@@ -138,8 +136,10 @@ begin
   tabcntrl.TabIndex := 0;
   pnlGrid.Align := alClient;
   pnlEdit.Align := alClient;
-  pnlEdit.Visible := false;
   pnlGrid.Visible := true;
+  pnlEdit.Visible := false;
+
+  frSwimClub.Prepare(); // assigned connection but not active.
 
 end;
 
@@ -301,9 +301,9 @@ begin
     // current selected SwimClub.
     if Assigned(frSwimClub) then
       frSwimClub.Prepare();
-
-    if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
-      CORE.qrySwimClub.Edit;
+       // OPTIONAL - SHOULD WE DO THIS?
+//    if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
+//      CORE.qrySwimClub.Edit;
   end
   else
   begin
@@ -311,9 +311,23 @@ begin
     CORE.qrySwimClub.Refresh;
   end;
 
+  // ASSERT that panels are in correct display state...
+
   // Enable/Disable toolbuttons.
   UpdateActions;
 
+end;
+
+procedure TSwimClubManage.actnEditUpdate(Sender: TObject);
+var
+  DoEnable: boolean;
+begin
+  DoEnable := false;
+  if not CORE.qrySwimClub.IsEmpty then
+  begin
+    DoEnable := true;
+  end;
+  TAction(Sender).Enabled := DoEnable;
 end;
 
 procedure TSwimClubManage.actnGenericUpdate(Sender: TObject);
@@ -321,9 +335,13 @@ var
 DoEnable: boolean;
 begin
   DoEnable := false;
-  // Is the table begin modified? (used by buttons, new, delete, archive)
-  if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
+  if not actnEdit.Checked then
     DoEnable := true;
+
+  // Is the table begin modified? (used by buttons, new, delete, archive)
+  // proved to be unreliable for UI buttons.
+  // if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
+
   TAction(Sender).Enabled := DoEnable;
 end;
 
@@ -363,7 +381,10 @@ begin
     if Success then
     begin
       if CORE.qrySwimClub.FieldByName('Caption').IsNull then
+      begin
           uSwimClub.AutoAssignClubName; // 'CLUBNAME' + 6 digit - based on PK.
+          CORE.qrySwimClub.Refresh;
+      end;
     end;
 
     CORE.qrySwimClub.EnableControls;
@@ -374,6 +395,7 @@ begin
       // Fix UI selection. Sync to database
       // Controls must be enabled - else TDBAdvGrid exception error.
       // if this isn't called - multi rows are selected in grid.
+      // A refresh on qrySwimClub doesn't work here.
       SyncGridToDB(1);
     end;
   end;
@@ -463,20 +485,6 @@ begin
   SyncGridToDB(1); // de-select all , focus and select ClubGroup.
 end;
 
-procedure TSwimClubManage.actnNewGroupUpdate(Sender: TObject);
-var
-DoEnable: boolean;
-begin
-  DoEnable := false;
-  // Is the table begin modified? (used by buttons, new, delete, archive)
-  if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
-  begin
-//    if (gSwimClub.RowSelectCount > 1) then
-      DoEnable := true;
-  end;
-  TAction(Sender).Enabled := DoEnable;
-end;
-
 procedure TSwimClubManage.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   CORE.qrySwimClub.CheckBrowseMode; // ASSERT - finalize all editing.
@@ -517,12 +525,6 @@ begin
 
   end;
 
-end;
-
-procedure TSwimClubManage.gSwimClubDblClick(Sender: TObject);
-begin
-    actnEdit.Checked := true;
-    actnEditExecute(actnEdit); // this works.
 end;
 
 procedure TSwimClubManage.gSwimClubGetHTMLTemplate(Sender: TObject; ACol, ARow:

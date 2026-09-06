@@ -850,19 +850,21 @@ begin
 end;
 
 procedure TCORE.qrySwimClubBeforePost(DataSet: TDataSet);
-var
-  fld: TField;
-  ID: Integer;
+//var
+//  fld: TField;
+//  ID: Integer;
 begin
+  (*
+  // Nice idea, but, SetFieldAutoGenerateValue doesn't work...
   fld := DataSet.FindField('SwimClubID');
   if Assigned(fld) then
   begin
-    (DataSet AS TFDQuery).SetFieldAutoGenerateValue(fld, TAutoRefreshFlag.arAutoInc);
+    (DataSet AS TFDQuery).SetFieldAutoGenerateValue(fld, TAutoRefreshFlag.arDefault);
     ID := DataSet.FieldByName('SwimClubID').AsInteger ;
-    if ID <> 0 then
+    if ID > 0 then
        Dataset.FieldByName('Caption').AsString := Format('SWIMCLUB%.6d', [ID]);
   end;
-
+  *)
 end;
 
 procedure TCORE.qrySwimClubNewRecord(DataSet: TDataSet);
@@ -874,10 +876,13 @@ begin
   Dataset.FieldByName('IsClubGroup').AsBoolean := false;
   Dataset.FieldByName('EnableSimpleDQ').AsBoolean := true;
   Dataset.FieldByName('NumOfLanes').AsInteger := 10;
-  Dataset.FieldByName('LenOfPool').AsInteger := 50;
-  Dataset.FieldByName('DefTeamSize').AsInteger := 4;
+  Dataset.FieldByName('LenOfPool').AsInteger := 50; // depreciated..
+  Dataset.FieldByName('DefTeamSize').AsInteger := 4;  // Default
   Dataset.FieldByName('CreatedOn').AsDateTime := Now;
-  Dataset.FieldByName('NickName').AsString := '';
+  DataSet.FieldByName('HeatAlgorithm').AsInteger := 1; // Avg of three RaceTimes
+  DataSet.FieldByName('SwimClubTypeID').AsInteger := 1; // Amateur Swimming Club
+  DataSet.FieldByName('PoolTypeID').AsInteger := 2; // 50m Long Coursee
+
 end;
 
 

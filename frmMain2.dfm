@@ -24,6 +24,7 @@ object Main2: TMain2
   CustomTitleBar.ButtonPressedBackgroundColor = 8170169
   CustomTitleBar.ButtonInactiveForegroundColor = 10066329
   CustomTitleBar.ButtonInactiveBackgroundColor = clBackground
+  DefaultMonitor = dmDesktop
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -16
@@ -2767,7 +2768,6 @@ object Main2: TMain2
     Top = 37
     Width = 1137
     Height = 42
-    UseSystemFont = False
     ActionManager = actnManager
     Caption = 'actnMainMenuBar'
     Color = clMenuBar
@@ -2776,7 +2776,7 @@ object Main2: TMain2
     ColorMap.BtnSelectedFont = clBlack
     ColorMap.UnusedColor = clWhite
     Font.Charset = DEFAULT_CHARSET
-    Font.Color = clBlack
+    Font.Color = clWindowText
     Font.Height = -13
     Font.Name = 'Segoe UI'
     Font.Style = []
@@ -3438,6 +3438,7 @@ object Main2: TMain2
     object Report_Run: TAction
       Category = 'Reports'
       Caption = 'Run Report...'
+      OnExecute = Report_RunExecute
     end
     object Report_Manage: TAction
       Category = 'Reports'

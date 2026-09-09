@@ -29,7 +29,7 @@ type
     dsEvDetailed: TfrxDBDataset;
     qryEvMisc: TFDQuery;
     dsEvMisc: TfrxDBDataset;
-    rptTemplate_Base: TfrxReport;
+    rptBase_v1: TfrxReport;
     qryEvDetailedEx: TFDQuery;
     dsEvDetailedEx: TfrxDBDataset;
     frxReportWIP: TfrxReport;

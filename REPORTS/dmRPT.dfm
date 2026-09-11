@@ -499,7 +499,6 @@ object RPT: TRPT
   end
   object qryEvSummary: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
     IndexFieldNames = 'SessionID'
     Connection = SCM2.scmConnection
     FormatOptions.AssignedValues = [fvFmtDisplayTime]
@@ -3602,5 +3601,26 @@ object RPT: TRPT
         Width = 718.110700000000000000
       end
     end
+  end
+  object rptReport: TfrxReport
+    Version = '6.6.11'
+    DotMatrixReport = False
+    IniFile = '\Software\Fast Reports'
+    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick, pbCopy, pbSelection]
+    PreviewOptions.Zoom = 1.000000000000000000
+    PrintOptions.Printer = 'Default'
+    PrintOptions.PrintOnSheet = 0
+    ReportOptions.CreateDate = 46276.460923784730000000
+    ReportOptions.LastChange = 46276.460923784730000000
+    ScriptLanguage = 'PascalScript'
+    ScriptText.Strings = (
+      'begin'
+      ''
+      'end.')
+    Left = 712
+    Top = 16
+    Datasets = <>
+    Variables = <>
+    Style = <>
   end
 end

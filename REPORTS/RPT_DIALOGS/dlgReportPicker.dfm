@@ -3,8 +3,8 @@ object ReportPicker: TReportPicker
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Report Picker ...'
-  ClientHeight = 704
-  ClientWidth = 1009
+  ClientHeight = 573
+  ClientWidth = 992
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -12,111 +12,79 @@ object ReportPicker: TReportPicker
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poMainFormCenter
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
   TextHeight = 21
-  object pnlHeader: TPanel
-    Left = 0
-    Top = 0
-    Width = 1009
-    Height = 55
-    Align = alTop
-    BevelOuter = bvNone
-    TabOrder = 0
-    ExplicitTop = -6
-    object btnAllReports: TButton
-      Left = 442
-      Top = 12
-      Width = 185
-      Height = 30
-      Caption = 'Display All Reports'
-      TabOrder = 0
-    end
-    object btnRestore: TButton
-      Left = 633
-      Top = 12
-      Width = 185
-      Height = 30
-      Caption = 'Restore'
-      TabOrder = 1
-    end
-    object btnBackUp: TButton
-      Left = 824
-      Top = 12
-      Width = 185
-      Height = 30
-      Caption = 'BackUp'
-      TabOrder = 2
-    end
-    object btnEdit: TButton
-      Left = 251
-      Top = 12
-      Width = 185
-      Height = 30
-      Caption = 'Edit'
-      TabOrder = 3
-    end
-    object btnExecute: TButton
-      Left = 0
-      Top = 12
-      Width = 185
-      Height = 30
-      Caption = 'Run'
-      TabOrder = 4
-    end
-  end
   object pnlFooter: TPanel
     Left = 0
-    Top = 658
-    Width = 1009
+    Top = 527
+    Width = 992
     Height = 46
     Align = alBottom
     BevelOuter = bvNone
-    TabOrder = 1
-    ExplicitTop = 463
-    ExplicitWidth = 638
+    TabOrder = 0
+    ExplicitTop = 658
+    ExplicitWidth = 1009
     DesignSize = (
-      1009
+      992
       46)
     object btnClose: TButton
-      Left = 926
+      Left = 909
       Top = 6
       Width = 83
       Height = 33
       Anchors = [akTop, akRight]
-      Caption = 'Close'
+      Caption = 'Pick'
       TabOrder = 0
-      ExplicitLeft = 728
+      ExplicitLeft = 926
+    end
+    object btnCancel: TButton
+      Left = 820
+      Top = 6
+      Width = 83
+      Height = 33
+      Anchors = [akTop, akRight]
+      Caption = 'Cancel'
+      TabOrder = 1
     end
   end
   object pnlBody: TPanel
     Left = 0
-    Top = 55
-    Width = 1009
-    Height = 603
+    Top = 49
+    Width = 992
+    Height = 478
     Align = alClient
     BevelOuter = bvNone
-    TabOrder = 2
-    ExplicitLeft = 232
-    ExplicitTop = 256
-    ExplicitWidth = 185
-    ExplicitHeight = 41
+    TabOrder = 1
+    ExplicitTop = 55
+    ExplicitWidth = 1009
+    ExplicitHeight = 603
     object grid: TDBAdvGrid
       Left = 0
       Top = 0
-      Width = 1009
-      Height = 603
+      Width = 992
+      Height = 478
       Cursor = crDefault
       Align = alClient
+      Color = clWhite
       ColCount = 6
       DefaultRowHeight = 28
       DrawingStyle = gdsClassic
       FixedColor = clWhite
       RowCount = 7
       FixedRows = 1
-      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      Options = [goVertLine, goHorzLine, goRangeSelect, goRowSelect, goFixedRowDefAlign]
+      ParentFont = False
       ScrollBars = ssBoth
       TabOrder = 0
-      GridLineColor = 13948116
-      GridFixedLineColor = 11250603
+      OnDblClick = gridDblClick
+      GridLineColor = 15987699
+      GridFixedLineColor = 15987699
       HoverRowCells = [hcNormal, hcSelected]
       ActiveCellFont.Charset = DEFAULT_CHARSET
       ActiveCellFont.Color = 4474440
@@ -130,6 +98,7 @@ object ReportPicker: TReportPicker
       ControlLook.FixedGradientTo = clWhite
       ControlLook.FixedGradientMirrorFrom = clWhite
       ControlLook.FixedGradientMirrorTo = clWhite
+      ControlLook.FixedGradientHoverFrom = clGray
       ControlLook.FixedGradientHoverTo = clWhite
       ControlLook.FixedGradientHoverMirrorFrom = clWhite
       ControlLook.FixedGradientHoverMirrorTo = clWhite
@@ -175,7 +144,7 @@ object ReportPicker: TReportPicker
       FixedColWidth = 20
       FixedRowHeight = 28
       FixedFont.Charset = DEFAULT_CHARSET
-      FixedFont.Color = 3881787
+      FixedFont.Color = clBlack
       FixedFont.Height = -16
       FixedFont.Name = 'Tahoma'
       FixedFont.Style = [fsBold]
@@ -265,38 +234,13 @@ object ReportPicker: TReportPicker
           CheckFalse = 'N'
           CheckTrue = 'Y'
           Color = clWindow
-          FieldName = 'Caption'
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -16
-          Font.Name = 'Segoe UI'
-          Font.Style = []
-          HeaderFont.Charset = DEFAULT_CHARSET
-          HeaderFont.Color = 3881787
-          HeaderFont.Height = -16
-          HeaderFont.Name = 'Segoe UI'
-          HeaderFont.Style = []
-          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
-          PrintFont.Charset = DEFAULT_CHARSET
-          PrintFont.Color = clWindowText
-          PrintFont.Height = -12
-          PrintFont.Name = 'Segoe UI'
-          PrintFont.Style = []
-          Width = 137
-        end
-        item
-          Borders = []
-          BorderPen.Color = clSilver
-          ButtonHeight = 18
-          CheckFalse = 'N'
-          CheckTrue = 'Y'
-          Color = clWindow
           FieldName = 'CaptionShort'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
+          Header = 'Alias/Name'
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = clWindowText
           HeaderFont.Height = -16
@@ -343,12 +287,40 @@ object ReportPicker: TReportPicker
           CheckFalse = 'N'
           CheckTrue = 'Y'
           Color = clWindow
+          FieldName = 'FileName'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -16
+          Font.Name = 'Segoe UI'
+          Font.Style = []
+          Header = 'File Name'
+          HeaderFont.Charset = DEFAULT_CHARSET
+          HeaderFont.Color = 3881787
+          HeaderFont.Height = -16
+          HeaderFont.Name = 'Segoe UI'
+          HeaderFont.Style = []
+          PrintBorders = [cbTop, cbLeft, cbRight, cbBottom]
+          PrintFont.Charset = DEFAULT_CHARSET
+          PrintFont.Color = clWindowText
+          PrintFont.Height = -12
+          PrintFont.Name = 'Segoe UI'
+          PrintFont.Style = []
+          Width = 137
+        end
+        item
+          Borders = []
+          BorderPen.Color = clSilver
+          ButtonHeight = 18
+          CheckFalse = 'N'
+          CheckTrue = 'Y'
+          Color = clWindow
           FieldName = 'ReportType'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
           Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
+          Header = 'Owner'
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = clWindowText
           HeaderFont.Height = -16
@@ -375,6 +347,7 @@ object ReportPicker: TReportPicker
           Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
+          Header = 'Category'
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = clWindowText
           HeaderFont.Height = -16
@@ -527,14 +500,127 @@ object ReportPicker: TReportPicker
         FFC003FF}
       ShowMemoFields = True
       ShowUnicode = False
-      ExplicitHeight = 611
       ColWidths = (
         20
-        137
         153
         425
+        137
         103
         124)
+      RowHeights = (
+        28
+        28
+        28
+        28
+        28
+        28
+        28)
+    end
+  end
+  object pnHeaderl: TGridPanel
+    Left = 0
+    Top = 0
+    Width = 992
+    Height = 49
+    Align = alTop
+    ColumnCollection = <
+      item
+        SizeStyle = ssAbsolute
+        Value = 64.000000000000000000
+      end
+      item
+        Value = 31.600547195622440000
+      end
+      item
+        SizeStyle = ssAbsolute
+        Value = 64.000000000000000000
+      end
+      item
+        Value = 68.399452804377560000
+      end>
+    ControlCollection = <
+      item
+        Column = 0
+        Control = vimgSearch
+        Row = 0
+      end
+      item
+        Column = 1
+        Control = edtSearch
+        Row = 0
+      end
+      item
+        Column = 2
+        Control = btnClearSearch
+        Row = 0
+      end>
+    RowCollection = <
+      item
+        Value = 100.000000000000000000
+      end>
+    TabOrder = 2
+    ExplicitWidth = 1009
+    object vimgSearch: TVirtualImage
+      AlignWithMargins = True
+      Left = 5
+      Top = 5
+      Width = 56
+      Height = 39
+      Margins.Left = 4
+      Margins.Top = 4
+      Margins.Right = 4
+      Margins.Bottom = 4
+      Align = alClient
+      ImageCollection = IMG.CollectionCore
+      ImageWidth = 0
+      ImageHeight = 0
+      ImageIndex = 67
+      ImageName = 'Search'
+      ExplicitLeft = 11
+      ExplicitTop = 1
+      ExplicitWidth = 44
+      ExplicitHeight = 44
+    end
+    object edtSearch: TEdit
+      AlignWithMargins = True
+      Left = 69
+      Top = 9
+      Width = 264
+      Height = 31
+      Margins.Left = 4
+      Margins.Top = 8
+      Margins.Right = 4
+      Margins.Bottom = 8
+      Align = alClient
+      TabOrder = 0
+      OnChange = edtSearchChange
+      ExplicitLeft = 453
+      ExplicitTop = 6
+      ExplicitWidth = 121
+      ExplicitHeight = 29
+    end
+    object btnClearSearch: TButton
+      Tag = 1
+      AlignWithMargins = True
+      Left = 341
+      Top = 5
+      Width = 56
+      Height = 39
+      Margins.Left = 4
+      Margins.Top = 4
+      Margins.Right = 4
+      Margins.Bottom = 4
+      Align = alClient
+      ImageAlignment = iaCenter
+      ImageIndex = 0
+      ImageName = 'clear'
+      Images = IMG.imglstMiscButtons
+      TabOrder = 1
+      OnClick = btnClearSearchClick
+      ExplicitLeft = 906
+      ExplicitTop = 8
+      ExplicitWidth = 75
+      ExplicitHeight = 25
     end
   end
   object qryReport: TFDQuery
@@ -562,7 +648,7 @@ object ReportPicker: TReportPicker
       '       [Report].[Blob],'
       '       [Report].[ReportTypeID],'
       '       [Report].[ReportGroupID],'
-      '       ReportType.Caption AS ReportType,'
+      '       ReportType.CaptionShort AS ReportType,'
       '       ReportGroup.Caption AS ReportGroup'
       'FROM   [dbo].[Report]'
       '       LEFT OUTER JOIN'
@@ -578,8 +664,8 @@ object ReportPicker: TReportPicker
       ''
       ''
       '')
-    Left = 136
-    Top = 152
+    Left = 48
+    Top = 280
     ParamData = <
       item
         Name = 'REPORTGROUPID'
@@ -590,7 +676,7 @@ object ReportPicker: TReportPicker
   end
   object dsReport: TDataSource
     DataSet = qryReport
-    Left = 200
-    Top = 144
+    Left = 128
+    Top = 280
   end
 end

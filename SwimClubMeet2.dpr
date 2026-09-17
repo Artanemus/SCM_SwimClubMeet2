@@ -98,7 +98,9 @@ uses
   frFrameSwimClub in 'FRAMES\frFrameSwimClub.pas' {FrameSwimClub: TFrame},
   dlgSwimClub_Edit in 'SWIMCLUBS\SC_DIALOGS\dlgSwimClub_Edit.pas' {SwimClubEdit},
   frmTestFrame in 'frmTestFrame.pas' {TestFrame},
-  frFrameClubGroup in 'FRAMES\frFrameClubGroup.pas' {FrameClubGroup: TFrame};
+  frFrameClubGroup in 'FRAMES\frFrameClubGroup.pas' {FrameClubGroup: TFrame},
+  dlgReportManage in 'REPORTS\RPT_DIALOGS\dlgReportManage.pas' {ReportManage},
+  frFrameReport in 'FRAMES\frFrameReport.pas' {FrameReport: TFrame};
 
 {$R *.res}
 

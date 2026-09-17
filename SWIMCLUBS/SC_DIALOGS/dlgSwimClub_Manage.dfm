@@ -2682,45 +2682,13 @@ object SwimClubManage: TSwimClubManage
   OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
   TextHeight = 21
-  object pnlTools: TPanel
-    Left = 0
-    Top = 34
-    Width = 121
-    Height = 582
-    Align = alLeft
-    BevelOuter = bvNone
-    TabOrder = 0
-    object actnToolBar: TActionToolBar
-      Left = 0
-      Top = 0
-      Width = 121
-      Height = 582
-      ActionManager = actnSwimClub
-      Align = alClient
-      Caption = 'actnToolBar'
-      Color = clMenuBar
-      ColorMap.DisabledFontColor = 7171437
-      ColorMap.HighlightColor = clWhite
-      ColorMap.BtnSelectedFont = clBlack
-      ColorMap.UnusedColor = clWhite
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clBlack
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = []
-      ParentFont = False
-      ParentShowHint = False
-      ShowHint = True
-      Spacing = 0
-    end
-  end
   object tabcntrl: TTabControl
     Left = 0
     Top = 0
     Width = 773
     Height = 34
     Align = alTop
-    TabOrder = 1
+    TabOrder = 0
     Tabs.Strings = (
       'Grid'
       'Edit')
@@ -2729,37 +2697,38 @@ object SwimClubManage: TSwimClubManage
     OnChanging = tabcntrlChanging
   end
   object pnlBody: TPanel
-    Left = 121
+    Left = 153
     Top = 34
-    Width = 652
+    Width = 620
     Height = 582
     Align = alClient
     BevelOuter = bvNone
-    TabOrder = 2
+    TabOrder = 1
+    ExplicitLeft = 121
+    ExplicitWidth = 652
     object pnlEdit: TPanel
       Left = 0
       Top = 0
-      Width = 652
+      Width = 620
       Height = 582
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitLeft = 467
-      ExplicitWidth = 185
+      ExplicitWidth = 652
     end
     object pnlGrid: TPanel
       Left = 0
       Top = 0
-      Width = 652
+      Width = 620
       Height = 582
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitWidth = 313
+      ExplicitWidth = 652
       object gSwimClub: TDBAdvGrid
         Left = 0
         Top = 0
-        Width = 652
+        Width = 620
         Height = 582
         Cursor = crDefault
         Align = alClient
@@ -3216,7 +3185,7 @@ object SwimClubManage: TSwimClubManage
           FFC003FF}
         ShowUnicode = False
         OnGetHTMLTemplate = gSwimClubGetHTMLTemplate
-        ExplicitWidth = 313
+        ExplicitWidth = 652
         ColWidths = (
           0
           64
@@ -3228,6 +3197,90 @@ object SwimClubManage: TSwimClubManage
           30
           60)
       end
+    end
+  end
+  object spnlCNTRL: TStackPanel
+    Left = 0
+    Top = 34
+    Width = 153
+    Height = 582
+    Align = alLeft
+    ControlCollection = <
+      item
+        Control = spbtnEdit
+      end
+      item
+        Control = spbtnNew
+      end
+      item
+        Control = spbtnArchive
+      end
+      item
+        Control = spbtnDelete
+      end
+      item
+        Control = spbtnNewGroup
+      end
+      item
+        Control = spbtnExit
+      end>
+    HorizontalPositioning = sphpCenter
+    Spacing = 4
+    TabOrder = 2
+    ExplicitLeft = 121
+    object spbtnEdit: TSpeedButton
+      Left = 16
+      Top = 1
+      Width = 120
+      Height = 48
+      Action = actnEdit
+      Images = IMG.imglstSwimClubCntrl
+      Margin = 10
+    end
+    object spbtnNew: TSpeedButton
+      Left = 16
+      Top = 53
+      Width = 120
+      Height = 48
+      Action = actnNew
+      Images = IMG.imglstSwimClubCntrl
+      Margin = 10
+    end
+    object spbtnArchive: TSpeedButton
+      Left = 16
+      Top = 105
+      Width = 120
+      Height = 48
+      Action = actnArchive
+      Images = IMG.imglstSwimClubCntrl
+      Margin = 10
+    end
+    object spbtnDelete: TSpeedButton
+      Left = 16
+      Top = 157
+      Width = 120
+      Height = 48
+      Action = actnDelete
+      Images = IMG.imglstSwimClubCntrl
+      Margin = 10
+    end
+    object spbtnNewGroup: TSpeedButton
+      Left = 16
+      Top = 209
+      Width = 120
+      Height = 48
+      Action = actnNewGroup
+      Images = IMG.imglstSwimClubCntrl
+      Margin = 10
+    end
+    object spbtnExit: TSpeedButton
+      Left = 16
+      Top = 261
+      Width = 120
+      Height = 48
+      Action = actnClose
+      Images = IMG.imglstSwimClubCntrl
+      Margin = 10
     end
   end
   object actnSwimClub: TActionManager
@@ -3272,7 +3325,6 @@ object SwimClubManage: TSwimClubManage
             ImageName = 'cancel-circle'
             ShortCut = 27
           end>
-        ActionBar = actnToolBar
       end>
     Images = IMG.imglstSwimClubCntrl
     Left = 440

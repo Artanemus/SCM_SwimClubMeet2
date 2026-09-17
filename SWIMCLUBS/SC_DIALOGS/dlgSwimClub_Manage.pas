@@ -22,19 +22,18 @@ uses
   dmIMG, dmCORE, dmSCM2,
 
   AdvUtil, AdvObj, BaseGrid, AdvGrid, DBAdvGrid, SVGIconImage,
-  AdvDateTimePicker, AdvDBDateTimePicker, frFrameSwimClub, frFrameClubGroup;
+  AdvDateTimePicker, AdvDBDateTimePicker, frFrameSwimClub, frFrameClubGroup,
+  Vcl.WinXPanels, Vcl.Buttons;
 
   //, hintlist;
 
 type
   TSwimClubManage = class(TForm)
-    actnToolBar: TActionToolBar;
     actnSwimClub: TActionManager;
     actnEdit: TAction;
     actnNew: TAction;
     actnDelete: TAction;
     gSwimClub: TDBAdvGrid;
-    pnlTools: TPanel;
     SaveLogoDlg: TSavePictureDialog;
     OpenLogoDlg: TOpenPictureDialog;
     actnArchive: TAction;
@@ -49,6 +48,13 @@ type
     pnlBody: TPanel;
     pnlGrid: TPanel;
     pnlEdit: TPanel;
+    spnlCNTRL: TStackPanel;
+    spbtnNew: TSpeedButton;
+    spbtnArchive: TSpeedButton;
+    spbtnEdit: TSpeedButton;
+    spbtnDelete: TSpeedButton;
+    spbtnNewGroup: TSpeedButton;
+    spbtnExit: TSpeedButton;
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure actnArchiveExecute(Sender: TObject);

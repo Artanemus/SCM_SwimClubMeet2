@@ -456,6 +456,15 @@
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="REPORTS\RPT_DIALOGS\dlgReportManage.pas">
+            <Form>ReportManage</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
+        <DCCReference Include="FRAMES\frFrameReport.pas">
+            <Form>FrameReport</Form>
+            <FormType>dfm</FormType>
+            <DesignClass>TFrame</DesignClass>
+        </DCCReference>
         <BuildConfiguration Include="Base">
             <Key>Base</Key>
         </BuildConfiguration>

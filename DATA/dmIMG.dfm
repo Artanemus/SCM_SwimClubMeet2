@@ -2874,6 +2874,16 @@ object IMG: TIMG
           'ntColor"'#10'     d="m 4,22 v -2 h 16 v 2 z"'#10'     id="path1"'#10'     so' +
           'dipodi:nodetypes="ccccc" />'#10'</svg>'#10
         FixedColor = clDarkgoldenrod
+      end
+      item
+        IconName = 'stack'
+        SVGText = 
+          '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"' +
+          ' viewBox="0 0 24 24"><path fill="currentColor" d="M6 14v2H4q-.82' +
+          '5 0-1.412-.587T2 14V4q0-.825.588-1.412T4 2h10q.825 0 1.413.588T1' +
+          '6 4v2h-2V4H4v10zm4 8q-.825 0-1.412-.587T8 20V10q0-.825.588-1.412' +
+          'T10 8h10q.825 0 1.413.588T22 10v10q0 .825-.587 1.413T20 22z"/></' +
+          'svg>'
       end>
     Left = 496
     Top = 16
@@ -14933,5 +14943,59 @@ object IMG: TIMG
     Size = 24
     Left = 768
     Top = 224
+  end
+  object imglstReportCntrl: TSVGIconVirtualImageList
+    Images = <
+      item
+        CollectionIndex = 48
+        CollectionName = 'edit'
+        Name = 'edit'
+      end
+      item
+        CollectionIndex = 29
+        CollectionName = 'new'
+        Name = 'new'
+      end
+      item
+        CollectionIndex = 30
+        CollectionName = 'delete'
+        Name = 'delete'
+      end
+      item
+        CollectionIndex = 51
+        CollectionName = 'clone'
+        Name = 'clone'
+      end
+      item
+        CollectionIndex = 76
+        CollectionName = 'archive'
+        Name = 'archive'
+      end
+      item
+        CollectionIndex = 80
+        CollectionName = 'folder-managed'
+        Name = 'folder-managed'
+      end
+      item
+        CollectionIndex = 120
+        CollectionName = 'upload-file'
+        Name = 'upload-file'
+      end
+      item
+        CollectionIndex = 121
+        CollectionName = 'download-file'
+        Name = 'download-file'
+      end
+      item
+        CollectionIndex = 127
+        CollectionName = 'Stack'
+        Name = 'Stack'
+      end>
+    ImageCollection = CollectionCore
+    Width = 48
+    Height = 48
+    Size = 48
+    Left = 1016
+    Top = 112
   end
 end

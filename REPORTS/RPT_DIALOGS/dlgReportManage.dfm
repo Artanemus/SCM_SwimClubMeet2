@@ -1,45 +1,45 @@
 object ReportManage: TReportManage
   Left = 0
   Top = 0
+  BorderStyle = bsDialog
   Caption = 'ReportManage'
   ClientHeight = 683
-  ClientWidth = 660
+  ClientWidth = 696
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -16
   Font.Name = 'Segoe UI'
   Font.Style = []
+  Position = poMainFormCenter
+  OnCreate = FormCreate
   TextHeight = 21
   object pnlHeader: TPanel
     Left = 0
     Top = 0
-    Width = 660
+    Width = 696
     Height = 41
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 764
   end
   object pnlFooter: TPanel
     Left = 0
     Top = 642
-    Width = 660
+    Width = 696
     Height = 41
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 764
   end
   object pnlBody: TPanel
     Left = 153
     Top = 41
-    Width = 507
+    Width = 543
     Height = 601
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitWidth = 611
   end
   object spnlCNTRL: TStackPanel
     Left = 0
@@ -67,9 +67,6 @@ object ReportManage: TReportManage
       end
       item
         Control = spbtnSave
-      end
-      item
-        Control = spbtnSaveAs
       end
       item
         Control = spbtnLoad
@@ -138,18 +135,7 @@ object ReportManage: TReportManage
       Top = 271
       Width = 120
       Height = 48
-      Caption = 'Save'
-      ImageIndex = 7
-      ImageName = 'download-file'
-      Images = IMG.imglstReportCntrl
-      Margin = 10
-    end
-    object spbtnSaveAs: TSpeedButton
-      Left = 16
-      Top = 323
-      Width = 120
-      Height = 48
-      Caption = 'Save As'
+      Caption = 'Export'
       ImageIndex = 7
       ImageName = 'download-file'
       Images = IMG.imglstReportCntrl
@@ -157,72 +143,14 @@ object ReportManage: TReportManage
     end
     object spbtnLoad: TSpeedButton
       Left = 16
-      Top = 375
+      Top = 323
       Width = 120
       Height = 48
-      Caption = 'Load'
+      Caption = 'Import'
       ImageIndex = 6
       ImageName = 'upload-file'
       Images = IMG.imglstReportCntrl
       Margin = 10
     end
-  end
-  object qryReport: TFDQuery
-    ActiveStoredUsage = [auDesignTime]
-    Active = True
-    IndexFieldNames = 'ReportID'
-    Connection = SCM2.scmConnection
-    UpdateOptions.UpdateTableName = 'SwimClubMeet2.dbo.Report'
-    UpdateOptions.KeyFields = 'ReportID'
-    SQL.Strings = (
-      'USE [SwimClubMeet2];'
-      ''
-      'DECLARE @ReportGroupID AS INT;'
-      ''
-      'SET @ReportGroupID = :REPORTGROUPID;'
-      ''
-      'SELECT [Report].[ReportID],'
-      '       [Report].[Caption],'
-      '       [Report].[Description],'
-      '       [Report].[IsActive],'
-      '       [Report].[IsArchived],'
-      '       [Report].[IsPrimary],'
-      '       [Report].[CreatedOn],'
-      '       [Report].[ModifiedOn],'
-      '       [Report].[FilePath],'
-      '       [Report].[FileName],'
-      '       [Report].[Blob],'
-      '       [Report].[ReportTypeID],'
-      '       [Report].[ReportGroupID],'
-      '       ReportType.CaptionShort AS ReportType,'
-      '       ReportGroup.Caption AS ReportGroup'
-      'FROM   [dbo].[Report]'
-      '       LEFT OUTER JOIN'
-      '       ReportType'
-      '       ON [Report].ReportTypeID = ReportType.ReportTypeID'
-      '       LEFT OUTER JOIN'
-      '       ReportGroup'
-      '       ON [Report].ReportGroupID = ReportGroup.ReportGroupID'
-      'WHERE ( @ReportGroupID = 0 AND [Report].[ReportGroupID] > 0 )'
-      
-        '   OR ( @ReportGroupID <> 0 AND [Report].[ReportGroupID] = @Repo' +
-        'rtGroupID );'
-      ''
-      ''
-      '')
-    Left = 264
-    Top = 392
-    ParamData = <
-      item
-        Name = 'REPORTGROUPID'
-        DataType = ftInteger
-        ParamType = ptInput
-        Value = 2
-      end>
-  end
-  object dsReport: TDataSource
-    DataSet = qryReport
-    Left = 344
-    Top = 392
   end
 end

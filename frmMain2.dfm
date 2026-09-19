@@ -3440,10 +3440,13 @@ object Main2: TMain2
       Category = 'Reports'
       Caption = 'Run Report...'
       OnExecute = Report_RunExecute
+      OnUpdate = GenericActionUpdate
     end
     object Report_Manage: TAction
       Category = 'Reports'
       Caption = 'Manage Reports'
+      OnExecute = Report_ManageExecute
+      OnUpdate = GenericActionUpdate
     end
     object Report_Design: TAction
       Category = 'Reports'

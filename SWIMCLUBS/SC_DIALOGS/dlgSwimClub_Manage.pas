@@ -307,14 +307,15 @@ begin
     // current selected SwimClub.
     if Assigned(frSwimClub) then
       frSwimClub.Prepare();
-       // OPTIONAL - SHOULD WE DO THIS?
-//    if not (CORE.qrySwimClub.State in [dsEdit, dsInsert]) then
-//      CORE.qrySwimClub.Edit;
+    { Modify the speed button's caption to indicate to the user that
+        pressing the spbtnEdit button will exit edit.}
+    spbtnEdit.Caption := 'Close' + sLineBreak + 'Edit';
   end
   else
   begin
     CORE.qrySwimClub.CheckBrowseMode;
     CORE.qrySwimClub.Refresh;
+    spbtnEdit.Caption := 'Edit';
   end;
 
   // ASSERT that panels are in correct display state...

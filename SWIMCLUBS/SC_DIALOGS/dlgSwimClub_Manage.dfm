@@ -2704,8 +2704,6 @@ object SwimClubManage: TSwimClubManage
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 121
-    ExplicitWidth = 652
     object pnlEdit: TPanel
       Left = 0
       Top = 0
@@ -2714,7 +2712,6 @@ object SwimClubManage: TSwimClubManage
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 1
-      ExplicitWidth = 652
     end
     object pnlGrid: TPanel
       Left = 0
@@ -2724,7 +2721,6 @@ object SwimClubManage: TSwimClubManage
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 0
-      ExplicitWidth = 652
       object gSwimClub: TDBAdvGrid
         Left = 0
         Top = 0
@@ -3185,7 +3181,6 @@ object SwimClubManage: TSwimClubManage
           FFC003FF}
         ShowUnicode = False
         OnGetHTMLTemplate = gSwimClubGetHTMLTemplate
-        ExplicitWidth = 652
         ColWidths = (
           0
           64
@@ -3227,7 +3222,6 @@ object SwimClubManage: TSwimClubManage
     HorizontalPositioning = sphpCenter
     Spacing = 4
     TabOrder = 2
-    ExplicitLeft = 121
     object spbtnEdit: TSpeedButton
       Left = 16
       Top = 1
@@ -3254,6 +3248,7 @@ object SwimClubManage: TSwimClubManage
       Action = actnArchive
       Images = IMG.imglstSwimClubCntrl
       Margin = 10
+      Visible = False
     end
     object spbtnDelete: TSpeedButton
       Left = 16

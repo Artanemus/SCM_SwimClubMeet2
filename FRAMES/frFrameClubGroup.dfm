@@ -76,7 +76,6 @@ object FrameClubGroup: TFrameClubGroup
         Value = 41.000000000000000000
       end>
     TabOrder = 0
-    ExplicitWidth = 621
     DesignSize = (
       620
       627)
@@ -180,7 +179,6 @@ object FrameClubGroup: TFrameClubGroup
       Align = alClient
       BevelOuter = bvNone
       TabOrder = 2
-      ExplicitWidth = 272
       object lbxR: TListBox
         Left = 0
         Top = 0
@@ -194,7 +192,6 @@ object FrameClubGroup: TFrameClubGroup
         MultiSelect = True
         Sorted = True
         TabOrder = 0
-        ExplicitWidth = 272
       end
     end
     object lbl1: TLabel

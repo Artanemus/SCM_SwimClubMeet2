@@ -10,7 +10,8 @@ uses
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt, Data.DB,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, AdvUtil, Vcl.Grids, AdvObj,
-  BaseGrid, AdvGrid, DBAdvGrid;
+  BaseGrid, AdvGrid, DBAdvGrid,
+  frFrameReport;
 
 type
   TReportManage = class(TForm)
@@ -24,12 +25,11 @@ type
     spbtnSave: TSpeedButton;
     spbtnLoad: TSpeedButton;
     spbtnArchive: TSpeedButton;
-    qryReport: TFDQuery;
-    dsReport: TDataSource;
     spbtnClone: TSpeedButton;
-    spbtnSaveAs: TSpeedButton;
+    procedure FormCreate(Sender: TObject);
   private
-    { Private declarations }
+    fReportID: integer;
+    frReport: TFrameReport;
   public
     { Public declarations }
   end;
@@ -40,5 +40,14 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TReportManage.FormCreate(Sender: TObject);
+begin
+  fReportID := 0;
+
+  frReport := TFrameReport.Create(Self);
+  frReport.Parent := pnlBody;
+  frReport.Align := alClient;
+end;
 
 end.

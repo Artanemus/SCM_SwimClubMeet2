@@ -667,6 +667,7 @@ object FrameSession: TFrameSession
       ParentShowHint = False
       ShowHint = True
       Spacing = 5
+      OnClick = spbtnSessReportClick
     end
   end
   object actnlist: TActionList

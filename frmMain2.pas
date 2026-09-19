@@ -121,6 +121,7 @@ type
     procedure pnlTitleBarCustomButtons1Click(Sender: TObject);
     procedure pnlTitleBarCustomButtons1Paint(Sender: TObject);
     procedure pnlTitleBarPaint(Sender: TObject; Canvas: TCanvas; var ARect: TRect);
+    procedure Report_ManageExecute(Sender: TObject);
     procedure Report_RunExecute(Sender: TObject);
     procedure StatusBarDrawPanel(StatusBar: TStatusBar; Panel: TStatusPanel; const
         Rect: TRect);
@@ -193,7 +194,8 @@ uses
   dlgSwimClub_Switch, dlgSwimClub_Manage, dlgLogin, uSession, dlgPreferences,
   frmManageMember, frmSwimClub_Reports, frmMM_Stats, uEvent, dlgQualifyTimes,
   dlgPoolTypes, frmDisqualificationCodes, dlgDivisions,
-  uNominee, dlgSwimClub_Edit, frmTestFrame, frmSwimClubType, dlgReportPicker;
+  uNominee, dlgSwimClub_Edit, frmTestFrame, frmSwimClubType,
+  dlgReportPicker, dlgReportManage;
 
 
 procedure TMain2.actnTestExecute(Sender: TObject);
@@ -844,6 +846,17 @@ begin
     CustomTitleBar.ShowIcon := true;
   end;
   inherited;
+end;
+
+procedure TMain2.Report_ManageExecute(Sender: TObject);
+var
+  dlg: TReportManage;
+begin
+  // open report picker....
+  dlg := TReportManage.Create(self);
+  // dlg.Prepare(0); // display all reports....
+  dlg.ShowModal;
+  dlg.Free;
 end;
 
 procedure TMain2.Report_RunExecute(Sender: TObject);

@@ -25,6 +25,7 @@ type
     fReportID: integer;
     frReport: TFrameReport;
   public
+    procedure Prepare(ReportTypeID: integer);
     property ReportID: integer read FReportID write FReportID;
   end;
 
@@ -59,6 +60,11 @@ begin
     fReportID := 0;
     ModalResult := mrCancel;
   end;
+end;
+
+procedure TReportPicker.Prepare(ReportTypeID: integer);
+begin
+  frReport.ReportTypeID := ReportTypeID;
 end;
 
 end.

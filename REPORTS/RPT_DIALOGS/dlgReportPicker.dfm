@@ -3,8 +3,8 @@ object ReportPicker: TReportPicker
   Top = 0
   BorderStyle = bsDialog
   Caption = 'Report Picker ...'
-  ClientHeight = 573
-  ClientWidth = 537
+  ClientHeight = 673
+  ClientWidth = 680
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,18 +17,17 @@ object ReportPicker: TReportPicker
   TextHeight = 21
   object pnlFooter: TPanel
     Left = 0
-    Top = 527
-    Width = 537
+    Top = 627
+    Width = 680
     Height = 46
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitWidth = 992
     DesignSize = (
-      537
+      680
       46)
     object btnClose: TButton
-      Left = 454
+      Left = 597
       Top = 6
       Width = 83
       Height = 33
@@ -36,29 +35,24 @@ object ReportPicker: TReportPicker
       Caption = 'Pick'
       TabOrder = 0
       OnClick = btnCloseClick
-      ExplicitLeft = 909
     end
     object btnCancel: TButton
-      Left = 365
+      Left = 508
       Top = 6
       Width = 83
       Height = 33
       Anchors = [akTop, akRight]
       Caption = 'Cancel'
       TabOrder = 1
-      ExplicitLeft = 820
     end
   end
   object pnlBody: TPanel
     Left = 0
     Top = 0
-    Width = 537
-    Height = 527
+    Width = 680
+    Height = 627
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 41
-    ExplicitWidth = 992
-    ExplicitHeight = 486
   end
 end

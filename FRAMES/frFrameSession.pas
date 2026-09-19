@@ -17,7 +17,9 @@ uses
 
   AdvUtil, AdvObj, AdvGrid, DBAdvGrid,
 
-  dmSCM2, dmIMG, dmCORE, uSettings, uDefines, uUtility
+  dmSCM2, dmIMG, dmCORE, uSettings, uDefines, uUtility,
+
+  dlgReportPicker, dmRPT, frxClass, frxDBSet
 
   ;
 
@@ -82,6 +84,7 @@ type
         TGridDrawState; ABrush: TBrush; AFont: TFont);
     procedure gridGetHTMLTemplate(Sender: TObject; ACol, ARow: Integer; var
         HTMLTemplate: string; Fields: TFields);
+    procedure spbtnSessReportClick(Sender: TObject);
   private
     procedure SetLockStateIcon;
     procedure SetVisibilityIcon;
@@ -542,6 +545,59 @@ begin
       if (spbtnSessVisiblity.ImageName <> 'visible_on') then
         spbtnSessVisiblity.ImageName := 'visible_on';
     end;
+end;
+
+procedure TFrameSession.spbtnSessReportClick(Sender: TObject);
+var
+  //  SessionID: integer;
+  ReportID, ReportTypeID: integer;
+  dlgCTRL: TReportPicker;
+  AReport: TfrxReport;
+  mr: TModalResult;
+begin
+  LockDrawing;
+  Grid.BeginUpdate;
+  // SessionID := CORE.qrySession.FieldByName('SessionID').AsInteger;
+  ReportID := 0;
+  ReportTypeID := 0;
+  mr := mrCancel;
+  try
+    begin
+      // if CNTRL-LMB open report picker...
+      if ((GetKeyState(VK_CONTROL) and 128) = 128) then
+      begin
+        dlgCTRL := TReportPicker.Create(Self);
+        //        dlgCTRL.Prepare(ReportTypeID); // Show only session reports
+        mr := dlgCTRL.ShowModal;
+        ReportID := dlgCTRL.ReportID;
+        dlgCTRL.Free;
+
+      end
+      else
+      begin
+        // find the ReportTypeID for session reports
+        //
+        // Find the primary report for session report type.
+        //
+        // ReportID := RPT.FindPrimaryReport(ReportTypeID);
+        // if none found ... open the Orginal SessionRPTA
+        // message box - primary report not set - open system default report?
+      end;
+    end;
+  finally
+    if IsPositiveResult(mr) and (ReportID > 0) then
+    begin
+      // AReport := TfrxReport.Create(Self);
+      // is the blob NULL - open report file?
+      // RPT.LoadReportFromBlob(SCM2.scmConnection, ReportID, AReport);
+      // RPT.RunReport(AReport)
+      // AReport.Free;
+    end;
+    Grid.EndUpdate;
+    UnlockDrawing;
+
+  end;
+
 end;
 
 procedure TFrameSession.UpdateUI(DoFullUpdate: boolean = false);

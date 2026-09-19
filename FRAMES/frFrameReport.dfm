@@ -16,14 +16,14 @@ object FrameReport: TFrameReport
         Value = 64.000000000000000000
       end
       item
-        Value = 31.600547195622440000
+        Value = 46.947215450329010000
       end
       item
         SizeStyle = ssAbsolute
         Value = 64.000000000000000000
       end
       item
-        Value = 68.399452804377560000
+        Value = 53.052784549670990000
       end>
     ControlCollection = <
       item
@@ -43,7 +43,7 @@ object FrameReport: TFrameReport
       end
       item
         Column = 3
-        Control = ComboBoxEx1
+        Control = cmboxReportTypes
         Row = 0
       end>
     RowCollection = <
@@ -51,7 +51,6 @@ object FrameReport: TFrameReport
         Value = 100.000000000000000000
       end>
     TabOrder = 0
-    ExplicitWidth = 990
     object vimgSearch: TVirtualImage
       AlignWithMargins = True
       Left = 5
@@ -77,7 +76,7 @@ object FrameReport: TFrameReport
       AlignWithMargins = True
       Left = 69
       Top = 9
-      Width = 154
+      Width = 233
       Height = 31
       Margins.Left = 4
       Margins.Top = 8
@@ -86,12 +85,12 @@ object FrameReport: TFrameReport
       Align = alClient
       TabOrder = 0
       OnChange = edtSearchChange
-      ExplicitTop = 7
+      ExplicitHeight = 23
     end
     object btnClearSearch: TButton
       Tag = 1
       AlignWithMargins = True
-      Left = 231
+      Left = 310
       Top = 5
       Width = 56
       Height = 39
@@ -106,19 +105,18 @@ object FrameReport: TFrameReport
       Images = IMG.imglstMiscButtons
       TabOrder = 1
       OnClick = btnClearSearchClick
-      ExplicitLeft = 341
     end
-    object ComboBoxEx1: TComboBoxEx
+    object cmboxReportTypes: TComboBoxEx
       AlignWithMargins = True
-      Left = 307
+      Left = 378
       Top = 9
-      Width = 190
+      Width = 256
       Height = 30
-      Margins.Left = 16
+      Margins.Left = 8
       Margins.Top = 8
-      Margins.Right = 4
+      Margins.Right = 8
       Margins.Bottom = 8
-      Align = alLeft
+      Align = alClient
       ItemsEx = <
         item
           Caption = 'Show all types.'
@@ -147,6 +145,7 @@ object FrameReport: TFrameReport
         item
           Caption = 'Other'
         end>
+      Style = csExDropDownList
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
@@ -154,9 +153,7 @@ object FrameReport: TFrameReport
       Font.Style = []
       ParentFont = False
       TabOrder = 2
-      Text = 'ComboBoxEx1'
-      ExplicitLeft = 291
-      ExplicitTop = 1
+      OnSelect = cmboxReportTypesSelect
     end
   end
   object pnlBody: TPanel
@@ -167,7 +164,6 @@ object FrameReport: TFrameReport
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 990
     object grid: TDBAdvGrid
       Left = 0
       Top = 0
@@ -180,7 +176,7 @@ object FrameReport: TFrameReport
       DefaultRowHeight = 28
       DrawingStyle = gdsClassic
       FixedColor = clWhite
-      RowCount = 7
+      RowCount = 2
       FixedRows = 1
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clBlack
@@ -349,7 +345,7 @@ object FrameReport: TFrameReport
           Font.Height = -16
           Font.Name = 'Segoe UI'
           Font.Style = []
-          Header = 'Alias/Name'
+          Header = 'Name'
           HeaderFont.Charset = DEFAULT_CHARSET
           HeaderFont.Color = 3881787
           HeaderFont.Height = -16
@@ -534,11 +530,6 @@ object FrameReport: TFrameReport
         425)
       RowHeights = (
         28
-        28
-        28
-        28
-        28
-        28
         28)
     end
   end
@@ -549,8 +540,16 @@ object FrameReport: TFrameReport
   end
   object qryReport: TFDQuery
     ActiveStoredUsage = [auDesignTime]
-    Active = True
-    IndexFieldNames = 'ReportID'
+    FilterOptions = [foCaseInsensitive]
+    Indexes = <
+      item
+        Active = True
+        Selected = True
+        Name = 'idxTypeAlpha'
+        Fields = 'ReportType;Caption'
+      end>
+    IndexName = 'idxTypeAlpha'
+    DetailFields = 'ReportID'
     Connection = SCM2.scmConnection
     UpdateOptions.AssignedValues = [uvEDelete, uvEInsert, uvEUpdate]
     UpdateOptions.EnableDelete = False
@@ -561,9 +560,9 @@ object FrameReport: TFrameReport
     SQL.Strings = (
       'USE [SwimClubMeet2];'
       ''
-      'DECLARE @ReportGroupID AS INT;'
+      'DECLARE @ReportTypeID AS INT;'
       ''
-      'SET @ReportGroupID = :REPORTGROUPID;'
+      'SET @ReportTypeID = :REPORTTYPEID;'
       ''
       'SELECT [Report].[ReportID],'
       '       [Report].[Caption],'
@@ -577,20 +576,20 @@ object FrameReport: TFrameReport
       '       [Report].[FileName],'
       '       [Report].[Blob],'
       '       [Report].[ReportTypeID],'
-      '       [Report].[ReportGroupID],'
-      '       ReportType.CaptionShort AS ReportType,'
-      '       ReportGroup.Caption AS ReportGroup'
+      '       [Report].[ReportOwnerID],'
+      '       ReportType.Caption AS ReportType,'
+      '       ReportOwner.Caption AS ReportOwner'
       'FROM   [dbo].[Report]'
       '       LEFT OUTER JOIN'
       '       ReportType'
       '       ON [Report].ReportTypeID = ReportType.ReportTypeID'
       '       LEFT OUTER JOIN'
-      '       ReportGroup'
-      '       ON [Report].ReportGroupID = ReportGroup.ReportGroupID'
-      'WHERE ( @ReportGroupID = 0 AND [Report].[ReportGroupID] > 0 )'
+      '       ReportOwner'
+      '       ON [Report].ReportOwnerID = ReportOwner.ReportOwnerID'
+      'WHERE ( @ReportTypeID = 0 AND [Report].[ReportTypeID] > 0 )'
       
-        '   OR ( @ReportGroupID <> 0 AND [Report].[ReportGroupID] = @Repo' +
-        'rtGroupID );'
+        '   OR ( @ReportTypeID <> 0 AND [Report].[ReportTypeID] = @Report' +
+        'TypeID );'
       ''
       ''
       '')
@@ -598,10 +597,10 @@ object FrameReport: TFrameReport
     Top = 280
     ParamData = <
       item
-        Name = 'REPORTGROUPID'
+        Name = 'REPORTTYPEID'
         DataType = ftInteger
         ParamType = ptInput
-        Value = 2
+        Value = 0
       end>
   end
   object qryReportType: TFDQuery

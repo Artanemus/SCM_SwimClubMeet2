@@ -93,7 +93,6 @@ begin
 
 end;
 
-
 procedure TFrameClubGroup.LoadList_SwimClub(AParentClubID: integer);
 var
   s: string;

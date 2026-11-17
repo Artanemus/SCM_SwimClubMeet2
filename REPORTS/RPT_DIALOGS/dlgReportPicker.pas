@@ -23,7 +23,7 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     fReportID: integer;
-    frReport: TFrameReport;
+    FrameRPT: TFrameReport;
   public
     procedure Prepare(ReportTypeID: integer);
     property ReportID: integer read FReportID write FReportID;
@@ -38,7 +38,7 @@ implementation
 
 procedure TReportPicker.btnCloseClick(Sender: TObject);
 begin
-    fReportID := frReport.ReportID;
+    fReportID := FrameRPT.ReportID;
     ModalResult := mrOK;
 end;
 
@@ -46,9 +46,9 @@ procedure TReportPicker.FormCreate(Sender: TObject);
 begin
   fReportID := 0;
 
-  frReport := TFrameReport.Create(Self);
-  frReport.Parent := pnlBody;
-  frReport.Align := alClient;
+  FrameRPT := TFrameReport.Create(Self);
+  FrameRPT.Parent := pnlBody;
+  FrameRPT.Align := alClient;
 end;
 
 procedure TReportPicker.FormKeyDown(Sender: TObject; var Key: Word; Shift:
@@ -64,7 +64,7 @@ end;
 
 procedure TReportPicker.Prepare(ReportTypeID: integer);
 begin
-  frReport.ReportTypeID := ReportTypeID;
+  FrameRPT.ReportTypeID := ReportTypeID;
 end;
 
 end.

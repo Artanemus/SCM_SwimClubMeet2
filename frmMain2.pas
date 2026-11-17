@@ -103,6 +103,7 @@ type
     Report_Run: TAction;
     SwimClub_Edit: TAction;
     actnTest: TAction;
+    Report_Import: TAction;
     procedure actnTestExecute(Sender: TObject);
     procedure File_ConnectionExecute(Sender: TObject);
     procedure File_ConnectionUpdate(Sender: TObject);

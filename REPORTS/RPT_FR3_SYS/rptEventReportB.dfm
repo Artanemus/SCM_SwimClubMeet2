@@ -14,7 +14,7 @@ object EventReportB: TEventReportB
     ReportOptions.Author = 'Ben Ambrose'
     ReportOptions.CreateDate = 43428.811813125000000000
     ReportOptions.Name = 'Sys-Event-Detailed'
-    ReportOptions.LastChange = 46261.459876354170000000
+    ReportOptions.LastChange = 46261.459876354200000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'var'
@@ -753,6 +753,7 @@ object EventReportB: TEventReportB
   end
   object qryReportB: TFDQuery
     ActiveStoredUsage = [auDesignTime]
+    Active = True
     IndexesActive = False
     IndexFieldNames = 'EventID'
     Connection = SCM2.scmConnection

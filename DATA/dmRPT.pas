@@ -23,8 +23,6 @@ type
     dsEvDetailedEx: TfrxDBDataset;
     dsEvMisc: TfrxDBDataset;
     dsEvSummary: TfrxDBDataset;
-    dsfrxSession: TfrxDBDataset;
-    dsfrxSwimClub: TfrxDBDataset;
     frxHTMLExport1: TfrxHTMLExport;
     frxPDFExport1: TfrxPDFExport;
     frxReportWIP: TfrxReport;
@@ -33,8 +31,6 @@ type
     qryEvDetailedEx: TFDQuery;
     qryEvMisc: TFDQuery;
     qryEvSummary: TFDQuery;
-    qryfrxSession: TFDQuery;
-    qryfrxSwimClub: TFDQuery;
     rptBase_v1: TfrxReport;
     rptEvDetailed: TfrxReport;
     rptEvDetailedEx: TfrxReport;
@@ -51,7 +47,6 @@ type
     procedure LoadReportFromBlob(FDConnection: TFDConnection;
       const ReportID: Integer; frxReport: TfrxReport);
     procedure Prepare_EventReports;
-    procedure Prepare_Template;
     procedure RunEventReport(EventReportID: Integer);
     procedure SaveReportToBlob(FDConnection: TFDConnection;
       const ReportID: Integer; frxReport: TfrxReport);
@@ -175,32 +170,9 @@ begin
   end;
 end;
 
-procedure TRPT.Prepare_Template;
-begin
-  if Assigned(SCM2) and SCM2.scmConnection.Connected then
-  begin
-    try
-      // used by TemplateBase.fr3
-      qryfrxSwimClub.Connection := SCM2.scmConnection;
-      qryfrxSwimClub.ParamByName('SWIMCLUBID').AsInteger := uSwimClub.PK;
-      qryfrxSwimClub.Prepare;
-      qryfrxSwimClub.Open;
-      // used by TemplateBase.fr3
-      qryfrxSession.Connection := SCM2.scmConnection;
-      qryfrxSession.ParamByName('SESSIONID').AsInteger := uSession.PK;
-      qryfrxSession.Prepare;
-      qryfrxSession.Open;
-    except
-      on E: EFDDBEngineException do
-        SCM2.FDGUIxErrorDialog.Execute(E);
-    end;
-  end;
-end;
-
 procedure TRPT.RunEventReport(EventReportID: Integer);
 begin
   {   }
-  Prepare_Template; // Template header/footer (LOGO, PageNum, PrintDate).
   Prepare_EventReports; // Opens ALL 'Event Query' types after a prama reassign.
   try
     LoadReportFromBlob(SCM2.scmConnection, EventReportID, rptReport);
@@ -216,8 +188,6 @@ begin
   end;
 
   qryEvSummary.Close;
-  qryfrxSwimClub.Close;
-  qryfrxSession.Close;
 
 end;
 

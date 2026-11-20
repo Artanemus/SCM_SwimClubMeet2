@@ -93,14 +93,29 @@ uses
   dlgEntrantPicker in 'LANES\dlgEntrantPicker.pas' {EntrantPicker},
   dlgDeleteConfirm in 'HEATS\dlgDeleteConfirm.pas' {DeleteConfirm},
   dlgReportPicker in 'REPORTS\RPT_DIALOGS\dlgReportPicker.pas' {ReportPicker},
-  dmFRXRPT in 'DATA\dmFRXRPT.pas' {FRXRPT: TDataModule},
-  dmRPT in 'REPORTS\dmRPT.pas' {RPT: TDataModule},
   frFrameSwimClub in 'FRAMES\frFrameSwimClub.pas' {FrameSwimClub: TFrame},
   dlgSwimClub_Edit in 'SWIMCLUBS\SC_DIALOGS\dlgSwimClub_Edit.pas' {SwimClubEdit},
   frmTestFrame in 'frmTestFrame.pas' {TestFrame},
   frFrameClubGroup in 'FRAMES\frFrameClubGroup.pas' {FrameClubGroup: TFrame},
   dlgReportManage in 'REPORTS\RPT_DIALOGS\dlgReportManage.pas' {ReportManage},
-  frFrameReport in 'FRAMES\frFrameReport.pas' {FrameReport: TFrame};
+  frFrameReport in 'FRAMES\frFrameReport.pas' {FrameReport: TFrame},
+  dmRPT in 'DATA\dmRPT.pas' {RPT: TDataModule},
+  uReport in 'DATA_Helper\uReport.pas',
+  rptEventReportB in 'REPORTS\RPT_FR3_SYS\rptEventReportB.pas' {EventReportB: TDataModule},
+  rptEventReportC in 'REPORTS\RPT_FR3_SYS\rptEventReportC.pas' {EventReportC: TDataModule},
+  rptHeatReportA in 'REPORTS\RPT_FR3_SYS\rptHeatReportA.pas' {HeatReportA: TDataModule},
+  rptHeatReportB in 'REPORTS\RPT_FR3_SYS\rptHeatReportB.pas' {HeatReportB: TDataModule},
+  rptMarshallReportA in 'REPORTS\RPT_FR3_SYS\rptMarshallReportA.pas' {MarshallReportA: TDataModule},
+  rptMarshallReportA_ALT in 'REPORTS\RPT_FR3_SYS\rptMarshallReportA_ALT.pas' {MarshallReportA_ALT: TDataModule},
+  rptMarshallReportB in 'REPORTS\RPT_FR3_SYS\rptMarshallReportB.pas' {MarshallReportB: TDataModule},
+  rptMarshallReportC in 'REPORTS\RPT_FR3_SYS\rptMarshallReportC.pas' {MarshallReportC: TDataModule},
+  rptNominateReportA in 'REPORTS\RPT_FR3_SYS\rptNominateReportA.pas' {NominateReportA: TDataModule},
+  rptNominateReportB in 'REPORTS\RPT_FR3_SYS\rptNominateReportB.pas' {NominateReportB: TDataModule},
+  rptSessionReportA in 'REPORTS\RPT_FR3_SYS\rptSessionReportA.pas' {SessionReportA: TDataModule},
+  rptSessionReportB in 'REPORTS\RPT_FR3_SYS\rptSessionReportB.pas' {SessionReportB: TDataModule},
+  rptTimeKeeperReportA in 'REPORTS\RPT_FR3_SYS\rptTimeKeeperReportA.pas' {TimeKeeperReportA: TDataModule},
+  rptTimeKeeperReportB in 'REPORTS\RPT_FR3_SYS\rptTimeKeeperReportB.pas' {TimeKeeperReportB: TDataModule},
+  dmRPTTemplate in 'DATA\dmRPTTemplate.pas' {RPTTemplate: TDataModule};
 
 {$R *.res}
 
